@@ -1,5 +1,5 @@
 /* Everchat marketing — Tailwind v4 entry
-   Ink on cool slate · Bricolage Grotesque + Public Sans · slate accent
+   Ink on cool slate · Bricolage Grotesque + Geist Sans · slate accent
    Fonts are self-hosted. No Google Fonts, no third-party requests. */
 
 @import "tailwindcss";
@@ -11,7 +11,7 @@
 @theme {
   /* Align with extension slate tokens where practical */
   --font-display: "Bricolage Grotesque", "Segoe UI", sans-serif;
-  --font-sans: "Public Sans", "Segoe UI", sans-serif;
+  --font-sans: "Geist Sans", "Segoe UI", sans-serif;
   --color-ink: #0f172a; /* slate-900 */
   --color-ink-soft: #1e293b; /* slate-800 */
   --color-mute: #64748b; /* slate-500 */
@@ -31,16 +31,16 @@
 
 @layer base {
   @font-face {
-    font-family: "Public Sans";
-    src: url("/fonts/public-sans-400.woff2") format("woff2");
+    font-family: "Geist Sans";
+    src: url("/fonts/geist-sans-400.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: "Public Sans";
-    src: url("/fonts/public-sans-600.woff2") format("woff2");
+    font-family: "Geist Sans";
+    src: url("/fonts/geist-sans-600.woff2") format("woff2");
     font-weight: 500 700;
     font-style: normal;
     font-display: swap;
@@ -238,17 +238,23 @@
   background: var(--panel); /* white by default — keep on hover */
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
-  padding: 0 0.75rem; /* x pad only — frame height = badge image */
+  padding: 0 0.6rem; /* x pad only — frame height = badge image */
   height: auto;
   flex: 0 0 auto;
   width: fit-content;
   max-width: 100%;
-  transition: border-color 0.2s ease;
+  transform-origin: center;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
 }
 
 .chrome-badge-link:hover {
   background: var(--panel); /* no fill change */
-  border-color: color-mix(in srgb, var(--line) 55%, var(--mute)); /* milder than slate-400 */
+  border-color: color-mix(in srgb, var(--line) 55%, var(--mute));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--ink) 14%, transparent);
+  transform: scale(1.15) rotate(2deg);
 }
 
 .chrome-badge-link:focus-visible {
@@ -259,8 +265,8 @@
 .chrome-badge {
   display: block;
   width: auto;
-  height: 4.6875rem; /* 75px — HTML width/height (248×75), natural badge scale */
-  max-width: 15.5rem; /* 248px */
+  height: 3.75rem; /* 60px — modestly smaller than prior 75px */
+  max-width: 12.4rem; /* ~198px at 496:150 */
   aspect-ratio: 496 / 150;
   object-fit: contain;
 }

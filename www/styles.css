@@ -161,14 +161,16 @@ a:hover {
 
 .brand-logo {
   display: block;
-  width: min(100%, 22rem);
-  height: auto;
-  padding-bottom: 4px; /* optical vertical balance */
+  width: auto;
+  height: 2rem; /* ~32px — normal marketing wordmark */
+  max-width: 10rem; /* ~160px */
+  padding-bottom: 2px; /* optical vertical balance */
 }
 
 @media (min-width: 960px) {
   .brand-logo {
-    width: min(100%, 24rem);
+    height: 2.25rem; /* ~36px */
+    max-width: 11rem;
   }
 }
 
@@ -194,16 +196,11 @@ a:hover {
 .cta-group {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: 100%;
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
-}
-
-@media (max-width: 420px) {
-  .cta-group {
-    flex-wrap: wrap;
-  }
 }
 
 /* Official Chrome Web Store badge — transparent asset; we own slate frame */
@@ -213,16 +210,19 @@ a:hover {
   justify-content: center;
   line-height: 0;
   text-decoration: none;
-  background: transparent;
+  background: var(--panel); /* white by default */
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
-  padding: 0.35rem 0.55rem;
-  flex-shrink: 0;
+  padding: 0.3rem 0.5rem;
+  height: 2.75rem; /* 44px — matches How it works */
+  flex: 0 0 auto;
+  width: fit-content;
+  max-width: 100%;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .chrome-badge-link:hover {
-  background: #f1f5f9; /* slate-100 — one step from paper/transparent */
+  background: #f1f5f9; /* slate-100 — one step from white */
   border-color: #94a3b8; /* slate-400 — one step from --line (slate-300) */
 }
 
@@ -233,8 +233,10 @@ a:hover {
 
 .chrome-badge {
   display: block;
-  width: min(100%, 12.5rem);
-  height: auto;
+  width: auto;
+  height: 100%;
+  max-height: 1.9rem; /* ~30px inside the 44px frame */
+  max-width: 10.5rem; /* ~168px — typical CWS badge scale */
   aspect-ratio: 496 / 150;
   object-fit: contain;
 }
@@ -277,15 +279,17 @@ a:hover {
   background: transparent;
   color: var(--ink-soft);
   border-color: var(--line);
-  padding-inline: 1.15rem;
-  padding-block: 0;
-  align-self: stretch;
+  padding: 0 1rem;
   white-space: nowrap;
 }
 
 .cta-group .btn-ghost {
-  /* Stretch to match slate-framed badge height; centers label */
-  min-height: 100%;
+  /* Same fixed height as framed badge — no stretch/grow */
+  height: 2.75rem; /* 44px */
+  flex: 0 0 auto;
+  align-self: center;
+  padding-block: 0;
+  font-size: 0.9rem;
 }
 
 .btn-ghost:hover {
@@ -582,16 +586,11 @@ a:hover {
 }
 
 .benefits {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(2rem, 5vw, 2.75rem) clamp(1.75rem, 4vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 4vw, 2.5rem);
   margin-bottom: clamp(3.5rem, 9vw, 5.5rem);
-}
-
-@media (min-width: 720px) {
-  .benefits {
-    grid-template-columns: 1fr 1fr;
-  }
+  max-width: 42rem; /* reading width for single-column stack */
 }
 
 .benefit h2 {
@@ -642,6 +641,9 @@ a:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  max-width: 42rem; /* ~672px — centered reading column */
+  margin-inline: auto;
+  width: 100%;
 }
 
 .install h2 {
@@ -649,11 +651,14 @@ a:hover {
 }
 
 .install p {
-  max-width: 48rem;
+  max-width: none;
 }
 
 .install-badge {
   margin: 1.25rem 0 1.5rem;
+  /* Keep compact — never stretch full column width */
+  width: fit-content;
+  flex: 0 0 auto;
 }
 
 .install-steps {
@@ -663,7 +668,7 @@ a:hover {
   counter-reset: step;
   display: grid;
   gap: 0.85rem;
-  max-width: 42rem;
+  max-width: none;
   width: 100%;
   text-align: left;
 }

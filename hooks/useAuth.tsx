@@ -26,7 +26,8 @@ interface AuthContextValue {
   setShowAuthLanding: (v: boolean) => void;
   requireAuth: () => boolean;
   register: (username: string) => Promise<void>;
-  login: () => Promise<void>;
+  /** Assert existing passkey. Returns true on success. Quiet expected cancel/no-cred failures. */
+  tryLogin: () => Promise<boolean>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   patchUser: (
@@ -35,6 +36,24 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+/** User cancelled, no credential on device, or similar: fall through to claim. */
+function isExpectedPasskeyMiss(e: unknown): boolean {
+  const err = e as { name?: string; message?: string };
+  const name = err?.name ?? '';
+  const msg = (err?.message ?? '').toLowerCase();
+  return (
+    name === 'NotAllowedError' ||
+    name === 'AbortError' ||
+    name === 'InvalidStateError' ||
+    name === 'NotFoundError' ||
+    msg.includes('not allowed') ||
+    msg.includes('timed out') ||
+    msg.includes('cancel') ||
+    msg.includes('no credential') ||
+    msg.includes('unknown passkey')
+  );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null);
@@ -60,21 +79,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setShowAuthLanding(false);
       toast.success(`You're in as @${session.username}`);
     } catch (e) {
-      toast.error((e as Error).message || "Couldn't finish sign-in — try again");
+      toast.error((e as Error).message || "Couldn't finish sign-in. Try again.");
       throw e;
     }
   }, []);
 
-  const login = useCallback(async () => {
+  const tryLogin = useCallback(async (): Promise<boolean> => {
     try {
       const session = await loginPasskey();
       setSupabaseAccessToken(session.token);
       setUser(session);
       setShowAuthLanding(false);
       toast.success(`Welcome back, @${session.username}`);
+      return true;
     } catch (e) {
-      toast.error((e as Error).message || "Couldn't finish sign-in — try again");
-      throw e;
+      if (isExpectedPasskeyMiss(e)) return false;
+      toast.error((e as Error).message || "Couldn't finish sign-in. Try again.");
+      return false;
     }
   }, []);
 
@@ -126,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setShowAuthLanding,
       requireAuth,
       register,
-      login,
+      tryLogin,
       logout,
       refreshProfile,
       patchUser,
@@ -137,7 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       showAuthLanding,
       requireAuth,
       register,
-      login,
+      tryLogin,
       logout,
       refreshProfile,
       patchUser,

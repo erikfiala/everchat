@@ -1,9 +1,11 @@
 # Everchat
 
-Chrome MV3 side-panel extension: public Reddit-style comments on any URL. Passkeys only — no email.
+Chrome MV3 side-panel extension: public comments on any URL. Passkeys only. No email.
 
-**Site / WebAuthn RP (canonical):** [everch.at](https://everch.at) — `www.everch.at` redirects here (308).  
+**Site / WebAuthn RP (canonical):** [everch.at](https://everch.at). `www.everch.at` redirects here (308).  
 Product spec: [PRD.md](./PRD.md) (v1.6).
+
+**Funding:** Voluntary donations via [Open Collective](https://opencollective.com/everchat) — see `.github/FUNDING.yml`.
 
 ## Stack
 
@@ -82,7 +84,7 @@ Passkey ceremonies run in the **side panel** (`chrome-extension://…`). RP ID i
 | **A** | `@` | `76.76.21.21` |
 | **CNAME** | `www` | `cname.vercel-dns.com` |
 
-(Confirm exact records in the Vercel domain UI — they can change. Apex must stay primary; do not reverse the www redirect.)
+(Confirm exact records in the Vercel domain UI - they can change. Apex must stay primary; do not reverse the www redirect.)
 
 4. After DNS propagates, `https://everch.at/.well-known/webauthn` must return JSON listing the extension origin, e.g.:
 
@@ -98,7 +100,7 @@ Passkey ceremonies run in the **side panel** (`chrome-extension://…`). RP ID i
 
 ```bash
 pnpm dev      # hot reload
-pnpm build    # production → .output/chrome-mv3
+pnpm build    # production → dist/everchat
 pnpm compile  # typecheck
 pnpm zip      # Chrome Web Store zip
 ```
@@ -107,7 +109,7 @@ pnpm zip      # Chrome Web Store zip
 
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
-3. **Load unpacked** → select `.output/chrome-mv3` (or `.output/chrome-mv3-dev` while using `pnpm dev`)
+3. **Load unpacked** → select `dist/everchat` (or `dist/everchat-dev` while using `pnpm dev`)
 4. Pin Everchat; click the icon to open the side panel on any tab
 
 ## Layout

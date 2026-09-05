@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { BODY_WARN_AT, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
 interface ComposerProps {
@@ -25,6 +26,7 @@ export function Composer({
   onGate,
 }: ComposerProps) {
   const { user } = useAuth();
+  const { resolved } = useTheme();
   const [body, setBody] = useState(
     replyToHandle ? `@${replyToHandle} ` : '',
   );
@@ -72,7 +74,7 @@ export function Composer({
     return (
       <div className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
         <Button className="w-full" onClick={onGate}>
-          Sign in anonymously to join
+          Sign in anonymously
         </Button>
       </div>
     );
@@ -188,7 +190,7 @@ export function Composer({
       {showEmoji && (
         <div className="absolute bottom-full left-2 z-30 mb-1">
           <EmojiPicker
-            theme={Theme.LIGHT}
+            theme={resolved === 'dark' ? Theme.DARK : Theme.LIGHT}
             onEmojiClick={onEmoji}
             width={280}
             height={360}

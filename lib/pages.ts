@@ -2,6 +2,13 @@ import { getSupabase } from './supabase';
 import type { Page } from './database.types';
 import { DESCRIPTION_TRUNCATE } from './constants';
 
+function isUniqueViolation(error: { code?: string; message?: string } | null) {
+  return (
+    error?.code === '23505' ||
+    (error?.message ?? '').toLowerCase().includes('duplicate key')
+  );
+}
+
 export async function upsertPage(input: {
   canonicalUrl: string;
   title?: string | null;
@@ -20,22 +27,10 @@ export async function upsertPage(input: {
     .maybeSingle();
 
   if (existing) {
-    const { data, error } = await sb
-      .from('pages')
-      .update({
-        title: input.title || existing.title,
-        description: description || existing.description,
-        favicon_url: input.faviconUrl || existing.favicon_url,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', existing.id)
-      .select()
-      .single();
-    if (error) throw error;
-    return data;
+    return updatePageMeta(existing, input, description);
   }
 
-  const { data, error } = await sb
+  const { data: created, error: insertError } = await sb
     .from('pages')
     .insert({
       canonical_url: input.canonicalUrl,
@@ -43,6 +38,38 @@ export async function upsertPage(input: {
       description,
       favicon_url: input.faviconUrl ?? null,
     })
+    .select()
+    .single();
+
+  if (!insertError && created) return created;
+
+  // Concurrent insert won the race: load + update instead of failing.
+  if (isUniqueViolation(insertError)) {
+    const raced = await getPageByCanonical(input.canonicalUrl);
+    if (raced) return updatePageMeta(raced, input, description);
+  }
+
+  throw insertError ?? new Error('Could not create page room');
+}
+
+async function updatePageMeta(
+  existing: Page,
+  input: {
+    title?: string | null;
+    faviconUrl?: string | null;
+  },
+  description: string | null,
+): Promise<Page> {
+  const sb = getSupabase();
+  const { data, error } = await sb
+    .from('pages')
+    .update({
+      title: input.title || existing.title,
+      description: description || existing.description,
+      favicon_url: input.faviconUrl || existing.favicon_url,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', existing.id)
     .select()
     .single();
   if (error) throw error;
@@ -78,7 +105,9 @@ export async function getTrendingPages(limit = 10) {
 
   const { data: messages, error } = await sb
     .from('messages')
-    .select('page_id, pages!inner(id, canonical_url, title, description, favicon_url)')
+    .select(
+      'page_id, pages!inner(id, canonical_url, title, description, favicon_url)',
+    )
     .gte('created_at', since)
     .is('deleted_at', null);
 

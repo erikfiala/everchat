@@ -57,7 +57,7 @@ export function NotificationsTab() {
             ) : (
               <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
             )}
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 overflow-hidden">
               <div className="truncate text-sm font-medium">
                 {n.page?.title || n.page?.canonical_url || 'Page'}
               </div>
@@ -68,7 +68,7 @@ export function NotificationsTab() {
                   ''
                 ).slice(0, DESCRIPTION_TRUNCATE)}
               </div>
-              <div className="mt-1 text-xs">
+              <div className="mt-1 truncate text-xs">
                 <span className="font-medium">@{n.actor?.username}</span>
                 <span className="text-[var(--color-muted-foreground)]">
                   {' '}

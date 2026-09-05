@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       const assertion = body.assertion;
       const challengeId = body.challengeId as string | undefined;
 
-      // Find challenge — prefer explicit id, else match by challenge in assertion
+      // Find challenge - prefer explicit id, else match by challenge in assertion
       let challengeRow = null as {
         id: string;
         challenge: string;

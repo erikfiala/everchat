@@ -36,7 +36,7 @@ export function rpConfig() {
   };
 }
 
-/** HMAC key for custom session JWTs — JWT_SECRET may be raw text or base64url key material. */
+/** HMAC key for custom session JWTs - JWT_SECRET may be raw text or base64url key material. */
 function jwtSecretKey(): Uint8Array {
   const raw =
     Deno.env.get('JWT_SECRET') ||

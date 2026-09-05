@@ -7,6 +7,7 @@ import { ProfileTab } from '@/components/profile/ProfileTab';
 import { ProfileSheet } from '@/components/profile/ProfileSheet';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { ThemeProvider, useTheme } from '@/hooks/useTheme';
 import { useActiveTab } from '@/hooks/useActiveTab';
 import { useNotifications } from '@/hooks/useNotifications';
 import type { PanelTab } from '@/lib/database.types';
@@ -20,6 +21,7 @@ function reportPanelAttention(visible: boolean, tab: PanelTab) {
 function Shell() {
   const [tab, setTab] = useState<PanelTab>('chat');
   const { user, showAuthLanding, setShowAuthLanding, loading } = useAuth();
+  const { resolved: theme } = useTheme();
   const { tab: activeTab, ready, clearFocus } = useActiveTab();
   const { unread } = useNotifications(user?.id);
   const [profileUser, setProfileUser] = useState<string | null>(null);
@@ -81,15 +83,32 @@ function Shell() {
         open={Boolean(profileUser)}
         onOpenChange={(open) => !open && setProfileUser(null)}
       />
-      <Toaster position="top-center" richColors closeButton />
+      <Toaster
+        theme={theme}
+        position="top-center"
+        closeButton
+        toastOptions={{
+          classNames: {
+            toast: 'ec-toast',
+            title: 'ec-toast-title',
+            description: 'ec-toast-description',
+            icon: 'ec-toast-icon',
+            closeButton: 'ec-toast-close',
+            success: 'ec-toast-success',
+            error: 'ec-toast-error',
+          },
+        }}
+      />
     </div>
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Shell />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Shell />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 type Step = 'landing' | 'claim';
 
 export function AuthLanding() {
-  const { register, login, configured } = useAuth();
+  const { register, tryLogin, configured } = useAuth();
   const [step, setStep] = useState<Step>('landing');
   const [username, setUsername] = useState('');
   const [availability, setAvailability] = useState<
@@ -61,10 +61,12 @@ export function AuthLanding() {
     }
   };
 
-  const onUnlock = async () => {
+  /** One CTA: try existing passkey, else claim a handle + register. */
+  const onPrimary = async () => {
     setBusy(true);
     try {
-      await login();
+      const ok = await tryLogin();
+      if (!ok) setStep('claim');
     } finally {
       setBusy(false);
     }
@@ -118,7 +120,7 @@ export function AuthLanding() {
           {busy ? 'Confirming…' : 'Continue'}
         </Button>
         <p className="mt-3 text-xs text-[var(--color-muted-foreground)]">
-          Your device will confirm — no password. If you lose all devices, this
+          Your device will confirm. No password. If you lose all devices, this
           account can’t be recovered.
         </p>
         <button
@@ -135,19 +137,12 @@ export function AuthLanding() {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
       <div className="mb-6">
-        <img
-          src="/ec-logo-horizontal-black.svg"
-          alt="Everchat"
-          width="200"
-          height="46"
-          className="h-8 w-auto"
-        />
-        <h1 className="mt-4 text-xl font-semibold leading-snug tracking-tight">
-          Say what you think — on any page.
+        <h1 className="text-xl font-semibold leading-snug tracking-tight">
+          Every URL deserves a conversation.
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-          Anonymous comments on this URL. News, gov sites, anything with a link.
-          No email.
+          Anonymous public comments on this page. No email. No third-party
+          trackers. No ads.
         </p>
       </div>
 
@@ -162,21 +157,13 @@ export function AuthLanding() {
         className="w-full"
         size="lg"
         disabled={busy || !configured}
-        onClick={() => setStep('claim')}
+        onClick={onPrimary}
       >
-        Sign in anonymously
+        {busy ? 'Working…' : 'Sign in anonymously'}
       </Button>
-      <button
-        type="button"
-        className="mt-3 text-center text-sm text-[var(--color-muted-foreground)] underline-offset-2 hover:underline"
-        disabled={busy || !configured}
-        onClick={onUnlock}
-      >
-        Already joined? Unlock
-      </button>
       <p className="mt-4 text-xs leading-relaxed text-[var(--color-muted-foreground)]">
-        A thread for every page. Tracking noise stripped so the conversation
-        sticks to the article, not the ad params.
+        Free forever. Tracking params stripped so the thread sticks to the
+        page, not the ad noise.
       </p>
 
       <TrendingChats />

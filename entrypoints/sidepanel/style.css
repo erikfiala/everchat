@@ -2,25 +2,43 @@
 @import "tailwindcss";
 
 @theme {
-  /* Tailwind slate-aligned cool gray-blues */
+  /* Tailwind zinc-aligned neutrals */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-background: #f8fafc; /* slate-50 */
-  --color-foreground: #0f172a; /* slate-900 */
-  --color-muted: #f1f5f9; /* slate-100 */
-  --color-muted-foreground: #64748b; /* slate-500 */
-  --color-border: #e2e8f0; /* slate-200 */
+  --color-background: #fafafa; /* zinc-50 */
+  --color-foreground: #18181b; /* zinc-900 */
+  --color-muted: #f4f4f5; /* zinc-100 */
+  --color-muted-foreground: #71717a; /* zinc-500 */
+  --color-border: #e4e4e7; /* zinc-200 */
   --color-card: #ffffff;
-  --color-primary: #1e293b; /* slate-800 */
-  --color-primary-foreground: #f8fafc;
-  --color-accent: #f1f5f9; /* slate-100 */
+  --color-primary: #27272a; /* zinc-800 */
+  --color-primary-foreground: #fafafa;
+  --color-accent: #f4f4f5; /* zinc-100 */
   --color-destructive: #dc2626;
   --color-success: #0f766e;
   --color-score-pos: #0f766e;
   --color-score-neg: #dc2626;
-  --color-ring: #94a3b8; /* slate-400 */
+  --color-ring: #a1a1aa; /* zinc-400 · soft focus */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
+}
+
+html[data-theme='dark'] {
+  --color-background: #18181b; /* zinc-900 */
+  --color-foreground: #fafafa; /* zinc-50 */
+  --color-muted: #27272a; /* zinc-800 */
+  --color-muted-foreground: #a1a1aa; /* zinc-400 */
+  --color-border: #3f3f46; /* zinc-700 */
+  --color-card: #27272a; /* zinc-800 */
+  --color-primary: #f4f4f5; /* zinc-100 */
+  --color-primary-foreground: #18181b;
+  --color-accent: #3f3f46; /* zinc-700 */
+  --color-destructive: #f87171;
+  --color-success: #2dd4bf;
+  --color-score-pos: #2dd4bf;
+  --color-score-neg: #f87171;
+  --color-ring: #71717a; /* zinc-500 */
+  color-scheme: dark;
 }
 
 * {
@@ -39,6 +57,35 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+}
+
+html[data-theme='dark'] body {
+  color-scheme: dark;
+}
+
+/* Soft keyboard focus ring (hugs control radius; match sort selector) */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Radix menus move DOM focus on open/highlight — use data-[highlighted], not the ring */
+[role='menuitem']:focus,
+[role='menuitem']:focus-visible,
+[role='option']:focus,
+[role='option']:focus-visible,
+[data-radix-collection-item]:focus,
+[data-radix-collection-item]:focus-visible {
+  outline: none;
+}
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
 }
 
 @keyframes highlight-pulse {
@@ -52,4 +99,49 @@ body {
 
 .highlight-pulse {
   animation: highlight-pulse 1.6s ease-out;
+}
+
+/* Sonner: surface follows theme; color only title/description/status icon (not close X) */
+[data-sonner-toaster] [data-sonner-toast].ec-toast {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-foreground) !important;
+  box-shadow:
+    0 4px 12px rgba(24, 24, 27, 0.08),
+    0 1px 2px rgba(24, 24, 27, 0.04) !important;
+}
+
+html[data-theme='dark'] [data-sonner-toaster] [data-sonner-toast].ec-toast {
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].ec-toast-success .ec-toast-title,
+[data-sonner-toaster] [data-sonner-toast].ec-toast-success .ec-toast-description {
+  color: var(--color-success) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].ec-toast-success .ec-toast-icon {
+  color: var(--color-success) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].ec-toast-error .ec-toast-title,
+[data-sonner-toaster] [data-sonner-toast].ec-toast-error .ec-toast-description {
+  color: var(--color-destructive) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast].ec-toast-error .ec-toast-icon {
+  color: var(--color-destructive) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] .ec-toast-close {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-muted-foreground) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] .ec-toast-close:hover {
+  background: var(--color-muted) !important;
+  color: var(--color-foreground) !important;
 }

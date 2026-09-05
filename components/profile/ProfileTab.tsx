@@ -152,7 +152,7 @@ export function ProfileTab() {
           </Button>
         </div>
         <p className="mb-2 text-[11px] text-[var(--color-muted-foreground)]">
-          Unlock methods for this account. Keep at least one — no email recovery.
+          Unlock methods for this account. Keep at least one. No email recovery.
         </p>
         <ul className="space-y-1">
           {devices.map((d) => (
@@ -195,14 +195,14 @@ export function ProfileTab() {
               <img
                 src={item.page.favicon_url}
                 alt=""
-                className="mt-0.5 h-4 w-4"
+                className="mt-0.5 h-4 w-4 shrink-0"
               />
             ) : (
-              <Globe className="mt-0.5 h-4 w-4 text-[var(--color-muted-foreground)]" />
+              <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
             )}
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="truncate text-sm font-medium">
+            <div className="min-w-0 flex-1 overflow-hidden">
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="min-w-0 truncate text-sm font-medium">
                   {item.page?.title || item.page?.canonical_url}
                 </span>
                 <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium uppercase">

@@ -31,20 +31,28 @@ export async function fetchActivity(
   userId: string,
 ): Promise<ActivityItem[]> {
   const sb = getSupabase();
-  const { data, error } = await sb
+  const { data: messages, error } = await sb
     .from('messages')
-    .select(
-      `
-      *,
-      page:pages!messages_page_id_fkey(id, canonical_url, title, description, favicon_url)
-    `,
-    )
+    .select('*')
     .eq('author_id', userId)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .limit(100);
   if (error) throw error;
-  return (data || []) as ActivityItem[];
+  if (!messages?.length) return [];
+
+  const pageIds = [...new Set(messages.map((m) => m.page_id))];
+  const { data: pages, error: pageError } = await sb
+    .from('pages')
+    .select('id, canonical_url, title, description, favicon_url')
+    .in('id', pageIds);
+  if (pageError) throw pageError;
+
+  const byId = new Map((pages || []).map((p) => [p.id, p]));
+  return messages.map((m) => ({
+    ...m,
+    page: byId.get(m.page_id) ?? null,
+  }));
 }
 
 export async function listDevices(
@@ -71,7 +79,7 @@ export async function revokeDevice(
     .eq('user_id', userId);
 
   if ((count ?? 0) <= 1) {
-    throw new Error('Keep at least one device — otherwise your account is unrecoverable');
+    throw new Error('Keep at least one device, otherwise your account is unrecoverable');
   }
 
   const { error } = await sb

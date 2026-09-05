@@ -132,7 +132,7 @@ export async function createMessage(input: {
   });
   if (rlError) throw rlError;
   if (allowed === false) {
-    throw new Error('Slow down — rate limit reached');
+    throw new Error('Slow down. Rate limit reached.');
   }
 
   const { data, error } = await sb

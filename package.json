@@ -1,6 +1,6 @@
 {
   "name": "everchat",
-  "description": "Public Reddit-style comments on any URL — Chrome side panel",
+  "description": "Public comments on any URL. Chrome side panel.",
   "private": true,
   "version": "1.0.0",
   "type": "module",

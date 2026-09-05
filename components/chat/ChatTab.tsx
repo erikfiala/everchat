@@ -1,14 +1,31 @@
 import { useEffect, useState } from 'react';
+import { Check, ChevronDown } from 'lucide-react';
 import { PageContextHeader } from '@/components/PageContextHeader';
 import { MessageRow } from './MessageRow';
 import { Composer } from './Composer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
 import { usePageThread } from '@/hooks/usePageThread';
-import type { MessageNode, TabInfo } from '@/lib/database.types';
+import {
+  THEME_LABEL,
+  THEME_OPTIONS,
+  useTheme,
+} from '@/hooks/useTheme';
+import type { MessageNode, SortMode, TabInfo } from '@/lib/database.types';
 import { findPathToMessage, reportMessage } from '@/lib/messages';
 import { toast } from 'sonner';
+
+const SORT_LABEL: Record<SortMode, string> = {
+  best: 'Best',
+  new: 'New',
+};
 
 interface ChatTabProps {
   tab: TabInfo;
@@ -18,6 +35,7 @@ interface ChatTabProps {
 
 export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const { user, requireAuth, setShowAuthLanding } = useAuth();
+  const theme = useTheme();
   const thread = usePageThread(tab, user?.id);
   const [replyTo, setReplyTo] = useState<MessageNode | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -64,26 +82,65 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         host={tab.host}
         faviconUrl={tab.favIconUrl}
       />
-      <div className="flex items-center gap-2 border-b border-[var(--color-border)] px-3 py-1.5">
-        <span className="text-xs text-[var(--color-muted-foreground)]">
-          Sort
-        </span>
-        <Button
-          size="sm"
-          variant={thread.sort === 'best' ? 'secondary' : 'ghost'}
-          className="h-7"
-          onClick={() => thread.setSort('best')}
-        >
-          Best
-        </Button>
-        <Button
-          size="sm"
-          variant={thread.sort === 'new' ? 'secondary' : 'ghost'}
-          className="h-7"
-          onClick={() => thread.setSort('new')}
-        >
-          New
-        </Button>
+      <div className="flex items-center justify-between gap-2 border-b border-[var(--color-border)] px-3 py-1.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--color-muted-foreground)]">
+            Sort by
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="xs"
+                variant="outline"
+                className="h-7 shrink-0 gap-1 py-0 pl-2.5 pr-2 font-normal"
+              >
+                {SORT_LABEL[thread.sort]}
+                <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onSelect={() => thread.setSort('best')}>
+                Best
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => thread.setSort('new')}>
+                New
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--color-muted-foreground)]">
+            Mode
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="xs"
+                variant="outline"
+                className="h-7 shrink-0 gap-1 py-0 pl-2.5 pr-2 font-normal"
+              >
+                {theme.label}
+                <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {THEME_OPTIONS.map((opt) => (
+                <DropdownMenuItem
+                  key={opt}
+                  onSelect={() => theme.setPreference(opt)}
+                  className="gap-2 pr-2"
+                >
+                  <span className="flex size-3.5 items-center justify-center">
+                    {theme.preference === opt ? (
+                      <Check className="size-3.5" aria-hidden />
+                    ) : null}
+                  </span>
+                  {THEME_LABEL[opt]}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3">

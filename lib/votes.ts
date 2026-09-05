@@ -18,7 +18,7 @@ export async function setVote(input: {
   });
   if (rlError) throw rlError;
   if (allowed === false) {
-    throw new Error('Slow down — vote rate limit reached');
+    throw new Error('Slow down. Vote rate limit reached.');
   }
 
   const { data: existing } = await sb

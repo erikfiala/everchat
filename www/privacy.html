@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Privacy Policy — Everchat</title>
+    <title>Privacy Policy - Everchat</title>
     <meta
       name="description"
       content="What Everchat stores for public URL threads: handles, passkeys, messages, votes, and page URLs. No email gate, no ads, no third-party analytics pixels."
     />
-    <meta property="og:title" content="Privacy Policy — Everchat" />
+    <meta property="og:title" content="Privacy Policy - Everchat" />
     <meta property="og:url" content="https://everch.at/privacy" />
     <meta property="og:image" content="https://everch.at/assets/ec-og-image.png" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -53,7 +53,7 @@
           <strong>The short version.</strong> No email. No phone. No legal name required.
           No ads. No third-party analytics pixels. No sale of personal data for advertising.
           Your public handle and what you post are public on purpose. “Anonymous” here
-          means we do not ask for an inbox identity — not that posts are private or
+          means we do not ask for an inbox identity - not that posts are private or
           untraceable in every technical sense.
         </p>
       </div>
@@ -64,7 +64,7 @@
         <a href="https://everch.at">everch.at</a>. The site exists so passkeys can
         bind to a real domain, and so these policies have a stable public URL.
         The operator of Everchat is the publisher named on the Chrome Web Store listing.
-        We are not claiming SOC&nbsp;2, ISO, or “GDPR certified” status — those are
+        We are not claiming SOC&nbsp;2, ISO, or “GDPR certified” status - those are
         audits and programs we have not obtained.
       </p>
       <p>
@@ -95,19 +95,19 @@
       <p>
         By design, Everchat’s product surfaces do not collect the following. If that
         ever changes in a material way, we will update this policy and the effective
-        date before shipping the change — we will not bury a new identity pipeline in
+        date before shipping the change - we will not bury a new identity pipeline in
         a silent “minor update.”
       </p>
       <ul>
         <li>Email addresses (as an account field or recovery channel)</li>
         <li>Phone numbers</li>
         <li>Legal names or postal addresses of users (as account fields)</li>
-        <li>Passwords (there are none — authentication is a passkey on your device)</li>
+        <li>Passwords (there are none - authentication is a passkey on your device)</li>
         <li>Google, Apple, or other OAuth identities as Everchat login</li>
         <li>Payment card details in the extension (the product is free to use; see donations below)</li>
         <li>Precise GPS geolocation</li>
         <li>Advertising identifiers, cohorts, or lookalike audiences</li>
-        <li>A cross-site browsing dossier — we do not build “users who visited X also visited Y” for ads or profiling</li>
+        <li>A cross-site browsing dossier - we do not build “users who visited X also visited Y” for ads or profiling</li>
         <li>Keystrokes, screenshots, or the contents of the host page beyond what is listed in §4</li>
       </ul>
       <p>
@@ -123,10 +123,11 @@
       </p>
       <p>
         <strong>Donations.</strong> If we later ask for voluntary donations to keep the
-        project running, they will go through GoFundMe. Payment details are processed by
-        GoFundMe under their own policies; Everchat does not receive card numbers.
-        Donation records held by GoFundMe are subject to GoFundMe’s terms and privacy
-        notice. Donations do not buy preferential ranking, viewpoint protection, or
+        project running, they will go through Open Collective (via a fiscal host such as
+        Open Source Collective). Payment details are processed by Open Collective and its
+        payment partners under their own policies; Everchat does not receive card numbers.
+        Donation records held by those providers are subject to their terms and privacy
+        notices. Donations do not buy preferential ranking, viewpoint protection, or
         special treatment.
       </p>
 
@@ -138,52 +139,52 @@
 
       <h3>Account (only if you sign in anonymously)</h3>
       <ul>
-        <li><strong>Handle</strong> — the public <code>@name</code> you claim (3–20 characters, <code>a–z</code>, <code>0–9</code>, underscore).</li>
+        <li><strong>Handle</strong> - the public <code>@name</code> you claim (3–20 characters, <code>a–z</code>, <code>0–9</code>, underscore).</li>
         <li>
-          <strong>Passkey / WebAuthn material</strong> — credential ID, public key,
+          <strong>Passkey / WebAuthn material</strong> - credential ID, public key,
           sign counter, optional device label, last used time, and related ceremony
           state needed to verify assertions. The private key never leaves your
           authenticator. We cannot reset an account by email because we do not have an email.
         </li>
-        <li><strong>Optional avatar</strong> — an image you upload, stored so others can see it next to your handle.</li>
-        <li><strong>Karma</strong> — a public integer derived from other people’s votes on your posts (your votes on yourself do not count toward karma).</li>
+        <li><strong>Optional avatar</strong> - an image you upload, stored so others can see it next to your handle.</li>
+        <li><strong>Karma</strong> - a public integer derived from other people’s votes on your posts (your votes on yourself do not count toward karma).</li>
         <li><strong>Account created time</strong> and similar account metadata needed to operate the profile.</li>
-        <li><strong>Session tokens</strong> — short-lived credentials that keep you signed in after a successful passkey assertion.</li>
+        <li><strong>Session tokens</strong> - short-lived credentials that keep you signed in after a successful passkey assertion.</li>
       </ul>
 
       <h3>While you use the extension</h3>
       <ul>
         <li>
-          <strong>Canonical page URL</strong> — host + path (and meaningful query params),
+          <strong>Canonical page URL</strong> - host + path (and meaningful query params),
           with tracking parameters stripped (utm_*, fbclid, gclid, and similar noise).
           That string is the room ID. We keep title, short description, and favicon when
           available so the thread can show which page it belongs to. Opening Chat can
           refresh that page metadata.
         </li>
         <li>
-          <strong>Messages</strong> — body text (up to 300 characters), optional GIF URL,
+          <strong>Messages</strong> - body text (up to 300 characters), optional GIF URL,
           parent message if it is a reply, timestamps, vote totals. If you delete your
           own post we remove that content from live systems; a content-empty structural
           placeholder may remain only so replies can keep their place in the thread.
         </li>
-        <li><strong>Votes</strong> — which handle voted +1 or −1 on which message (needed to prevent double-voting and to compute score).</li>
+        <li><strong>Votes</strong> - which handle voted +1 or −1 on which message (needed to prevent double-voting and to compute score).</li>
         <li>
-          <strong>Notifications</strong> — if someone replies to you: actor, message ids,
+          <strong>Notifications</strong> - if someone replies to you: actor, message ids,
           page URL, a short preview. Chrome may also show a local OS notification
           on your machine; that notification is not a channel we use to email you.
         </li>
         <li>
-          <strong>Reports</strong> — if you flag a message, we store reporter, message, optional
+          <strong>Reports</strong> - if you flag a message, we store reporter, message, optional
           reason. We review stored reports on a monthly basis for illegal abuse, Terms
-          violations, and other legal-floor patterns — not for ideology or opinion
+          violations, and other legal-floor patterns - not for ideology or opinion
           policing. Reports are not a backdoor to viewpoint moderation.
         </li>
         <li>
-          <strong>Rate-limit counters</strong> — per handle, per action, per short time window,
+          <strong>Rate-limit counters</strong> - per handle, per action, per short time window,
           to slow floods. This is plumbing, not a reputation score we sell.
         </li>
         <li>
-          <strong>Ephemeral WebAuthn challenges and short-lived handle reservations</strong> —
+          <strong>Ephemeral WebAuthn challenges and short-lived handle reservations</strong>  - 
           they expire. They are not a durable user profile by themselves.
         </li>
       </ul>
@@ -202,11 +203,11 @@
       </p>
       <p>Chrome permissions, used as declared in the extension manifest:</p>
       <ul>
-        <li><strong>sidePanel</strong> — to open the panel.</li>
-        <li><strong>tabs / activeTab</strong> — to know the active tab’s URL, title, and favicon so we can open the matching thread. We canonicalize that URL and drop tracking parameters before it becomes a room.</li>
-        <li><strong>storage</strong> — session and local extension state.</li>
-        <li><strong>notifications</strong> — optional OS alerts for replies.</li>
-        <li><strong>https://*.supabase.co/*</strong> — the API that holds threads, auth ceremonies, and avatars. Not a license to roam the web.</li>
+        <li><strong>sidePanel</strong> - to open the panel.</li>
+        <li><strong>tabs / activeTab</strong> - to know the active tab’s URL, title, and favicon so we can open the matching thread. We canonicalize that URL and drop tracking parameters before it becomes a room.</li>
+        <li><strong>storage</strong> - session and local extension state.</li>
+        <li><strong>notifications</strong> - optional OS alerts for replies.</li>
+        <li><strong>https://*.supabase.co/*</strong> - the API that holds threads, auth ceremonies, and avatars. Not a license to roam the web.</li>
       </ul>
       <p>
         Reading a thread does not require an account. Writing, voting, and Profile
@@ -232,7 +233,7 @@
         you load a page or use the extension. That is how the web works. Those
         requests are not an advertising tracker we score into a behavioral profile,
         but they may create ordinary operational logs (see §7). Marketing lines like
-        “no tracking” mean no third-party ad/analytics tracking — not zero network
+        “no tracking” mean no third-party ad/analytics tracking - not zero network
         metadata for all time.
       </p>
 
@@ -245,27 +246,27 @@
       <ul>
         <li>
           <strong>Supabase</strong> (Postgres, Auth-adjacent Edge Functions, Storage, Realtime)
-          — application database and files.
+          - application database and files.
         </li>
         <li>
-          <strong>Vercel</strong> — hosts this website and <code>/.well-known/webauthn</code>.
+          <strong>Vercel</strong> - hosts this website and <code>/.well-known/webauthn</code>.
         </li>
         <li>
-          <strong>Google / Chrome Web Store</strong> — distributes the extension. Their
+          <strong>Google / Chrome Web Store</strong> - distributes the extension. Their
           store, account, and review systems are Google’s, not ours. Install-time
           identity (your Google account) is between you and Google. Everchat does not
           receive that Google account as an Everchat login field.
         </li>
         <li>
-          <strong>Giphy</strong> — only if you search for a GIF. The query goes through
+          <strong>Giphy</strong> - only if you search for a GIF. The query goes through
           our Edge Function so the Giphy API key is not shipped in the extension.
           Giphy then sees the search string. If you do not search GIFs, this does
           not run. GIF files you insert are third-party URLs displayed in the thread.
         </li>
         <li>
-          <strong>GoFundMe</strong> — only if/when donations are offered; payment
-          details are processed by GoFundMe under their own policies. Everchat does
-          not receive card numbers.
+          <strong>Open Collective</strong> - only if/when donations are offered; payment
+          details are processed by Open Collective and its fiscal host / payment partners
+          under their own policies. Everchat does not receive card numbers.
         </li>
       </ul>
       <p>
@@ -304,7 +305,7 @@
           <a href="/terms">Terms</a>.
         </li>
         <li>
-          <strong>Deleted messages</strong> — we remove post content (body and media)
+          <strong>Deleted messages</strong> - we remove post content (body and media)
           from our live database when you delete. If replies still need the row for
           thread structure, a content-empty placeholder may remain until those replies
           are gone; it does not keep a recoverable copy of what you wrote. Ephemeral
@@ -318,7 +319,7 @@
           <strong>Backups</strong> may lag live deletions until rotated.
         </li>
         <li>
-          <strong>Operational / access logs</strong> — as described in §7; not retained
+          <strong>Operational / access logs</strong> - as described in §7; not retained
           as a commenter identity store.
         </li>
       </ul>
@@ -331,7 +332,7 @@
       <p>
         If a binding court order, warrant, or other compulsory legal process that
         applies to us validly requires production, we will produce what we actually
-        have — which is not an email, not a phone, and not a legal name as account
+        have - which is not an email, not a phone, and not a legal name as account
         fields. Typically that is a handle, public posts, WebAuthn/account technical
         records listed in §4, and whatever limited operational logs still exist.
       </p>
@@ -392,7 +393,7 @@
       <p>
         A future analytics tool, email gate, or advertising SDK would be a
         material product change. It is not something we currently intend to flip on
-        without saying so here — but this policy describes the present design, not
+        without saying so here - but this policy describes the present design, not
         an eternal covenant that the project can never evolve.
       </p>
 
@@ -418,7 +419,7 @@
       <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer">
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://gofund.me/935a72f7c" target="_blank" rel="noopener noreferrer">Donate</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer">Donate</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page">Privacy</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>

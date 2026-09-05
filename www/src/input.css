@@ -1,4 +1,4 @@
-/* Everchat marketing — Tailwind v4 entry
+/* Everchat marketing - Tailwind v4 entry
    Ink on cool slate · Bricolage Grotesque + Geist Sans · slate accent
    Fonts are self-hosted. No Google Fonts, no third-party requests. */
 
@@ -23,7 +23,7 @@
   --color-accent: #334155; /* slate-700 */
   --color-accent-deep: #1e293b; /* slate-800 */
   --color-accent-soft: #e2e8f0; /* slate-200 */
-  --color-warn: #b45309; /* amber-700 — one shade darker than amber-600 */
+  --color-warn: #b45309; /* amber-700 - one shade darker than amber-600 */
   --radius-site: 0.35rem;
   --breakpoint-hero: 960px;
   --breakpoint-benefits: 720px;
@@ -121,11 +121,30 @@
   a:hover {
     color: var(--color-accent);
   }
+
+  /* Soft keyboard focus ring (same hug as extension sort selector) */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 2px solid #94a3b8; /* slate-400 */
+    outline-offset: 2px;
+  }
+
+  /* Radix menus move DOM focus on open/highlight — use data-[highlighted], not the ring */
+  [role='menuitem']:focus,
+  [role='menuitem']:focus-visible,
+  [role='option']:focus,
+  [role='option']:focus-visible,
+  [data-radix-collection-item]:focus,
+  [data-radix-collection-item]:focus-visible {
+    outline: none;
+  }
 }
 
 @layer components {
 
-/* —— Atmosphere —— */
+/* - -  Atmosphere - -  */
 .atmosphere {
   position: fixed;
   inset: 0;
@@ -157,7 +176,7 @@
   }
 }
 
-/* —— Hero —— */
+/* - -  Hero - -  */
 .hero {
   display: grid;
   grid-template-columns: 1fr;
@@ -195,7 +214,7 @@
 .brand-logo {
   display: block;
   width: auto;
-  height: 2rem; /* ~32px — normal marketing wordmark */
+  height: 2rem; /* ~32px - normal marketing wordmark */
   max-width: 10rem; /* ~160px */
   padding-bottom: 4px; /* optical vertical balance */
 }
@@ -236,7 +255,7 @@
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
-/* Official Chrome Web Store badge — transparent asset; we own slate frame */
+/* Official Chrome Web Store badge - transparent asset; we own slate frame */
 .chrome-badge-link {
   display: inline-flex;
   align-items: center;
@@ -244,10 +263,10 @@
   box-sizing: border-box;
   line-height: 0;
   text-decoration: none;
-  background: var(--panel); /* white by default — keep on hover */
+  background: var(--panel); /* white by default - keep on hover */
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
-  padding: 0 0.6rem; /* x pad only — frame height = badge image */
+  padding: 0 0.6rem; /* x pad only - frame height = badge image */
   height: auto;
   flex: 0 0 auto;
   width: fit-content;
@@ -267,20 +286,20 @@
 }
 
 .chrome-badge-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
 }
 
 .chrome-badge {
   display: block;
   width: auto;
-  height: 3.75rem; /* 60px — modestly smaller than prior 75px */
+  height: 3.75rem; /* 60px - modestly smaller than prior 75px */
   max-width: 12.4rem; /* ~198px at 496:150 */
   aspect-ratio: 496 / 150;
   object-fit: contain;
 }
 
-/* Secondary CTA — explicit height matches .chrome-badge (+ CWS link borders) */
+/* Secondary CTA - explicit height matches .chrome-badge (+ CWS link borders) */
 .donate-link {
   display: inline-flex;
   align-items: center;
@@ -313,8 +332,8 @@
 }
 
 .donate-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
 }
 
 .donate-icon {
@@ -334,7 +353,7 @@
   }
 }
 
-/* —— Product stage (browser mock) —— */
+/* - -  Product stage (browser mock) - -  */
 .stage {
   position: relative;
   display: flex;
@@ -355,7 +374,7 @@
 
 .browser {
   width: 100%;
-  /* Compact product shot — ~half the prior tall mock (was min(70vh, 38rem)) */
+  /* Compact product shot - ~half the prior tall mock (was min(70vh, 38rem)) */
   height: min(36vh, 19rem);
   display: grid;
   /* ~40px narrower sidepanel vs prior 1.6fr/1fr; fr tracks keep flush right edge */
@@ -373,7 +392,7 @@
 @media (max-width: 959px) {
   .browser {
     height: min(30vh, 15.5rem);
-    /* ~40px narrower sidepanel; fr tracks only — no % max (avoids right gutter) */
+    /* ~40px narrower sidepanel; fr tracks only - no % max (avoids right gutter) */
     grid-template-columns: minmax(0, 1.2fr) minmax(8rem, 1fr);
   }
 
@@ -541,7 +560,7 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  /* Match browser chrome row — readable wordmark, not microscopic */
+  /* Match browser chrome row - readable wordmark, not microscopic */
   height: 1.75rem; /* 28px */
   min-height: 0; /* flex default min-height:auto was expanding past height when img sized intrinsically */
   max-height: 1.75rem;
@@ -555,7 +574,7 @@
 .sidepanel-head .sidepanel-logo {
   display: block;
   width: auto;
-  height: 0.9375rem; /* 15px — SVG has internal pad; readable on mock */
+  height: 0.9375rem; /* 15px - SVG has internal pad; readable on mock */
   max-height: 1rem; /* 16px cap */
   max-width: none; /* defeat img { max-width:100% } aspect blow-up with height:auto */
   flex-shrink: 0;
@@ -635,7 +654,7 @@
   color: var(--mute);
 }
 
-/* —— Below fold —— */
+/* - -  Below fold - -  */
 .below {
   position: relative;
   z-index: 1;
@@ -722,7 +741,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 42rem; /* ~672px — centered reading column */
+  max-width: 42rem; /* ~672px - centered reading column */
   margin-inline: auto;
   width: 100%;
 }
@@ -843,7 +862,7 @@
   text-decoration: underline;
 }
 
-/* —— Legal docs —— */
+/* - -  Legal docs - -  */
 body.doc {
   background: var(--paper);
 }

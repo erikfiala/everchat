@@ -70,7 +70,7 @@ export function TrendingChats() {
               ) : (
                 <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
               )}
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 overflow-hidden">
                 <div className="truncate text-sm font-medium">
                   {row.title || row.canonical_url}
                 </div>

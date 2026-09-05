@@ -1,8 +1,8 @@
-# Everchat — Product Requirements Document
+# Everchat - Product Requirements Document
 
 **Version:** 1.8  
 **Status:** Draft for build  
-**Product:** Chrome extension — public, Reddit-style comments on any URL  
+**Product:** Chrome extension - public, Reddit-style comments on any URL  
 **Last updated:** 2026-09-05
 
 ---
@@ -11,15 +11,15 @@
 
 Everchat attaches a public discussion to every web page. Open the right-hand side panel (same interaction pattern as Gemini or Claude) and you see the thread for *this* page. Anyone else on that same canonical URL can post, reply in unbounded nests, upvote/downvote, and build karma behind a claimed handle.
 
-**One-liner:** Leave a tweet on any URL — and let the page become the thread.
+**One-liner:** Leave a tweet on any URL - and let the page become the thread.
 
-**Positioning:** Privacy-first public commentary. **No email required.** Public identity is `@handle` + optional avatar. Auth is **passkeys only** (WebAuthn) so Everchat never holds an inbox identity — important for people commenting on sensitive / government pages. **No staff moderation** — the community collapses low-signal posts via downvotes (Reddit-style), always expandable.
+**Positioning:** Privacy-first public commentary. **No email required.** Public identity is `@handle` + optional avatar. Auth is **passkeys only** (WebAuthn) so Everchat never holds an inbox identity - important for people commenting on sensitive / government pages. **No staff moderation** - the community collapses low-signal posts via downvotes (Reddit-style), always expandable.
 
 ---
 
 ## 2. Problem
 
-Web pages have no native, portable conversation layer. Discourse lives on Twitter, Reddit, or closed site comments — disconnected from the page you are looking at. People browsing the same article, video, or product page cannot easily discuss it *on* that page without installing a heavy social product or trusting site-specific comment systems.
+Web pages have no native, portable conversation layer. Discourse lives on Twitter, Reddit, or closed site comments - disconnected from the page you are looking at. People browsing the same article, video, or product page cannot easily discuss it *on* that page without installing a heavy social product or trusting site-specific comment systems.
 
 **Who feels this**
 
@@ -40,7 +40,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - Read without an account; write after **claiming a username** and registering a **passkey**
 - Infinitely nested replies with auto `@mention` prefix on reply
 - Upvote / downvote; message score and profile karma (self-votes excluded from karma)
-- **No staff moderation** — community collapse when a message hits a majority-downvote threshold (Reddit-style; always expandable)
+- **No staff moderation** - community collapse when a message hits a majority-downvote threshold (Reddit-style; always expandable)
 - Profiles: handle, optional avatar, karma (green / red); **own Profile tab** with avatar upload + list of your posts/replies
 - **Top nav tabs:** Chat · Notifications · Profile (tooltips on hover)
 - **Page context** on notifications and activity rows: favicon + meta title + short description
@@ -57,14 +57,14 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - DMs, follows, awards, paid features
 - Full moderation dashboard / admin UI / staff takedowns of speech
 - Automod / keyword bans / shadowbans as default moderation (community votes only)
-- Message editing after publish (permanent — posts are immutable once published; delete only)
-- **Email / password / magic link / OTP / Google (or any social) OAuth** — privacy by design
+- Message editing after publish (permanent - posts are immutable once published; delete only)
+- **Email / password / magic link / OTP / Google (or any social) OAuth** - privacy by design
 - Email / push notifications outside the extension (Chrome extension notifications + in-panel inbox only)
 - Account recovery via email (recovery = add a second passkey only)
 
 ### Funding / donations
 
-The product is free to use; no ads and no paid features that buy visibility or speech rights. If/when voluntary donations are offered, they go through **GoFundMe**. Payment details are processed by GoFundMe under their own policies; Everchat does not receive card numbers. Donations do not buy preferential ranking, viewpoint protection, or special treatment.
+The product is free to use; no ads and no paid features that buy visibility or speech rights. Voluntary donations go through **Open Collective** at [opencollective.com/everchat](https://opencollective.com/everchat) (wired in `.github/FUNDING.yml` as `open_collective: everchat`). Payment details are processed by Open Collective and its partners under their own policies; Everchat does not receive card numbers. Donations do not buy preferential ranking, viewpoint protection, or special treatment.
 
 ---
 
@@ -78,41 +78,40 @@ Install → browse any page → read thread (no account)
         → Auth landing (value, not features)
         → Primary CTA: “Sign in anonymously”
         → Claim @handle (min 3 chars, unique, live check)
-        → Passkey ceremony (WebAuthn — invisible as “passkey” in primary copy)
+        → Passkey ceremony (WebAuthn - invisible as “passkey” in primary copy)
         → Write unlocked
 ```
 
 ### Auth landing page (logged-out gate)
 
-When write/vote is gated — or when Notifications / Profile need an account — show a **landing**, not a login form. Optimize for **time-to-dopamine**: one clear desire, one CTA, minimal friction. Do **not** lead with feature lists, WebAuthn jargon, or “how it works” diagrams.
+When write/vote is gated - or when Notifications / Profile need an account - show a **landing**, not a login form. Optimize for **time-to-dopamine**: one clear desire, one CTA, minimal friction. Do **not** lead with feature lists, WebAuthn jargon, or “how it works” diagrams.
 
 **Job of the page:** make the user feel they can say something *on this page, right now*, without giving up their identity.
 
 | Principle | Spec |
 |---|---|
 | Lead with desire | Speak freely on the web you’re already on |
-| One CTA | **“Sign in anonymously”** — never “Sign in with Passkeys” / “Create account” / “Continue with Google” |
-| Mechanism stays quiet | Passkey runs after CTA (+ handle); microcopy may say “no email, no password” — not “passkeys” |
+| One CTA | **“Sign in anonymously”** - never “Sign in with Passkeys” / “Create account” / “Continue with Google” |
+| Mechanism stays quiet | Passkey runs after CTA (+ handle); microcopy may say “no email, no password” - not “passkeys” |
 | Time-to-dopamine | Brand → one line of value → CTA in the first viewport; handle claim immediately after |
 | Proof, not features | Concrete places (news, gov, any URL) > bullet feature grids |
-| Social proof below fold | **Trending chats** — live rooms you can open and join (see below) |
+| Social proof below fold | **Trending chats** - live rooms you can open and join (see below) |
 
 **Directional content (not final copy):**
 
 - **Brand:** Everchat (hero-level)
-- **Headline (value):** e.g. “Say what you think — on any page.”
+- **Headline (value):** e.g. “Say what you think - on any page.”
 - **One supporting line:** Anonymous comments on this URL. News, gov sites, anything with a link. No email.
-- **Social proof / vibe (optional, light):** one short line — “A thread for every page. Tracking noise stripped so the conversation sticks to the article, not the ad params.”
-- **Primary CTA:** **Sign in anonymously**
-- **Secondary (returning):** smaller text link — “Already joined? Unlock” (still triggers WebAuthn; no passkey branding)
+- **Social proof / vibe (optional, light):** one short line - “A thread for every page. Tracking noise stripped so the conversation sticks to the article, not the ad params.”
+- **Primary CTA:** **Sign in anonymously** - tries existing passkey first; if none / cancel, falls through to **Pick your @handle** + register. No separate “Unlock” link.
 - **Below the CTA (still on the landing):** **Trending chats** section
 
 **Value beats to hit (emotion, not a feature checklist):**
 
-1. Leave a comment **anywhere** you’re browsing — the page is the room.
-2. **Free speech** posture: talk about news, policy, **government sites**, portals — without handing Everchat your inbox. **No staff mods** — the crowd collapses junk; you can always expand it.
+1. Leave a comment **anywhere** you’re browsing - the page is the room.
+2. **Free speech** posture: talk about news, policy, **government sites**, portals - without handing Everchat your inbox. **No staff mods** - the crowd collapses junk; you can always expand it.
 3. Each **URL** (domain + path/slug) gets its **own** chat; tracking parameters don’t splinter the room.
-4. You’re not alone — **trending** rooms are already buzzing; tap in and join.
+4. You’re not alone - **trending** rooms are already buzzing; tap in and join.
 
 URL mechanics (slugs in, tracking out) may appear as **one short reassurance line**, not a technical explainer.
 
@@ -127,11 +126,11 @@ A scrollable section under the hero/CTA that lists **active / trending page thre
 | Row content | Same **page context** chrome: favicon, meta title, short description; plus activity signal (e.g. message count / “N talking” / recent velocity) |
 | Count | ~5–10 rows (virtualize if more); empty state hidden entirely if nothing trending |
 | Click | Open the page URL in a **new tab** and open the side panel on **Chat** for that page (no `#ec-msg` unless deep-linking a specific message) |
-| Join | Reading is open; composing still requires **Sign in anonymously** if logged out — landing can stay available via Profile/Notifications, but trending click prioritizes jumping into the chat |
+| Join | Reading is open; composing still requires **Sign in anonymously** if logged out - landing can stay available via Profile/Notifications, but trending click prioritizes jumping into the chat |
 | Ranking (v1) | Pages with most messages (or most messages in last 24h) among non-empty threads; exclude spam/empty |
-| Privacy | Only public page metadata + aggregate counts — no user PII in the list |
+| Privacy | Only public page metadata + aggregate counts - no user PII in the list |
 
-Trending is **discovery**, not a feature tour — keep the section visual and light (rows, not charts).
+Trending is **discovery**, not a feature tour - keep the section visual and light (rows, not charts).
 
 ### Rules
 
@@ -141,20 +140,20 @@ Trending is **discovery**, not a feature tour — keep the section visual and li
 | Display | Always `@handle` |
 | Reserved names | Block: `everchat`, `admin`, `mod`, `support`, `system`, `null`, `me`, etc. |
 | Reservation | Handle held only for the short passkey ceremony window (e.g. **15 minutes**); released if registration incomplete |
-| Auth | **Passkey only** under the hood — Everchat never asks for or stores email |
+| Auth | **Passkey only** under the hood - Everchat never asks for or stores email |
 | CTA language | **“Sign in anonymously”** for primary; avoid “passkey” in button labels |
 | Recovery (v1) | User may register **additional passkeys** from Profile (second device). No email recovery. |
 | Psychological lever | Landing sells anonymity + speech → handle scarcity → biometric confirm as a beat, not a form |
 
 ### Post-CTA flow copy (directional)
 
-- After **Sign in anonymously** (new user): **“Pick your @handle”** — live Available / Taken
+- After **Sign in anonymously** (new user): **“Pick your @handle”** - live Available / Taken
 - After handle valid: OS WebAuthn prompt (no separate “enable passkeys” screen)
 - Success toast (Sonner): e.g. “You’re in as @you”
-- Error toast (Sonner): e.g. “Couldn’t finish sign-in — try again”
-- Locked composer CTA: **“Sign in anonymously to join”**
+- Error toast (Sonner): e.g. “Couldn’t finish sign-in - try again”
+- Locked composer CTA: **“Sign in anonymously”**
 
-### Why passkeys (internal / privacy — not landing copy)
+### Why passkeys (internal / privacy - not landing copy)
 
 People will comment on news and **government** pages. Email and Google login create a durable map from real-world identity → `@handle`. Passkeys give Everchat only a public key + handle. Synced platform passkeys may still live in the user’s Google/Apple account *on their device*; Everchat never receives that email. Product UI sells **anonymity**; engineering uses WebAuthn.
 
@@ -212,7 +211,7 @@ Everchat is **async nested comments**, not a live chat room. New messages appear
 
 | Behavior | Spec |
 |---|---|
-| Top-level post | “A tweet on this URL” — `parent_id = null` |
+| Top-level post | “A tweet on this URL” - `parent_id = null` |
 | Reply | Nested child of any message; **unbounded depth** |
 | Mention prefix | Composer auto-inserts `@parentHandle ` before the user’s text; stored as part of `body` |
 | Hard delete | Author can delete; content is removed from live DB. If replies still need the row for thread structure, a content-empty tombstone remains and renders italic **Deleted comment.** (no recoverable body/media) |
@@ -264,13 +263,13 @@ Everchat does **not** employ content moderators and does **not** remove speech b
 |---|---|
 | Trigger | A message is **community-collapsed** when downvotes reach a **majority threshold** among people who voted on that message |
 | Threshold (v1) | Collapsed when `downvotes / (upvotes + downvotes) ≥ 0.67` **and** total votes ≥ **3** (avoid collapse on a single drive-by dislike). Exact numbers are tunable; document as product constants. |
-| Effect | Body (and GIF) **hidden** behind a collapsed stub — e.g. “Community collapsed · score −N · show” |
+| Effect | Body (and GIF) **hidden** behind a collapsed stub - e.g. “Community collapsed · score −N · show” |
 | Always recoverable | User can **expand / show** on click; collapse again with hide. Never permanently deleted by the system for score alone. |
 | Children | Nested replies remain reachable; collapsed parent shows a stub, children may still render or sit under “show” (Reddit-like: expand parent to read context) |
 | Reversibility | If votes shift back under threshold, auto-uncollapse on next load / realtime update |
 | Not the same as | Author hard-delete (**Deleted comment.**), depth collapse (“continue thread”), or staff takedown (none in v1) |
 
-**Product beat:** free speech with crowd signal — junk gets folded away, not erased; curious readers can always open it.
+**Product beat:** free speech with crowd signal - junk gets folded away, not erased; curious readers can always open it.
 
 Authored hard-delete and community collapse can both apply; a tombstone shows **Deleted comment.** (no body/media) regardless of score.
 
@@ -280,13 +279,13 @@ Authored hard-delete and community collapse can both apply; a tombstone shows **
 
 ### Own profile (Profile tab)
 
-Primary destination for the signed-in user — third top-level tab (see §12).
+Primary destination for the signed-in user - third top-level tab (see §12).
 
 | Area | Spec |
 |---|---|
 | Header | Avatar (editable), `@handle`, colored karma |
 | Avatar upload | In-place; crop square; JPEG/PNG/WebP; max ~2 MB → Supabase Storage |
-| Contact | **No email** — not collected anywhere |
+| Contact | **No email** - not collected anywhere |
 | Passkeys | List authenticators; **Add passkey**; revoke (keep ≥1) |
 | Activity | Chronological list of **your** posts and replies across all pages |
 | Empty activity | “You haven’t joined any conversations yet.” |
@@ -310,7 +309,7 @@ Each row is one of your messages, with enough **page context** to know where you
 
 ### Other users (handle tap)
 
-Tapping `@handle` in a thread opens a **read-only profile sheet** (not the Profile tab): avatar, handle, karma. No contact info. No “their full activity” in v1 (privacy / scope) — optional v1.1.
+Tapping `@handle` in a thread opens a **read-only profile sheet** (not the Profile tab): avatar, handle, karma. No contact info. No “their full activity” in v1 (privacy / scope) - optional v1.1.
 
 ### Avatar upload
 
@@ -326,7 +325,7 @@ Tapping `@handle` in a thread opens a **read-only profile sheet** (not the Profi
 
 | Feature | Spec |
 |---|---|
-| Text | Required unless GIF-only is allowed — v1: text required OR gif required (at least one) |
+| Text | Required unless GIF-only is allowed - v1: text required OR gif required (at least one) |
 | Emoji picker | Client-side picker; Lucide trigger icon |
 | Giphy | Search + insert one GIF; **API key only on backend** (Edge Function proxy); never ship key in extension |
 
@@ -343,12 +342,12 @@ When someone **replies to your message**, you get a notification. Clicking it op
 | Event | Recipient | Notes |
 |---|---|---|
 | Reply to your message | Parent message author | Skip if author === replier (no self-notify) |
-| (v1 only) | — | No notify on upvotes/downvotes or top-level posts on pages you visited |
+| (v1 only) | - | No notify on upvotes/downvotes or top-level posts on pages you visited |
 
 ### Notification surfaces (v1)
 
 1. **Chrome extension notification** (system tray / OS) when the extension is allowed
-2. **Notifications tab** (top nav) with unread badge — primary inbox inside the panel
+2. **Notifications tab** (top nav) with unread badge - primary inbox inside the panel
 
 ### Chrome OS notifications (detail)
 
@@ -460,7 +459,7 @@ Notifications and Profile activity must never be “orphan” message snippets. 
 
 Fallbacks if meta is missing: title → host; description → path; favicon → generic globe icon (Lucide).
 
-Do **not** scrape full page HTML server-side in v1 — client/extension captures metadata and upserts onto `pages`.
+Do **not** scrape full page HTML server-side in v1 - client/extension captures metadata and upserts onto `pages`.
 
 ---
 
@@ -468,7 +467,7 @@ Do **not** scrape full page HTML server-side in v1 — client/extension captures
 
 ### Surface
 
-- **Chrome Manifest V3 Side Panel API** — right-hand panel, Gemini/Claude-like.
+- **Chrome Manifest V3 Side Panel API** - right-hand panel, Gemini/Claude-like.
 - **Not** a content-script overlay. Zero CSS leakage onto host pages.
 - Toolbar icon toggles the side panel.
 - Host page performance unaffected until the panel is opened.
@@ -510,9 +509,9 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 | Icons | **Lucide** |
 | UI kit | **shadcn/ui + Tailwind** (+ **Sonner** toasts) |
 | Tooltips | shadcn Tooltip on top-nav icons |
-| Toasts | **Sonner** (`sonner` / shadcn Sonner) for **success and error** feedback — auth, post, vote, upload, network failures. Prefer toasts over blocking alerts for non-destructive outcomes. |
+| Toasts | **Sonner** (`sonner` / shadcn Sonner) for **success and error** feedback - auth, post, vote, upload, network failures. Prefer toasts over blocking alerts for non-destructive outcomes. |
 
-### Toasts (Sonner) — when to fire
+### Toasts (Sonner) - when to fire
 
 | Event | Tone |
 |---|---|
@@ -538,12 +537,12 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 
 | Topic | Spec |
 |---|---|
-| Method | **WebAuthn passkeys** (discoverable credentials) — register + assert |
+| Method | **WebAuthn passkeys** (discoverable credentials) - register + assert |
 | Identity | `@handle` only publicly; auth uid internally |
 | Email | **Not collected** |
 | Social login | **Not offered** (esp. Google) |
 | Session | Short-lived session token in `chrome.storage.session` / local; refresh via re-assert or silent session as designed |
-| Backend | Supabase Postgres + RLS + Realtime + Storage; auth ceremonies via **Edge Functions** (challenge/verify) storing credential public keys — or Supabase Auth passkeys if production-ready at build time |
+| Backend | Supabase Postgres + RLS + Realtime + Storage; auth ceremonies via **Edge Functions** (challenge/verify) storing credential public keys - or Supabase Auth passkeys if production-ready at build time |
 | Extension UX | WebAuthn runs in the side panel / extension page (same-origin ceremony) |
 
 ### Passkey lifecycle
@@ -578,11 +577,11 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 
 ## 14. Trust and safety (v1 light)
 
-**Philosophy:** No staff viewpoint-moderation queue. Speech stays up; the community **collapses** low-consensus posts via downvotes (see §7). Collapsed ≠ deleted — always expandable. Reports are stored and reviewed monthly for illegal abuse / ToS / legal-floor patterns only — not ideology policing.
+**Philosophy:** No staff viewpoint-moderation queue. Speech stays up; the community **collapses** low-consensus posts via downvotes (see §7). Collapsed ≠ deleted - always expandable. Reports are stored and reviewed monthly for illegal abuse / ToS / legal-floor patterns only - not ideology policing.
 
-- Rate limits: posts and votes per user per minute (server-side) — anti-spam, not content policing
+- Rate limits: posts and votes per user per minute (server-side) - anti-spam, not content policing
 - Community collapse at majority-downvote threshold (Reddit-style show/hide)
-- Report flag on messages (`reports` table) — store reporter, message, optional reason; **reviewed monthly** for illegal abuse / ToS / legal-floor patterns (not viewpoint takedowns)
+- Report flag on messages (`reports` table) - store reporter, message, optional reason; **reviewed monthly** for illegal abuse / ToS / legal-floor patterns (not viewpoint takedowns)
 - Reserved handles blocklist
 - Hard delete for own messages (content purged; structural tombstone only if replies remain)
 - Giphy content filtered via Giphy’s content rating param (e.g. `pg-13` or stricter)
@@ -706,10 +705,10 @@ notifications
 
 1. On `votes` insert / update / delete → recompute `messages.score`, `upvotes`, `downvotes` for that message.
 2. Same event → if `voter_id !== author_id`, adjust `profiles.karma` by the delta of the vote change.
-3. Hard delete removes the row when it is a leaf (and recursively purges empty ancestor tombstones). If children remain, wipe `body`/`gif_url`, set `deleted_at`, zero score/vote tallies, and delete votes on that message — UI shows **Deleted comment.**
+3. Hard delete removes the row when it is a leaf (and recursively purges empty ancestor tombstones). If children remain, wipe `body`/`gif_url`, set `deleted_at`, zero score/vote tallies, and delete votes on that message - UI shows **Deleted comment.**
 4. On `messages` insert with non-null `parent_id` → create `notifications` row for parent author (if ≠ replier), including `page_url` and `body_preview`.
-5. Profile activity is a query: `messages where author_id = me` joined to `pages` — no separate table in v1.
-6. Community collapse is **derived client-side (or view)** from `upvotes`/`downvotes` vs threshold constants — no separate “moderator” action. Optional cached `is_collapsed` boolean updated by trigger for query convenience.
+5. Profile activity is a query: `messages where author_id = me` joined to `pages` - no separate table in v1.
+6. Community collapse is **derived client-side (or view)** from `upvotes`/`downvotes` vs threshold constants - no separate “moderator” action. Optional cached `is_collapsed` boolean updated by trigger for query convenience.
 
 ---
 
@@ -717,7 +716,7 @@ notifications
 
 ```
 Side Panel
-├── TopNav (Chat | Notifications | Profile) — Lucide icons + hover tooltips
+├── TopNav (Chat | Notifications | Profile) - Lucide icons + hover tooltips
 ├── Chat tab
 │   ├── PageContextHeader (favicon, title, host)
 │   ├── Sort: Best | New
@@ -732,10 +731,10 @@ Side Panel
 ├── Profile tab (own)
 │   ├── Avatar upload / preview
 │   ├── @handle + karma
-│   ├── Passkeys (add / revoke) — engineering label; UI: “Devices” / “Unlock methods”
+│   ├── Passkeys (add / revoke) - engineering label; UI: “Devices” / “Unlock methods”
 │   └── ActivityRow (favicon, title, description, your post/reply preview)
 │       └── click → new tab #ec-msg-{id} → Chat
-├── ProfileSheet (other user, from handle tap — read-only)
+├── ProfileSheet (other user, from handle tap - read-only)
 └── AuthLanding (value-led)
     ├── Brand + headline + one supporting line
     ├── CTA: “Sign in anonymously”
@@ -804,7 +803,7 @@ Side Panel
 - Profile tab: avatar upload, **passkey management**, activity list with page context
 - Page metadata capture on `pages` (client upsert)
 - Votes + karma rules
-- **No staff mods** — community collapse at majority-downvote threshold (always expandable)
+- **No staff mods** - community collapse at majority-downvote threshold (always expandable)
 - Emoji + Giphy (proxy)
 - Reports stored + monthly review (illegal / ToS / legal floor only; not viewpoint mods)
 - Rate limits + RLS
@@ -824,7 +823,7 @@ Side Panel
 ## 20. Open questions
 
 1. Should `@handle` be immutable after passkey register, or changeable with cooldown?
-2. GIF-only messages without text — allow or require text?
+2. GIF-only messages without text - allow or require text?
 3. Exact reserved-username list and trademark handling?
 4. WebAuthn RP ID / origin strategy for Chrome extension (extension ID vs associated https domain)?
 5. Should Best sort use a Reddit-like confidence/hot score later, or raw score forever?
@@ -840,7 +839,7 @@ Side Panel
 
 ---
 
-## 21. Appendix — tracking param denylist (starter)
+## 21. Appendix - tracking param denylist (starter)
 
 ```
 utm_source, utm_medium, utm_campaign, utm_term, utm_content, utm_id,
@@ -866,5 +865,5 @@ Plus any key matching `/^utm_/i`. Timestamp-like `t` stripped on known video hos
 | 2026-09-05 | v1.5: no staff moderation; community collapse via majority downvotes (Reddit-style, always expandable) |
 | 2026-09-05 | v1.6: trending chats section on auth landing (open site → join convo) |
 | 2026-09-05 | v1.7: reports stored + monthly review for illegal/ToS/legal-floor patterns (not viewpoint mods) |
-| 2026-09-05 | v1.8: donations (if/when offered) via GoFundMe; Everchat does not receive card numbers |
+| 2026-09-05 | v1.8: donations (if/when offered) via Open Collective (not GoFundMe; SK creator constraint); Everchat does not receive card numbers |
 | 2026-09-05 | v1.9: Chrome OS notifications from background Realtime; click → deep link; skip when Notifications tab focused |

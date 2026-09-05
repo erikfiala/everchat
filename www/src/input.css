@@ -751,6 +751,20 @@
   white-space: nowrap;
 }
 
+.trending-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 6.5rem;
+  padding: 1.5rem 1.25rem;
+  border: 1.5px dotted var(--line);
+  border-radius: 0.5rem;
+  color: var(--mute);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
 .trending-status {
   margin-top: 0.35rem;
   font-size: 0.9rem;
@@ -971,11 +985,13 @@ body.doc {
 .doc-bar a.home {
   display: block;
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .doc-bar img {
   width: 8.5rem;
   height: auto;
+  flex-shrink: 0;
   padding-bottom: 4px; /* optical vertical balance */
 }
 
@@ -1004,6 +1020,9 @@ body.doc {
   gap: 0.45rem;
   margin: 0;
   color: var(--mute);
+  min-width: 0;
+  flex-shrink: 1;
+  max-width: 100%;
 }
 
 .nav-lang-icon {
@@ -1032,6 +1051,28 @@ body.doc {
   min-height: 2rem;
   padding: 0.3rem 1.7rem 0.3rem 0.6rem;
   max-width: 11rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Closed control truncates; native dropdown options keep full labels */
+.nav-lang select option,
+.site-footer select option {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+/* Home nav: shorter width so the select doesn’t dominate */
+body:not(.doc) .doc-bar .nav-lang {
+  max-width: 8.25rem;
+}
+
+body:not(.doc) .doc-bar .nav-lang select {
+  width: 7.25rem;
+  max-width: 7.25rem;
 }
 
 .nav-lang select:hover,
@@ -1051,6 +1092,40 @@ body.doc {
   align-items: center;
   justify-content: flex-end;
   gap: 0.85rem 1rem;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+@media (max-width: 560px) {
+  .doc-bar {
+    gap: 0.65rem;
+  }
+
+  .doc-bar-end {
+    gap: 0.55rem 0.75rem;
+  }
+
+  .nav-lang {
+    gap: 0.3rem;
+    max-width: min(9.5rem, 42vw);
+  }
+
+  body:not(.doc) .doc-bar .nav-lang {
+    max-width: min(7.25rem, 40vw);
+  }
+
+  .nav-lang select,
+  .site-footer select {
+    font-size: 0.78rem;
+    padding: 0.25rem 1.45rem 0.25rem 0.45rem;
+    background-position: right 0.4rem center;
+    max-width: 100%;
+  }
+
+  body:not(.doc) .doc-bar .nav-lang select {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .doc-main {

@@ -31,6 +31,14 @@
     el.textContent = text || '';
   }
 
+  function renderEmpty(list) {
+    list.innerHTML = '';
+    var box = document.createElement('div');
+    box.className = 'trending-empty';
+    box.textContent = t('www.trendingEmpty') || 'Nothing trending yet';
+    list.appendChild(box);
+  }
+
   function renderRows(list, rows) {
     list.innerHTML = '';
     rows.forEach(function (row) {
@@ -89,11 +97,8 @@
     var status = root.querySelector('[data-ec-trending-status]');
     var cfg = window.EC_SUPABASE;
     if (!list || !cfg || !cfg.url || !cfg.anonKey) {
-      setStatus(
-        status,
-        t('www.trendingEmpty') ||
-          'Nothing trending yet — open the extension and start a room.',
-      );
+      setStatus(status, '');
+      renderEmpty(list);
       return;
     }
 
@@ -117,24 +122,16 @@
       })
       .then(function (rows) {
         if (!rows || !rows.length) {
-          list.innerHTML = '';
-          setStatus(
-            status,
-            t('www.trendingEmpty') ||
-              'Nothing trending yet — open the extension and start a room.',
-          );
+          setStatus(status, '');
+          renderEmpty(list);
           return;
         }
         setStatus(status, '');
         renderRows(list, rows);
       })
       .catch(function () {
-        list.innerHTML = '';
-        setStatus(
-          status,
-          t('www.trendingEmpty') ||
-            'Nothing trending yet — open the extension and start a room.',
-        );
+        setStatus(status, '');
+        renderEmpty(list);
       });
   }
 

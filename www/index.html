@@ -30,9 +30,9 @@
     <div class="atmosphere" aria-hidden="true"></div>
 
     <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
-      <a class="home block leading-none" href="/">
+      <a class="home block shrink-0 leading-none" href="/">
         <img
-          class="h-auto w-[8.5rem] pb-1"
+          class="h-auto w-[8.5rem] shrink-0 pb-1"
           src="/assets/ec-logo-horizontal-black.svg"
           width="560"
           height="130"
@@ -41,8 +41,8 @@
           data-i18n-attr="alt"
         />
       </a>
-      <div class="doc-bar-end">
-        <label class="nav-lang">
+      <div class="doc-bar-end min-w-0 shrink">
+        <label class="nav-lang min-w-0 shrink">
           <svg
             class="nav-lang-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@
           class="headline mb-[0.85rem] font-display text-[clamp(1.65rem,3.2vw,2.35rem)] font-bold leading-[1.15] tracking-[-0.035em] text-ink-soft animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.08s_both]"
           data-i18n="www.heroHeadline"
         >
-          Every URL deserves a conversation.
+          Every URL deserves a conversation
         </h1>
         <p
           class="lede mb-7 max-w-160 text-[1.08rem] text-mute animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.14s_both]"
@@ -152,7 +152,7 @@
             </div>
             <div class="page">
               <p class="page-kicker" data-i18n="www.heroMockKicker">The open web</p>
-              <p class="page-title" data-i18n="www.heroMockTitle">Say what you think without leaving the page.</p>
+              <p class="page-title" data-i18n="www.heroMockTitle">Say what you think without leaving the page</p>
               <div class="page-lines">
                 <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               </div>
@@ -200,14 +200,11 @@
         data-ec-trending
       >
         <h2
-          class="mb-[0.45rem] font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
+          class="mb-5 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
           data-i18n="www.trendingTitle"
         >
           Trending chats
         </h2>
-        <p class="m-0 mb-5 max-w-[40rem] text-mute" data-i18n="www.trendingLede">
-          Rooms lighting up across the web right now.
-        </p>
         <div class="trending-list" data-ec-trending-list></div>
         <p
           class="trending-status m-0 text-mute"
@@ -340,7 +337,7 @@
           Install from a local build
         </h2>
         <p class="m-0 max-w-none text-mute" data-i18n="www.installIntro">
-          Chrome Web Store may reject or remove Everchat depending on how Google reads its policies. Loading a local build in developer mode lets you run a version you control, regardless of the store:
+          In the future, if Google doesn't like what we're doing, the Chrome Web Store might reject or remove Everchat. Loading a local build in developer mode lets you run a version you control, regardless of the store:
         </p>
         <p class="mt-3 max-w-none text-warn" data-i18n="www.installPrivateNote">
           The repo is currently private. Use the official Chrome Web Store link above instead.

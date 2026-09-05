@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'wxt';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,6 +10,22 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
+  // Classic (non-module) FOUC boot scripts — Vite leaves <script src> as-is;
+  // copy them next to sidepanel.html so MV3 script-src 'self' can load them.
+  hooks: {
+    'build:publicAssets': (_wxt, assets) => {
+      assets.push(
+        {
+          absoluteSrc: resolve('entrypoints/sidepanel/boot-theme.js'),
+          relativeDest: 'boot-theme.js',
+        },
+        {
+          absoluteSrc: resolve('entrypoints/sidepanel/boot-locale.js'),
+          relativeDest: 'boot-locale.js',
+        },
+      );
+    },
+  },
   manifest: {
     name: 'Everchat',
     description:

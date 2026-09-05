@@ -486,7 +486,7 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
-  padding-bottom: 4px; /* optical vertical balance */
+  padding-bottom: 2px; /* tight optical balance in the tiny mock */
 }
 
 .thread {
@@ -589,6 +589,15 @@
     grid-template-columns: repeat(4, 1fr); /* 4×1 desktop */
     gap: 1.5rem 1.35rem;
   }
+}
+
+.benefit-icon {
+  display: block;
+  width: 1.375rem; /* 22px */
+  height: 1.375rem;
+  margin: 0 0 0.65rem;
+  color: var(--mute);
+  flex-shrink: 0;
 }
 
 .benefit h2 {

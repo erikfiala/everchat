@@ -23,7 +23,7 @@
   --color-accent: #334155; /* slate-700 */
   --color-accent-deep: #1e293b; /* slate-800 */
   --color-accent-soft: #e2e8f0; /* slate-200 */
-  --color-warn: #b45309;
+  --color-warn: #d97706; /* amber-600 — clear orange on slate/light bg */
   --radius-site: 0.35rem;
   --breakpoint-hero: 960px;
   --breakpoint-benefits: 720px;

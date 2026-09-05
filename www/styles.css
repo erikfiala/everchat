@@ -187,6 +187,7 @@ a:hover {
   display: block;
   width: min(100%, 22rem);
   height: auto;
+  padding-bottom: 4px; /* optical vertical balance */
 }
 
 @media (min-width: 960px) {
@@ -526,6 +527,7 @@ a:hover {
   width: 5.75rem;
   height: auto;
   flex-shrink: 0;
+  padding-bottom: 4px; /* optical vertical balance */
 }
 
 .sidepanel-head span {
@@ -763,6 +765,7 @@ body.doc {
 .doc-bar img {
   width: 8.5rem;
   height: auto;
+  padding-bottom: 4px; /* optical vertical balance */
 }
 
 .doc-nav {

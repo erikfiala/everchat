@@ -1,6 +1,6 @@
 # Everchat — Product Requirements Document
 
-**Version:** 1.6  
+**Version:** 1.8  
 **Status:** Draft for build  
 **Product:** Chrome extension — public, Reddit-style comments on any URL  
 **Last updated:** 2026-09-05
@@ -61,6 +61,10 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - **Email / password / magic link / OTP / Google (or any social) OAuth** — privacy by design
 - Email / push notifications outside the extension (Chrome extension notifications + in-panel inbox only)
 - Account recovery via email (recovery = add a second passkey only)
+
+### Funding / donations
+
+The product is free to use; no ads and no paid features that buy visibility or speech rights. If/when voluntary donations are offered, they go through **GoFundMe**. Payment details are processed by GoFundMe under their own policies; Everchat does not receive card numbers. Donations do not buy preferential ranking, viewpoint protection, or special treatment.
 
 ---
 
@@ -849,3 +853,4 @@ Plus any key matching `/^utm_/i`. Timestamp-like `t` stripped on known video hos
 | 2026-09-05 | v1.5: no staff moderation; community collapse via majority downvotes (Reddit-style, always expandable) |
 | 2026-09-05 | v1.6: trending chats section on auth landing (open site → join convo) |
 | 2026-09-05 | v1.7: reports stored + monthly review for illegal/ToS/legal-floor patterns (not viewpoint mods) |
+| 2026-09-05 | v1.8: donations (if/when offered) via GoFundMe; Everchat does not receive card numbers |

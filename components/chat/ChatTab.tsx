@@ -1,4 +1,4 @@
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageContextHeader } from '@/components/PageContextHeader';
 import { MessageRow } from './MessageRow';
@@ -14,14 +14,8 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import { usePageThread } from '@/hooks/usePageThread';
-import {
-  THEME_OPTIONS,
-  useTheme,
-  type ThemePreference,
-} from '@/hooks/useTheme';
 import type { MessageNode, SortMode, TabInfo } from '@/lib/database.types';
 import { findPathToMessage, reportMessage } from '@/lib/messages';
-import type { LocalePreference } from '@/lib/i18n';
 import { toast } from 'sonner';
 
 interface ChatTabProps {
@@ -32,9 +26,7 @@ interface ChatTabProps {
 
 export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const { user, requireAuth, setShowAuthLanding } = useAuth();
-  const theme = useTheme();
-  const { t, tError, preference, setPreference, languages } =
-    useLocale();
+  const { t, tError } = useLocale();
   const thread = usePageThread(tab, user?.id);
   const [replyTo, setReplyTo] = useState<MessageNode | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
@@ -73,20 +65,8 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
     setReplyTo(null);
   };
 
-  const themeLabel = (pref: ThemePreference) =>
-    pref === 'system'
-      ? t('theme.system')
-      : pref === 'light'
-        ? t('theme.light')
-        : t('theme.dark');
-
   const sortLabel = (mode: SortMode) =>
     mode === 'best' ? t('chat.sortBest') : t('chat.sortNew');
-
-  const languageTriggerLabel =
-    preference === 'system'
-      ? t('chat.languageSystem')
-      : languages.find((l) => l.code === preference)?.nativeLabel ?? preference;
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -95,122 +75,30 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         host={tab.host}
         faviconUrl={tab.favIconUrl}
       />
-      <div className="flex min-h-14 flex-wrap items-center justify-between gap-2 border-b border-[var(--color-border)] px-3 py-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[var(--color-muted-foreground)]">
-            {t('chat.sort')}
-          </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                size="xs"
-                variant="outline"
-                className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
-              >
-                {sortLabel(thread.sort)}
-                <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => thread.setSort('best')}>
-                {t('chat.sortBest')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => thread.setSort('new')}>
-                {t('chat.sortNew')}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[var(--color-muted-foreground)]">
-              {t('chat.mode')}
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="xs"
-                  variant="outline"
-                  className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
-                >
-                  {themeLabel(theme.preference)}
-                  <ChevronDown
-                    className="size-3.5 shrink-0 opacity-60"
-                    aria-hidden
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {THEME_OPTIONS.map((opt) => (
-                  <DropdownMenuItem
-                    key={opt}
-                    onSelect={() => theme.setPreference(opt)}
-                    className="gap-2 pe-2"
-                  >
-                    <span className="flex size-3.5 items-center justify-center">
-                      {theme.preference === opt ? (
-                        <Check className="size-3.5" aria-hidden />
-                      ) : null}
-                    </span>
-                    {themeLabel(opt)}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-[var(--color-muted-foreground)]">
-              {t('chat.language')}
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="xs"
-                  variant="outline"
-                  className="h-7 max-w-36 shrink-0 gap-1 truncate py-0 ps-2.5 pe-2 font-normal"
-                >
-                  <span className="truncate">{languageTriggerLabel}</span>
-                  <ChevronDown
-                    className="size-3.5 shrink-0 opacity-60"
-                    aria-hidden
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="max-h-72 overflow-y-auto"
-              >
-                <DropdownMenuItem
-                  onSelect={() => setPreference('system')}
-                  className="gap-2 pe-2"
-                >
-                  <span className="flex size-3.5 items-center justify-center">
-                    {preference === 'system' ? (
-                      <Check className="size-3.5" aria-hidden />
-                    ) : null}
-                  </span>
-                  {t('chat.languageSystem')}
-                </DropdownMenuItem>
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onSelect={() =>
-                      setPreference(lang.code as LocalePreference)
-                    }
-                    className="gap-2 pe-2"
-                  >
-                    <span className="flex size-3.5 items-center justify-center">
-                      {preference === lang.code ? (
-                        <Check className="size-3.5" aria-hidden />
-                      ) : null}
-                    </span>
-                    <span className="truncate">{lang.nativeLabel}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
+      <div className="flex min-h-14 items-center gap-2 border-b border-[var(--color-border)] px-3 py-2">
+        <span className="text-xs text-[var(--color-muted-foreground)]">
+          {t('chat.sort')}
+        </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="xs"
+              variant="outline"
+              className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+            >
+              {sortLabel(thread.sort)}
+              <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onSelect={() => thread.setSort('best')}>
+              {t('chat.sortBest')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => thread.setSort('new')}>
+              {t('chat.sortNew')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3">

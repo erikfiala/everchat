@@ -1,4 +1,4 @@
-import { Bell, MessageCircle, User } from 'lucide-react';
+import { Bell, MessageCircle, Settings, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PanelTab } from '@/lib/database.types';
 import { useLocale } from '@/hooks/useLocale';
@@ -24,6 +24,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
     { id: 'chat', label: t('nav.chat'), icon: MessageCircle },
     { id: 'notifications', label: t('nav.notifications'), icon: Bell },
     { id: 'profile', label: t('nav.profile'), icon: User },
+    { id: 'settings', label: t('nav.settings'), icon: Settings },
   ];
 
   return (
@@ -44,7 +45,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
             alt={t('nav.brandAlt')}
             width="120"
             height="28"
-            className="h-5 w-auto pb-[4px]"
+            className="h-6 w-auto pb-[4px]"
           />
         </button>
 
@@ -66,7 +67,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
                     aria-label={label}
                     aria-current={isActive ? 'page' : undefined}
                   >
-                    <Icon className="size-5" />
+                    <Icon className="size-4" />
                     {id === 'notifications' && unread > 0 && (
                       <span className="absolute -end-0.5 -top-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--color-destructive)] px-0.5 text-[9px] font-semibold text-white">
                         {unread > 99 ? t('nav.unreadOverflow') : unread}

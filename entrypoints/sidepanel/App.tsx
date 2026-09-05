@@ -5,6 +5,7 @@ import { ChatTab } from '@/components/chat/ChatTab';
 import { NotificationsTab } from '@/components/notifications/NotificationsTab';
 import { ProfileTab } from '@/components/profile/ProfileTab';
 import { ProfileSheet } from '@/components/profile/ProfileSheet';
+import { SettingsTab } from '@/components/settings/SettingsTab';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
@@ -76,6 +77,8 @@ function Shell() {
           />
         ) : tab === 'notifications' ? (
           <NotificationsTab />
+        ) : tab === 'settings' ? (
+          <SettingsTab />
         ) : (
           <ProfileTab />
         )}

@@ -51,8 +51,9 @@
   --font-display: "Bricolage Grotesque", "Segoe UI", sans-serif;
   --font-body: "Public Sans", "Segoe UI", sans-serif;
   --radius: 0.35rem;
-  --space: clamp(1.25rem, 4vw, 3rem);
-  --hero-pad: clamp(1.5rem, 5vw, 4rem);
+  --content-max: 72rem; /* ~1152px — normal marketing width */
+  --space: clamp(1.5rem, 4vw, 3rem); /* ~24–48px page padding */
+  --hero-pad: clamp(2rem, 5vw, 3.5rem);
   color-scheme: light;
 }
 
@@ -128,36 +129,29 @@ a:hover {
 .hero {
   display: grid;
   grid-template-columns: 1fr;
-  align-items: start;
+  align-items: center;
   overflow: hidden;
   position: relative;
-  gap: clamp(1.25rem, 3vw, 2rem);
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--hero-pad) var(--space);
 }
 
 @media (min-width: 960px) {
   .hero {
-    grid-template-columns: minmax(22rem, 0.95fr) minmax(0, 1.15fr);
-    gap: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
   }
 }
 
 .hero-copy {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: var(--hero-pad);
-  padding-bottom: 0;
-  max-width: 36rem;
+  justify-content: center;
+  padding: 0;
+  max-width: none;
   z-index: 1;
-}
-
-@media (min-width: 960px) {
-  .hero-copy {
-    padding-right: 1.5rem;
-    padding-bottom: var(--hero-pad);
-    max-width: 28rem;
-    margin-inline-start: max(0px, calc((100vw - 72rem) / 2));
-  }
 }
 
 .brand {
@@ -174,14 +168,14 @@ a:hover {
 
 @media (min-width: 960px) {
   .brand-logo {
-    width: min(100%, 26rem);
+    width: min(100%, 24rem);
   }
 }
 
 .headline {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.55rem, 3.4vw, 2.15rem);
+  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
   letter-spacing: -0.035em;
   line-height: 1.15;
   margin: 0 0 0.85rem;
@@ -192,17 +186,24 @@ a:hover {
 .lede {
   margin: 0 0 1.75rem;
   color: var(--mute);
-  font-size: 1.05rem;
-  max-width: 28ch;
+  font-size: 1.08rem;
+  max-width: 40rem;
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.14s both;
 }
 
 .cta-group {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.85rem 1.25rem;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0.75rem;
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+@media (max-width: 420px) {
+  .cta-group {
+    flex-wrap: wrap;
+  }
 }
 
 /* Official Chrome Web Store badge — transparent asset; we own slate frame */
@@ -216,6 +217,7 @@ a:hover {
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
   padding: 0.35rem 0.55rem;
+  flex-shrink: 0;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -275,7 +277,15 @@ a:hover {
   background: transparent;
   color: var(--ink-soft);
   border-color: var(--line);
-  padding-inline: 1rem;
+  padding-inline: 1.15rem;
+  padding-block: 0;
+  align-self: stretch;
+  white-space: nowrap;
+}
+
+.cta-group .btn-ghost {
+  /* Stretch to match slate-framed badge height; centers label */
+  min-height: 100%;
 }
 
 .btn-ghost:hover {
@@ -295,12 +305,12 @@ a:hover {
   }
 }
 
-/* —— Product stage (graphic, not full-viewport) —— */
+/* —— Product stage (browser mock) —— */
 .stage {
   position: relative;
   display: flex;
   align-items: stretch;
-  justify-content: flex-end;
+  justify-content: stretch;
   padding: 0;
   margin: 0;
   min-width: 0;
@@ -310,27 +320,19 @@ a:hover {
   width: 100%;
   position: relative;
   display: grid;
-  place-items: start stretch;
+  place-items: stretch;
   padding: 0;
-}
-
-@media (min-width: 960px) {
-  .scene {
-    padding-top: var(--hero-pad);
-  }
 }
 
 .browser {
   width: 100%;
-  margin-inline-start: auto;
-  height: min(70vh, 32rem);
+  height: min(58vh, 30rem);
   display: grid;
   grid-template-columns: 1fr minmax(11.5rem, 38%);
   grid-template-rows: auto 1fr;
   background: var(--paper);
   border: 1px solid var(--line);
-  border-right: none;
-  border-radius: 0.65rem 0 0 0.65rem;
+  border-radius: 0.65rem;
   overflow: hidden;
   box-shadow: none;
 }
@@ -338,11 +340,6 @@ a:hover {
 @media (max-width: 959px) {
   .browser {
     height: min(48vh, 24rem);
-    border-radius: 0.65rem 0.65rem 0 0;
-    border-right: 1px solid var(--line);
-    border-bottom: none;
-    margin-inline: var(--space);
-    width: calc(100% - 2 * var(--space));
   }
 }
 
@@ -580,7 +577,7 @@ a:hover {
   position: relative;
   z-index: 1;
   padding: clamp(3rem, 8vw, 5.5rem) var(--space);
-  max-width: 52rem;
+  max-width: var(--content-max);
   margin: 0 auto;
 }
 
@@ -609,8 +606,8 @@ a:hover {
 .benefit p {
   margin: 0;
   color: var(--mute);
-  max-width: 36ch;
-  font-size: 0.98rem;
+  max-width: none;
+  font-size: 1rem;
 }
 
 .section {
@@ -633,7 +630,7 @@ a:hover {
 .section p {
   margin: 0;
   color: var(--mute);
-  max-width: 38ch;
+  max-width: 48rem;
 }
 
 .section p + p {
@@ -652,7 +649,7 @@ a:hover {
 }
 
 .install p {
-  max-width: 42ch;
+  max-width: 48rem;
 }
 
 .install-badge {
@@ -666,7 +663,7 @@ a:hover {
   counter-reset: step;
   display: grid;
   gap: 0.85rem;
-  max-width: 36rem;
+  max-width: 42rem;
   width: 100%;
   text-align: left;
 }

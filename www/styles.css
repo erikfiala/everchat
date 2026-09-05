@@ -213,8 +213,8 @@ a:hover {
   background: var(--panel); /* white by default */
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
-  padding: 0.3rem 0.5rem;
-  height: 2.75rem; /* 44px — matches How it works */
+  padding: 0 0.5rem; /* x pad only — frame hugs badge height */
+  height: auto;
   flex: 0 0 auto;
   width: fit-content;
   max-width: 100%;
@@ -234,9 +234,8 @@ a:hover {
 .chrome-badge {
   display: block;
   width: auto;
-  height: 100%;
-  max-height: 1.9rem; /* ~30px inside the 44px frame */
-  max-width: 10.5rem; /* ~168px — typical CWS badge scale */
+  height: 2.125rem; /* ~34px — typical CWS badge scale */
+  max-width: 11rem;
   aspect-ratio: 496 / 150;
   object-fit: contain;
 }
@@ -284,8 +283,7 @@ a:hover {
 }
 
 .cta-group .btn-ghost {
-  /* Same fixed height as framed badge — no stretch/grow */
-  height: 2.75rem; /* 44px */
+  height: 2.5rem; /* aligns with framed CWS badge */
   flex: 0 0 auto;
   align-self: center;
   padding-block: 0;
@@ -498,10 +496,10 @@ a:hover {
 }
 
 .sidepanel-logo {
-  width: 5.75rem;
-  height: auto;
+  width: auto;
+  height: 1.25rem; /* ~20px — compact panel header wordmark */
   flex-shrink: 0;
-  padding-bottom: 4px; /* optical vertical balance */
+  padding-bottom: 2px; /* optical vertical balance */
 }
 
 .thread {
@@ -586,27 +584,42 @@ a:hover {
 }
 
 .benefits {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1.75rem, 4vw, 2.5rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.75rem, 3vw, 2rem);
   margin-bottom: clamp(3.5rem, 9vw, 5.5rem);
-  max-width: 42rem; /* reading width for single-column stack */
+  max-width: none;
+}
+
+@media (min-width: 720px) {
+  .benefits {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.5rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .benefits {
+    grid-template-columns: repeat(4, 1fr); /* 4×1 desktop */
+    gap: 1.5rem 1.35rem;
+  }
 }
 
 .benefit h2 {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
   letter-spacing: -0.03em;
-  margin: 0 0 0.55rem;
-  line-height: 1.2;
+  margin: 0 0 0.45rem;
+  line-height: 1.25;
 }
 
 .benefit p {
   margin: 0;
   color: var(--mute);
   max-width: none;
-  font-size: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .section {

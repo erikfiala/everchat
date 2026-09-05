@@ -1,5 +1,7 @@
 {
   "cleanUrls": true,
+  "buildCommand": "pnpm install && pnpm build",
+  "outputDirectory": ".",
   "headers": [
     {
       "source": "/(.*)",

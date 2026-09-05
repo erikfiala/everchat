@@ -21,26 +21,36 @@
     <link rel="stylesheet" href="/styles.css" />
     <meta name="referrer" content="no-referrer" />
   </head>
-  <body>
+  <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="hero">
-      <div class="hero-copy">
-        <h1 class="brand">
+    <header
+      class="hero relative mx-auto grid max-w-[72rem] grid-cols-1 items-center gap-[clamp(1.75rem,4vw,2.75rem)] overflow-hidden px-[clamp(1.5rem,4vw,3rem)] py-[clamp(2rem,5vw,3.5rem)] min-[960px]:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] min-[960px]:gap-[clamp(2rem,4vw,3.5rem)]"
+    >
+      <div class="hero-copy z-1 flex max-w-none flex-col justify-center p-0">
+        <h1 class="brand mb-6 animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_both]">
           <img
-            class="brand-logo"
+            class="brand-logo block h-8 max-w-40 w-auto pb-0.5 min-[960px]:h-9 min-[960px]:max-w-44"
             src="/assets/ec-logo-horizontal-black.svg"
             width="560"
             height="130"
             alt="Everchat"
           />
         </h1>
-        <p class="headline">Every URL deserves a conversation.</p>
-        <p class="lede">
+        <p
+          class="headline mb-[0.85rem] font-display text-[clamp(1.65rem,3.2vw,2.35rem)] font-semibold leading-[1.15] tracking-[-0.035em] text-ink-soft animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.08s_both]"
+        >
+          Every URL deserves a conversation.
+        </p>
+        <p
+          class="lede mb-7 max-w-160 text-[1.08rem] text-mute animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.14s_both]"
+        >
           Anonymous public comments in a Chrome side panel. No email. No tracking.
           No ads. Free forever.
         </p>
-        <div class="cta-group">
+        <div
+          class="cta-group flex max-w-full flex-row flex-wrap items-center gap-[0.65rem] animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.2s_both]"
+        >
           <a
             class="chrome-badge-link"
             href="#get-extension"
@@ -59,8 +69,8 @@
         </div>
       </div>
 
-      <div class="stage" aria-hidden="true">
-        <div class="scene">
+      <div class="stage relative m-0 flex min-w-0 items-stretch justify-stretch p-0" aria-hidden="true">
+        <div class="scene relative grid w-full place-items-stretch p-0">
           <div class="browser">
             <div class="browser-chrome">
               <div class="dots"><span></span><span></span><span></span></div>
@@ -104,44 +114,63 @@
       </div>
     </header>
 
-    <main class="below">
-      <section class="benefits" id="how" aria-label="How Everchat works">
+    <main
+      class="below relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] py-[clamp(3rem,8vw,5.5rem)]"
+    >
+      <section
+        class="benefits mb-[clamp(3.5rem,9vw,5.5rem)] grid max-w-none grid-cols-1 gap-[clamp(1.75rem,3vw,2rem)] min-[720px]:grid-cols-2 min-[720px]:gap-x-6 min-[720px]:gap-y-7 min-[960px]:grid-cols-4 min-[960px]:gap-x-[1.35rem] min-[960px]:gap-y-6"
+        id="how"
+        aria-label="How Everchat works"
+      >
         <article class="benefit">
-          <h2>Comments on any page.</h2>
-          <p>
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+            Comments on any page.
+          </h2>
+          <p class="m-0 max-w-none text-[0.92rem] leading-normal text-mute">
             Open the side panel on any tab. News, government, docs, anything with a
             link. Same URL, same room. You never leave the page.
           </p>
         </article>
 
         <article class="benefit">
-          <h2>No staff mods. Crowd decides.</h2>
-          <p>
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+            No mods. Crowd decides.
+          </h2>
+          <p class="m-0 max-w-none text-[0.92rem] leading-normal text-mute">
             We do not hire moderators to police speech. Votes collapse junk; collapsed
             comments stay expandable. Karma marks reputation in the room.
           </p>
         </article>
 
         <article class="benefit">
-          <h2>Privacy above everything.</h2>
-          <p>
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+            Privacy above everything.
+          </h2>
+          <p class="m-0 max-w-none text-[0.92rem] leading-normal text-mute">
             No tracking. No email. Passkeys when you speak. We don't follow you around
             the web.
           </p>
         </article>
 
         <article class="benefit">
-          <h2>No ads. No tracking.</h2>
-          <p>
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+            No ads. No tracking.
+          </h2>
+          <p class="m-0 max-w-none text-[0.92rem] leading-normal text-mute">
             Everchat will never run ads. If many people use it, we may ask for
             donations to support the mission. Never ads.
           </p>
         </article>
       </section>
 
-      <section class="section install" id="get-extension">
-        <h2>Install for Chrome</h2>
-        <p>
+      <section
+        class="section install mx-auto mb-0 flex w-full max-w-168 flex-col items-start text-left"
+        id="get-extension"
+      >
+        <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]">
+          Install for Chrome
+        </h2>
+        <p class="m-0 max-w-none text-mute">
           Get Everchat from the Chrome Web Store. That is the primary path, and we are
           publishing ASAP.
         </p>
@@ -159,7 +188,7 @@
             decoding="async"
           />
         </a>
-        <p>
+        <p class="mt-3 max-w-none text-mute">
           If the listing ever goes down because Google doesn't like what we do, you can still
           load a local build in developer mode as a fallback:
         </p>
@@ -180,19 +209,21 @@
       </section>
     </main>
 
-    <footer class="site-footer">
+    <footer
+      class="site-footer grid justify-items-center gap-3 border-t border-line/70 px-[clamp(1.5rem,4vw,3rem)] pt-8 pb-10 text-center text-[0.8rem] text-mute"
+    >
       <img
-        class="footer-mark"
+        class="footer-mark h-8 w-8 rounded-[0.45rem] opacity-90"
         src="/assets/ec-logo-avatar-rounded.png"
         width="128"
         height="128"
         alt=""
       />
-      <nav class="footer-links" aria-label="Footer">
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
+      <nav class="footer-links flex flex-wrap justify-center gap-x-[1.1rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer">
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms">Terms</a>
       </nav>
-      <p>Everchat - Public comments on any URL</p>
+      <p class="m-0 normal-case">Everchat - Public comments on any URL</p>
     </footer>
   </body>
 </html>

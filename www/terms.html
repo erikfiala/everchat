@@ -16,32 +16,33 @@
     <link rel="stylesheet" href="/styles.css" />
     <meta name="referrer" content="no-referrer" />
   </head>
-  <body class="doc">
+  <body class="doc m-0 min-h-screen bg-paper font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="doc-bar">
-      <a class="home" href="/">
+    <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+      <a class="home block leading-none" href="/">
         <img
+          class="h-auto w-[8.5rem] pb-1"
           src="/assets/ec-logo-horizontal-black.svg"
           width="560"
           height="130"
           alt="Everchat"
         />
       </a>
-      <nav class="doc-nav" aria-label="Legal">
-        <a href="/privacy">Privacy</a>
-        <a href="/terms" aria-current="page">Terms</a>
+      <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Legal">
+        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/privacy">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/terms" aria-current="page">Terms</a>
       </nav>
     </header>
 
-    <main class="doc-main">
-      <p class="doc-kicker">Legal</p>
-      <h1>Terms of Service</h1>
-      <p class="doc-lede">
+    <main class="doc-main relative z-1 mx-auto max-w-168 px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]">
+      <p class="doc-kicker mb-[0.55rem] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-accent">Legal</p>
+      <h1 class="mb-[0.65rem] font-display text-[clamp(1.85rem,4.2vw,2.45rem)] font-bold leading-[1.12] tracking-[-0.04em]">Terms of Service</h1>
+      <p class="doc-lede mb-3 max-w-[42ch] text-[1.08rem] text-ink-soft">
         These terms are the deal: a public room on every URL, no email, no staff
         sitting in judgment of your opinions.
       </p>
-      <p class="doc-meta">Effective 5 September 2026 · Binding if you use everch.at or the Everchat extension</p>
+      <p class="doc-meta mb-10 text-[0.85rem] text-mute">Effective 5 September 2026 · Binding if you use everch.at or the Everchat extension</p>
 
       <div class="callout">
         <p>
@@ -280,14 +281,14 @@
       </p>
     </main>
 
-    <footer class="site-footer">
-      <img class="footer-mark" src="/assets/ec-logo-avatar-rounded.png" width="128" height="128" alt="" />
-      <nav class="footer-links" aria-label="Footer">
-        <a href="/">Home</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms" aria-current="page">Terms</a>
+    <footer class="site-footer grid justify-items-center gap-3 border-t border-line/70 px-[clamp(1.5rem,4vw,3rem)] pt-8 pb-10 text-center text-[0.8rem] text-mute">
+      <img class="footer-mark h-8 w-8 rounded-[0.45rem] opacity-90" src="/assets/ec-logo-avatar-rounded.png" width="128" height="128" alt="" />
+      <nav class="footer-links flex flex-wrap justify-center gap-x-[1.1rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer">
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/terms" aria-current="page">Terms</a>
       </nav>
-      <p>everch.at · Speech stays; we are not your moderator</p>
+      <p class="m-0 normal-case">everch.at · Speech stays; we are not your moderator</p>
     </footer>
   </body>
 </html>

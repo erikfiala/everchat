@@ -328,7 +328,7 @@ a:hover {
 
 .browser {
   width: 100%;
-  height: min(58vh, 30rem);
+  height: min(70vh, 38rem);
   display: grid;
   grid-template-columns: 1fr minmax(11.5rem, 38%);
   grid-template-rows: auto 1fr;
@@ -341,7 +341,7 @@ a:hover {
 
 @media (max-width: 959px) {
   .browser {
-    height: min(48vh, 24rem);
+    height: min(58vh, 30rem);
   }
 }
 
@@ -490,16 +490,16 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.65rem 0.7rem;
+  padding: 0.4rem 0.55rem;
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
 
 .sidepanel-logo {
   width: auto;
-  height: 1.25rem; /* ~20px — compact panel header wordmark */
+  height: 0.875rem; /* ~14px — header/nav scale, not hero wordmark */
+  max-height: 1rem; /* 16px cap */
   flex-shrink: 0;
-  padding-bottom: 2px; /* optical vertical balance */
 }
 
 .thread {

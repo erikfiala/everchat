@@ -14,7 +14,7 @@
   "settings.mode": "Mod",
   "settings.language": "Dil",
   "settings.languageSystem": "Sistem",
-  "chat.sort": "Sırala",
+  "chat.sort": "Şuna göre sırala",
   "chat.sortBest": "En iyi",
   "chat.sortNew": "Yeni",
   "chat.mode": "Mod",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Geçersiz veya ayrılmış",
   "auth.confirming": "Onaylanıyor…",
   "auth.passkeyDisclaimer": "Cihazınız onaylar. Parola yok. Tüm cihazlarınızı kaybederseniz bu hesap kurtarılamaz.",
-  "auth.trendingChats": "Trend sohbetler",
   "auth.trendingTalking": "{{count}} kişi konuşuyor",
   "explore.mode": "Göster",
   "explore.trending": "Trend",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Sonunda sayfadan ayrılmadan hakkında konuşun.",
   "www.heroMockMsg2": "Aynı URL, aynı oda. İzleme parametreleri kaldırılır.",
   "www.heroMockMsg3": "E-posta yok. Konuşmak istediğinizde passkey.",
-  "www.heroMockComposer": "Bir şey yazın..."
+  "www.heroMockComposer": "Bir şey yazın...",
+  "auth.toastPasskeyFailed": "Erişim anahtarı kurulamadı. Tekrar deneyin."
 }

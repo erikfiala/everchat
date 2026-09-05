@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { TrendingChats } from './TrendingChats';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import {
@@ -131,7 +130,7 @@ export function AuthLanding() {
         <Button
           type="button"
           variant="ghost"
-          className="mt-4 self-start text-[var(--color-foreground)]"
+          className="mt-4 w-full text-[var(--color-foreground)]"
           onClick={() => setStep('landing')}
         >
           {t('common.back')}
@@ -165,8 +164,6 @@ export function AuthLanding() {
       >
         {busy ? t('auth.working') : t('auth.signInAnonymously')}
       </Button>
-
-      <TrendingChats />
     </div>
   );
 }

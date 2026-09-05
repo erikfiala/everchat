@@ -14,7 +14,7 @@
   "settings.mode": "Tilstand",
   "settings.language": "Sprog",
   "settings.languageSystem": "System",
-  "chat.sort": "Sortér",
+  "chat.sort": "Sortér efter",
   "chat.sortBest": "Bedste",
   "chat.sortNew": "Nye",
   "chat.mode": "Tilstand",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Ugyldig eller reserveret",
   "auth.confirming": "Bekræfter…",
   "auth.passkeyDisclaimer": "Din enhed bekræfter. Ingen adgangskode. Hvis du mister alle enheder, kan denne konto ikke gendannes.",
-  "auth.trendingChats": "Populære chats",
   "auth.trendingTalking": "{{count}} taler",
   "explore.mode": "Vis",
   "explore.trending": "Populært",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Endelig, tal om siden uden at forlade den.",
   "www.heroMockMsg2": "Samme URL, samme rum. Sporingsparametre fjernet.",
   "www.heroMockMsg3": "Ingen e-mail. Passkeys når du vil tale.",
-  "www.heroMockComposer": "Skriv noget..."
+  "www.heroMockComposer": "Skriv noget...",
+  "auth.toastPasskeyFailed": "Kunne ikke oprette din adgangsnøgle. Prøv igen."
 }

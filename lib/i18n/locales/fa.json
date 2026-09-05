@@ -14,7 +14,7 @@
   "settings.mode": "حالت",
   "settings.language": "زبان",
   "settings.languageSystem": "سیستم",
-  "chat.sort": "مرتب‌سازی",
+  "chat.sort": "مرتب‌سازی بر اساس",
   "chat.sortBest": "بهترین",
   "chat.sortNew": "جدید",
   "chat.mode": "حالت",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "نامعتبر یا رزروشده",
   "auth.confirming": "در حال تأیید…",
   "auth.passkeyDisclaimer": "دستگاهتان تأیید می‌کند. بدون رمز عبور. اگر همه دستگاه‌ها را از دست بدهید، این حساب قابل بازیابی نیست.",
-  "auth.trendingChats": "گفتگوهای پرطرفدار",
   "auth.trendingTalking": "{{count}} نفر در حال گفتگو",
   "explore.mode": "نمایش",
   "explore.trending": "پرطرفدار",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "بالاخره درباره صفحه حرف بزنید بدون اینکه آن را ترک کنید.",
   "www.heroMockMsg2": "همان URL، همان اتاق. پارامترهای ردیابی حذف می‌شوند.",
   "www.heroMockMsg3": "بدون ایمیل. Passkey وقتی می‌خواهید حرف بزنید.",
-  "www.heroMockComposer": "چیزی بنویسید..."
+  "www.heroMockComposer": "چیزی بنویسید...",
+  "auth.toastPasskeyFailed": "راه‌اندازی کلید عبور ممکن نشد. دوباره تلاش کنید."
 }

@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "無効または予約済み",
   "auth.confirming": "確定中…",
   "auth.passkeyDisclaimer": "デバイスが確認します。パスワードなし。すべてのデバイスを失うと、このアカウントは復元できません。",
-  "auth.trendingChats": "急上昇のチャット",
   "auth.trendingTalking": "{{count}}人が会話中",
   "explore.mode": "表示",
   "explore.trending": "急上昇",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "やっと、ページを離れずに話せる。",
   "www.heroMockMsg2": "同じURL、同じルーム。トラッキングパラメータは除去。",
   "www.heroMockMsg3": "メール不要。発言したいときはパスキー。",
-  "www.heroMockComposer": "何か書いてみよう..."
+  "www.heroMockComposer": "何か書いてみよう...",
+  "auth.toastPasskeyFailed": "パスキーを設定できませんでした。もう一度お試しください。"
 }

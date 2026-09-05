@@ -14,7 +14,7 @@
   "settings.mode": "Mode",
   "settings.language": "Bahasa",
   "settings.languageSystem": "Sistem",
-  "chat.sort": "Urutkan",
+  "chat.sort": "Urutkan berdasarkan",
   "chat.sortBest": "Terbaik",
   "chat.sortNew": "Terbaru",
   "chat.mode": "Mode",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Tidak valid atau dilindungi",
   "auth.confirming": "Mengonfirmasi…",
   "auth.passkeyDisclaimer": "Perangkat Anda akan mengonfirmasi. Tanpa kata sandi. Jika Anda kehilangan semua perangkat, akun ini tidak dapat dipulihkan.",
-  "auth.trendingChats": "Obrolan tren",
   "auth.trendingTalking": "{{count}} sedang bicara",
   "explore.mode": "Tampilkan",
   "explore.trending": "Tren",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Akhirnya, bicarakan halaman tanpa meninggalkannya.",
   "www.heroMockMsg2": "URL yang sama, ruang yang sama. Parameter pelacakan dihapus.",
   "www.heroMockMsg3": "Tanpa email. Passkey saat Anda ingin berbicara.",
-  "www.heroMockComposer": "Tulis sesuatu..."
+  "www.heroMockComposer": "Tulis sesuatu...",
+  "auth.toastPasskeyFailed": "Tidak dapat menyiapkan kunci sandi. Coba lagi."
 }

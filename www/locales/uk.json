@@ -14,7 +14,7 @@
   "settings.mode": "Режим",
   "settings.language": "Мова",
   "settings.languageSystem": "Системна",
-  "chat.sort": "Сортування",
+  "chat.sort": "Сортувати за",
   "chat.sortBest": "Найкращі",
   "chat.sortNew": "Нові",
   "chat.mode": "Режим",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Недійсний або зарезервований",
   "auth.confirming": "Підтвердження…",
   "auth.passkeyDisclaimer": "Ваш пристрій підтвердить. Без пароля. Якщо ви втратите всі пристрої, цей обліковий запис неможливо відновити.",
-  "auth.trendingChats": "Популярні чати",
   "auth.trendingTalking": "{{count}} обговорюють",
   "explore.mode": "Показати",
   "explore.trending": "У тренді",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Нарешті обговорювати сторінку, не йдучи з неї.",
   "www.heroMockMsg2": "Той самий URL, та сама кімната. Параметри відстеження видалено.",
   "www.heroMockMsg3": "Без email. Passkeys, коли хочете говорити.",
-  "www.heroMockComposer": "Напишіть щось..."
+  "www.heroMockComposer": "Напишіть щось...",
+  "auth.toastPasskeyFailed": "Не вдалося налаштувати ключ доступу. Спробуйте ще раз."
 }

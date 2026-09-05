@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "अवैध किंवा राखीव",
   "auth.confirming": "पुष्टी करत आहे…",
   "auth.passkeyDisclaimer": "तुमचे डिव्हाइस पुष्टी करेल. पासवर्ड नाही. सर्व डिव्हाइस गमावल्यास, हे खाते पुनर्प्राप्त करता येणार नाही.",
-  "auth.trendingChats": "ट्रेंडिंग चॅट्स",
   "auth.trendingTalking": "{{count}} बोलत आहेत",
   "explore.mode": "दाखवा",
   "explore.trending": "ट्रेंडिंग",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "शेवटी, पृष्ठ न सोडता त्याबद्दल बोला.",
   "www.heroMockMsg2": "तोच URL, तीच खोली. ट्रॅकिंग पॅरामीटर्स काढले.",
   "www.heroMockMsg3": "ईमेल नाही. बोलायचे असेल तेव्हा पासकीज.",
-  "www.heroMockComposer": "काहीतरी लिहा..."
+  "www.heroMockComposer": "काहीतरी लिहा...",
+  "auth.toastPasskeyFailed": "पासकी सेट करता आली नाही. पुन्हा प्रयत्न करा."
 }

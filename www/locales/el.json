@@ -14,7 +14,7 @@
   "settings.mode": "Λειτουργία",
   "settings.language": "Γλώσσα",
   "settings.languageSystem": "Σύστημα",
-  "chat.sort": "Ταξινόμηση",
+  "chat.sort": "Ταξινόμηση κατά",
   "chat.sortBest": "Καλύτερα",
   "chat.sortNew": "Νέα",
   "chat.mode": "Λειτουργία",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Μη έγκυρο ή δεσμευμένο",
   "auth.confirming": "Επιβεβαίωση…",
   "auth.passkeyDisclaimer": "Η συσκευή σας θα επιβεβαιώσει. Χωρίς κωδικό. Αν χάσετε όλες τις συσκευές, αυτός ο λογαριασμός δεν μπορεί να ανακτηθεί.",
-  "auth.trendingChats": "Δημοφιλείς συνομιλίες",
   "auth.trendingTalking": "{{count}} μιλούν",
   "explore.mode": "Εμφάνιση",
   "explore.trending": "Τάσεις",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Επιτέλους, μιλήστε για τη σελίδα χωρίς να τη φύγετε.",
   "www.heroMockMsg2": "Ίδιο URL, ίδιο δωμάτιο. Οι παράμετροι παρακολούθησης αφαιρούνται.",
   "www.heroMockMsg3": "Χωρίς email. Passkeys όταν θέλετε να μιλήσετε.",
-  "www.heroMockComposer": "Γράψτε κάτι..."
+  "www.heroMockComposer": "Γράψτε κάτι...",
+  "auth.toastPasskeyFailed": "Δεν ήταν δυνατή η ρύθμιση του κλειδιού πρόσβασης. Δοκιμάστε ξανά."
 }

@@ -14,7 +14,7 @@
   "settings.mode": "Modus",
   "settings.language": "Språk",
   "settings.languageSystem": "System",
-  "chat.sort": "Sorter",
+  "chat.sort": "Sorter etter",
   "chat.sortBest": "Beste",
   "chat.sortNew": "Nye",
   "chat.mode": "Modus",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Ugyldig eller reservert",
   "auth.confirming": "Bekrefter…",
   "auth.passkeyDisclaimer": "Enheten din bekrefter. Ingen passord. Hvis du mister alle enheter, kan ikke denne kontoen gjenopprettes.",
-  "auth.trendingChats": "Populære chatter",
   "auth.trendingTalking": "{{count}} snakker",
   "explore.mode": "Vis",
   "explore.trending": "Populært",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Endelig, snakk om siden uten å forlate den.",
   "www.heroMockMsg2": "Samme URL, samme rom. Sporingsparametere fjernet.",
   "www.heroMockMsg3": "Ingen e-post. Passnøkler når du vil snakke.",
-  "www.heroMockComposer": "Skriv noe..."
+  "www.heroMockComposer": "Skriv noe...",
+  "auth.toastPasskeyFailed": "Kunne ikke konfigurere tilgangsnøkkelen. Prøv igjen."
 }

@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Kehtetu või reserveeritud",
   "auth.confirming": "Kinnitan…",
   "auth.passkeyDisclaimer": "Sinu seade kinnitab. Ilma paroolita. Kui kaotad kõik seadmed, ei saa seda kontot taastada.",
-  "auth.trendingChats": "Populaarsed vestlused",
   "auth.trendingTalking": "{{count}} räägib",
   "explore.mode": "Näita",
   "explore.trending": "Populaarne",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Lõpuks räägi lehest ilma seda lahkumata.",
   "www.heroMockMsg2": "Sama URL, sama ruum. Jälgimissparameetrid eemaldatud.",
   "www.heroMockMsg3": "Ilma e-postita. Passkeys, kui tahad rääkida.",
-  "www.heroMockComposer": "Kirjuta midagi..."
+  "www.heroMockComposer": "Kirjuta midagi...",
+  "auth.toastPasskeyFailed": "Pääsuvõtit ei õnnestunud seadistada. Proovi uuesti."
 }

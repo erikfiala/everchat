@@ -14,7 +14,7 @@
   "settings.mode": "모드",
   "settings.language": "언어",
   "settings.languageSystem": "시스템",
-  "chat.sort": "정렬",
+  "chat.sort": "정렬 기준",
   "chat.sortBest": "인기",
   "chat.sortNew": "최신",
   "chat.mode": "모드",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "유효하지 않거나 예약됨",
   "auth.confirming": "확인 중…",
   "auth.passkeyDisclaimer": "기기에서 확인합니다. 비밀번호 없음. 모든 기기를 잃으면 이 계정은 복구할 수 없습니다.",
-  "auth.trendingChats": "인기 채팅",
   "auth.trendingTalking": "{{count}}명 대화 중",
   "explore.mode": "표시",
   "explore.trending": "인기",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "드디어, 페이지를 떠나지 않고 이야기할 수 있어요.",
   "www.heroMockMsg2": "같은 URL, 같은 방. 추적 매개변수 제거됨.",
   "www.heroMockMsg3": "이메일 없음. 말하고 싶을 때 패스키.",
-  "www.heroMockComposer": "무언가 적어 보세요..."
+  "www.heroMockComposer": "무언가 적어 보세요...",
+  "auth.toastPasskeyFailed": "패스키를 설정할 수 없습니다. 다시 시도하세요."
 }

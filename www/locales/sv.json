@@ -14,7 +14,7 @@
   "settings.mode": "Läge",
   "settings.language": "Språk",
   "settings.languageSystem": "System",
-  "chat.sort": "Sortera",
+  "chat.sort": "Sortera efter",
   "chat.sortBest": "Bäst",
   "chat.sortNew": "Nytt",
   "chat.mode": "Läge",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Ogiltigt eller reserverat",
   "auth.confirming": "Bekräftar…",
   "auth.passkeyDisclaimer": "Din enhet bekräftar. Inget lösenord. Om du förlorar alla enheter kan det här kontot inte återställas.",
-  "auth.trendingChats": "Trendande chattar",
   "auth.trendingTalking": "{{count}} pratar",
   "explore.mode": "Visa",
   "explore.trending": "Trendande",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Äntligen, prata om sidan utan att lämna den.",
   "www.heroMockMsg2": "Samma URL, samma rum. Spårningsparametrar borttagna.",
   "www.heroMockMsg3": "Ingen e-post. Passkeys när du vill tala.",
-  "www.heroMockComposer": "Skriv något..."
+  "www.heroMockComposer": "Skriv något...",
+  "auth.toastPasskeyFailed": "Kunde inte konfigurera din lösennyckel. Försök igen."
 }

@@ -14,7 +14,7 @@
   "settings.mode": "الوضع",
   "settings.language": "اللغة",
   "settings.languageSystem": "النظام",
-  "chat.sort": "ترتيب",
+  "chat.sort": "ترتيب حسب",
   "chat.sortBest": "الأفضل",
   "chat.sortNew": "الأحدث",
   "chat.mode": "الوضع",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "غير صالح أو محجوز",
   "auth.confirming": "جارٍ التأكيد…",
   "auth.passkeyDisclaimer": "سيؤكد جهازك. بلا كلمة مرور. إذا فقدت كل الأجهزة، لا يمكن استعادة هذا الحساب.",
-  "auth.trendingChats": "محادثات رائجة",
   "auth.trendingTalking": "{{count}} يتحدثون",
   "explore.mode": "عرض",
   "explore.trending": "رائج",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "أخيراً، تحدّث عن الصفحة دون مغادرتها.",
   "www.heroMockMsg2": "نفس الرابط، نفس الغرفة. معاملات التتبع مُزالة.",
   "www.heroMockMsg3": "بلا بريد. مفاتيح المرور عندما تريد التحدث.",
-  "www.heroMockComposer": "اكتب شيئاً..."
+  "www.heroMockComposer": "اكتب شيئاً...",
+  "auth.toastPasskeyFailed": "تعذّر إعداد مفتاح المرور. حاول مجدداً."
 }

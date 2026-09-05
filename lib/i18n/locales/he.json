@@ -14,7 +14,7 @@
   "settings.mode": "מצב",
   "settings.language": "שפה",
   "settings.languageSystem": "מערכת",
-  "chat.sort": "מיון",
+  "chat.sort": "מיון לפי",
   "chat.sortBest": "הכי טובים",
   "chat.sortNew": "חדשים",
   "chat.mode": "מצב",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "לא תקין או שמור",
   "auth.confirming": "מאשר…",
   "auth.passkeyDisclaimer": "המכשיר שלכם יאשר. בלי סיסמה. אם תאבדו את כל המכשירים, לא ניתן לשחזר את החשבון.",
-  "auth.trendingChats": "צ׳אטים חמים",
   "auth.trendingTalking": "{{count}} מדברים",
   "explore.mode": "הצג",
   "explore.trending": "חם עכשיו",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "סוף סוף לדבר על העמוד בלי לעזוב אותו.",
   "www.heroMockMsg2": "אותה כתובת, אותו חדר. פרמטרי מעקב מוסרים.",
   "www.heroMockMsg3": "בלי אימייל. מפתחות גישה כשרוצים לדבר.",
-  "www.heroMockComposer": "כתבו משהו..."
+  "www.heroMockComposer": "כתבו משהו...",
+  "auth.toastPasskeyFailed": "לא ניתן להגדיר את מפתח הגישה. נסו שוב."
 }

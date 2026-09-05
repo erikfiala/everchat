@@ -14,7 +14,7 @@
   "settings.mode": "Hali",
   "settings.language": "Lugha",
   "settings.languageSystem": "Mfumo",
-  "chat.sort": "Panga",
+  "chat.sort": "Panga kwa",
   "chat.sortBest": "Bora",
   "chat.sortNew": "Mpya",
   "chat.mode": "Hali",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Si sahihi au imehifadhiwa",
   "auth.confirming": "Inathibitisha…",
   "auth.passkeyDisclaimer": "Kifaa chako kitathibitisha. Hakuna nenosiri. Ukipoteza vifaa vyote, akaunti hii haiwezi kurejeshwa.",
-  "auth.trendingChats": "Gumzo zinazovuma",
   "auth.trendingTalking": "{{count}} wanazungumza",
   "explore.mode": "Onyesha",
   "explore.trending": "Zinazovuma",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Hatimaye, zungumza kuhusu ukurasa bila kuuacha.",
   "www.heroMockMsg2": "URL ile ile, chumba kile kile. Vigezo vya ufuatiliaji vimeondolewa.",
   "www.heroMockMsg3": "Hakuna barua pepe. Passkeys unapotaka kuzungumza.",
-  "www.heroMockComposer": "Andika kitu..."
+  "www.heroMockComposer": "Andika kitu...",
+  "auth.toastPasskeyFailed": "Imeshindikana kuweka ufunguo wa kupitia. Jaribu tena."
 }

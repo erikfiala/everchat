@@ -14,7 +14,7 @@
   "settings.mode": "Način",
   "settings.language": "Jezik",
   "settings.languageSystem": "Sistem",
-  "chat.sort": "Razvrsti",
+  "chat.sort": "Razvrsti po",
   "chat.sortBest": "Najboljše",
   "chat.sortNew": "Novo",
   "chat.mode": "Način",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Neveljavno ali rezervirano",
   "auth.confirming": "Potrjevanje…",
   "auth.passkeyDisclaimer": "Vaša naprava bo potrdila. Brez gesla. Če izgubite vse naprave, tega računa ni mogoče obnoviti.",
-  "auth.trendingChats": "Priljubljeni klepeti",
   "auth.trendingTalking": "{{count}} govori",
   "explore.mode": "Prikaži",
   "explore.trending": "Priljubljeno",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Končno pogovor o strani, ne da bi jo zapustili.",
   "www.heroMockMsg2": "Isti URL, ista soba. Parametri sledenja odstranjeni.",
   "www.heroMockMsg3": "Brez e-pošte. Passkeys, ko želite govoriti.",
-  "www.heroMockComposer": "Napišite nekaj..."
+  "www.heroMockComposer": "Napišite nekaj...",
+  "auth.toastPasskeyFailed": "Ni bilo mogoče nastaviti dostopnega ključa. Poskusite znova."
 }

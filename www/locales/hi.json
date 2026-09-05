@@ -14,7 +14,7 @@
   "settings.mode": "मोड",
   "settings.language": "भाषा",
   "settings.languageSystem": "सिस्टम",
-  "chat.sort": "क्रम",
+  "chat.sort": "क्रमबद्ध करें",
   "chat.sortBest": "सर्वश्रेष्ठ",
   "chat.sortNew": "नए",
   "chat.mode": "मोड",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "अमान्य या आरक्षित",
   "auth.confirming": "पुष्टि हो रही है…",
   "auth.passkeyDisclaimer": "आपका डिवाइस पुष्टि करेगा। कोई पासवर्ड नहीं। अगर आप सभी डिवाइस खो देते हैं, तो यह खाता पुनर्प्राप्त नहीं हो सकता।",
-  "auth.trendingChats": "ट्रेंडिंग चैट",
   "auth.trendingTalking": "{{count}} बात कर रहे हैं",
   "explore.mode": "दिखाएँ",
   "explore.trending": "ट्रेंडिंग",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "आखिरकार, पेज छोड़े बिना उस पर बात करें।",
   "www.heroMockMsg2": "वही URL, वही कमरा। ट्रैकिंग पैरामीटर हटाए गए।",
   "www.heroMockMsg3": "कोई ईमेल नहीं। जब बोलना हो तो पासकी।",
-  "www.heroMockComposer": "कुछ लिखें..."
+  "www.heroMockComposer": "कुछ लिखें...",
+  "auth.toastPasskeyFailed": "पासकी सेट अप नहीं हो सकी। फिर से कोशिश करें।"
 }

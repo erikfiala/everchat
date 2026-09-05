@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "செல்லாதது அல்லது ஒதுக்கப்பட்டது",
   "auth.confirming": "உறுதிப்படுத்துகிறது…",
   "auth.passkeyDisclaimer": "உங்கள் சாதனம் உறுதிப்படுத்தும். கடவுச்சொல் இல்லை. அனைத்து சாதனங்களையும் இழந்தால், இந்தக் கணக்கை மீட்க முடியாது.",
-  "auth.trendingChats": "பிரபல அரட்டைகள்",
   "auth.trendingTalking": "{{count}} பேர் பேசுகிறார்கள்",
   "explore.mode": "காட்டு",
   "explore.trending": "பிரபலம்",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "இறுதியாக, பக்கத்தை விட்டு வெளியேறாமல் அதைப் பற்றிப் பேசுங்கள்.",
   "www.heroMockMsg2": "அதே URL, அதே அறை. கண்காணிப்பு அளவுருக்கள் நீக்கப்பட்டன.",
   "www.heroMockMsg3": "மின்னஞ்சல் இல்லை. பேச விரும்பும்போது Passkeys.",
-  "www.heroMockComposer": "ஏதாவது எழுதுங்கள்..."
+  "www.heroMockComposer": "ஏதாவது எழுதுங்கள்...",
+  "auth.toastPasskeyFailed": "பாஸ்கியை அமைக்க முடியவில்லை. மீண்டும் முயலவும்."
 }

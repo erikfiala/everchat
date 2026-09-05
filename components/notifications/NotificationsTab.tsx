@@ -25,10 +25,9 @@ export function NotificationsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <h1 className="px-3 py-2 text-sm font-semibold">{t('notifications.title')}</h1>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto pt-1">
         {loading && (
-          <div className="space-y-2 p-3">
+          <div className="space-y-2 p-3 pt-3">
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
           </div>

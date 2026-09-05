@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "చెల్లనిది లేదా రిజర్వ్ చేయబడింది",
   "auth.confirming": "నిర్ధారిస్తోంది…",
   "auth.passkeyDisclaimer": "మీ పరికరం నిర్ధారిస్తుంది. పాస్‌వర్డ్ లేదు. అన్ని పరికరాలు కోల్పోతే, ఈ ఖాతాను పునరుద్ధరించలేరు.",
-  "auth.trendingChats": "ట్రెండింగ్ చాట్‌లు",
   "auth.trendingTalking": "{{count}} మంది మాట్లాడుతున్నారు",
   "explore.mode": "చూపించు",
   "explore.trending": "ట్రెండింగ్",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "చివరకు, పేజీని వదలకుండా దాని గురించి మాట్లాడండి.",
   "www.heroMockMsg2": "అదే URL, అదే గది. ట్రాకింగ్ పారామ్‌లు తీసివేయబడ్డాయి.",
   "www.heroMockMsg3": "ఇమెయిల్ లేదు. మాట్లాడాలనుకున్నప్పుడు Passkeys.",
-  "www.heroMockComposer": "ఏదైనా రాయండి..."
+  "www.heroMockComposer": "ఏదైనా రాయండి...",
+  "auth.toastPasskeyFailed": "పాస్‌కీని సెటప్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించండి."
 }

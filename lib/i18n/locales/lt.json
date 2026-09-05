@@ -14,7 +14,7 @@
   "settings.mode": "Režimas",
   "settings.language": "Kalba",
   "settings.languageSystem": "Sistema",
-  "chat.sort": "Rikiuoti",
+  "chat.sort": "Rikiuoti pagal",
   "chat.sortBest": "Geriausi",
   "chat.sortNew": "Naujausi",
   "chat.mode": "Režimas",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Neteisingas arba rezervuotas",
   "auth.confirming": "Patvirtinama…",
   "auth.passkeyDisclaimer": "Jūsų įrenginys patvirtins. Be slaptažodžio. Jei prarasite visus įrenginius, šios paskyros atkurti nepavyks.",
-  "auth.trendingChats": "Populiarūs pokalbiai",
   "auth.trendingTalking": "{{count}} kalba",
   "explore.mode": "Rodyti",
   "explore.trending": "Populiaru",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Pagaliau kalbėkite apie puslapį jo nepalikdami.",
   "www.heroMockMsg2": "Tas pats URL, tas pats kambarys. Sekimo parametrai pašalinti.",
   "www.heroMockMsg3": "Be el. pašto. Prieigos raktai, kai norite kalbėti.",
-  "www.heroMockComposer": "Parašykite ką nors..."
+  "www.heroMockComposer": "Parašykite ką nors...",
+  "auth.toastPasskeyFailed": "Nepavyko nustatyti prieigos rakto. Bandykite dar kartą."
 }

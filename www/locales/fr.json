@@ -14,7 +14,7 @@
   "settings.mode": "Mode",
   "settings.language": "Langue",
   "settings.languageSystem": "Système",
-  "chat.sort": "Trier",
+  "chat.sort": "Trier par",
   "chat.sortBest": "Meilleurs",
   "chat.sortNew": "Récents",
   "chat.mode": "Mode",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Invalide ou réservé",
   "auth.confirming": "Confirmation…",
   "auth.passkeyDisclaimer": "Votre appareil confirmera. Pas de mot de passe. Si vous perdez tous vos appareils, ce compte ne pourra pas être récupéré.",
-  "auth.trendingChats": "Discussions tendance",
   "auth.trendingTalking": "{{count}} en discussion",
   "explore.mode": "Afficher",
   "explore.trending": "Tendances",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Enfin, parler de la page sans la quitter.",
   "www.heroMockMsg2": "Même URL, même salle. Paramètres de suivi retirés.",
   "www.heroMockMsg3": "Pas d’e-mail. Des passkeys quand vous voulez parler.",
-  "www.heroMockComposer": "Écrire quelque chose..."
+  "www.heroMockComposer": "Écrire quelque chose...",
+  "auth.toastPasskeyFailed": "Impossible de configurer votre clé d’accès. Réessayez."
 }

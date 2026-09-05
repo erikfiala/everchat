@@ -14,7 +14,7 @@
   "settings.mode": "Mod",
   "settings.language": "Bahasa",
   "settings.languageSystem": "Sistem",
-  "chat.sort": "Isih",
+  "chat.sort": "Isih mengikut",
   "chat.sortBest": "Terbaik",
   "chat.sortNew": "Baharu",
   "chat.mode": "Mod",
@@ -44,10 +44,9 @@
   "auth.invalidOrReserved": "Tidak sah atau dilindungi",
   "auth.confirming": "Mengesahkan…",
   "auth.passkeyDisclaimer": "Peranti anda akan mengesahkan. Tiada kata laluan. Jika anda kehilangan semua peranti, akaun ini tidak boleh dipulihkan.",
-  "auth.trendingChats": "Sembang trending",
   "auth.trendingTalking": "{{count}} sedang bercakap",
   "explore.mode": "Tunjuk",
-  "explore.trending": "Trending",
+  "explore.trending": "Popular",
   "explore.new": "Baharu",
   "explore.emptyTrending": "Tiada yang trending lagi. Jadilah yang pertama memulakan perbualan.",
   "explore.emptyNew": "Belum ada perbualan terkini. Buka halaman dan tinggalkan komen pertama.",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Akhirnya, bincangkan halaman tanpa meninggalkannya.",
   "www.heroMockMsg2": "URL yang sama, bilik yang sama. Parameter penjejakan dibuang.",
   "www.heroMockMsg3": "Tiada e-mel. Passkey apabila anda mahu bercakap.",
-  "www.heroMockComposer": "Tulis sesuatu..."
+  "www.heroMockComposer": "Tulis sesuatu...",
+  "auth.toastPasskeyFailed": "Tidak dapat menyediakan kunci laluan. Cuba lagi."
 }

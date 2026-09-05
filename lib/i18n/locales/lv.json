@@ -14,7 +14,7 @@
   "settings.mode": "Režīms",
   "settings.language": "Valoda",
   "settings.languageSystem": "Sistēma",
-  "chat.sort": "Kārtot",
+  "chat.sort": "Kārtot pēc",
   "chat.sortBest": "Labākie",
   "chat.sortNew": "Jaunākie",
   "chat.mode": "Režīms",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Nederīgs vai rezervēts",
   "auth.confirming": "Apstiprina…",
   "auth.passkeyDisclaimer": "Tava ierīce apstiprinās. Bez paroles. Ja zaudēsi visas ierīces, šo kontu nevarēs atjaunot.",
-  "auth.trendingChats": "Populārās tērzēšanas",
   "auth.trendingTalking": "{{count}} runā",
   "explore.mode": "Rādīt",
   "explore.trending": "Populāri",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Beidzot runā par lapu, to neatstājot.",
   "www.heroMockMsg2": "Tas pats URL, tā pati istaba. Izsekošanas parametri noņemti.",
   "www.heroMockMsg3": "Bez e-pasta. Piekļuves atslēgas, kad vēlies runāt.",
-  "www.heroMockComposer": "Uzraksti kaut ko..."
+  "www.heroMockComposer": "Uzraksti kaut ko...",
+  "auth.toastPasskeyFailed": "Neizdevās iestatīt piekļuves atslēgu. Mēģiniet vēlreiz."
 }

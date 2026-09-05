@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Virheellinen tai varattu",
   "auth.confirming": "Vahvistetaan…",
   "auth.passkeyDisclaimer": "Laitteesi vahvistaa. Ei salasanaa. Jos menetät kaikki laitteet, tätä tiliä ei voi palauttaa.",
-  "auth.trendingChats": "Nousussa olevat chatit",
   "auth.trendingTalking": "{{count}} keskustelee",
   "explore.mode": "Näytä",
   "explore.trending": "Nousussa",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Viimein, keskustele sivusta poistumatta siitä.",
   "www.heroMockMsg2": "Sama URL, sama huone. Seurantaparametrit poistettu.",
   "www.heroMockMsg3": "Ei sähköpostia. Passkeys kun haluat puhua.",
-  "www.heroMockComposer": "Kirjoita jotain..."
+  "www.heroMockComposer": "Kirjoita jotain...",
+  "auth.toastPasskeyFailed": "Avaimen määrittäminen epäonnistui. Yritä uudelleen."
 }

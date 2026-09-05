@@ -14,7 +14,7 @@
   "settings.mode": "Modo",
   "settings.language": "Idioma",
   "settings.languageSystem": "Sistema",
-  "chat.sort": "Ordenar",
+  "chat.sort": "Ordenar por",
   "chat.sortBest": "Melhores",
   "chat.sortNew": "Novos",
   "chat.mode": "Modo",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Inválido ou reservado",
   "auth.confirming": "A confirmar…",
   "auth.passkeyDisclaimer": "O seu dispositivo confirma. Sem palavra-passe. Se perder todos os dispositivos, esta conta não pode ser recuperada.",
-  "auth.trendingChats": "Chats em destaque",
   "auth.trendingTalking": "{{count}} a conversar",
   "explore.mode": "Mostrar",
   "explore.trending": "Em destaque",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Finalmente, falar sobre a página sem a abandonar.",
   "www.heroMockMsg2": "Mesmo URL, mesma sala. Parâmetros de tracking removidos.",
   "www.heroMockMsg3": "Sem e-mail. Passkeys quando quiser falar.",
-  "www.heroMockComposer": "Escreva algo..."
+  "www.heroMockComposer": "Escreva algo...",
+  "auth.toastPasskeyFailed": "Não foi possível configurar a chave de acesso. Tente novamente."
 }

@@ -14,7 +14,7 @@
   "settings.mode": "模式",
   "settings.language": "語言",
   "settings.languageSystem": "系統",
-  "chat.sort": "排序",
+  "chat.sort": "排序方式",
   "chat.sortBest": "最佳",
   "chat.sortNew": "最新",
   "chat.mode": "模式",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "無效或已保留",
   "auth.confirming": "確認中…",
   "auth.passkeyDisclaimer": "由你的裝置確認。無需密碼。若遺失所有裝置，此帳號將無法復原。",
-  "auth.trendingChats": "熱門聊天",
   "auth.trendingTalking": "{{count}} 人正在討論",
   "explore.mode": "顯示",
   "explore.trending": "熱門",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "終於，不用離開頁面就能討論它。",
   "www.heroMockMsg2": "同一個網址，同一個空間。追蹤參數已移除。",
   "www.heroMockMsg3": "無需電子郵件。想發言時使用 Passkeys。",
-  "www.heroMockComposer": "寫點什麼..."
+  "www.heroMockComposer": "寫點什麼...",
+  "auth.toastPasskeyFailed": "無法設定通行金鑰。請再試一次。"
 }

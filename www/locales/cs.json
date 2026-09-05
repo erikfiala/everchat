@@ -14,7 +14,7 @@
   "settings.mode": "Režim",
   "settings.language": "Jazyk",
   "settings.languageSystem": "Systém",
-  "chat.sort": "Řazení",
+  "chat.sort": "Řadit podle",
   "chat.sortBest": "Nejlepší",
   "chat.sortNew": "Nové",
   "chat.mode": "Režim",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Neplatné nebo rezervované",
   "auth.confirming": "Potvrzuji…",
   "auth.passkeyDisclaimer": "Vaše zařízení potvrdí. Bez hesla. Pokud ztratíte všechna zařízení, tento účet nelze obnovit.",
-  "auth.trendingChats": "Populární chaty",
   "auth.trendingTalking": "{{count}} diskutuje",
   "explore.mode": "Zobrazit",
   "explore.trending": "Populární",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Konečně mluvte o stránce, aniž byste ji opustili.",
   "www.heroMockMsg2": "Stejná URL, stejná místnost. Sledovací parametry odstraněny.",
   "www.heroMockMsg3": "Bez e-mailu. Passkeys, když chcete promluvit.",
-  "www.heroMockComposer": "Napište něco..."
+  "www.heroMockComposer": "Napište něco...",
+  "auth.toastPasskeyFailed": "Nepodařilo se nastavit přístupový klíč. Zkuste to znovu."
 }

@@ -14,7 +14,7 @@
   "settings.mode": "Chế độ",
   "settings.language": "Ngôn ngữ",
   "settings.languageSystem": "Hệ thống",
-  "chat.sort": "Sắp xếp",
+  "chat.sort": "Sắp xếp theo",
   "chat.sortBest": "Hay nhất",
   "chat.sortNew": "Mới",
   "chat.mode": "Chế độ",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Không hợp lệ hoặc đã dành riêng",
   "auth.confirming": "Đang xác nhận…",
   "auth.passkeyDisclaimer": "Thiết bị của bạn sẽ xác nhận. Không mật khẩu. Nếu mất hết thiết bị, tài khoản này không thể khôi phục.",
-  "auth.trendingChats": "Chat đang thịnh hành",
   "auth.trendingTalking": "{{count}} đang trò chuyện",
   "explore.mode": "Hiển thị",
   "explore.trending": "Thịnh hành",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Cuối cùng cũng nói về trang mà không rời đi.",
   "www.heroMockMsg2": "Cùng URL, cùng phòng. Tham số theo dõi đã bị loại.",
   "www.heroMockMsg3": "Không email. Passkeys khi bạn muốn nói.",
-  "www.heroMockComposer": "Viết gì đó..."
+  "www.heroMockComposer": "Viết gì đó...",
+  "auth.toastPasskeyFailed": "Không thể thiết lập khóa truy cập. Thử lại."
 }

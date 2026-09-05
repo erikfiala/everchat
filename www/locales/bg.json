@@ -14,7 +14,7 @@
   "settings.mode": "Режим",
   "settings.language": "Език",
   "settings.languageSystem": "Системен",
-  "chat.sort": "Сортиране",
+  "chat.sort": "Сортиране по",
   "chat.sortBest": "Най-добри",
   "chat.sortNew": "Нови",
   "chat.mode": "Режим",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Невалиден или резервиран",
   "auth.confirming": "Потвърждавам…",
   "auth.passkeyDisclaimer": "Устройството ви ще потвърди. Без парола. Ако загубите всички устройства, този акаунт не може да бъде възстановен.",
-  "auth.trendingChats": "Популярни чатове",
   "auth.trendingTalking": "{{count}} говорят",
   "explore.mode": "Покажи",
   "explore.trending": "Популярни",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Най-сетне говорете за страницата, без да я напускате.",
   "www.heroMockMsg2": "Същият URL, същата стая. Параметрите за проследяване са премахнати.",
   "www.heroMockMsg3": "Без имейл. Passkeys, когато искате да говорите.",
-  "www.heroMockComposer": "Напишете нещо..."
+  "www.heroMockComposer": "Напишете нещо...",
+  "auth.toastPasskeyFailed": "Неуспешно създаване на ключ за достъп. Опитайте отново."
 }

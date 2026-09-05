@@ -14,7 +14,7 @@
   "settings.mode": "موڈ",
   "settings.language": "زبان",
   "settings.languageSystem": "سسٹم",
-  "chat.sort": "ترتیب",
+  "chat.sort": "ترتیب دیں",
   "chat.sortBest": "بہترین",
   "chat.sortNew": "نیا",
   "chat.mode": "موڈ",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "غلط یا محفوظ",
   "auth.confirming": "تصدیق ہو رہی ہے…",
   "auth.passkeyDisclaimer": "آپ کا ڈیوائس تصدیق کرے گا۔ بغیر پاس ورڈ۔ اگر تمام ڈیوائسز کھو جائیں تو یہ اکاؤنٹ بازیاب نہیں ہو سکتا۔",
-  "auth.trendingChats": "ٹرینڈنگ چیٹس",
   "auth.trendingTalking": "{{count}} گفتگو کر رہے ہیں",
   "explore.mode": "دکھائیں",
   "explore.trending": "ٹرینڈنگ",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "آخرکار صفحہ چھوڑے بغیر اس پر بات کریں۔",
   "www.heroMockMsg2": "وہی URL، وہی کمرہ۔ ٹریکنگ پیرامیٹرز ہٹا دیے گئے۔",
   "www.heroMockMsg3": "بغیر ای میل۔ جب بولنا ہو تو Passkeys۔",
-  "www.heroMockComposer": "کچھ لکھیں..."
+  "www.heroMockComposer": "کچھ لکھیں...",
+  "auth.toastPasskeyFailed": "پاس کی سیٹ اپ نہیں ہو سکی۔ دوبارہ کوشش کریں۔"
 }

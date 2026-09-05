@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "અમાન્ય અથવા આરક્ષિત",
   "auth.confirming": "પુષ્ટિ કરી રહ્યા છીએ…",
   "auth.passkeyDisclaimer": "તમારું ડિવાઇસ પુષ્ટિ કરશે. કોઈ પાસવર્ડ નહીં. જો તમે બધા ડિવાઇસ ગુમાવો, તો આ એકાઉન્ટ પુનઃપ્રાપ્ત કરી શકાશે નહીં.",
-  "auth.trendingChats": "ટ્રેન્ડિંગ ચેટ્સ",
   "auth.trendingTalking": "{{count}} વાત કરી રહ્યા છે",
   "explore.mode": "બતાવો",
   "explore.trending": "ટ્રેન્ડિંગ",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "આખરે, પૃષ્ઠ છોડ્યા વગર પૃષ્ઠ વિશે વાત કરો.",
   "www.heroMockMsg2": "એ જ URL, એ જ રૂમ. ટ્રેકિંગ પેરામ્સ કાઢી નાખ્યા.",
   "www.heroMockMsg3": "કોઈ ઇમેઇલ નહીં. બોલવા માંગો ત્યારે Passkeys.",
-  "www.heroMockComposer": "કંઈક લખો..."
+  "www.heroMockComposer": "કંઈક લખો...",
+  "auth.toastPasskeyFailed": "પાસકી સેટ અપ કરી શકાઈ નહીં. ફરી પ્રયાસ કરો."
 }

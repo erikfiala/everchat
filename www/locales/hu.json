@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Érvénytelen vagy foglalt",
   "auth.confirming": "Megerősítés…",
   "auth.passkeyDisclaimer": "Az eszközöd fogja megerősíteni. Nincs jelszó. Ha elveszíted az összes eszközöd, ez a fiók nem állítható helyre.",
-  "auth.trendingChats": "Népszerű csevegések",
   "auth.trendingTalking": "{{count}} beszél",
   "explore.mode": "Megjelenítés",
   "explore.trending": "Népszerű",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Végre beszélhetsz az oldalról anélkül, hogy elhagynád.",
   "www.heroMockMsg2": "Ugyanaz az URL, ugyanaz a szoba. A nyomkövető paraméterek eltávolítva.",
   "www.heroMockMsg3": "Nincs e-mail. Passkey-ek, amikor beszélni szeretnél.",
-  "www.heroMockComposer": "Írj valamit..."
+  "www.heroMockComposer": "Írj valamit...",
+  "auth.toastPasskeyFailed": "Nem sikerült beállítani a hozzáférési kulcsot. Próbálja újra."
 }

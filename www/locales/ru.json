@@ -14,7 +14,7 @@
   "settings.mode": "Режим",
   "settings.language": "Язык",
   "settings.languageSystem": "Системный",
-  "chat.sort": "Сортировка",
+  "chat.sort": "Сортировать по",
   "chat.sortBest": "Лучшие",
   "chat.sortNew": "Новые",
   "chat.mode": "Режим",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Недопустимый или зарезервированный",
   "auth.confirming": "Подтверждение…",
   "auth.passkeyDisclaimer": "Ваше устройство подтвердит. Без пароля. Если вы потеряете все устройства, эту учётную запись нельзя будет восстановить.",
-  "auth.trendingChats": "Популярные чаты",
   "auth.trendingTalking": "{{count}} обсуждают",
   "explore.mode": "Показать",
   "explore.trending": "В тренде",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Наконец, обсуждать страницу, не уходя с неё.",
   "www.heroMockMsg2": "Тот же URL, та же комната. Параметры отслеживания удалены.",
   "www.heroMockMsg3": "Без email. Passkeys, когда хотите говорить.",
-  "www.heroMockComposer": "Напишите что-нибудь..."
+  "www.heroMockComposer": "Напишите что-нибудь...",
+  "auth.toastPasskeyFailed": "Не удалось настроить ключ доступа. Попробуйте снова."
 }

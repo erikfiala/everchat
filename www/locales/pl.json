@@ -14,7 +14,7 @@
   "settings.mode": "Tryb",
   "settings.language": "Język",
   "settings.languageSystem": "Systemowy",
-  "chat.sort": "Sortuj",
+  "chat.sort": "Sortuj według",
   "chat.sortBest": "Najlepsze",
   "chat.sortNew": "Nowe",
   "chat.mode": "Tryb",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Nieprawidłowy lub zarezerwowany",
   "auth.confirming": "Potwierdzanie…",
   "auth.passkeyDisclaimer": "Twoje urządzenie potwierdzi. Bez hasła. Jeśli stracisz wszystkie urządzenia, tego konta nie da się odzyskać.",
-  "auth.trendingChats": "Popularne czaty",
   "auth.trendingTalking": "{{count}} rozmawia",
   "explore.mode": "Pokaż",
   "explore.trending": "Popularne",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Wreszcie rozmowa o stronie bez jej opuszczania.",
   "www.heroMockMsg2": "Ten sam URL, ten sam pokój. Parametry śledzenia usunięte.",
   "www.heroMockMsg3": "Bez e-maila. Passkeys, gdy chcesz mówić.",
-  "www.heroMockComposer": "Napisz coś..."
+  "www.heroMockComposer": "Napisz coś...",
+  "auth.toastPasskeyFailed": "Nie udało się skonfigurować klucza dostępu. Spróbuj ponownie."
 }

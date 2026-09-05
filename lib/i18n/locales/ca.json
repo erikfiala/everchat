@@ -14,7 +14,7 @@
   "settings.mode": "Mode",
   "settings.language": "Idioma",
   "settings.languageSystem": "Sistema",
-  "chat.sort": "Ordenar",
+  "chat.sort": "Ordenar per",
   "chat.sortBest": "Millors",
   "chat.sortNew": "Nous",
   "chat.mode": "Mode",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "No vàlid o reservat",
   "auth.confirming": "Confirmant…",
   "auth.passkeyDisclaimer": "El teu dispositiu ho confirmarà. Sense contrasenya. Si perds tots els dispositius, aquest compte no es pot recuperar.",
-  "auth.trendingChats": "Xats en tendència",
   "auth.trendingTalking": "{{count}} parlant",
   "explore.mode": "Mostra",
   "explore.trending": "Tendència",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Per fi, parla de la pàgina sense sortir-ne.",
   "www.heroMockMsg2": "Mateixa URL, mateixa sala. Paràmetres de seguiment eliminats.",
   "www.heroMockMsg3": "Sense correu. Passkeys quan vulguis parlar.",
-  "www.heroMockComposer": "Escriu alguna cosa..."
+  "www.heroMockComposer": "Escriu alguna cosa...",
+  "auth.toastPasskeyFailed": "No s'ha pogut configurar la clau d'accés. Torna-ho a provar."
 }

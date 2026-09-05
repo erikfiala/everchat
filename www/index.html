@@ -29,7 +29,7 @@
   <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-stone/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+    <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
       <a class="home block leading-none" href="/">
         <img
           class="h-auto w-[8.5rem] pb-1"
@@ -42,10 +42,6 @@
         />
       </a>
       <div class="doc-bar-end">
-        <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Site" data-i18n="www.footerAria" data-i18n-attr="aria-label">
-          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>
-          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
-        </nav>
         <label class="nav-lang">
           <svg
             class="nav-lang-icon"
@@ -60,9 +56,12 @@
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-            <path d="M2 12h20" />
+            <path d="m5 8 6 6" />
+            <path d="m4 14 6-6 2-3" />
+            <path d="M2 5h12" />
+            <path d="M7 2h1" />
+            <path d="m22 22-5-10-5 10" />
+            <path d="M14 18h6" />
           </svg>
           <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
         </label>
@@ -334,7 +333,7 @@
       </section>
 
       <section
-        class="section install mx-auto mb-0 flex w-full max-w-168 flex-col items-start pt-10 text-left"
+        class="section install mx-auto mb-0 flex w-full max-w-168 flex-col items-start pt-10 text-start"
         id="get-extension"
       >
         <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]" data-i18n="www.installTitle">

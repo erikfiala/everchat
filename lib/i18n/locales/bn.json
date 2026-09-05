@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "অবৈধ বা সংরক্ষিত",
   "auth.confirming": "নিশ্চিত করা হচ্ছে…",
   "auth.passkeyDisclaimer": "আপনার ডিভাইস নিশ্চিত করবে। কোনো পাসওয়ার্ড নেই। সব ডিভাইস হারালে এই অ্যাকাউন্ট পুনরুদ্ধার করা যাবে না।",
-  "auth.trendingChats": "ট্রেন্ডিং চ্যাট",
   "auth.trendingTalking": "{{count}} জন কথা বলছে",
   "explore.mode": "দেখান",
   "explore.trending": "ট্রেন্ডিং",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "অবশেষে, পৃষ্ঠা না ছেড়েই পৃষ্ঠা নিয়ে কথা বলুন।",
   "www.heroMockMsg2": "একই URL, একই রুম। ট্র্যাকিং প্যারাম সরানো।",
   "www.heroMockMsg3": "কোনো ইমেইল নেই। কথা বলতে চাইলে Passkeys।",
-  "www.heroMockComposer": "কিছু লিখুন..."
+  "www.heroMockComposer": "কিছু লিখুন...",
+  "auth.toastPasskeyFailed": "পাসকি সেট আপ করা যায়নি। আবার চেষ্টা করুন।"
 }

@@ -14,7 +14,7 @@
   "settings.mode": "โหมด",
   "settings.language": "ภาษา",
   "settings.languageSystem": "ระบบ",
-  "chat.sort": "เรียงลำดับ",
+  "chat.sort": "เรียงตาม",
   "chat.sortBest": "ดีที่สุด",
   "chat.sortNew": "ใหม่",
   "chat.mode": "โหมด",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "ไม่ถูกต้องหรือถูกสงวนไว้",
   "auth.confirming": "กำลังยืนยัน…",
   "auth.passkeyDisclaimer": "อุปกรณ์ของคุณจะยืนยัน ไม่ต้องใช้รหัสผ่าน หากสูญเสียอุปกรณ์ทั้งหมด จะไม่สามารถกู้คืนบัญชีนี้ได้",
-  "auth.trendingChats": "แชทยอดนิยม",
   "auth.trendingTalking": "{{count}} คนกำลังพูดคุย",
   "explore.mode": "แสดง",
   "explore.trending": "ยอดนิยม",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "ในที่สุด ก็พูดเกี่ยวกับหน้าได้โดยไม่ต้องออกจากหน้า",
   "www.heroMockMsg2": "URL เดียวกัน ห้องเดียวกัน พารามิเตอร์ติดตามถูกลบแล้ว",
   "www.heroMockMsg3": "ไม่มีอีเมล Passkeys เมื่อคุณต้องการพูด",
-  "www.heroMockComposer": "เขียนอะไรสักอย่าง..."
+  "www.heroMockComposer": "เขียนอะไรสักอย่าง...",
+  "auth.toastPasskeyFailed": "ตั้งค่าพาสคีย์ไม่ได้ ลองอีกครั้ง"
 }

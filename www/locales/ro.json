@@ -14,7 +14,7 @@
   "settings.mode": "Mod",
   "settings.language": "Limbă",
   "settings.languageSystem": "Sistem",
-  "chat.sort": "Sortare",
+  "chat.sort": "Sortare după",
   "chat.sortBest": "Cele mai bune",
   "chat.sortNew": "Noi",
   "chat.mode": "Mod",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Invalid sau rezervat",
   "auth.confirming": "Se confirmă…",
   "auth.passkeyDisclaimer": "Dispozitivul tău va confirma. Fără parolă. Dacă pierzi toate dispozitivele, acest cont nu poate fi recuperat.",
-  "auth.trendingChats": "Chaturi în tendințe",
   "auth.trendingTalking": "{{count}} discută",
   "explore.mode": "Afișează",
   "explore.trending": "Tendințe",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "În sfârșit, vorbește despre pagină fără să o părăsești.",
   "www.heroMockMsg2": "Același URL, aceeași cameră. Parametrii de urmărire eliminați.",
   "www.heroMockMsg3": "Fără e-mail. Passkey-uri când vrei să vorbești.",
-  "www.heroMockComposer": "Scrie ceva..."
+  "www.heroMockComposer": "Scrie ceva...",
+  "auth.toastPasskeyFailed": "Nu s-a putut configura cheia de acces. Încercați din nou."
 }

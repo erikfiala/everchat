@@ -14,7 +14,7 @@
   "settings.mode": "Način",
   "settings.language": "Jezik",
   "settings.languageSystem": "Sustav",
-  "chat.sort": "Sortiraj",
+  "chat.sort": "Sortiraj po",
   "chat.sortBest": "Najbolje",
   "chat.sortNew": "Novo",
   "chat.mode": "Način",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Nevažeće ili rezervirano",
   "auth.confirming": "Potvrđujem…",
   "auth.passkeyDisclaimer": "Vaš uređaj će potvrditi. Bez lozinke. Ako izgubite sve uređaje, ovaj račun se ne može oporaviti.",
-  "auth.trendingChats": "Popularni chatovi",
   "auth.trendingTalking": "{{count}} razgovara",
   "explore.mode": "Prikaži",
   "explore.trending": "Popularno",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Napokon, razgovarajte o stranici bez da je napustite.",
   "www.heroMockMsg2": "Isti URL, ista soba. Parametri praćenja uklonjeni.",
   "www.heroMockMsg3": "Bez e-pošte. Passkeys kad želite govoriti.",
-  "www.heroMockComposer": "Napišite nešto..."
+  "www.heroMockComposer": "Napišite nešto...",
+  "auth.toastPasskeyFailed": "Nije moguće postaviti pristupni ključ. Pokušajte ponovo."
 }

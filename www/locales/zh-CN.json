@@ -14,7 +14,7 @@
   "settings.mode": "模式",
   "settings.language": "语言",
   "settings.languageSystem": "跟随系统",
-  "chat.sort": "排序",
+  "chat.sort": "排序方式",
   "chat.sortBest": "最佳",
   "chat.sortNew": "最新",
   "chat.mode": "模式",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "无效或已保留",
   "auth.confirming": "确认中…",
   "auth.passkeyDisclaimer": "由你的设备确认。无需密码。如果丢失所有设备，此账户无法恢复。",
-  "auth.trendingChats": "热门聊天",
   "auth.trendingTalking": "{{count}} 人正在讨论",
   "explore.mode": "显示",
   "explore.trending": "热门",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "终于可以谈论页面而不离开它。",
   "www.heroMockMsg2": "同一 URL，同一房间。跟踪参数已去除。",
   "www.heroMockMsg3": "无需邮箱。想发言时使用通行密钥。",
-  "www.heroMockComposer": "写点什么..."
+  "www.heroMockComposer": "写点什么...",
+  "auth.toastPasskeyFailed": "无法设置通行密钥。请重试。"
 }

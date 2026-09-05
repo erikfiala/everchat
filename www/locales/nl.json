@@ -14,7 +14,7 @@
   "settings.mode": "Modus",
   "settings.language": "Taal",
   "settings.languageSystem": "Systeem",
-  "chat.sort": "Sorteren",
+  "chat.sort": "Sorteren op",
   "chat.sortBest": "Beste",
   "chat.sortNew": "Nieuw",
   "chat.mode": "Modus",
@@ -44,10 +44,9 @@
   "auth.invalidOrReserved": "Ongeldig of gereserveerd",
   "auth.confirming": "Bevestigen…",
   "auth.passkeyDisclaimer": "Je apparaat bevestigt. Geen wachtwoord. Als je alle apparaten verliest, kan dit account niet worden hersteld.",
-  "auth.trendingChats": "Populaire chats",
   "auth.trendingTalking": "{{count}} in gesprek",
   "explore.mode": "Toon",
-  "explore.trending": "Trending",
+  "explore.trending": "Populair",
   "explore.new": "Nieuw",
   "explore.emptyTrending": "Nog niets trending. Wees de eerste die een gesprek start.",
   "explore.emptyNew": "Nog geen recente gesprekken. Open een pagina en laat de eerste reactie achter.",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Eindelijk over de pagina praten zonder die te verlaten.",
   "www.heroMockMsg2": "Zelfde URL, dezelfde ruimte. Trackingparameters verwijderd.",
   "www.heroMockMsg3": "Geen e-mail. Passkeys wanneer je wilt spreken.",
-  "www.heroMockComposer": "Schrijf iets..."
+  "www.heroMockComposer": "Schrijf iets...",
+  "auth.toastPasskeyFailed": "Passkey kon niet worden ingesteld. Probeer het opnieuw."
 }

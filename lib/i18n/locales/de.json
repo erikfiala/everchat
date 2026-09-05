@@ -14,7 +14,7 @@
   "settings.mode": "Modus",
   "settings.language": "Sprache",
   "settings.languageSystem": "System",
-  "chat.sort": "Sortieren",
+  "chat.sort": "Sortieren nach",
   "chat.sortBest": "Beste",
   "chat.sortNew": "Neu",
   "chat.mode": "Modus",
@@ -44,7 +44,6 @@
   "auth.invalidOrReserved": "Ungültig oder reserviert",
   "auth.confirming": "Wird bestätigt…",
   "auth.passkeyDisclaimer": "Dein Gerät bestätigt. Kein Passwort. Wenn du alle Geräte verlierst, kann dieses Konto nicht wiederhergestellt werden.",
-  "auth.trendingChats": "Beliebte Chats",
   "auth.trendingTalking": "{{count}} im Gespräch",
   "explore.mode": "Anzeigen",
   "explore.trending": "Beliebt",
@@ -156,5 +155,6 @@
   "www.heroMockMsg1": "Endlich über die Seite sprechen, ohne sie zu verlassen.",
   "www.heroMockMsg2": "Gleiche URL, gleicher Raum. Tracking-Parameter entfernt.",
   "www.heroMockMsg3": "Keine E-Mail. Passkeys, wenn du sprechen willst.",
-  "www.heroMockComposer": "Schreib etwas..."
+  "www.heroMockComposer": "Schreib etwas...",
+  "auth.toastPasskeyFailed": "Passkey konnte nicht eingerichtet werden. Bitte erneut versuchen."
 }

@@ -159,7 +159,8 @@
   gap: clamp(1.75rem, 4vw, 2.75rem);
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: var(--hero-pad) var(--space);
+  /* top = 2× --hero-pad; bottom unchanged */
+  padding: calc(var(--hero-pad) * 2) var(--space) var(--hero-pad);
 }
 
 @media (min-width: 960px) {

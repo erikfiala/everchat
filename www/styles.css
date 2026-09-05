@@ -115,26 +115,6 @@ a:hover {
   mix-blend-mode: multiply;
 }
 
-.atmosphere-mark {
-  position: absolute;
-  right: -6%;
-  top: 8%;
-  width: min(42vw, 28rem);
-  height: auto;
-  opacity: 0.06;
-  pointer-events: none;
-  animation: mark-drift 22s ease-in-out infinite alternate;
-}
-
-@keyframes mark-drift {
-  from {
-    transform: translate3d(0, 0, 0) rotate(-4deg);
-  }
-  to {
-    transform: translate3d(-2%, 3%, 0) rotate(2deg);
-  }
-}
-
 @keyframes atmosphere-drift {
   from {
     filter: saturate(1) brightness(1);
@@ -378,32 +358,37 @@ a:hover {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.55rem 0.75rem;
-  background: var(--stone-deep);
+  gap: 0.4rem;
+  height: 1.75rem;
+  padding: 0 0.55rem;
+  background: color-mix(in srgb, var(--stone-deep) 72%, var(--paper));
   border-bottom: 1px solid var(--line);
 }
 
 .dots {
   display: flex;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.28rem;
+  flex-shrink: 0;
 }
 
 .dots span {
-  width: 0.45rem;
-  height: 0.45rem;
+  width: 0.36rem;
+  height: 0.36rem;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--mute) 70%, var(--stone-deep));
+  background: color-mix(in srgb, var(--mute) 55%, var(--stone-deep));
 }
 
 .address {
   flex: 1;
-  font-size: 0.72rem;
+  min-width: 0;
+  font-size: 0.62rem;
+  line-height: 1;
   color: var(--mute);
   background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 0.25rem;
-  padding: 0.28rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.45rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -649,31 +634,38 @@ a:hover {
   list-style: none;
   counter-reset: step;
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
+  max-width: 36rem;
 }
 
 .install-steps li {
   counter-increment: step;
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  align-items: flex-start;
   gap: 0.75rem;
-  align-items: start;
   font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--ink-soft);
 }
 
 .install-steps li::before {
   content: counter(step);
+  flex: 0 0 1.6rem;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 0.85rem;
   width: 1.6rem;
   height: 1.6rem;
-  display: grid;
-  place-items: center;
+  line-height: 1.6rem;
+  text-align: center;
   background: var(--accent-soft);
   color: var(--accent-deep);
   border-radius: var(--radius);
+}
+
+.install-steps li > span {
+  flex: 1;
+  min-width: 0;
 }
 
 .install-steps code {
@@ -702,17 +694,20 @@ a:hover {
 }
 
 .footer-mark {
-  width: 1.75rem;
-  height: auto;
-  opacity: 0.55;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.45rem;
+  opacity: 0.9;
 }
 
 .site-footer a {
   color: inherit;
+  text-transform: none;
 }
 
 .site-footer p {
   margin: 0;
+  text-transform: none;
 }
 
 .footer-links {
@@ -901,7 +896,6 @@ body.doc {
 
 @media (prefers-reduced-motion: reduce) {
   .atmosphere,
-  .atmosphere-mark,
   .brand,
   .headline,
   .lede,

@@ -188,7 +188,7 @@
   width: auto;
   height: 2rem; /* ~32px — normal marketing wordmark */
   max-width: 10rem; /* ~160px */
-  padding-bottom: 2px; /* optical vertical balance */
+  padding-bottom: 4px; /* optical vertical balance */
 }
 
 @media (min-width: 960px) {
@@ -232,12 +232,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   line-height: 0;
   text-decoration: none;
   background: var(--panel); /* white by default — keep on hover */
   border: 1.5px solid var(--line); /* slate-300 */
   border-radius: var(--radius);
-  padding: 0 0.5rem; /* x pad only — frame hugs badge height */
+  padding: 0 0.75rem; /* x pad only — frame height = badge image */
   height: auto;
   flex: 0 0 auto;
   width: fit-content;
@@ -258,64 +259,10 @@
 .chrome-badge {
   display: block;
   width: auto;
-  height: 2.125rem; /* ~34px — typical CWS badge scale */
-  max-width: 11rem;
+  height: 4.6875rem; /* 75px — HTML width/height (248×75), natural badge scale */
+  max-width: 15.5rem; /* 248px */
   aspect-ratio: 496 / 150;
   object-fit: contain;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border-radius: var(--radius);
-  padding: 0.85rem 1.25rem;
-  border: 1.5px solid transparent;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: var(--paper);
-  border-color: var(--accent);
-}
-
-.btn-primary:hover {
-  background: var(--accent); /* no fill darkening */
-  border-color: var(--accent-deep); /* outline only */
-  color: var(--paper);
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--ink-soft);
-  border-color: var(--line);
-  padding: 0 1rem;
-  white-space: nowrap;
-}
-
-.cta-group .btn-ghost {
-  height: 2.5rem; /* aligns with framed CWS badge */
-  flex: 0 0 auto;
-  align-self: center;
-  padding-block: 0;
-  font-size: 0.9rem;
-}
-
-.btn-ghost:hover {
-  background: transparent; /* no fill change */
-  border-color: color-mix(in srgb, var(--line) 55%, var(--mute)); /* milder than slate-400 */
-  color: var(--ink-soft);
 }
 
 @keyframes brand-in {
@@ -533,6 +480,7 @@
   flex-shrink: 0;
   object-fit: contain;
   object-position: left center;
+  padding-bottom: 4px; /* optical vertical balance */
 }
 
 .thread {
@@ -556,8 +504,7 @@
 }
 .msg:nth-child(2) {
   animation-delay: 0.78s;
-  border-left-color: var(--stone-deep);
-  margin-left: 0.65rem;
+  margin-left: 0.65rem; /* indent reply; same rail color as siblings */
 }
 .msg:nth-child(3) {
   animation-delay: 1.02s;

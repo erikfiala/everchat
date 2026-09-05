@@ -358,8 +358,8 @@
   /* Compact product shot — ~half the prior tall mock (was min(70vh, 38rem)) */
   height: min(36vh, 19rem);
   display: grid;
-  /* fr + % max can leave free space on the right (justify-content:start) */
-  grid-template-columns: minmax(0, 1.6fr) minmax(11.5rem, 1fr);
+  /* ~40px narrower sidepanel vs prior 1.6fr/1fr; fr tracks keep flush right edge */
+  grid-template-columns: minmax(0, 2.15fr) minmax(9rem, 1fr);
   grid-template-rows: auto 1fr;
   justify-content: stretch;
   /* Match sidepanel so any residual column gap stays white, not paper grey */
@@ -373,8 +373,8 @@
 @media (max-width: 959px) {
   .browser {
     height: min(30vh, 15.5rem);
-    /* fr tracks only — % max left free space / right gutter beside sidepanel */
-    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 1.05fr);
+    /* ~40px narrower sidepanel; fr tracks only — no % max (avoids right gutter) */
+    grid-template-columns: minmax(0, 1.2fr) minmax(8rem, 1fr);
   }
 
   .page {
@@ -384,8 +384,8 @@
 
 @media (max-width: 560px) {
   .browser {
-    /* Collapse left article further — sidepanel gets majority share */
-    grid-template-columns: minmax(0, 0.85fr) minmax(11.25rem, 1.2fr);
+    /* Still favor chat, but ~40px more page width than prior 0.85/1.2 */
+    grid-template-columns: minmax(0, 1.1fr) minmax(8.75rem, 1fr);
   }
 
   .page {

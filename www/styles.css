@@ -205,18 +205,23 @@ a:hover {
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
-/* Official Chrome Web Store badge — resize only, keep aspect ratio */
+/* Official Chrome Web Store badge — transparent asset; we own slate frame */
 .chrome-badge-link {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 0;
   text-decoration: none;
-  border-radius: 0.2rem;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  background: transparent;
+  border: 1.5px solid var(--line); /* slate-300 */
+  border-radius: var(--radius);
+  padding: 0.35rem 0.55rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .chrome-badge-link:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
+  background: #f1f5f9; /* slate-100 — one step from paper/transparent */
+  border-color: #94a3b8; /* slate-400 — one step from --line (slate-300) */
 }
 
 .chrome-badge-link:focus-visible {
@@ -229,6 +234,7 @@ a:hover {
   width: min(100%, 12.5rem);
   height: auto;
   aspect-ratio: 496 / 150;
+  object-fit: contain;
 }
 
 .btn {
@@ -273,7 +279,8 @@ a:hover {
 }
 
 .btn-ghost:hover {
-  border-color: var(--ink-soft);
+  background: #f1f5f9; /* slate-100 — one step from paper/transparent */
+  border-color: #94a3b8; /* slate-400 — one step from --line (slate-300) */
   color: var(--ink);
 }
 

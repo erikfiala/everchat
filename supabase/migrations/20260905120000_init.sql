@@ -68,7 +68,7 @@ create table public.messages (
     or char_length(body) > 0
     or gif_url is not null
   ),
-  constraint body_max check (char_length(body) <= 2000)
+  constraint body_max check (char_length(body) <= 300)
 );
 
 create index messages_page_parent_created_idx

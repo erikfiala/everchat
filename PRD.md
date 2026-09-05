@@ -220,7 +220,7 @@ Everchat is **async nested comments**, not a live chat room. New messages appear
 
 ### Composer constraints
 
-- Max body length: **2,000** characters (UTF-8).
+- Max body length: **300** characters (UTF-8). Composer shows remaining count (Twitter-style); turns red at **250+** typed.
 - Optional single GIF URL (`gif_url`).
 - Emoji picker (client-side).
 - Rate-limited (see Trust & safety).

@@ -2,7 +2,9 @@
 export const COLLAPSE_DOWNVOTE_RATIO = 0.67;
 export const COLLAPSE_MIN_VOTES = 3;
 
-export const MAX_BODY_LENGTH = 2000;
+export const MAX_BODY_LENGTH = 300;
+/** Remaining-count warning zone (Twitter-style): red when length >= this. */
+export const BODY_WARN_AT = 250;
 export const HANDLE_MIN = 3;
 export const HANDLE_MAX = 20;
 export const HANDLE_REGEX = /^[a-z0-9_]{3,20}$/;

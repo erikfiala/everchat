@@ -4,7 +4,7 @@ import { Image, Smile, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { MAX_BODY_LENGTH } from '@/lib/constants';
+import { BODY_WARN_AT, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
@@ -78,8 +78,12 @@ export function Composer({
     );
   }
 
+  const remaining = MAX_BODY_LENGTH - body.length;
+  const overWarn = body.length >= BODY_WARN_AT;
+
   const submit = async () => {
     if (!body.trim() && !gifUrl) return;
+    if (body.length > MAX_BODY_LENGTH) return;
     setBusy(true);
     try {
       await onSubmit(body.trim(), gifUrl);
@@ -94,7 +98,7 @@ export function Composer({
   };
 
   const onEmoji = (emoji: EmojiClickData) => {
-    setBody((b) => b + emoji.emoji);
+    setBody((b) => (b + emoji.emoji).slice(0, MAX_BODY_LENGTH));
     setShowEmoji(false);
     taRef.current?.focus();
   };
@@ -116,7 +120,7 @@ export function Composer({
         value={body}
         maxLength={MAX_BODY_LENGTH}
         placeholder="Leave a comment…"
-        onChange={(e) => setBody(e.target.value)}
+        onChange={(e) => setBody(e.target.value.slice(0, MAX_BODY_LENGTH))}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
@@ -161,12 +165,20 @@ export function Composer({
         >
           <Image className="h-4 w-4" />
         </Button>
-        <span className="ml-auto text-[11px] text-[var(--color-muted-foreground)]">
-          {body.length}/{MAX_BODY_LENGTH}
+        <span
+          className={cn(
+            'ml-auto tabular-nums text-[11px]',
+            overWarn
+              ? 'font-medium text-red-600'
+              : 'text-[var(--color-muted-foreground)]',
+          )}
+          aria-live="polite"
+        >
+          {remaining}
         </span>
         <Button
           size="sm"
-          disabled={busy || (!body.trim() && !gifUrl)}
+          disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
           onClick={submit}
         >
           {busy ? 'Sending…' : 'Post'}

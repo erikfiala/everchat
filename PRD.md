@@ -211,7 +211,7 @@ Everchat is **async nested comments**, not a live chat room. New messages appear
 | Top-level post | “A tweet on this URL” — `parent_id = null` |
 | Reply | Nested child of any message; **unbounded depth** |
 | Mention prefix | Composer auto-inserts `@parentHandle ` before the user’s text; stored as part of `body` |
-| Soft delete | Author can delete; body renders as `[deleted]`; children remain |
+| Hard delete | Author can delete; content is removed from live DB. If replies still need the row for thread structure, a content-empty tombstone remains and renders italic **Deleted comment.** (no recoverable body/media) |
 | Sort (v1) | **Best** (score desc, then recency); toggle **New** (created_at desc) |
 | Deep trees | Collapse after ~3 visible levels with “Continue thread”; virtualize long lists |
 | Empty state | “Be the first to comment on this page.” |
@@ -264,11 +264,11 @@ Everchat does **not** employ content moderators and does **not** remove speech b
 | Always recoverable | User can **expand / show** on click; collapse again with hide. Never permanently deleted by the system for score alone. |
 | Children | Nested replies remain reachable; collapsed parent shows a stub, children may still render or sit under “show” (Reddit-like: expand parent to read context) |
 | Reversibility | If votes shift back under threshold, auto-uncollapse on next load / realtime update |
-| Not the same as | Author soft-delete (`[deleted]`), depth collapse (“continue thread”), or staff takedown (none in v1) |
+| Not the same as | Author hard-delete (**Deleted comment.**), depth collapse (“continue thread”), or staff takedown (none in v1) |
 
 **Product beat:** free speech with crowd signal — junk gets folded away, not erased; curious readers can always open it.
 
-Authored soft-delete and community collapse can both apply; deleted body still shows `[deleted]` regardless of score.
+Authored hard-delete and community collapse can both apply; a tombstone shows **Deleted comment.** (no body/media) regardless of score.
 
 ---
 
@@ -549,7 +549,7 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 
 | Resource | Read | Write |
 |---|---|---|
-| `messages` | Anyone (including anon) | Authenticated insert; author soft-delete |
+| `messages` | Anyone (including anon) | Authenticated insert; author hard-delete (`delete_own_message`) |
 | `profiles` (public cols) | Anyone | Owner update (avatar, etc.) |
 | `votes` | Authenticated (own + aggregates via score) | Authenticated upsert/delete own vote |
 | `pages` | Anyone | Upsert on first comment (authenticated) or service role |
@@ -567,7 +567,7 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 - Community collapse at majority-downvote threshold (Reddit-style show/hide)
 - Report flag on messages (`reports` table) — **store only** for future abuse patterns; **no admin takedown UI in v1**
 - Reserved handles blocklist
-- Soft delete for own messages
+- Hard delete for own messages (content purged; structural tombstone only if replies remain)
 - Giphy content filtered via Giphy’s content rating param (e.g. `pg-13` or stricter)
 
 Out of scope v1: bans, shadowban UI, keyword automod, staff removals, spam classifiers beyond rate limits.
@@ -644,7 +644,7 @@ messages
   score         integer not null default 0
   upvotes       integer not null default 0   -- denormalized for collapse threshold
   downvotes     integer not null default 0
-  deleted_at    timestamptz null
+  deleted_at    timestamptz null  -- set only for content-empty tombstones (replies still need the id)
   created_at    timestamptz
 
 votes
@@ -689,7 +689,7 @@ notifications
 
 1. On `votes` insert / update / delete → recompute `messages.score`, `upvotes`, `downvotes` for that message.
 2. Same event → if `voter_id !== author_id`, adjust `profiles.karma` by the delta of the vote change.
-3. Soft delete does not wipe votes; score may remain for sorting of tombstones or be frozen — **v1: keep score on tombstone, hide vote controls**.
+3. Hard delete removes the row when it is a leaf (and recursively purges empty ancestor tombstones). If children remain, wipe `body`/`gif_url`, set `deleted_at`, zero score/vote tallies, and delete votes on that message — UI shows **Deleted comment.**
 4. On `messages` insert with non-null `parent_id` → create `notifications` row for parent author (if ≠ replier), including `page_url` and `body_preview`.
 5. Profile activity is a query: `messages where author_id = me` joined to `pages` — no separate table in v1.
 6. Community collapse is **derived client-side (or view)** from `upvotes`/`downvotes` vs threshold constants — no separate “moderator” action. Optional cached `is_collapsed` boolean updated by trigger for query convenience.
@@ -744,7 +744,7 @@ Side Panel
 | All passkeys lost | Account unrecoverable in v1 (clear warning at signup) |
 | Deep nest | Collapse + continue |
 | Community collapsed | Stub “Community collapsed · show”; expand reveals body; never auto-deleted |
-| Deleted node | `[deleted]`, children intact |
+| Deleted node | Italic **Deleted comment.** (no body/media); children intact under tombstone or synthesized missing parent |
 | Network / auth error | Inline error, retry |
 | Tab navigates | Remount thread for new canonical URL |
 | Notification arrives | Badge on Notifications tab; optional Chrome OS notification |
@@ -816,7 +816,7 @@ Side Panel
 7. After deep-link open, clear `#ec-msg-…` from the address bar so host SPAs are undisturbed?
 8. Mute / disable OS notifications while keeping the Notifications tab?
 9. Refresh `pages` metadata on every Chat open, or only when empty / stale (e.g. >7 days)?
-10. Profile activity: include soft-deleted own messages as tombstones, or hide them?
+10. Profile activity: hide hard-deleted / tombstoned own messages (v1: hide via `deleted_at is null`).
 11. Prompt users to add a second passkey after first successful post?
 12. How aggressively to minimize / hash IP logs for abuse prevention vs privacy?
 13. Exact collapse threshold: stick with 67% + min 3 votes, or Reddit-like “score below X and downvote ratio”?

@@ -60,6 +60,28 @@ export function buildMessageTree(
     });
   }
 
+  // Orphan replies whose parent row is gone: synthesize a deleted placeholder
+  // so the tree stays nested under italic "Deleted comment."
+  for (const node of [...nodes.values()]) {
+    if (!node.parent_id || nodes.has(node.parent_id)) continue;
+    nodes.set(node.parent_id, {
+      id: node.parent_id,
+      page_id: node.page_id,
+      author_id: node.author_id,
+      parent_id: null,
+      body: '',
+      gif_url: null,
+      score: 0,
+      upvotes: 0,
+      downvotes: 0,
+      deleted_at: new Date(0).toISOString(),
+      created_at: node.created_at,
+      author: null,
+      children: [],
+      myVote: null,
+    });
+  }
+
   const roots: MessageNode[] = [];
   for (const node of nodes.values()) {
     if (node.parent_id && nodes.has(node.parent_id)) {
@@ -134,17 +156,13 @@ export async function createMessage(input: {
   return data as MessageWithAuthor;
 }
 
-export async function softDeleteMessage(
-  messageId: string,
-  authorId: string,
-): Promise<void> {
+export async function deleteMessage(messageId: string): Promise<'deleted' | 'tombstone'> {
   const sb = getSupabase();
-  const { error } = await sb
-    .from('messages')
-    .update({ deleted_at: new Date().toISOString(), body: '[deleted]' })
-    .eq('id', messageId)
-    .eq('author_id', authorId);
+  const { data, error } = await sb.rpc('delete_own_message', {
+    p_message_id: messageId,
+  });
   if (error) throw error;
+  return (data as 'deleted' | 'tombstone') || 'deleted';
 }
 
 export async function reportMessage(

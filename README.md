@@ -148,7 +148,7 @@ www/                           # everch.at landing + .well-known/webauthn
 - [ ] Logged out: read OK; compose/vote/Notifs/Profile → auth landing
 - [ ] Sign in anonymously → handle → passkey → toast
 - [ ] Already joined? Unlock
-- [ ] Post / reply with `@mention` / vote / soft-delete
+- [ ] Post / reply with `@mention` / vote / hard-delete
 - [ ] Community collapse stub + expand
 - [ ] Notification → new tab `#ec-msg-…` → scroll + highlight
 - [ ] Profile avatar, devices, activity deep link

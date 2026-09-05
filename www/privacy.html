@@ -161,8 +161,9 @@
         </li>
         <li>
           <strong>Messages</strong> — body text (up to 2,000 characters), optional GIF URL,
-          parent message if it is a reply, timestamps, vote totals, soft-delete flag
-          if you delete your own post.
+          parent message if it is a reply, timestamps, vote totals. If you delete your
+          own post we remove that content from live systems; a content-empty structural
+          placeholder may remain only so replies can keep their place in the thread.
         </li>
         <li><strong>Votes</strong> — which handle voted +1 or −1 on which message (needed to prevent double-voting and to compute score).</li>
         <li>
@@ -295,14 +296,16 @@
         <li>
           <strong>Public posts, votes, handles, avatars, page metadata, and karma</strong>
           remain while the account/thread exists and the service is operating, unless
-          you soft-delete your own message, we delete data after a valid request we
+          you delete your own message, we delete data after a valid request we
           can authenticate, or we remove material under the
           <a href="/terms">Terms</a>.
         </li>
         <li>
-          <strong>Soft-deleted messages</strong> are hidden from normal display but may
-          remain in storage for a period for integrity, abuse review, or backup recovery
-          before hard deletion is practicable.
+          <strong>Deleted messages</strong> — we remove post content (body and media)
+          from our live database when you delete. If replies still need the row for
+          thread structure, a content-empty placeholder may remain until those replies
+          are gone; it does not keep a recoverable copy of what you wrote. Ephemeral
+          backups and rare legal holds may lag live deletion until rotated or released.
         </li>
         <li>
           <strong>Ephemeral challenges, handle reservations, and rate-limit counters</strong>
@@ -338,7 +341,7 @@
       <p>You can, in the product:</p>
       <ul>
         <li>Read without an account</li>
-        <li>Soft-delete your own messages</li>
+        <li>Delete your own messages (content removed from live systems)</li>
         <li>Change or remove an avatar</li>
         <li>Add or revoke passkeys on the account (keep at least one while the account exists)</li>
       </ul>

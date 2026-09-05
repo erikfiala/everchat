@@ -62,7 +62,12 @@ create table public.messages (
   downvotes integer not null default 0,
   deleted_at timestamptz,
   created_at timestamptz not null default now(),
-  constraint body_or_gif check (char_length(body) > 0 or gif_url is not null),
+  -- Empty body allowed only for hard-deleted tombstones (replies still need the row)
+  constraint body_or_gif check (
+    deleted_at is not null
+    or char_length(body) > 0
+    or gif_url is not null
+  ),
   constraint body_max check (char_length(body) <= 2000)
 );
 
@@ -249,6 +254,108 @@ create trigger messages_notify_reply
 after insert on public.messages
 for each row execute function public.notify_on_reply();
 
+-- Hard delete: purge content; tombstone (empty body/gif + deleted_at) only if children remain
+create or replace function public.purge_empty_tombstone(p_message_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_parent_id uuid;
+  v_deleted_at timestamptz;
+  has_children boolean;
+begin
+  select parent_id, deleted_at
+    into v_parent_id, v_deleted_at
+  from public.messages
+  where id = p_message_id
+  for update;
+
+  if not found then
+    return;
+  end if;
+
+  if v_deleted_at is null then
+    return;
+  end if;
+
+  select exists(
+    select 1 from public.messages where parent_id = p_message_id
+  ) into has_children;
+
+  if has_children then
+    return;
+  end if;
+
+  delete from public.messages where id = p_message_id;
+
+  if v_parent_id is not null then
+    perform public.purge_empty_tombstone(v_parent_id);
+  end if;
+end;
+$$;
+
+create or replace function public.delete_own_message(p_message_id uuid)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  uid uuid := public.current_user_id();
+  v_parent_id uuid;
+  has_children boolean;
+begin
+  if uid is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  select parent_id into v_parent_id
+  from public.messages
+  where id = p_message_id
+    and author_id = uid
+  for update;
+
+  if not found then
+    raise exception 'Message not found';
+  end if;
+
+  select exists(
+    select 1 from public.messages where parent_id = p_message_id
+  ) into has_children;
+
+  if has_children then
+    update public.messages
+    set
+      body = '',
+      gif_url = null,
+      deleted_at = coalesce(deleted_at, now()),
+      score = 0,
+      upvotes = 0,
+      downvotes = 0
+    where id = p_message_id;
+
+    delete from public.votes where message_id = p_message_id;
+
+    return 'tombstone';
+  end if;
+
+  delete from public.messages where id = p_message_id;
+
+  if v_parent_id is not null then
+    perform public.purge_empty_tombstone(v_parent_id);
+  end if;
+
+  return 'deleted';
+end;
+$$;
+
+revoke all on function public.delete_own_message(uuid) from public;
+grant execute on function public.delete_own_message(uuid) to anon, authenticated, service_role;
+revoke all on function public.purge_empty_tombstone(uuid) from public;
+grant execute on function public.purge_empty_tombstone(uuid) to service_role;
+
 -- Username helpers
 create or replace function public.check_username_available(p_username text)
 returns boolean
@@ -395,11 +502,13 @@ create policy pages_insert on public.pages for insert with check (true);
 drop policy if exists pages_update on public.pages;
 create policy pages_update on public.pages for update using (true);
 
--- Messages: public read; auth insert; author soft-delete
+-- Messages: public read; auth insert; author update/delete (hard delete via delete_own_message)
 create policy messages_select on public.messages for select using (true);
 create policy messages_insert on public.messages for insert
   with check (author_id = public.current_user_id());
 create policy messages_update on public.messages for update
+  using (author_id = public.current_user_id());
+create policy messages_delete on public.messages for delete
   using (author_id = public.current_user_id());
 
 -- Votes: auth own

@@ -4,8 +4,8 @@ import { upsertPage } from '@/lib/pages';
 import {
   buildMessageTree,
   createMessage,
+  deleteMessage,
   fetchMessagesForPage,
-  softDeleteMessage,
 } from '@/lib/messages';
 import { setVote } from '@/lib/votes';
 import type {
@@ -156,13 +156,44 @@ export function usePageThread(
   const remove = useCallback(
     async (messageId: string) => {
       if (!userId) return;
-      await softDeleteMessage(messageId, userId);
-      const next = flat.map((m) =>
-        m.id === messageId
-          ? { ...m, deleted_at: new Date().toISOString(), body: '[deleted]' }
-          : m,
-      );
-      rebuild(next, votesRef.current, sort);
+      try {
+        const result = await deleteMessage(messageId);
+        if (result === 'tombstone') {
+          const next = flat.map((m) =>
+            m.id === messageId
+              ? {
+                  ...m,
+                  body: '',
+                  gif_url: null,
+                  deleted_at: new Date().toISOString(),
+                  score: 0,
+                  upvotes: 0,
+                  downvotes: 0,
+                }
+              : m,
+          );
+          votesRef.current = votesRef.current.filter(
+            (v) => v.message_id !== messageId,
+          );
+          rebuild(next, votesRef.current, sort);
+        } else {
+          const without = flat.filter((m) => m.id !== messageId);
+          // Drop local tombstones that no longer have children (matches DB purge)
+          const childParents = new Set(
+            without.map((m) => m.parent_id).filter(Boolean) as string[],
+          );
+          const next = without.filter(
+            (m) => !(m.deleted_at && !childParents.has(m.id)),
+          );
+          votesRef.current = votesRef.current.filter(
+            (v) => v.message_id !== messageId,
+          );
+          rebuild(next, votesRef.current, sort);
+        }
+        toast.success('Comment deleted');
+      } catch (e) {
+        toast.error((e as Error).message || 'Delete failed');
+      }
     },
     [userId, flat, sort, rebuild],
   );

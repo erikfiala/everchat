@@ -356,6 +356,14 @@ export type Database = {
         Args: { p_user_id: string; p_action: string; p_limit: number };
         Returns: boolean;
       };
+      delete_own_message: {
+        Args: { p_message_id: string };
+        Returns: string;
+      };
+      delete_own_message: {
+        Args: { p_message_id: string };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

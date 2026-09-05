@@ -222,7 +222,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   gap: 0.65rem;
   max-width: 100%;
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
@@ -270,6 +270,47 @@
   max-width: 12.4rem; /* ~198px at 496:150 */
   aspect-ratio: 496 / 150;
   object-fit: contain;
+}
+
+/* Secondary CTA — stretches to CWS row height via .cta-group items-stretch */
+.donate-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  box-sizing: border-box;
+  align-self: stretch;
+  padding: 0 1.15rem;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.donate-link:hover {
+  border-color: color-mix(in srgb, var(--line) 40%, var(--mute));
+  color: var(--ink);
+  opacity: 0.92;
+}
+
+.donate-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.donate-icon {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 @keyframes brand-in {

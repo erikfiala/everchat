@@ -36,6 +36,8 @@ export function useNotifications(userId: string | null | undefined) {
     load();
   }, [load]);
 
+  // Inbox + unread badge only. Chrome OS toasts live in the background SW
+  // so they still fire when the side panel is closed.
   useEffect(() => {
     if (!userId || !isSupabaseConfigured) return;
     const sb = getSupabase();
@@ -49,19 +51,8 @@ export function useNotifications(userId: string | null | undefined) {
           table: 'notifications',
           filter: `recipient_id=eq.${userId}`,
         },
-        (payload) => {
+        () => {
           load();
-          const row = payload.new as NotificationWithJoins;
-          try {
-            browser.notifications.create(`ec-${row.id}`, {
-              type: 'basic',
-              iconUrl: '/icon/128.png',
-              title: 'New reply on Everchat',
-              message: row.body_preview || 'Someone replied to you',
-            });
-          } catch {
-            /* notifications permission optional */
-          }
         },
       )
       .subscribe();

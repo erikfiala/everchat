@@ -350,6 +350,19 @@ When someone **replies to your message**, you get a notification. Clicking it op
 1. **Chrome extension notification** (system tray / OS) when the extension is allowed
 2. **Notifications tab** (top nav) with unread badge — primary inbox inside the panel
 
+### Chrome OS notifications (detail)
+
+| Concern | Spec |
+|---|---|
+| Permission | Manifest `notifications` (no runtime prompt on Chromium for extension notifications) |
+| Producer | Background service worker subscribes to Supabase Realtime `notifications` INSERT for the signed-in `recipient_id` (session from `browser.storage.local`) so alerts work when the side panel is closed |
+| Dedup | Chrome notification id = `ec-{notifications.id}`; in-memory set avoids double-fire in one SW lifetime |
+| Skip when | Side panel is **visible** and the user is on the **Notifications** tab (inbox already in view). Still show when panel is closed, hidden, or on Chat/Profile |
+| Title / body | `@{actor} replied` + `body_preview` (fallback: “New reply on Everchat” / “Someone replied to your comment”) |
+| Icon | Packaged `/icon/128.png` via `runtime.getURL` |
+| Click | Same deep-link flow as inbox: new tab `page_url#ec-msg-{message_id}` → open side panel → focus/scroll message → mark notification read |
+| Inbox UI | Panel still realtime-reloads the Notifications list / unread badge; it does **not** create a second OS toast |
+
 ### Notification list row (page context required)
 
 Every notification row must show **where** the conversation lives, not only who replied:
@@ -751,8 +764,8 @@ Side Panel
 | Deleted node | Italic **Deleted comment.** (no body/media); children intact under tombstone or synthesized missing parent |
 | Network / auth error | Inline error, retry |
 | Tab navigates | Remount thread for new canonical URL |
-| Notification arrives | Badge on Notifications tab; optional Chrome OS notification |
-| Notification click / deep link | New tab → Chat tab → expand path → scroll to `#ec-msg-{id}` → highlight |
+| Notification arrives | Badge on Notifications tab; Chrome OS toast from background SW (skipped if Notifications tab focused) |
+| Notification click / deep link | New tab → Chat tab → expand path → scroll to `#ec-msg-{id}` → highlight (inbox or OS toast click) |
 | Unread inbox | Notifications tab list with page context; mark read on open |
 | Profile activity | Own posts/replies with page context; click → same deep link |
 | Missing page meta | Fallbacks: host / path / Lucide globe |
@@ -817,7 +830,7 @@ Side Panel
 5. Should Best sort use a Reddit-like confidence/hot score later, or raw score forever?
 6. Collapse depth: fixed 3 vs user preference?
 7. After deep-link open, clear `#ec-msg-…` from the address bar so host SPAs are undisturbed?
-8. Mute / disable OS notifications while keeping the Notifications tab?
+8. Mute / disable OS notifications while keeping the Notifications tab? (v1: auto-skip only while Notifications tab is focused; no global mute toggle yet)
 9. Refresh `pages` metadata on every Chat open, or only when empty / stale (e.g. >7 days)?
 10. Profile activity: hide hard-deleted / tombstoned own messages (v1: hide via `deleted_at is null`).
 11. Prompt users to add a second passkey after first successful post?
@@ -854,3 +867,4 @@ Plus any key matching `/^utm_/i`. Timestamp-like `t` stripped on known video hos
 | 2026-09-05 | v1.6: trending chats section on auth landing (open site → join convo) |
 | 2026-09-05 | v1.7: reports stored + monthly review for illegal/ToS/legal-floor patterns (not viewpoint mods) |
 | 2026-09-05 | v1.8: donations (if/when offered) via GoFundMe; Everchat does not receive card numbers |
+| 2026-09-05 | v1.9: Chrome OS notifications from background Realtime; click → deep link; skip when Notifications tab focused |

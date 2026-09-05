@@ -18,6 +18,10 @@ let accessToken: string | null = null;
 
 export function setSupabaseAccessToken(token: string | null) {
   accessToken = token;
+  // Realtime uses its own auth path (not the custom fetch wrapper).
+  if (client) {
+    void client.realtime.setAuth(token ?? '');
+  }
 }
 
 export function getSupabase(): SupabaseClient<Database> {
@@ -43,6 +47,9 @@ export function getSupabase(): SupabaseClient<Database> {
         detectSessionInUrl: false,
       },
     });
+    if (accessToken) {
+      void client.realtime.setAuth(accessToken);
+    }
   }
   return client;
 }

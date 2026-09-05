@@ -1,6 +1,6 @@
 import type { SessionUser } from '../database.types';
 
-const SESSION_KEY = 'everchat_session';
+export const SESSION_KEY = 'everchat_session';
 
 export async function loadSession(): Promise<SessionUser | null> {
   try {

@@ -7,6 +7,7 @@ import { ProfileTab } from '@/components/profile/ProfileTab';
 import { ProfileSheet } from '@/components/profile/ProfileSheet';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import { LocaleProvider, useLocale } from '@/hooks/useLocale';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
 import { useActiveTab } from '@/hooks/useActiveTab';
 import { useNotifications } from '@/hooks/useNotifications';
@@ -20,6 +21,7 @@ function reportPanelAttention(visible: boolean, tab: PanelTab) {
 
 function Shell() {
   const [tab, setTab] = useState<PanelTab>('chat');
+  const { t } = useLocale();
   const { user, showAuthLanding, setShowAuthLanding, loading } = useAuth();
   const { resolved: theme } = useTheme();
   const { tab: activeTab, ready, clearFocus } = useActiveTab();
@@ -62,7 +64,7 @@ function Shell() {
       <main className="min-h-0 flex-1">
         {loading || !ready ? (
           <div className="flex h-full items-center justify-center text-sm text-[var(--color-muted-foreground)]">
-            Loading…
+            {t('common.loading')}
           </div>
         ) : showLanding ? (
           <AuthLanding />
@@ -106,9 +108,11 @@ function Shell() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <Shell />
-      </AuthProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <Shell />
+        </AuthProvider>
+      </LocaleProvider>
     </ThemeProvider>
   );
 }

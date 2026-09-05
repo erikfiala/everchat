@@ -16,6 +16,7 @@ import {
 } from '@/lib/auth/webauthn';
 import { setSupabaseAccessToken, isSupabaseConfigured } from '@/lib/supabase';
 import { fetchProfile } from '@/lib/profile';
+import { useLocale } from '@/hooks/useLocale';
 import { toast } from 'sonner';
 
 interface AuthContextValue {
@@ -56,6 +57,7 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { t, tError } = useLocale();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAuthLanding, setShowAuthLanding] = useState(false);
@@ -71,18 +73,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
   }, []);
 
-  const register = useCallback(async (username: string) => {
-    try {
-      const session = await registerPasskey(username);
-      setSupabaseAccessToken(session.token);
-      setUser(session);
-      setShowAuthLanding(false);
-      toast.success(`You're in as @${session.username}`);
-    } catch (e) {
-      toast.error((e as Error).message || "Couldn't finish sign-in. Try again.");
-      throw e;
-    }
-  }, []);
+  const register = useCallback(
+    async (username: string) => {
+      try {
+        const session = await registerPasskey(username);
+        setSupabaseAccessToken(session.token);
+        setUser(session);
+        setShowAuthLanding(false);
+        toast.success(t('auth.toastSignedIn', { username: session.username }));
+      } catch (e) {
+        toast.error(tError(e, 'auth.toastSignInFailed'));
+        throw e;
+      }
+    },
+    [t, tError],
+  );
 
   const tryLogin = useCallback(async (): Promise<boolean> => {
     try {
@@ -90,14 +95,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSupabaseAccessToken(session.token);
       setUser(session);
       setShowAuthLanding(false);
-      toast.success(`Welcome back, @${session.username}`);
+      toast.success(
+        t('auth.toastWelcomeBack', { username: session.username }),
+      );
       return true;
     } catch (e) {
       if (isExpectedPasskeyMiss(e)) return false;
-      toast.error((e as Error).message || "Couldn't finish sign-in. Try again.");
+      toast.error(tError(e, 'auth.toastSignInFailed'));
       return false;
     }
-  }, []);
+  }, [t, tError]);
 
   const logout = useCallback(async () => {
     await doLogout();

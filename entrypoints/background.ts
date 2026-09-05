@@ -1,5 +1,7 @@
 import { canonicalize, parseFocusMessageId } from '@/lib/canonicalize';
 import { loadSession, SESSION_KEY } from '@/lib/auth/session';
+import { STORAGE_KEY as LOCALE_STORAGE_KEY } from '@/lib/i18n';
+import { hydrateTranslatorFromStorage } from '@/lib/i18n/runtime';
 import {
   createOsNotification,
   openOsNotification,
@@ -131,11 +133,17 @@ export default defineBackground(() => {
     .setPanelBehavior({ openPanelOnActionClick: true })
     .catch(() => undefined);
 
+  void hydrateTranslatorFromStorage();
   void syncNotifRealtimeFromSession();
 
   browser.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local' || !changes[SESSION_KEY]) return;
-    void syncNotifRealtimeFromSession();
+    if (area !== 'local') return;
+    if (changes[SESSION_KEY]) {
+      void syncNotifRealtimeFromSession();
+    }
+    if (changes[LOCALE_STORAGE_KEY]) {
+      void hydrateTranslatorFromStorage();
+    }
   });
 
   browser.tabs.onActivated.addListener(({ tabId }) => {

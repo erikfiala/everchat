@@ -117,10 +117,14 @@ export async function createMessage(input: {
   gifUrl?: string | null;
 }): Promise<MessageWithAuthor> {
   if (!input.body.trim() && !input.gifUrl) {
-    throw new Error('Message needs text or a GIF');
+    throw new Error('errors.messageNeedsContent');
   }
   if (input.body.length > MAX_BODY_LENGTH) {
-    throw new Error(`Message max ${MAX_BODY_LENGTH} characters`);
+    const err = new Error('errors.messageMaxLength');
+    (
+      err as Error & { i18nVars?: Record<string, string | number> }
+    ).i18nVars = { max: MAX_BODY_LENGTH };
+    throw err;
   }
 
   const sb = getSupabase();
@@ -132,7 +136,7 @@ export async function createMessage(input: {
   });
   if (rlError) throw rlError;
   if (allowed === false) {
-    throw new Error('Slow down. Rate limit reached.');
+    throw new Error('errors.rateLimitPost');
   }
 
   const { data, error } = await sb

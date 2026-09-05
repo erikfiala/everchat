@@ -79,7 +79,7 @@ export async function revokeDevice(
     .eq('user_id', userId);
 
   if ((count ?? 0) <= 1) {
-    throw new Error('Keep at least one device, otherwise your account is unrecoverable');
+    throw new Error('errors.keepOneDevice');
   }
 
   const { error } = await sb
@@ -95,11 +95,11 @@ export async function uploadAvatar(
   file: File,
 ): Promise<string> {
   if (file.size > AVATAR_MAX_BYTES) {
-    throw new Error('Avatar must be under 2 MB');
+    throw new Error('errors.avatarTooLarge');
   }
   const allowed = ['image/jpeg', 'image/png', 'image/webp'];
   if (!allowed.includes(file.type)) {
-    throw new Error('Use JPEG, PNG, or WebP');
+    throw new Error('errors.avatarType');
   }
 
   const sb = getSupabase();

@@ -14,7 +14,8 @@
     "compile": "tsc --noEmit",
     "postinstall": "wxt prepare",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts || echo 'Link Supabase to generate types'",
-    "test": "vitest run"
+    "test": "vitest run",
+    "locales:sync": "mkdir -p www/locales && cp lib/i18n/locales/*.json www/locales/"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.2.6",

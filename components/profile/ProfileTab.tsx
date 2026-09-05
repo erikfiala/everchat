@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
+import { useLocale } from '@/hooks/useLocale';
 import {
   fetchActivity,
   listDevices,
@@ -21,6 +22,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export function ProfileTab() {
+  const { t, tError } = useLocale();
   const { user, loading: authLoading, logout, patchUser, refreshProfile } =
     useAuth();
   const [activity, setActivity] = useState<ActivityItem[]>([]);
@@ -38,7 +40,7 @@ export function ProfileTab() {
         setActivity(acts);
         setDevices(devs);
       })
-      .catch((e) => toast.error((e as Error).message))
+      .catch((e) => toast.error(tError(e)))
       .finally(() => setLoading(false));
   }, [user?.id]);
 
@@ -57,9 +59,9 @@ export function ProfileTab() {
     try {
       const url = await uploadAvatar(user.id, file);
       await patchUser({ avatar_url: url });
-      toast.success('Avatar updated');
+      toast.success(t('profile.toastAvatarUpdated'));
     } catch (e) {
-      toast.error((e as Error).message);
+      toast.error(tError(e));
     }
   };
 
@@ -82,9 +84,9 @@ export function ProfileTab() {
       await addPasskeyDevice(user.token);
       const devs = await listDevices(user.id);
       setDevices(devs);
-      toast.success('Device added');
+      toast.success(t('profile.toastDeviceAdded'));
     } catch (e) {
-      toast.error((e as Error).message || 'Could not add device');
+      toast.error(tError(e, 'profile.toastAddDeviceFailed'));
     }
   };
 
@@ -92,9 +94,9 @@ export function ProfileTab() {
     try {
       await revokeDevice(id, user.id);
       setDevices((d) => d.filter((x) => x.id !== id));
-      toast.success('Device removed');
+      toast.success(t('profile.toastDeviceRemoved'));
     } catch (e) {
-      toast.error((e as Error).message);
+      toast.error(tError(e));
     }
   };
 
@@ -113,7 +115,7 @@ export function ProfileTab() {
                 {user.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="absolute bottom-0 right-0 rounded-full bg-[var(--color-card)] p-1 shadow">
+            <span className="absolute bottom-0 end-0 rounded-full bg-[var(--color-card)] p-1 shadow">
               <Camera className="h-3 w-3" />
             </span>
           </button>
@@ -127,7 +129,7 @@ export function ProfileTab() {
           <div>
             <div className="text-lg font-semibold">@{user.username}</div>
             <div className={cn('text-sm font-medium', scoreColorClass(user.karma))}>
-              {formatScore(user.karma)} karma
+              {t('profile.karma', { score: formatScore(user.karma) })}
             </div>
           </div>
         </div>
@@ -137,22 +139,22 @@ export function ProfileTab() {
           className="mt-3"
           onClick={() => logout()}
         >
-          Sign out
+          {t('profile.signOut')}
         </Button>
       </div>
 
       <section className="border-b border-[var(--color-border)] px-4 py-3">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-            Devices
+            {t('profile.devices')}
           </h2>
           <Button variant="ghost" size="sm" className="h-7 gap-1" onClick={addDevice}>
             <Plus className="h-3.5 w-3.5" />
-            Add
+            {t('profile.addDevice')}
           </Button>
         </div>
         <p className="mb-2 text-[11px] text-[var(--color-muted-foreground)]">
-          Unlock methods for this account. Keep at least one. No email recovery.
+          {t('profile.devicesHint')}
         </p>
         <ul className="space-y-1">
           {devices.map((d) => (
@@ -160,7 +162,7 @@ export function ProfileTab() {
               key={d.id}
               className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-[var(--color-accent)]"
             >
-              <span>{d.device_label || 'Device'}</span>
+              <span>{d.device_label || t('common.device')}</span>
               <Button
                 variant="ghost"
                 size="icon"
@@ -176,12 +178,12 @@ export function ProfileTab() {
 
       <section className="px-2 py-3">
         <h2 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-          Activity
+          {t('profile.activity')}
         </h2>
         {loading && <Skeleton className="mx-2 h-16" />}
         {!loading && activity.length === 0 && (
           <p className="px-2 py-6 text-center text-sm text-[var(--color-muted-foreground)]">
-            You haven’t joined any conversations yet.
+            {t('profile.emptyActivity')}
           </p>
         )}
         {activity.map((item) => (
@@ -189,7 +191,7 @@ export function ProfileTab() {
             key={item.id}
             type="button"
             onClick={() => openActivity(item)}
-            className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-left hover:bg-[var(--color-accent)]"
+            className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
           >
             {item.page?.favicon_url ? (
               <img
@@ -206,7 +208,9 @@ export function ProfileTab() {
                   {item.page?.title || item.page?.canonical_url}
                 </span>
                 <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium uppercase">
-                  {item.parent_id ? 'Reply' : 'Post'}
+                  {item.parent_id
+                    ? t('profile.activityReply')
+                    : t('profile.activityPost')}
                 </span>
               </div>
               <div className="truncate text-xs text-[var(--color-muted-foreground)]">
@@ -217,7 +221,9 @@ export function ProfileTab() {
                 ).slice(0, DESCRIPTION_TRUNCATE)}
               </div>
               <div className="mt-0.5 truncate text-xs">
-                {item.gif_url && !item.body ? '[GIF]' : item.body}
+                {item.gif_url && !item.body
+                  ? t('profile.gifPlaceholder')
+                  : item.body}
               </div>
               <div className="mt-0.5 flex gap-2 text-[11px] text-[var(--color-muted-foreground)]">
                 <span

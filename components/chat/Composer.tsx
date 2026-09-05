@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { BODY_WARN_AT, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
+import { useLocale } from '@/hooks/useLocale';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +27,7 @@ export function Composer({
   onGate,
 }: ComposerProps) {
   const { user } = useAuth();
+  const { t } = useLocale();
   const { resolved } = useTheme();
   const [body, setBody] = useState(
     replyToHandle ? `@${replyToHandle} ` : '',
@@ -56,7 +58,7 @@ export function Composer({
       setGifs([]);
       return;
     }
-    const t = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       setSearching(true);
       try {
         const results = await searchGiphy(giphyQ, user?.token);
@@ -67,14 +69,14 @@ export function Composer({
         setSearching(false);
       }
     }, 400);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [giphyQ, showGiphy, user?.token]);
 
   if (gated) {
     return (
       <div className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
         <Button className="w-full" onClick={onGate}>
-          Sign in anonymously
+          {t('composer.signInAnonymously')}
         </Button>
       </div>
     );
@@ -110,10 +112,10 @@ export function Composer({
       {replyToHandle && (
         <div className="mb-2 flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
           <span>
-            Replying to <span className="font-medium">@{replyToHandle}</span>
+            {t('composer.replyingTo', { username: replyToHandle })}
           </span>
           <button type="button" onClick={onCancelReply} className="hover:underline">
-            Cancel
+            {t('common.cancel')}
           </button>
         </div>
       )}
@@ -121,7 +123,7 @@ export function Composer({
         ref={taRef}
         value={body}
         maxLength={MAX_BODY_LENGTH}
-        placeholder="Leave a comment…"
+        placeholder={t('composer.placeholder')}
         onChange={(e) => setBody(e.target.value.slice(0, MAX_BODY_LENGTH))}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
@@ -132,10 +134,14 @@ export function Composer({
       />
       {gifUrl && (
         <div className="relative mt-2 inline-block">
-          <img src={gifUrl} alt="Selected GIF" className="max-h-24 rounded" />
+          <img
+            src={gifUrl}
+            alt={t('composer.selectedGifAlt')}
+            className="max-h-24 rounded"
+          />
           <button
             type="button"
-            className="absolute -right-2 -top-2 rounded-full bg-black/70 p-0.5 text-white"
+            className="absolute -end-2 -top-2 rounded-full bg-black/70 p-0.5 text-white"
             onClick={() => setGifUrl(null)}
           >
             <X className="h-3.5 w-3.5" />
@@ -169,7 +175,7 @@ export function Composer({
         </Button>
         <span
           className={cn(
-            'ml-auto tabular-nums text-[11px]',
+            'ms-auto tabular-nums text-[11px]',
             overWarn
               ? 'font-medium text-red-600'
               : 'text-[var(--color-muted-foreground)]',
@@ -183,12 +189,12 @@ export function Composer({
           disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
           onClick={submit}
         >
-          {busy ? 'Sending…' : 'Post'}
+          {busy ? t('composer.sending') : t('composer.post')}
         </Button>
       </div>
 
       {showEmoji && (
-        <div className="absolute bottom-full left-2 z-30 mb-1">
+        <div className="absolute bottom-full start-2 z-30 mb-1">
           <EmojiPicker
             theme={resolved === 'dark' ? Theme.DARK : Theme.LIGHT}
             onEmojiClick={onEmoji}
@@ -199,9 +205,9 @@ export function Composer({
       )}
 
       {showGiphy && (
-        <div className="absolute bottom-full left-0 right-0 z-30 mx-2 mb-1 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
+        <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-1 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
           <Input
-            placeholder="Search Giphy…"
+            placeholder={t('composer.searchGiphy')}
             value={giphyQ}
             onChange={(e) => setGiphyQ(e.target.value)}
             autoFocus
@@ -209,7 +215,7 @@ export function Composer({
           <div className="mt-2 grid max-h-40 grid-cols-3 gap-1 overflow-y-auto">
             {searching && (
               <p className="col-span-3 text-xs text-[var(--color-muted-foreground)]">
-                Searching…
+                {t('composer.searching')}
               </p>
             )}
             {!searching &&
@@ -226,7 +232,11 @@ export function Composer({
                     setShowGiphy(false);
                   }}
                 >
-                  <img src={g.preview || g.url} alt={g.title} className="h-16 w-full object-cover" />
+                  <img
+                    src={g.preview || g.url}
+                    alt={g.title}
+                    className="h-16 w-full object-cover"
+                  />
                 </button>
               ))}
           </div>

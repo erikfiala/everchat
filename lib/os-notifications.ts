@@ -1,5 +1,6 @@
 import { buildDeepLink } from './canonicalize';
 import type { Notification, PanelTab } from './database.types';
+import { getT, hydrateTranslatorFromStorage } from './i18n/runtime';
 import { markNotificationRead } from './notifications';
 import { getSupabase, isSupabaseConfigured } from './supabase';
 
@@ -106,10 +107,15 @@ export async function createOsNotification(
   if (row.read_at) return;
   if (!(await shouldShowOsNotification())) return;
 
+  await hydrateTranslatorFromStorage();
+
   const handle = await actorUsername(row.actor_id);
-  const title = handle ? `@${handle} replied` : 'New reply on Everchat';
+  const t = getT();
+  const title = handle
+    ? t('notifications.osTitleWithHandle', { username: handle })
+    : t('notifications.osTitleFallback');
   const message =
-    (row.body_preview || '').trim() || 'Someone replied to your comment';
+    (row.body_preview || '').trim() || t('notifications.osBodyFallback');
 
   await rememberOsNotifMeta({
     notificationId: row.id,

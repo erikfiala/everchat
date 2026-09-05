@@ -24,6 +24,7 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="/styles.css" />
     <meta name="referrer" content="no-referrer" />
+    <script src="/boot-locale.js"></script>
   </head>
   <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
@@ -39,15 +40,19 @@
             width="560"
             height="130"
             alt="Everchat"
+            data-i18n="www.brandAlt"
+            data-i18n-attr="alt"
           />
         </h1>
         <p
           class="headline mb-[0.85rem] font-display text-[clamp(1.65rem,3.2vw,2.35rem)] font-semibold leading-[1.15] tracking-[-0.035em] text-ink-soft animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.08s_both]"
+          data-i18n="www.heroHeadline"
         >
           Every URL deserves a conversation.
         </p>
         <p
           class="lede mb-7 max-w-160 text-[1.08rem] text-mute animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.14s_both]"
+          data-i18n="www.heroLede"
         >
           Anonymous public comments in a Chrome side panel. No email. No third-party
           trackers. No ads. Free forever.
@@ -59,6 +64,8 @@
             class="chrome-badge-link"
             href="#get-extension"
             aria-label="Install Everchat from the Chrome Web Store"
+            data-i18n="www.installAria"
+            data-i18n-attr="aria-label"
           >
             <img
               class="chrome-badge"
@@ -66,6 +73,8 @@
               width="198"
               height="60"
               alt="Available in the Chrome Web Store"
+              data-i18n="www.chromeStoreBadgeAlt"
+              data-i18n-attr="alt"
               decoding="async"
             />
           </a>
@@ -76,6 +85,8 @@
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Donate to Everchat via Open Collective"
+            data-i18n="www.donateAria"
+            data-i18n-attr="aria-label"
           >
             <svg
               class="donate-icon"
@@ -99,7 +110,7 @@
                 d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a1 1 0 0 0-2.75-2.91"
               />
             </svg>
-            <span>Donate</span>
+            <span data-i18n="www.donate">Donate</span>
           </a>
         </div>
       </div>
@@ -109,11 +120,11 @@
           <div class="browser">
             <div class="browser-chrome">
               <div class="dots"><span></span><span></span><span></span></div>
-              <div class="address">https://news.example/story/the-page-youre-on</div>
+              <div class="address" data-i18n="www.heroMockAddress">https://news.example/story/the-page-youre-on</div>
             </div>
             <div class="page">
-              <p class="page-kicker">The open web</p>
-              <p class="page-title">Say what you think<br />without leaving the page.</p>
+              <p class="page-kicker" data-i18n="www.heroMockKicker">The open web</p>
+              <p class="page-title" data-i18n="www.heroMockTitle">Say what you think without leaving the page.</p>
               <div class="page-lines">
                 <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               </div>
@@ -131,18 +142,18 @@
               <div class="thread">
                 <article class="msg">
                   <div class="msg-meta"><strong>@mira</strong><em>2m</em></div>
-                  <p>Finally, talk about the page without leaving it.</p>
+                  <p data-i18n="www.heroMockMsg1">Finally, talk about the page without leaving it.</p>
                 </article>
                 <article class="msg">
                   <div class="msg-meta"><strong>@kai</strong><em>1m</em></div>
-                  <p>Same URL, same room. Tracking params stripped.</p>
+                  <p data-i18n="www.heroMockMsg2">Same URL, same room. Tracking params stripped.</p>
                 </article>
                 <article class="msg">
                   <div class="msg-meta"><strong>@nova</strong><em>now</em></div>
-                  <p>No email. Passkeys when you want to speak.</p>
+                  <p data-i18n="www.heroMockMsg3">No email. Passkeys when you want to speak.</p>
                 </article>
               </div>
-              <div class="composer-stub">Write something...</div>
+              <div class="composer-stub" data-i18n="www.heroMockComposer">Write something...</div>
             </aside>
           </div>
         </div>
@@ -156,6 +167,8 @@
         class="benefits mb-[clamp(3.5rem,9vw,5.5rem)] grid max-w-none grid-cols-1 gap-[clamp(1.75rem,3vw,2rem)] min-[720px]:grid-cols-2 min-[720px]:gap-x-6 min-[720px]:gap-y-7 min-[960px]:grid-cols-4 min-[960px]:gap-x-[1.35rem] min-[960px]:gap-y-6"
         id="how"
         aria-label="How Everchat works"
+        data-i18n="www.howAria"
+        data-i18n-attr="aria-label"
       >
         <article class="benefit">
           <svg
@@ -175,10 +188,10 @@
               d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"
             />
           </svg>
-          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]" data-i18n="www.benefit1Title">
             Comments on any page.
           </h2>
-          <p class="m-0 max-w-none text-mute">
+          <p class="m-0 max-w-none text-mute" data-i18n="www.benefit1Body">
             Open the side panel on any tab. News, government, docs, anything with a
             link. Same URL, same room. You never leave the page.
           </p>
@@ -203,10 +216,10 @@
             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
             <circle cx="9" cy="7" r="4" />
           </svg>
-          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]" data-i18n="www.benefit2Title">
             No mods. Crowd decides.
           </h2>
-          <p class="m-0 max-w-none text-mute">
+          <p class="m-0 max-w-none text-mute" data-i18n="www.benefit2Body">
             We do not hire moderators to police speech. Votes collapse junk; collapsed
             comments stay expandable. Karma marks reputation in the room.
           </p>
@@ -230,10 +243,10 @@
               d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
             />
           </svg>
-          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]" data-i18n="www.benefit3Title">
             Privacy above everything.
           </h2>
-          <p class="m-0 max-w-none text-mute">
+          <p class="m-0 max-w-none text-mute" data-i18n="www.benefit3Body">
             No third-party trackers. No email. Passkeys when you speak. We don't build
             an ad profile of you across the web.
           </p>
@@ -256,10 +269,10 @@
             <circle cx="12" cy="12" r="10" />
             <path d="m4.9 4.9 14.2 14.2" />
           </svg>
-          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]">
+          <h2 class="mb-[0.45rem] font-display text-[clamp(1.05rem,1.6vw,1.25rem)] font-semibold leading-[1.25] tracking-[-0.03em]" data-i18n="www.benefit4Title">
             No ads. Free forever.
           </h2>
-          <p class="m-0 max-w-none text-mute">
+          <p class="m-0 max-w-none text-mute" data-i18n="www.benefit4Body">
             If many people use it, we may ask for donations via Open Collective to
             keep the lights on. Donations never buy ads, ranking, or special treatment.
           </p>
@@ -270,10 +283,10 @@
         class="section install mx-auto mb-0 flex w-full max-w-168 flex-col items-start pt-10 text-left"
         id="get-extension"
       >
-        <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]">
+        <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]" data-i18n="www.installTitle">
           Install for Chrome locally
         </h2>
-        <p class="m-0 max-w-none text-mute">
+        <p class="m-0 max-w-none text-mute" data-i18n="www.installIntro">
           Load a local build in developer mode while the store listing is on the way, or anytime
           you want a build you control:
         </p>
@@ -282,16 +295,16 @@
         </p>
         <ol class="install-steps">
           <li>
-            <span>Clone the Everchat repo and run <code>pnpm install && pnpm build</code></span>
+            <span data-i18n="www.installStep1">Clone the Everchat repo and run <code>pnpm install && pnpm build</code></span>
           </li>
           <li>
-            <span>Open <code>chrome://extensions</code> and turn on Developer mode</span>
+            <span data-i18n="www.installStep2">Open <code>chrome://extensions</code> and turn on Developer mode</span>
           </li>
           <li>
-            <span>Load unpacked → select <code>dist/everchat</code></span>
+            <span data-i18n="www.installStep3">Load unpacked → select <code>dist/everchat</code></span>
           </li>
           <li>
-            <span>Pin Everchat and open the side panel on any page</span>
+            <span data-i18n="www.installStep4">Pin Everchat and open the side panel on any page</span>
           </li>
         </ol>
       </section>
@@ -307,15 +320,19 @@
         height="128"
         alt=""
       />
-      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer">
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer">Donate</a>
+      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms">Terms</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
       </nav>
-      <p class="m-0 normal-case">© <span id="footer-year">2026</span> Everchat. Public comments on any URL.</p>
-      <script>document.getElementById("footer-year").textContent = String(new Date().getFullYear());</script>
+      <label class="footer-lang flex items-center justify-center gap-2 text-[0.8rem] text-mute">
+        <span data-i18n="www.language">Language</span>
+        <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
+      </label>
+      <p class="m-0 normal-case" data-i18n="www.footerTagline">© 2026 Everchat. Public comments on any URL.</p>
     </footer>
+    <script src="/i18n.js"></script>
   </body>
 </html>

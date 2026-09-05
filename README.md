@@ -3,9 +3,16 @@
 Chrome MV3 side-panel extension: public comments on any URL. Passkeys only. No email.
 
 **Site / WebAuthn RP (canonical):** [everch.at](https://everch.at). `www.everch.at` redirects here (308).  
-Product spec: [PRD.md](./PRD.md) (v1.6).
+Product spec: [PRD.md](./PRD.md) (v1.9).
 
 **Funding:** Voluntary donations via [Open Collective](https://opencollective.com/everchat) — see `.github/FUNDING.yml`.
+
+## i18n
+
+- **UI catalogs:** `lib/i18n/locales/*.json` (50 locales). Extension loads them via `useLocale()`; marketing site uses `www/locales/` (keep in sync with `pnpm locales:sync`).
+- **Language switcher:** Chat toolbar next to Mode; preference `ec-locale` in `localStorage` + `chrome.storage.local` (`system` or a locale code). Switching language translates chrome/labels only — never post bodies.
+- **RTL:** `document.documentElement.dir` follows the selected (or system) locale.
+- **Message translation:** “See translation” under a comment calls the `translate` Edge Function (Google Cloud Translation). Cached in memory + `localStorage`.
 
 ## Stack
 
@@ -57,10 +64,13 @@ npx supabase secrets set \
   WEBAUTHN_RP_ID="everch.at" \
   WEBAUTHN_RP_NAME="Everchat" \
   WEBAUTHN_ORIGIN="chrome-extension://<YOUR_EXTENSION_ID>,https://everch.at" \
-  GIPHY_API_KEY="<optional>"
+  GIPHY_API_KEY="<optional>" \
+  TRANSLATE_API_KEY="<optional Google Cloud Translation API key>"
 ```
 
 `WEBAUTHN_ORIGIN` accepts a comma-separated list (SimpleWebAuthn `expectedOrigin`).
+
+`TRANSLATE_API_KEY` (alias `GOOGLE_TRANSLATE_API_KEY`) powers per-message **See translation** in the side panel. Without it, the UI shows “Translation unavailable”. UI chrome translations ship as JSON catalogs and do not need this key.
 
 5. Deploy functions:
 
@@ -69,6 +79,7 @@ npx supabase functions deploy webauthn-register
 npx supabase functions deploy webauthn-login
 npx supabase functions deploy webauthn-add-device
 npx supabase functions deploy giphy-proxy
+npx supabase functions deploy translate
 ```
 
 ### 3. Domain + WebAuthn (`everch.at`)
@@ -121,8 +132,9 @@ lib/canonicalize.ts            # URL identity + #ec-msg deep links
 lib/auth/                      # session + WebAuthn client
 components/                    # Chat, Auth, Notifs, Profile
 supabase/migrations/           # schema, triggers, RLS
-supabase/functions/            # webauthn-* + giphy-proxy
-www/                           # everch.at landing + .well-known/webauthn
+supabase/functions/            # webauthn-* + giphy-proxy + translate
+lib/i18n/                      # locale catalogs + t() helpers
+www/                           # everch.at landing + .well-known/webauthn + locales
 ```
 
 ## Product constants
@@ -140,6 +152,7 @@ www/                           # everch.at landing + .well-known/webauthn
 | `everch.at` DNS + `.well-known/webauthn` | Passkeys with RP ID `everch.at` from the extension |
 | Extension ID in `WEBAUTHN_ORIGIN` + related-origins file | Side-panel ceremony origin |
 | `GIPHY_API_KEY` | GIF search (optional; text posts work without it) |
+| `TRANSLATE_API_KEY` | Per-message “See translation” (optional; UI shows unavailable without it) |
 
 ## Manual test checklist (PRD §17)
 

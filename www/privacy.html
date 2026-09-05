@@ -18,6 +18,7 @@
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="/styles.css" />
     <meta name="referrer" content="no-referrer" />
+    <script src="/boot-locale.js"></script>
   </head>
   <body class="doc m-0 min-h-screen bg-paper font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
@@ -30,15 +31,18 @@
           width="560"
           height="130"
           alt="Everchat"
+          data-i18n="www.brandAlt"
+          data-i18n-attr="alt"
         />
       </a>
       <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Legal">
-        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page">Privacy</a>
-        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms">Terms</a>
+        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page" data-i18n="www.footerPrivacy">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
       </nav>
     </header>
 
     <main class="doc-main relative z-1 mx-auto max-w-168 px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]">
+      <p data-i18n="www.legalEnglishNote" class="mb-3 text-[0.85rem] text-mute">This legal page is provided in English.</p>
       <p class="doc-kicker mb-[0.55rem] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-accent">Legal</p>
       <h1 class="mb-[0.65rem] font-display text-[clamp(1.85rem,4.2vw,2.45rem)] font-bold leading-[1.12] tracking-[-0.04em]">Privacy Policy</h1>
       <p class="doc-lede mb-3 max-w-[42ch] text-[1.08rem] text-ink-soft">
@@ -416,17 +420,21 @@
 
     <footer class="site-footer grid justify-items-center gap-3 border-t border-line/70 px-[clamp(1.5rem,4vw,3rem)] pt-8 pb-10 text-center text-[0.8rem] text-mute">
       <img class="footer-mark h-8 w-8 rounded-[0.45rem] opacity-90" src="/assets/ec-logo-avatar-rounded.png" width="128" height="128" alt="" />
-      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer">
+      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer">Donate</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page">Privacy</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page" data-i18n="www.footerPrivacy">Privacy</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms">Terms</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
       </nav>
-      <p class="m-0 normal-case">© <span id="footer-year">2026</span> Everchat. Public comments on any URL.</p>
-      <script>document.getElementById("footer-year").textContent = String(new Date().getFullYear());</script>
+      <label class="footer-lang flex items-center justify-center gap-2 text-[0.8rem] text-mute">
+        <span data-i18n="www.language">Language</span>
+        <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
+      </label>
+      <p class="m-0 normal-case" data-i18n="www.footerTagline">© 2026 Everchat. Public comments on any URL.</p>
     </footer>
+    <script src="/i18n.js"></script>
   </body>
 </html>

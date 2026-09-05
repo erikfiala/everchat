@@ -1,6 +1,6 @@
 # Everchat - Product Requirements Document
 
-**Version:** 1.8  
+**Version:** 1.9  
 **Status:** Draft for build  
 **Product:** Chrome extension - public, Reddit-style comments on any URL  
 **Last updated:** 2026-09-05
@@ -510,6 +510,7 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 | UI kit | **shadcn/ui + Tailwind** (+ **Sonner** toasts) |
 | Tooltips | shadcn Tooltip on top-nav icons |
 | Toasts | **Sonner** (`sonner` / shadcn Sonner) for **success and error** feedback - auth, post, vote, upload, network failures. Prefer toasts over blocking alerts for non-destructive outcomes. |
+| Direction | UI chrome follows the **selected UI language** (Language switcher on Chat; default **System** = browser / Chrome UI language). `dir="rtl"` when the locale is RTL (ar, he, fa, ur, …). **Message bodies are not auto-translated** when switching language — use **See translation** per message (Edge Function → Google Translate; requires `TRANSLATE_API_KEY`). UI string catalogs live in `lib/i18n/locales/` (~50 locales). |
 
 ### Toasts (Sonner) - when to fire
 

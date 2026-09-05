@@ -15,6 +15,7 @@ import type {
   TabInfo,
 } from '@/lib/database.types';
 import { toast } from 'sonner';
+import { getT, tError } from '@/lib/i18n/runtime';
 
 export function usePageThread(
   tab: TabInfo,
@@ -110,7 +111,7 @@ export function usePageThread(
 
   const post = useCallback(
     async (body: string, parentId?: string | null, gifUrl?: string | null) => {
-      if (!pageId || !userId) throw new Error('Not ready');
+      if (!pageId || !userId) throw new Error('errors.notReady');
       const msg = await createMessage({
         pageId,
         authorId: userId,
@@ -120,7 +121,8 @@ export function usePageThread(
       });
       const next = [...flat.filter((m) => m.id !== msg.id), msg];
       rebuild(next, votesRef.current, sort);
-      toast.success(parentId ? 'Reply sent' : 'Posted');
+      const t = getT();
+      toast.success(t(parentId ? 'toast.replySent' : 'toast.posted'));
       return msg;
     },
     [pageId, userId, flat, sort, rebuild],
@@ -147,7 +149,7 @@ export function usePageThread(
         }
         rebuild(flat, votesRef.current, sort);
       } catch (e) {
-        toast.error((e as Error).message || 'Vote failed');
+        toast.error(tError(e, 'toast.voteFailed'));
       }
     },
     [userId, flat, sort, rebuild],
@@ -190,9 +192,9 @@ export function usePageThread(
           );
           rebuild(next, votesRef.current, sort);
         }
-        toast.success('Comment deleted');
+        toast.success(getT()('toast.commentDeleted'));
       } catch (e) {
-        toast.error((e as Error).message || 'Delete failed');
+        toast.error(tError(e, 'toast.deleteFailed'));
       }
     },
     [userId, flat, sort, rebuild],

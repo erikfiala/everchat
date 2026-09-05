@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TrendingChats } from './TrendingChats';
 import { useAuth } from '@/hooks/useAuth';
+import { useLocale } from '@/hooks/useLocale';
 import {
   HANDLE_MAX,
   HANDLE_MIN,
@@ -17,6 +18,7 @@ type Step = 'landing' | 'claim';
 
 export function AuthLanding() {
   const { register, tryLogin, configured } = useAuth();
+  const { t } = useLocale();
   const [step, setStep] = useState<Step>('landing');
   const [username, setUsername] = useState('');
   const [availability, setAvailability] = useState<
@@ -39,7 +41,7 @@ export function AuthLanding() {
       return;
     }
     setAvailability('checking');
-    const t = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       try {
         const ok = await checkUsernameAvailable(u);
         setAvailability(ok ? 'available' : 'taken');
@@ -47,7 +49,7 @@ export function AuthLanding() {
         setAvailability('taken');
       }
     }, 350);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [username]);
 
   const onRegister = async () => {
@@ -61,7 +63,6 @@ export function AuthLanding() {
     }
   };
 
-  /** One CTA: try existing passkey, else claim a handle + register. */
   const onPrimary = async () => {
     setBusy(true);
     try {
@@ -75,22 +76,24 @@ export function AuthLanding() {
   if (step === 'claim') {
     return (
       <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
-        <h1 className="text-xl font-semibold tracking-tight">Pick your @handle</h1>
+        <h1 className="text-xl font-semibold tracking-tight">
+          {t('auth.pickHandle')}
+        </h1>
         <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
-          3–20 characters. Letters, numbers, underscore. No email needed.
+          {t('auth.handleRules')}
         </p>
         <div className="mt-4">
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-muted-foreground)]">
+            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-muted-foreground)]">
               @
             </span>
             <Input
-              className="pl-7"
+              className="ps-7"
               value={username}
               maxLength={HANDLE_MAX}
               minLength={HANDLE_MIN}
               autoFocus
-              placeholder="you"
+              placeholder={t('auth.handlePlaceholder')}
               onChange={(e) =>
                 setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))
               }
@@ -106,10 +109,10 @@ export function AuthLanding() {
             )}
           >
             {availability === 'idle' && ' '}
-            {availability === 'checking' && 'Checking…'}
-            {availability === 'available' && 'Available'}
-            {availability === 'taken' && 'Taken'}
-            {availability === 'invalid' && 'Invalid or reserved'}
+            {availability === 'checking' && t('auth.checking')}
+            {availability === 'available' && t('auth.available')}
+            {availability === 'taken' && t('auth.taken')}
+            {availability === 'invalid' && t('auth.invalidOrReserved')}
           </p>
         </div>
         <Button
@@ -117,18 +120,17 @@ export function AuthLanding() {
           disabled={busy || availability !== 'available'}
           onClick={onRegister}
         >
-          {busy ? 'Confirming…' : 'Continue'}
+          {busy ? t('auth.confirming') : t('common.continue')}
         </Button>
         <p className="mt-3 text-xs text-[var(--color-muted-foreground)]">
-          Your device will confirm. No password. If you lose all devices, this
-          account can’t be recovered.
+          {t('auth.passkeyDisclaimer')}
         </p>
         <button
           type="button"
           className="mt-4 text-sm text-[var(--color-muted-foreground)] underline"
           onClick={() => setStep('landing')}
         >
-          Back
+          {t('common.back')}
         </button>
       </div>
     );
@@ -138,18 +140,16 @@ export function AuthLanding() {
     <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
       <div className="mb-6">
         <h1 className="text-xl font-semibold leading-snug tracking-tight">
-          Every URL deserves a conversation.
+          {t('auth.headline')}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
-          Anonymous public comments on this page. No email. No third-party
-          trackers. No ads.
+          {t('auth.lede')}
         </p>
       </div>
 
       {!configured && (
         <p className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          Supabase isn’t configured yet. Add VITE_SUPABASE_URL and
-          VITE_SUPABASE_ANON_KEY to .env.
+          {t('auth.supabaseNotConfigured')}
         </p>
       )}
 
@@ -159,12 +159,8 @@ export function AuthLanding() {
         disabled={busy || !configured}
         onClick={onPrimary}
       >
-        {busy ? 'Working…' : 'Sign in anonymously'}
+        {busy ? t('auth.working') : t('auth.signInAnonymously')}
       </Button>
-      <p className="mt-4 text-xs leading-relaxed text-[var(--color-muted-foreground)]">
-        Free forever. Tracking params stripped so the thread sticks to the
-        page, not the ad noise.
-      </p>
 
       <TrendingChats />
     </div>

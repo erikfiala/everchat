@@ -5,6 +5,7 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { httpsUrlFromCanonical } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE, TRENDING_LIMIT } from '@/lib/constants';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLocale } from '@/hooks/useLocale';
 
 interface TrendingRow {
   id: string;
@@ -16,6 +17,7 @@ interface TrendingRow {
 }
 
 export function TrendingChats() {
+  const { t } = useLocale();
   const [rows, setRows] = useState<TrendingRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ export function TrendingChats() {
   return (
     <section className="mt-6">
       <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-        Trending chats
+        {t('auth.trendingChats')}
       </h2>
       <div className="flex flex-col gap-1">
         {loading &&
@@ -59,7 +61,7 @@ export function TrendingChats() {
               key={row.id}
               type="button"
               onClick={() => open(row)}
-              className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-left hover:bg-[var(--color-accent)]"
+              className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
             >
               {row.favicon_url ? (
                 <img
@@ -81,7 +83,7 @@ export function TrendingChats() {
                   )}
                 </div>
                 <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
-                  {row.message_count} talking
+                  {t('auth.trendingTalking', { count: row.message_count })}
                 </div>
               </div>
             </button>

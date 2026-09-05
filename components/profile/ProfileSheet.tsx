@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLocale } from '@/hooks/useLocale';
 import { fetchProfileByUsername } from '@/lib/profile';
 import type { Profile } from '@/lib/database.types';
 import { formatScore, scoreColorClass } from '@/lib/collapse';
@@ -23,6 +24,7 @@ export function ProfileSheet({
   open,
   onOpenChange,
 }: ProfileSheetProps) {
+  const { t } = useLocale();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +41,7 @@ export function ProfileSheet({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Profile</DialogTitle>
+          <DialogTitle>{t('profile.title')}</DialogTitle>
         </DialogHeader>
         {loading && <Skeleton className="h-20 w-full" />}
         {!loading && profile && (
@@ -58,14 +60,14 @@ export function ProfileSheet({
                   scoreColorClass(profile.karma),
                 )}
               >
-                {formatScore(profile.karma)} karma
+                {t('profile.karma', { score: formatScore(profile.karma) })}
               </div>
             </div>
           </div>
         )}
         {!loading && !profile && (
           <p className="text-sm text-[var(--color-muted-foreground)]">
-            User not found.
+            {t('profile.userNotFound')}
           </p>
         )}
       </DialogContent>

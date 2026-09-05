@@ -628,6 +628,10 @@ a:hover {
   max-width: 38ch;
 }
 
+.section p + p {
+  margin-top: 0.75rem;
+}
+
 .install-steps {
   margin: 1.25rem 0 0;
   padding: 0;

@@ -513,19 +513,27 @@
 .sidepanel-head {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  height: 1.75rem; /* 28px — match .browser-chrome */
-  padding: 0 0.45rem;
+  gap: 0.25rem;
+  /* Compact chrome row — half the prior tall padded block (~20px) */
+  height: 1.25rem;
+  min-height: 0; /* flex default min-height:auto was expanding past height when img sized intrinsically */
+  max-height: 1.25rem;
+  padding: 0 0.4rem;
   box-sizing: border-box;
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
-.sidepanel-logo {
+.sidepanel-head .sidepanel-logo {
+  display: block;
   width: auto;
-  height: 0.625rem; /* 10px — SVG has internal top pad; keeps visual weight tight */
-  max-height: 0.6875rem; /* 11px cap */
+  height: 0.5rem; /* 8px — SVG viewBox has internal pad; visual ink ~half prior */
+  max-height: 0.5rem;
+  max-width: none; /* defeat img { max-width:100% } aspect blow-up with height:auto */
   flex-shrink: 0;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .thread {
@@ -691,13 +699,6 @@
 
 .install p {
   max-width: none;
-}
-
-.install-badge {
-  margin: 1.25rem 0 1.5rem;
-  /* Keep compact — never stretch full column width */
-  width: fit-content;
-  flex: 0 0 auto;
 }
 
 .install-steps {

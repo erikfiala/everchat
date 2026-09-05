@@ -655,8 +655,6 @@
   margin: 0;
   color: var(--mute);
   max-width: none;
-  font-size: 0.92rem;
-  line-height: 1.5;
 }
 
 .section {

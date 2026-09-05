@@ -57,6 +57,14 @@ export function AuthLanding() {
     setBusy(true);
     try {
       await register(u);
+    } catch {
+      // Reservation may have been released; refresh so retry isn't stuck on "taken".
+      try {
+        const ok = await checkUsernameAvailable(u);
+        setAvailability(ok ? 'available' : 'taken');
+      } catch {
+        setAvailability('available');
+      }
     } finally {
       setBusy(false);
     }
@@ -76,7 +84,7 @@ export function AuthLanding() {
     return (
       <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
         <h1 className="text-xl font-semibold tracking-tight">
-          {t('auth.pickHandle')}
+          {t('auth.claimHandle')}
         </h1>
         <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
           {t('auth.handleRules')}

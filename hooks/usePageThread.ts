@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
-import { upsertPage } from '@/lib/pages';
+import { getPageByCanonical, upsertPage } from '@/lib/pages';
 import {
   buildMessageTree,
   createMessage,
@@ -53,11 +53,23 @@ export function usePageThread(
     setLoading(true);
     setError(null);
     try {
-      const page = await upsertPage({
-        canonicalUrl: tab.canonicalUrl,
-        title: tab.title,
-        faviconUrl: tab.favIconUrl,
-      });
+      // Page writes require a custom JWT (RLS). Lurkers may only read an
+      // existing room; authenticated users upsert metadata when opening chat.
+      const page = userId
+        ? await upsertPage({
+            canonicalUrl: tab.canonicalUrl,
+            title: tab.title,
+            faviconUrl: tab.favIconUrl,
+          })
+        : await getPageByCanonical(tab.canonicalUrl);
+
+      if (!page) {
+        setPageId(null);
+        setRoots([]);
+        setFlat([]);
+        return;
+      }
+
       setPageId(page.id);
       const { messages, votes } = await fetchMessagesForPage(page.id, userId);
       votesRef.current = votes;

@@ -345,10 +345,14 @@ export type Database = {
     };
     Functions: {
       check_username_available: {
-        Args: { p_username: string };
+        Args: { p_username: string; p_session_token?: string | null };
         Returns: boolean;
       };
       reserve_username: {
+        Args: { p_username: string; p_session_token: string };
+        Returns: boolean;
+      };
+      release_username: {
         Args: { p_username: string; p_session_token: string };
         Returns: boolean;
       };

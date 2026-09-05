@@ -762,7 +762,7 @@
   min-height: 6.5rem;
   padding: 1.5rem 1.25rem;
   /* One step darker than stone/line (slate-200/300 → toward mute) */
-  border: 1.5px dotted color-mix(in srgb, var(--stone-deep) 55%, var(--mute));
+  border: 1.5px dashed color-mix(in srgb, var(--stone-deep) 55%, var(--mute));
   border-radius: 0.5rem;
   color: var(--mute);
   font-size: 0.95rem;

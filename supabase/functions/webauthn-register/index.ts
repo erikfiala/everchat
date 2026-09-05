@@ -13,6 +13,8 @@ import {
   toBase64Url,
 } from '../_shared/auth.ts';
 
+const RESERVATION_MS = 5 * 60 * 1000;
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -29,10 +31,27 @@ Deno.serve(async (req) => {
       if (!isValidUsername(username)) {
         return json({ available: false });
       }
+      const sessionToken =
+        typeof body.sessionToken === 'string' ? body.sessionToken : null;
       const { data } = await sb.rpc('check_username_available', {
         p_username: username,
+        p_session_token: sessionToken,
       });
       return json({ available: Boolean(data) });
+    }
+
+    if (action === 'release') {
+      const username = normalizeUsername(body.username || '');
+      const sessionToken = body.sessionToken as string;
+      if (!username || !sessionToken) {
+        return json({ error: 'Missing username or session' }, 400);
+      }
+      await sb.rpc('release_username', {
+        p_username: username,
+        p_session_token: sessionToken,
+      });
+      await sb.from('webauthn_challenges').delete().eq('id', sessionToken);
+      return json({ ok: true });
     }
 
     if (action === 'options') {
@@ -40,10 +59,15 @@ Deno.serve(async (req) => {
       if (!isValidUsername(username)) {
         return json({ error: 'Invalid username' }, 400);
       }
-      const { data: available } = await sb.rpc('check_username_available', {
-        p_username: username,
-      });
-      if (!available) {
+
+      // Profiles permanently claim handles. Active reservations from a prior
+      // failed ceremony are overwritten by reserve_username so retries work.
+      const { data: existing } = await sb
+        .from('profiles')
+        .select('id')
+        .eq('username', username)
+        .maybeSingle();
+      if (existing) {
         return json({ error: 'Username taken' }, 409);
       }
 
@@ -53,7 +77,7 @@ Deno.serve(async (req) => {
         p_session_token: sessionToken,
       });
       if (!reserved) {
-        return json({ error: 'Could not reserve username' }, 409);
+        return json({ error: 'Username taken' }, 409);
       }
 
       const userId = crypto.randomUUID();
@@ -75,10 +99,9 @@ Deno.serve(async (req) => {
         challenge: options.challenge,
         username,
         user_id: userId,
-        expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        expires_at: new Date(Date.now() + RESERVATION_MS).toISOString(),
       });
 
-      // Stash intended user id on the options via challenge store only
       return json({ options, sessionToken, userId });
     }
 

@@ -27,7 +27,8 @@ export const RESERVED_HANDLES = new Set([
 ]);
 
 export const DEPTH_COLLAPSE_LEVEL = 3;
-export const USERNAME_RESERVATION_MINUTES = 15;
+/** Short ceremony window; released on cancel/failure, else expires. */
+export const USERNAME_RESERVATION_MINUTES = 5;
 export const RATE_LIMIT_POSTS_PER_MINUTE = 10;
 export const RATE_LIMIT_VOTES_PER_MINUTE = 60;
 export const AVATAR_MAX_BYTES = 2 * 1024 * 1024;

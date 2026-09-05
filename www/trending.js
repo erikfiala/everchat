@@ -35,7 +35,7 @@
     list.innerHTML = '';
     var box = document.createElement('div');
     box.className = 'trending-empty';
-    box.textContent = t('www.trendingEmpty') || 'Nothing trending yet';
+    box.textContent = t('www.trendingEmpty') || 'Nothing trending yet.';
     list.appendChild(box);
   }
 

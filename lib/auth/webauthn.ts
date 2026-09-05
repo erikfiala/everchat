@@ -68,12 +68,41 @@ function mapCeremonyError(e: unknown): Error {
   return new Error(String(e ?? 'auth.toastSignInFailed'));
 }
 
+/** In-progress register reservation so availability checks treat own hold as free. */
+let pendingRegister: { username: string; sessionToken: string } | null = null;
+
+async function releaseRegisterReservation(
+  username: string,
+  sessionToken: string,
+): Promise<void> {
+  try {
+    await callEdgeFunction('webauthn-register', {
+      action: 'release',
+      username,
+      sessionToken,
+    });
+  } catch {
+    /* best-effort; TTL + overwrite on retry still recover */
+  }
+  if (
+    pendingRegister?.username === username.toLowerCase() &&
+    pendingRegister.sessionToken === sessionToken
+  ) {
+    pendingRegister = null;
+  }
+}
+
 export async function checkUsernameAvailable(
   username: string,
 ): Promise<boolean> {
+  const normalized = username.trim().toLowerCase();
+  const sessionToken =
+    pendingRegister?.username === normalized
+      ? pendingRegister.sessionToken
+      : undefined;
   const data = await callEdgeFunction<{ available: boolean }>(
     'webauthn-register',
-    { action: 'check', username },
+    { action: 'check', username: normalized, sessionToken },
   );
   return data.available;
 }
@@ -81,11 +110,14 @@ export async function checkUsernameAvailable(
 export async function registerPasskey(
   username: string,
 ): Promise<SessionUser> {
+  const normalized = username.trim().toLowerCase();
   const { options, sessionToken } =
     await callEdgeFunction<RegisterOptionsResponse>('webauthn-register', {
       action: 'options',
-      username,
+      username: normalized,
     });
+
+  pendingRegister = { username: normalized, sessionToken };
 
   let attestation;
   try {
@@ -93,29 +125,37 @@ export async function registerPasskey(
       optionsJSON: withRegistrationRpId(options),
     });
   } catch (e) {
+    await releaseRegisterReservation(normalized, sessionToken);
     throw mapCeremonyError(e);
   }
 
-  const result = await callEdgeFunction<AuthSuccessResponse>(
-    'webauthn-register',
-    {
-      action: 'verify',
-      username,
-      sessionToken,
-      attestation,
-    },
-  );
+  try {
+    const result = await callEdgeFunction<AuthSuccessResponse>(
+      'webauthn-register',
+      {
+        action: 'verify',
+        username: normalized,
+        sessionToken,
+        attestation,
+      },
+    );
 
-  const session: SessionUser = {
-    id: result.user.id,
-    username: result.user.username,
-    avatar_url: result.user.avatar_url,
-    karma: result.user.karma,
-    token: result.token,
-    expiresAt: result.expiresAt,
-  };
-  await saveSession(session);
-  return session;
+    pendingRegister = null;
+
+    const session: SessionUser = {
+      id: result.user.id,
+      username: result.user.username,
+      avatar_url: result.user.avatar_url,
+      karma: result.user.karma,
+      token: result.token,
+      expiresAt: result.expiresAt,
+    };
+    await saveSession(session);
+    return session;
+  } catch (e) {
+    await releaseRegisterReservation(normalized, sessionToken);
+    throw e;
+  }
 }
 
 export async function loginPasskey(): Promise<SessionUser> {

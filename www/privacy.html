@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Policy — Everchat</title>
+    <meta
+      name="description"
+      content="Everchat does not want your name, email, or a tracking profile. This policy says exactly what we store, what stays public, and what we refuse to collect."
+    />
+    <meta property="og:title" content="Privacy Policy — Everchat" />
+    <meta property="og:url" content="https://everch.at/privacy" />
+    <link rel="canonical" href="https://everch.at/privacy" />
+    <link rel="icon" href="/assets/ec-logo-mark-black.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+    <meta name="referrer" content="no-referrer" />
+  </head>
+  <body class="doc">
+    <div class="atmosphere" aria-hidden="true">
+      <img
+        class="atmosphere-mark"
+        src="/assets/ec-logo-mark-black.svg"
+        alt=""
+        width="156"
+        height="156"
+      />
+    </div>
+
+    <header class="doc-bar">
+      <a class="home" href="/">
+        <img
+          src="/assets/ec-logo-horizontal-black.svg"
+          width="560"
+          height="130"
+          alt="Everchat"
+        />
+      </a>
+      <nav class="doc-nav" aria-label="Legal">
+        <a href="/privacy" aria-current="page">Privacy</a>
+        <a href="/terms">Terms</a>
+      </nav>
+    </header>
+
+    <main class="doc-main">
+      <p class="doc-kicker">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p class="doc-lede">
+        We built Everchat so you can talk about a page without handing us an inbox.
+        This policy is a description of the system, not a marketing page.
+      </p>
+      <p class="doc-meta">Effective 5 September 2026 · Applies to everch.at and the Everchat Chrome extension</p>
+
+      <div class="callout">
+        <p>
+          <strong>The short version.</strong> No email. No phone. No name. No ads.
+          No analytics pixels. No sale of data. No dossier. Your public handle and
+          what you post are public on purpose. Your civil identity is not our business.
+        </p>
+      </div>
+
+      <h2>1. Who we are</h2>
+      <p>
+        Everchat is a Chrome side-panel extension and the site at
+        <a href="https://everch.at">everch.at</a>. The site exists so passkeys can
+        bind to a real domain, and so these policies have a stable public URL.
+        The operator of Everchat is the publisher named on the Chrome Web Store listing.
+      </p>
+      <p>
+        Questions about this policy: the contact email on that listing, or
+        <a href="mailto:legal@everch.at">legal@everch.at</a>.
+      </p>
+
+      <h2>2. What this product is not</h2>
+      <p>Everchat is not a private messenger. It is a public comment layer on URLs.</p>
+      <ul>
+        <li>
+          <strong>Identity privacy</strong> means we do not ask for, store, or
+          require email, phone, legal name, government ID, or a social login.
+        </li>
+        <li>
+          <strong>Speech privacy</strong> is not on offer. Comments, handles, avatars,
+          votes that affect public score, and the page URL you commented on are
+          visible to anyone who opens that thread.
+        </li>
+      </ul>
+      <p>
+        If you would not put a sentence on a public noticeboard, do not post it here.
+        We will not pretend otherwise.
+      </p>
+
+      <h2>3. What we refuse to collect</h2>
+      <p>We do not collect, and the product is built so we cannot quietly start collecting:</p>
+      <ul>
+        <li>Email addresses</li>
+        <li>Phone numbers</li>
+        <li>Legal names or postal addresses of users</li>
+        <li>Passwords (there are none — authentication is a passkey on your device)</li>
+        <li>Google, Apple, or other OAuth identities</li>
+        <li>Payment information (the extension is free; we do not bill users)</li>
+        <li>Precise geolocation</li>
+        <li>Advertising identifiers, cohorts, or lookalike audiences</li>
+        <li>Browsing history as a profile — we do not build “users who visited X also visited Y”</li>
+        <li>Keystrokes, screenshots, or the contents of the host page beyond what is listed in §4</li>
+      </ul>
+      <p>
+        We do not run ads. We do not run third-party analytics (no Google Analytics,
+        Meta Pixel, Mixpanel, PostHog, or equivalent). This website does not load
+        scripts from other origins. Fonts are hosted here, not on Google Fonts.
+      </p>
+      <p>
+        We do not sell, rent, barter, or “share for targeted advertising” personal data.
+        There is no advertising partner list because there are no advertising partners.
+      </p>
+
+      <h2>4. What we do store, and why</h2>
+      <p>
+        Storage exists to run a public forum attached to URLs. If a field is not
+        required for that, it should not exist.
+      </p>
+
+      <h3>Account (only if you sign in anonymously)</h3>
+      <ul>
+        <li><strong>Handle</strong> — the public <code>@name</code> you claim (3–20 characters, <code>a–z</code>, <code>0–9</code>, underscore).</li>
+        <li><strong>Passkey material</strong> — credential ID, public key, sign counter, optional device label, last used time. The private key never leaves your authenticator. We cannot reset an account by email because we do not have an email.</li>
+        <li><strong>Optional avatar</strong> — an image you upload, stored so others can see it next to your handle.</li>
+        <li><strong>Karma</strong> — a public integer derived from other people’s votes on your posts (your votes on yourself do not count).</li>
+        <li><strong>Account created time</strong></li>
+      </ul>
+
+      <h3>While you use the extension</h3>
+      <ul>
+        <li>
+          <strong>Canonical page URL</strong> — host + path, with tracking parameters stripped
+          (utm_*, fbclid, gclid, and similar noise). That string is the room ID.
+          We keep title, short description, and favicon when available so the thread
+          can show which page it belongs to.
+        </li>
+        <li>
+          <strong>Messages</strong> — body text (up to 2,000 characters), optional GIF URL,
+          parent message if it is a reply, timestamps, vote totals, soft-delete flag
+          if you delete your own post.
+        </li>
+        <li><strong>Votes</strong> — which handle voted +1 or −1 on which message (needed to prevent double-voting and to compute score).</li>
+        <li>
+          <strong>Notifications</strong> — if someone replies to you: actor, message ids,
+          page URL, a short preview. Chrome may also show a local OS notification
+          on your machine; that notification is not a channel we use to email you.
+        </li>
+        <li>
+          <strong>Reports</strong> — if you flag a message, we store reporter, message, optional
+          reason. In v1 there is no staff queue and no takedown UI. Reports are not
+          a backdoor to viewpoint moderation.
+        </li>
+        <li>
+          <strong>Rate-limit counters</strong> — per handle, per action, per short time window,
+          to slow floods. This is plumbing, not a reputation score we sell.
+        </li>
+        <li>
+          <strong>Ephemeral WebAuthn challenges and short-lived handle reservations</strong> —
+          they expire. They are not a user profile.
+        </li>
+      </ul>
+
+      <h3>On your device only</h3>
+      <p>
+        The extension uses Chrome <code>storage</code> for a session so you stay signed in
+        in the side panel. That session lives in the browser. We do not sync it to
+        a marketing CRM. There is none.
+      </p>
+
+      <h2>5. What the extension can see</h2>
+      <p>
+        Everchat is a side panel. It does not inject a content script into the page
+        you are reading. It does not scrape the article body.
+      </p>
+      <p>Chrome permissions, used as declared:</p>
+      <ul>
+        <li><strong>sidePanel</strong> — to open the panel.</li>
+        <li><strong>tabs / activeTab</strong> — to know the active tab’s URL, title, and favicon so we can open the matching thread. We canonicalize that URL and drop tracking parameters before it becomes a room.</li>
+        <li><strong>storage</strong> — session and local extension state.</li>
+        <li><strong>notifications</strong> — optional OS alerts for replies.</li>
+        <li><strong>https://*.supabase.co</strong> — the API that holds threads, auth ceremonies, and avatars. Not a license to roam the web.</li>
+      </ul>
+      <p>
+        Reading a thread does not require an account. Writing, voting, and Profile
+        do. Lurking does not create a handle.
+      </p>
+
+      <h2>6. Tracking we strip, tracking we will not add</h2>
+      <p>
+        Share links are full of surveillance leftovers. Everchat’s canonical URL
+        algorithm deletes them so “the same article” stays one conversation, and so
+        we are not storing campaign IDs that point at a person.
+      </p>
+      <p>We do not:</p>
+      <ul>
+        <li>Fingerprint your browser for advertising</li>
+        <li>Drop third-party cookies</li>
+        <li>Follow you across sites to retarget you</li>
+        <li>Feed your comments into a model we train on user content for ads or surveillance (we don’t run that business)</li>
+        <li>Use “legitimate interest” as a euphemism for profiling</li>
+      </ul>
+      <p>
+        This website may send a normal HTTPS request to our host when you load a
+        page. That is how the web works. It is not a tracker we interpret, score,
+        or keep as a behavioral profile.
+      </p>
+
+      <h2>7. Processors (people who see packets, not a product we are)</h2>
+      <p>
+        To run at all we use infrastructure. They process data on our instructions.
+        They are not given a license to mine Everchat users for ads.
+      </p>
+      <ul>
+        <li>
+          <strong>Supabase</strong> (Postgres, Auth-adjacent Edge Functions, Storage, Realtime)
+          — application database and files.
+        </li>
+        <li>
+          <strong>Vercel</strong> — hosts this website and <code>/.well-known/webauthn</code>.
+        </li>
+        <li>
+          <strong>Google / Chrome Web Store</strong> — distributes the extension. Their
+          store, account, and review systems are Google’s, not ours. Install-time
+          identity (your Google account) is between you and Google. Everchat never
+          receives it.
+        </li>
+        <li>
+          <strong>Giphy</strong> — only if you search for a GIF. The query goes through
+          our Edge Function so the Giphy API key is not shipped in the extension.
+          Giphy then sees the search string. If you do not search GIFs, this does
+          not run. GIF files you insert are third-party URLs displayed in the thread.
+        </li>
+      </ul>
+      <p>
+        Passkeys may sync through Apple, Google, or a password manager
+        <em>on your side</em>. That is your authenticator vendor, not an Everchat
+        account field. We receive a public key. We do not receive the email those
+        companies associate with your vault.
+      </p>
+      <p>
+        Hosts typically keep short-lived access logs (IP, user-agent, timestamp)
+        for abuse and uptime. We do not use those logs to identify commenters,
+        build profiles, or market anything. We do not want them as a substitute
+        for an email. We will not retain them as a commenter identity store.
+      </p>
+
+      <h2>8. Legal demands</h2>
+      <p>
+        We do not volunteer user data to random requesters. We do not run a
+        “trust and safety identity team.”
+      </p>
+      <p>
+        If a binding court order, warrant, or other compulsory legal process that
+        applies to us validly requires production, we will produce what we actually
+        have — which is not an email, not a phone, and not a legal name. Typically
+        that is a handle, public posts, and technical account records listed in §4.
+      </p>
+      <p>
+        We will not expand collection in order to make future fishing easier.
+        We will not build a real-name pipeline because a third party wishes we had one.
+      </p>
+
+      <h2>9. Your rights and how to exercise them</h2>
+      <p>You can, in the product:</p>
+      <ul>
+        <li>Read without an account</li>
+        <li>Soft-delete your own messages</li>
+        <li>Change or remove an avatar</li>
+        <li>Add or revoke passkeys on the account (keep at least one while the account exists)</li>
+      </ul>
+      <p>
+        If you want the handle and remaining records deleted, contact
+        <a href="mailto:legal@everch.at">legal@everch.at</a> from a place we can
+        reasonably tie to the account (for example by completing a passkey
+        assertion we challenge, not by sending a screenshot of a @handle). We will
+        not invent an email-based recovery flow to “help.”
+      </p>
+      <p>
+        Public replies other people wrote, and copies that already left our servers
+        (screenshots, scrapers, archives), are outside what we can unsay. Deletion
+        on Everchat is deletion of our hosted copy, not a worldwide memory hole.
+      </p>
+      <p>
+        If you are in a region with statutory access, correction, deletion, or
+        portability rights, we will honour them for the data we hold. We do not
+        use your data for automated decision-making that produces legal effects
+        about you. There is no ad auction.
+      </p>
+
+      <h2>10. Children</h2>
+      <p>
+        Everchat is not directed at children under 13, and we do not knowingly
+        collect personal information from them. Do not create a handle if you are
+        under 13. If you believe a child under 13 has an account, write
+        <a href="mailto:legal@everch.at">legal@everch.at</a> and we will delete it.
+      </p>
+
+      <h2>11. Changes</h2>
+      <p>
+        If we ever collect a new class of data, this page will say so before the
+        product does. We will not bury a tracking SDK in a “minor update.”
+        Material changes get a new effective date at the top of this document.
+      </p>
+      <p>
+        A future analytics tool, email gate, or advertising SDK would be a
+        different product. It is not a toggle we intend to flip.
+      </p>
+
+      <h2>12. Chrome Web Store disclosures</h2>
+      <p>
+        For store review: the extension’s single purpose is public commentary on
+        the URL you already have open. User data we handle is limited to §4.
+        Use is limited to providing that commentary feature, security (passkeys,
+        rate limits), and displaying the thread. We do not use or transfer user
+        data for purposes unrelated to the item’s single purpose, and we do not
+        sell it.
+      </p>
+    </main>
+
+    <footer class="site-footer">
+      <img class="footer-mark" src="/assets/ec-logo-mark-black.svg" width="156" height="156" alt="" />
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/">Home</a>
+        <a href="/privacy" aria-current="page">Privacy</a>
+        <a href="/terms">Terms</a>
+      </nav>
+      <p>everch.at · we do not want to know who you are</p>
+    </footer>
+  </body>
+</html>

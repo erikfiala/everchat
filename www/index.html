@@ -18,13 +18,8 @@
     <link rel="canonical" href="https://everch.at" />
     <link rel="icon" href="/assets/ec-logo-mark-black.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/assets/ec-logo-avatar.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Public+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="/styles.css" />
+    <meta name="referrer" content="no-referrer" />
   </head>
   <body>
     <div class="atmosphere" aria-hidden="true">
@@ -53,30 +48,20 @@
           Anonymous public comments on every URL. No email. No tracking.
         </p>
         <div class="cta-group">
-          <a class="btn btn-primary" href="#get-extension">
-            <svg class="chrome-mark" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75" />
-              <circle cx="12" cy="12" r="3.25" fill="currentColor" />
-              <path
-                d="M12 2a10 10 0 0 1 8.66 5H12"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-              />
-              <path
-                d="M3.34 7A10 10 0 0 0 12 22l4.33-7.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-              />
-              <path
-                d="M20.66 7A10 10 0 0 1 7.67 18.5L12 8.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-              />
-            </svg>
-            Get the Chrome extension
+          <!-- Wire href to the Chrome Web Store listing URL when published. -->
+          <a
+            class="chrome-badge-link"
+            href="#get-extension"
+            aria-label="Install Everchat for Google Chrome — Chrome Web Store listing coming soon"
+          >
+            <img
+              class="chrome-badge"
+              src="/assets/chrome-web-store-badge.png"
+              width="248"
+              height="75"
+              alt="Available in the Chrome Web Store"
+              decoding="async"
+            />
           </a>
           <a class="btn btn-ghost" href="#how">How it works</a>
         </div>
@@ -156,7 +141,10 @@
           <li>Load unpacked → select <code>.output/chrome-mv3</code></li>
           <li>Pin Everchat and open the side panel on any page</li>
         </ol>
-        <p class="note">Passkeys use everch.at as the relying party — keep this site live for sign-in.</p>
+        <p class="note">
+          When the listing goes live, the Chrome Web Store badge above will open it directly.
+          Passkeys use everch.at as the relying party — keep this site live for sign-in.
+        </p>
       </section>
     </main>
 
@@ -168,6 +156,10 @@
         height="156"
         alt=""
       />
+      <nav class="footer-links" aria-label="Footer">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </nav>
       <p>everch.at · no tracking · privacy-first commentary on the open web</p>
     </footer>
   </body>

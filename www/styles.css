@@ -1,19 +1,53 @@
 /* Everchat marketing — “live margin” direction
-   Ink on cool stone · Bricolage Grotesque + Public Sans · teal accent */
+   Ink on cool slate · Bricolage Grotesque + Public Sans · slate accent
+   Fonts are self-hosted. No Google Fonts, no third-party requests. */
+
+@font-face {
+  font-family: "Public Sans";
+  src: url("/fonts/public-sans-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Public Sans";
+  src: url("/fonts/public-sans-600.woff2") format("woff2");
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-600.woff2") format("woff2");
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/bricolage-700.woff2") format("woff2");
+  font-weight: 700 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --ink: #121714;
-  --ink-soft: #2a332e;
-  --mute: #5c675f;
-  --stone: #e6ebe6;
-  --stone-deep: #cfd8d1;
-  --paper: #f3f6f3;
-  --panel: #fafcfa;
-  --line: #b8c4bb;
-  --accent: #0a7a62;
-  --accent-deep: #065544;
-  --accent-soft: #d4efe7;
-  --warn: #9a5b12;
+  /* Tailwind slate-aligned cool gray-blues */
+  --ink: #0f172a; /* slate-900 */
+  --ink-soft: #1e293b; /* slate-800 */
+  --mute: #64748b; /* slate-500 */
+  --stone: #e2e8f0; /* slate-200 */
+  --stone-deep: #cbd5e1; /* slate-300 */
+  --paper: #f8fafc; /* slate-50 */
+  --panel: #ffffff;
+  --line: #cbd5e1; /* slate-300 */
+  --accent: #334155; /* slate-700 */
+  --accent-deep: #1e293b; /* slate-800 */
+  --accent-soft: #e2e8f0; /* slate-200 */
+  --warn: #b45309;
   --font-display: "Bricolage Grotesque", "Segoe UI", sans-serif;
   --font-body: "Public Sans", "Segoe UI", sans-serif;
   --radius: 0.35rem;
@@ -65,9 +99,9 @@ a:hover {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 90% 70% at 85% 20%, rgba(10, 122, 98, 0.14), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 10% 90%, rgba(90, 110, 95, 0.18), transparent 50%),
-    linear-gradient(165deg, #eef2ee 0%, var(--stone) 42%, #dce5de 100%);
+    radial-gradient(ellipse 90% 70% at 85% 20%, rgba(71, 85, 105, 0.16), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 10% 90%, rgba(100, 116, 139, 0.2), transparent 50%),
+    linear-gradient(165deg, #f8fafc 0%, var(--stone) 42%, #d5dde8 100%);
   animation: atmosphere-drift 18s ease-in-out infinite alternate;
 }
 
@@ -76,7 +110,7 @@ a:hover {
   position: absolute;
   inset: 0;
   opacity: 0.35;
-  background-image: radial-gradient(rgba(18, 23, 20, 0.04) 0.6px, transparent 0.7px);
+  background-image: radial-gradient(rgba(15, 23, 42, 0.045) 0.6px, transparent 0.7px);
   background-size: 4px 4px;
   mix-blend-mode: multiply;
 }
@@ -103,10 +137,10 @@ a:hover {
 
 @keyframes atmosphere-drift {
   from {
-    filter: hue-rotate(0deg);
+    filter: saturate(1) brightness(1);
   }
   to {
-    filter: hue-rotate(8deg);
+    filter: saturate(1.05) brightness(0.98);
   }
 }
 
@@ -188,6 +222,32 @@ a:hover {
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }
 
+/* Official Chrome Web Store badge — resize only, keep aspect ratio */
+.chrome-badge-link {
+  display: inline-flex;
+  line-height: 0;
+  text-decoration: none;
+  border-radius: 0.2rem;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.chrome-badge-link:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.chrome-badge-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.chrome-badge {
+  display: block;
+  width: min(100%, 12.5rem);
+  height: auto;
+  aspect-ratio: 496 / 150;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -211,14 +271,14 @@ a:hover {
 
 .btn-primary {
   background: var(--accent);
-  color: #f7fffb;
+  color: var(--paper);
   border-color: var(--accent);
 }
 
 .btn-primary:hover {
   background: var(--accent-deep);
   border-color: var(--accent-deep);
-  color: #fff;
+  color: var(--panel);
   transform: translateY(-1px);
 }
 
@@ -232,12 +292,6 @@ a:hover {
 .btn-ghost:hover {
   border-color: var(--ink-soft);
   color: var(--ink);
-}
-
-.chrome-mark {
-  width: 1.05rem;
-  height: 1.05rem;
-  flex-shrink: 0;
 }
 
 @keyframes brand-in {
@@ -338,7 +392,7 @@ a:hover {
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 50%;
-  background: #9aab9f;
+  background: color-mix(in srgb, var(--mute) 70%, var(--stone-deep));
 }
 
 .address {
@@ -359,7 +413,7 @@ a:hover {
   padding: 1.15rem 1.25rem 1.5rem;
   overflow: hidden;
   background:
-    linear-gradient(180deg, var(--paper) 0%, #eef2ee 100%);
+    linear-gradient(180deg, var(--paper) 0%, #f1f5f9 100%);
   position: relative;
 }
 
@@ -372,8 +426,8 @@ a:hover {
       90deg,
       transparent,
       transparent 47%,
-      rgba(184, 196, 187, 0.25) 47%,
-      rgba(184, 196, 187, 0.25) 53%,
+      color-mix(in srgb, var(--line) 35%, transparent) 47%,
+      color-mix(in srgb, var(--line) 35%, transparent) 53%,
       transparent 53%
     );
   opacity: 0.35;
@@ -623,7 +677,7 @@ a:hover {
 .install-steps code {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.85em;
-  background: rgba(18, 23, 20, 0.06);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
   padding: 0.1em 0.35em;
   border-radius: 0.2rem;
 }
@@ -657,6 +711,189 @@ a:hover {
 
 .site-footer p {
   margin: 0;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 1.1rem;
+  font-size: 0.8rem;
+}
+
+.footer-links a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.footer-links a[aria-current="page"] {
+  color: var(--accent-deep);
+  text-decoration: underline;
+}
+
+/* —— Legal docs —— */
+body.doc {
+  background: var(--paper);
+}
+
+.doc-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem var(--space);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.doc-bar a.home {
+  display: block;
+  line-height: 0;
+}
+
+.doc-bar img {
+  width: 8.5rem;
+  height: auto;
+}
+
+.doc-nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.doc-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.doc-nav a:hover,
+.doc-nav a[aria-current="page"] {
+  color: var(--accent-deep);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.doc-main {
+  position: relative;
+  z-index: 1;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 3.5rem) var(--space) clamp(4rem, 10vw, 6rem);
+}
+
+.doc-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 0.55rem;
+}
+
+.doc-main h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.85rem, 4.2vw, 2.45rem);
+  letter-spacing: -0.04em;
+  line-height: 1.12;
+  margin: 0 0 0.65rem;
+}
+
+.doc-lede {
+  font-size: 1.08rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.75rem;
+  max-width: 42ch;
+}
+
+.doc-meta {
+  margin: 0 0 2.5rem;
+  font-size: 0.85rem;
+  color: var(--mute);
+}
+
+.doc-main h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+  margin: 2.15rem 0 0.55rem;
+  line-height: 1.25;
+}
+
+.doc-main h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 1.35rem 0 0.4rem;
+}
+
+.doc-main p,
+.doc-main li {
+  color: var(--ink-soft);
+}
+
+.doc-main p {
+  margin: 0 0 0.85rem;
+}
+
+.doc-main ul,
+.doc-main ol {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+}
+
+.doc-main li {
+  margin: 0.28rem 0;
+}
+
+.doc-main li::marker {
+  color: var(--accent);
+}
+
+.doc-main strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  padding: 0.9rem 1rem;
+  margin: 0 0 1.35rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.callout p {
+  margin: 0;
+  color: var(--ink);
+}
+
+.callout p + p {
+  margin-top: 0.65rem;
+}
+
+.doc-main a {
+  color: var(--accent-deep);
+}
+
+.doc-main code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.86em;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 0.2rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

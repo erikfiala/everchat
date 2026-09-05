@@ -23,7 +23,7 @@ const tabs: { id: PanelTab; label: string; icon: typeof MessageSquare }[] = [
 export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
   return (
     <TooltipProvider delayDuration={200}>
-      <nav className="flex items-center justify-around border-b border-[var(--color-border)] bg-white px-2 py-1.5">
+      <nav className="flex items-center justify-around border-b border-[var(--color-border)] bg-[var(--color-card)] px-2 py-1.5">
         {tabs.map(({ id, label, icon: Icon }) => {
           const isActive = active === id;
           return (

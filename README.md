@@ -2,7 +2,7 @@
 
 Chrome MV3 side-panel extension: public Reddit-style comments on any URL. Passkeys only — no email.
 
-**Site / WebAuthn RP:** [everch.at](https://everch.at)  
+**Site / WebAuthn RP (canonical):** [everch.at](https://everch.at) — `www.everch.at` redirects here (308).  
 Product spec: [PRD.md](./PRD.md) (v1.6).
 
 ## Stack
@@ -74,15 +74,15 @@ npx supabase functions deploy giphy-proxy
 Passkey ceremonies run in the **side panel** (`chrome-extension://…`). RP ID is the brand domain `everch.at`, so Chrome needs [Related Origin Requests](https://github.com/w3c/webauthn/wiki/Explainer:-Related-origin-requests):
 
 1. Deploy `www/` to Vercel project **everchat-www** (already seeded).
-2. In Vercel → Project → Domains → add **everch.at** (and optionally `www.everch.at` → redirect to apex).
-3. At your registrar, point DNS as Vercel shows (typical apex):
+2. Domains on the project: **everch.at** (primary/canonical) and **www.everch.at** → 308 redirect to apex.
+3. At your registrar, point DNS as Vercel shows (typical):
 
 | Type | Name | Value |
 |------|------|--------|
 | **A** | `@` | `76.76.21.21` |
 | **CNAME** | `www` | `cname.vercel-dns.com` |
 
-(Confirm exact records in the Vercel domain UI — they can change.)
+(Confirm exact records in the Vercel domain UI — they can change. Apex must stay primary; do not reverse the www redirect.)
 
 4. After DNS propagates, `https://everch.at/.well-known/webauthn` must return JSON listing the extension origin, e.g.:
 

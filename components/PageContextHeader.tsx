@@ -17,7 +17,7 @@ export function PageContextHeader({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 border-b border-[var(--color-border)] bg-white px-3 py-2',
+        'flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
         className,
       )}
     >

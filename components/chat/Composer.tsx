@@ -70,7 +70,7 @@ export function Composer({
 
   if (gated) {
     return (
-      <div className="border-t border-[var(--color-border)] bg-white p-3">
+      <div className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
         <Button className="w-full" onClick={onGate}>
           Sign in anonymously to join
         </Button>
@@ -100,7 +100,7 @@ export function Composer({
   };
 
   return (
-    <div className="relative border-t border-[var(--color-border)] bg-white p-3">
+    <div className="relative border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
       {replyToHandle && (
         <div className="mb-2 flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
           <span>
@@ -185,7 +185,7 @@ export function Composer({
       )}
 
       {showGiphy && (
-        <div className="absolute bottom-full left-0 right-0 z-30 mx-2 mb-1 rounded-md border border-[var(--color-border)] bg-white p-2 shadow-lg">
+        <div className="absolute bottom-full left-0 right-0 z-30 mx-2 mb-1 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
           <Input
             placeholder="Search Giphy…"
             value={giphyQ}

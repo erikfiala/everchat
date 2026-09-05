@@ -135,8 +135,14 @@ export function AuthLanding() {
   return (
     <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
       <div className="mb-6">
-        <p className="text-2xl font-bold tracking-tight">Everchat</p>
-        <h1 className="mt-3 text-xl font-semibold leading-snug tracking-tight">
+        <img
+          src="/ec-logo-horizontal-black.svg"
+          alt="Everchat"
+          width="200"
+          height="46"
+          className="h-8 w-auto"
+        />
+        <h1 className="mt-4 text-xl font-semibold leading-snug tracking-tight">
           Say what you think — on any page.
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted-foreground)]">

@@ -113,7 +113,7 @@ export function ProfileTab() {
                 {user.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="absolute bottom-0 right-0 rounded-full bg-white p-1 shadow">
+            <span className="absolute bottom-0 right-0 rounded-full bg-[var(--color-card)] p-1 shadow">
               <Camera className="h-3 w-3" />
             </span>
           </button>

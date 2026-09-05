@@ -220,7 +220,7 @@ export function MessageRow({
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                     {menuOpen && (
-                      <div className="absolute right-0 z-20 mt-1 w-40 rounded-md border border-[var(--color-border)] bg-white py-1 shadow-md">
+                      <div className="absolute right-0 z-20 mt-1 w-40 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] py-1 shadow-md">
                         <button
                           type="button"
                           className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs hover:bg-[var(--color-accent)]"

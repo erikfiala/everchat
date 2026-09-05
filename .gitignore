@@ -1,0 +1,41 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+node_modules
+.output
+stats.html
+stats-*.json
+.wxt
+web-ext.config.ts
+.env
+.env.local
+.supabase
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+www/.deploy-args.json
+www/.deploy-payload.json
+www/.deploy-critical.json
+www/.deploy-call.json
+www/.deploy-call-full.json
+# Vercel local link / deploy artifacts
+.vercel
+www/.vercel
+www/.deploy-*.json
+# Build / deps already covered above; be explicit
+dist
+coverage
+*.pem
+supabase/.temp

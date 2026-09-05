@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Everchat — Public comments on any URL</title>
+    <meta
+      name="description"
+      content="Anonymous public comments on every URL. Chrome side panel. No email. No staff mods."
+    />
+    <meta property="og:title" content="Everchat" />
+    <meta
+      property="og:description"
+      content="Say what you think — on any page. Privacy-first comments bound to the URL you're on."
+    />
+    <meta property="og:url" content="https://everch.at" />
+    <meta property="og:image" content="https://everch.at/assets/ec-logo-horizontal-black.svg" />
+    <link rel="canonical" href="https://everch.at" />
+    <link rel="icon" href="/assets/ec-logo-mark-black.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/ec-logo-mark-black.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Public+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <img
+        class="atmosphere-mark"
+        src="/assets/ec-logo-mark-black.svg"
+        alt=""
+        width="156"
+        height="156"
+      />
+    </div>
+
+    <header class="hero">
+      <div class="hero-copy">
+        <h1 class="brand">
+          <img
+            class="brand-logo"
+            src="/assets/ec-logo-horizontal-black.svg"
+            width="560"
+            height="130"
+            alt="Everchat"
+          />
+        </h1>
+        <p class="headline">Say what you think — on any page.</p>
+        <p class="lede">
+          Anonymous public comments on every URL. No email. Community collapses the noise.
+        </p>
+        <div class="cta-group">
+          <a class="btn btn-primary" href="#get-extension">
+            <svg class="chrome-mark" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.75" />
+              <circle cx="12" cy="12" r="3.25" fill="currentColor" />
+              <path
+                d="M12 2a10 10 0 0 1 8.66 5H12"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+              />
+              <path
+                d="M3.34 7A10 10 0 0 0 12 22l4.33-7.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+              />
+              <path
+                d="M20.66 7A10 10 0 0 1 7.67 18.5L12 8.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+              />
+            </svg>
+            Get the Chrome extension
+          </a>
+          <a class="btn btn-ghost" href="#how">How it works</a>
+        </div>
+      </div>
+
+      <div class="stage" aria-hidden="true">
+        <div class="scene">
+          <div class="browser">
+            <div class="browser-chrome">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <div class="address">https://news.example/story/the-page-youre-on</div>
+            </div>
+            <div class="page">
+              <p class="page-kicker">The open web</p>
+              <p class="page-title">Every URL deserves a conversation.</p>
+              <div class="page-lines">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+            </div>
+            <aside class="sidepanel">
+              <div class="sidepanel-head">
+                <img
+                  class="sidepanel-logo"
+                  src="/assets/ec-logo-horizontal-black.svg"
+                  width="560"
+                  height="130"
+                  alt=""
+                />
+                <span>this page</span>
+              </div>
+              <div class="thread">
+                <article class="msg">
+                  <div class="msg-meta"><strong>@mira</strong><em>2m</em></div>
+                  <p>Finally — talk about the page without leaving it.</p>
+                </article>
+                <article class="msg">
+                  <div class="msg-meta"><strong>@ko</strong><em>1m</em></div>
+                  <p>Same URL, same room. Tracking params stripped.</p>
+                </article>
+                <article class="msg">
+                  <div class="msg-meta"><strong>@n</strong><em>now</em></div>
+                  <p>No email. Sign in anonymously when you want to speak.</p>
+                </article>
+              </div>
+              <div class="composer-stub">Write something…</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="below">
+      <section class="section" id="how">
+        <h2>One chat per URL.</h2>
+        <p>
+          Open the side panel on any tab. You land in the thread for that page —
+          news, docs, gov sites, anything with a link. Votes bury noise; speech stays.
+        </p>
+      </section>
+
+      <section class="section" id="get-extension">
+        <h2>Install for Chrome</h2>
+        <p>
+          Chrome Web Store listing is coming soon. Until then, load the extension unpacked
+          from a local build:
+        </p>
+        <ol class="install-steps">
+          <li>Clone the Everchat repo and run <code>pnpm install && pnpm build</code></li>
+          <li>Open <code>chrome://extensions</code> and turn on Developer mode</li>
+          <li>Load unpacked → select <code>.output/chrome-mv3</code></li>
+          <li>Pin Everchat and open the side panel on any page</li>
+        </ol>
+        <p class="note">Passkeys use everch.at as the relying party — keep this site live for sign-in.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <img
+        class="footer-mark"
+        src="/assets/ec-logo-mark-black.svg"
+        width="156"
+        height="156"
+        alt=""
+      />
+      <p>everch.at · privacy-first commentary on the open web</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-background: #fafafa;
+  --color-foreground: #171717;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-border: #e4e4e7;
+  --color-card: #ffffff;
+  --color-primary: #18181b;
+  --color-primary-foreground: #fafafa;
+  --color-accent: #f4f4f5;
+  --color-destructive: #dc2626;
+  --color-success: #16a34a;
+  --color-score-pos: #16a34a;
+  --color-score-neg: #dc2626;
+  --color-ring: #a1a1aa;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes highlight-pulse {
+  0% {
+    background-color: color-mix(in srgb, #fbbf24 35%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight-pulse {
+  animation: highlight-pulse 1.6s ease-out;
+}

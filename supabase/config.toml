@@ -1,0 +1,11 @@
+[functions.webauthn-register]
+verify_jwt = false
+
+[functions.webauthn-login]
+verify_jwt = false
+
+[functions.webauthn-add-device]
+verify_jwt = false
+
+[functions.giphy-proxy]
+verify_jwt = false

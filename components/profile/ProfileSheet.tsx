@@ -1,0 +1,74 @@
+import { useEffect, useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { fetchProfileByUsername } from '@/lib/profile';
+import type { Profile } from '@/lib/database.types';
+import { formatScore, scoreColorClass } from '@/lib/collapse';
+import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface ProfileSheetProps {
+  username: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function ProfileSheet({
+  username,
+  open,
+  onOpenChange,
+}: ProfileSheetProps) {
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open || !username) return;
+    setLoading(true);
+    fetchProfileByUsername(username)
+      .then(setProfile)
+      .catch(() => setProfile(null))
+      .finally(() => setLoading(false));
+  }, [open, username]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Profile</DialogTitle>
+        </DialogHeader>
+        {loading && <Skeleton className="h-20 w-full" />}
+        {!loading && profile && (
+          <div className="flex items-center gap-3 py-2">
+            <Avatar className="h-12 w-12">
+              {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
+              <AvatarFallback>
+                {profile.username.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="text-base font-semibold">@{profile.username}</div>
+              <div
+                className={cn(
+                  'text-sm font-medium',
+                  scoreColorClass(profile.karma),
+                )}
+              >
+                {formatScore(profile.karma)} karma
+              </div>
+            </div>
+          </div>
+        )}
+        {!loading && !profile && (
+          <p className="text-sm text-[var(--color-muted-foreground)]">
+            User not found.
+          </p>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}

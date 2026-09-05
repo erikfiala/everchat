@@ -1,0 +1,12 @@
+{
+  "headers": [
+    {
+      "source": "/.well-known/webauthn",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=300" }
+      ]
+    }
+  ]
+}

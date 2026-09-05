@@ -672,13 +672,15 @@
 }
 
 .trending-section {
-  max-width: 40rem;
+  width: 100%;
+  max-width: none;
 }
 
 .trending-list {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  width: 100%;
 }
 
 .trending-row {
@@ -755,9 +757,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
   min-height: 6.5rem;
   padding: 1.5rem 1.25rem;
-  border: 1.5px dotted var(--line);
+  /* One step darker than stone/line (slate-200/300 → toward mute) */
+  border: 1.5px dotted color-mix(in srgb, var(--stone-deep) 55%, var(--mute));
   border-radius: 0.5rem;
   color: var(--mute);
   font-size: 0.95rem;
@@ -1065,12 +1070,12 @@ body.doc {
   white-space: normal;
 }
 
-/* Home nav: shorter width so the select doesn’t dominate */
-body:not(.doc) .doc-bar .nav-lang {
+/* Header lang select: compact width; truncate with ellipsis (home + doc) */
+.doc-bar .nav-lang {
   max-width: 8.25rem;
 }
 
-body:not(.doc) .doc-bar .nav-lang select {
+.doc-bar .nav-lang select {
   width: 7.25rem;
   max-width: 7.25rem;
 }
@@ -1110,7 +1115,7 @@ body:not(.doc) .doc-bar .nav-lang select {
     max-width: min(9.5rem, 42vw);
   }
 
-  body:not(.doc) .doc-bar .nav-lang {
+  .doc-bar .nav-lang {
     max-width: min(7.25rem, 40vw);
   }
 
@@ -1122,7 +1127,7 @@ body:not(.doc) .doc-bar .nav-lang select {
     max-width: 100%;
   }
 
-  body:not(.doc) .doc-bar .nav-lang select {
+  .doc-bar .nav-lang select {
     width: 100%;
     max-width: 100%;
   }
@@ -1134,6 +1139,12 @@ body:not(.doc) .doc-bar .nav-lang select {
   max-width: 42rem;
   margin: 0 auto;
   padding: clamp(2rem, 6vw, 3.5rem) var(--space) clamp(4rem, 10vw, 6rem);
+}
+
+.doc-lang-note {
+  margin: 0 0 1.75rem; /* breathe before kicker / title */
+  font-size: 0.85rem;
+  color: var(--mute);
 }
 
 .doc-kicker {
@@ -1221,7 +1232,7 @@ body:not(.doc) .doc-bar .nav-lang select {
 
 .callout {
   border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
+  background: var(--panel);
   padding: 0.9rem 1rem;
   margin: 0 0 1.35rem;
   border-radius: 0 var(--radius) var(--radius) 0;

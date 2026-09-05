@@ -742,7 +742,7 @@
 .install-steps li > span {
   flex: 1;
   min-width: 0;
-  padding-top: 1px; /* optical align with numbered boxes */
+  padding-top: 2px; /* optical align with numbered boxes */
 }
 
 .install-steps code {

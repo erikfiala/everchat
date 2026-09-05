@@ -126,17 +126,20 @@ a:hover {
 
 /* —— Hero —— */
 .hero {
-  min-height: 100svh;
   display: grid;
   grid-template-columns: 1fr;
-  align-items: stretch;
+  align-items: center;
   overflow: hidden;
   position: relative;
+  padding-top: clamp(1.25rem, 3vw, 2.5rem);
+  gap: clamp(1.5rem, 4vw, 2.5rem);
 }
 
 @media (min-width: 960px) {
   .hero {
     grid-template-columns: minmax(22rem, 0.95fr) minmax(0, 1.15fr);
+    gap: 0;
+    padding-top: clamp(2rem, 4vw, 3.5rem);
   }
 }
 
@@ -145,7 +148,7 @@ a:hover {
   flex-direction: column;
   justify-content: center;
   padding: var(--hero-pad);
-  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: 0;
   max-width: 36rem;
   z-index: 1;
 }
@@ -153,6 +156,7 @@ a:hover {
 @media (min-width: 960px) {
   .hero-copy {
     padding-right: 1.5rem;
+    padding-bottom: var(--hero-pad);
     max-width: 28rem;
     margin-inline-start: max(0px, calc((100vw - 72rem) / 2));
   }
@@ -286,28 +290,18 @@ a:hover {
   }
 }
 
-/* —— Product stage (full-bleed visual) —— */
+/* —— Product stage (graphic, not full-viewport) —— */
 .stage {
   position: relative;
-  min-height: clamp(22rem, 55vh, 38rem);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
   padding: 0;
   margin: 0;
 }
 
-@media (min-width: 960px) {
-  .stage {
-    min-height: 100svh;
-    align-items: center;
-  }
-}
-
 .scene {
   width: 100%;
-  height: 100%;
-  min-height: inherit;
   position: relative;
   display: grid;
   place-items: end stretch;
@@ -317,16 +311,17 @@ a:hover {
 @media (min-width: 960px) {
   .scene {
     place-items: center stretch;
-    padding: var(--hero-pad) 0 var(--hero-pad) 0;
+    padding: 0 0 var(--hero-pad) 0;
   }
 }
 
 .browser {
   width: min(100%, 52rem);
   margin-inline-start: auto;
-  height: min(78vh, 36rem);
+  height: min(70vh, 32rem);
   display: grid;
   grid-template-columns: 1fr minmax(11.5rem, 38%);
+  grid-template-rows: auto 1fr;
   background: var(--paper);
   border: 1px solid var(--line);
   border-right: none;
@@ -338,7 +333,7 @@ a:hover {
 
 @media (max-width: 959px) {
   .browser {
-    height: min(52vh, 26rem);
+    height: min(48vh, 24rem);
     border-radius: 0.65rem 0.65rem 0 0;
     border-right: 1px solid var(--line);
     border-bottom: none;
@@ -355,7 +350,8 @@ a:hover {
 }
 
 .browser-chrome {
-  grid-column: 1 / -1;
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -363,6 +359,7 @@ a:hover {
   padding: 0 0.55rem;
   background: color-mix(in srgb, var(--stone-deep) 72%, var(--paper));
   border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
 }
 
 .dots {
@@ -396,29 +393,14 @@ a:hover {
 }
 
 .page {
+  grid-column: 1;
+  grid-row: 2;
   padding: 1.15rem 1.25rem 1.5rem;
   overflow: hidden;
   background:
     linear-gradient(180deg, var(--paper) 0%, #f1f5f9 100%);
   position: relative;
-}
-
-.page::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 47%,
-      color-mix(in srgb, var(--line) 35%, transparent) 47%,
-      color-mix(in srgb, var(--line) 35%, transparent) 53%,
-      transparent 53%
-    );
-  opacity: 0.35;
-  pointer-events: none;
-  mask-image: linear-gradient(180deg, #000 20%, transparent 85%);
+  min-width: 0;
 }
 
 .page-kicker {
@@ -433,13 +415,12 @@ a:hover {
 
 .page-title {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 2.2vw, 1.45rem);
+  font-size: clamp(0.95rem, 2vw, 1.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin: 0 0 0.75rem;
   position: relative;
-  max-width: 16ch;
 }
 
 .page-lines {
@@ -480,11 +461,15 @@ a:hover {
 }
 
 .sidepanel {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: stretch;
   background: var(--panel);
   border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   animation: panel-slide 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
 }
 
@@ -502,10 +487,10 @@ a:hover {
 .sidepanel-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
   padding: 0.65rem 0.7rem;
   border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
 
 .sidepanel-logo {
@@ -513,15 +498,6 @@ a:hover {
   height: auto;
   flex-shrink: 0;
   padding-bottom: 4px; /* optical vertical balance */
-}
-
-.sidepanel-head span {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 0.65rem;
-  color: var(--mute);
-  letter-spacing: 0;
-  white-space: nowrap;
 }
 
 .thread {
@@ -600,9 +576,38 @@ a:hover {
 .below {
   position: relative;
   z-index: 1;
-  padding: clamp(3.5rem, 10vw, 6.5rem) var(--space);
-  max-width: 42rem;
+  padding: clamp(3rem, 8vw, 5.5rem) var(--space);
+  max-width: 52rem;
   margin: 0 auto;
+}
+
+.benefits {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(2rem, 5vw, 2.75rem) clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: clamp(3.5rem, 9vw, 5.5rem);
+}
+
+@media (min-width: 720px) {
+  .benefits {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.benefit h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.2rem, 2.4vw, 1.45rem);
+  letter-spacing: -0.03em;
+  margin: 0 0 0.55rem;
+  line-height: 1.2;
+}
+
+.benefit p {
+  margin: 0;
+  color: var(--mute);
+  max-width: 36ch;
+  font-size: 0.98rem;
 }
 
 .section {
@@ -632,6 +637,27 @@ a:hover {
   margin-top: 0.75rem;
 }
 
+.install {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.install h2 {
+  margin-bottom: 0.75rem;
+}
+
+.install p {
+  max-width: 42ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.install-badge {
+  margin: 1.25rem 0 1.5rem;
+}
+
 .install-steps {
   margin: 1.25rem 0 0;
   padding: 0;
@@ -640,6 +666,8 @@ a:hover {
   display: grid;
   gap: 0.85rem;
   max-width: 36rem;
+  width: 100%;
+  text-align: left;
 }
 
 .install-steps li {
@@ -680,10 +708,12 @@ a:hover {
   border-radius: 0.2rem;
 }
 
-.note {
-  margin-top: 1rem;
+.section .note,
+p.note {
+  margin-top: 1.75rem;
   font-size: 0.9rem;
   color: var(--warn);
+  max-width: 42ch;
 }
 
 .site-footer {

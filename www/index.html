@@ -41,7 +41,6 @@
           No ads. Free forever.
         </p>
         <div class="cta-group">
-          <!-- Prefer the Chrome Web Store listing URL here when you have it; #get-extension is the on-page fallback. -->
           <a
             class="chrome-badge-link"
             href="#get-extension"
@@ -69,7 +68,7 @@
             </div>
             <div class="page">
               <p class="page-kicker">The open web</p>
-              <p class="page-title">Say what you think without leaving the page.</p>
+              <p class="page-title">Say what you think<br />without leaving the page.</p>
               <div class="page-lines">
                 <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
               </div>
@@ -83,7 +82,6 @@
                   height="130"
                   alt=""
                 />
-                <span>this page</span>
               </div>
               <div class="thread">
                 <article class="msg">
@@ -99,7 +97,7 @@
                   <p>No email. Passkeys when you want to speak.</p>
                 </article>
               </div>
-              <div class="composer-stub">Write something…</div>
+              <div class="composer-stub">Write something...</div>
             </aside>
           </div>
         </div>
@@ -107,45 +105,61 @@
     </header>
 
     <main class="below">
-      <section class="section" id="how">
-        <h2>Comments on any page.</h2>
-        <p>
-          Open the side panel on any tab. News, gov sites, docs, anything with a
-          link. Same URL, same room. You never leave the page.
-        </p>
+      <section class="benefits" id="how" aria-label="How Everchat works">
+        <article class="benefit">
+          <h2>Comments on any page.</h2>
+          <p>
+            Open the side panel on any tab. News, gov sites, docs, anything with a
+            link. Same URL, same room. You never leave the page.
+          </p>
+        </article>
+
+        <article class="benefit">
+          <h2>No staff mods. Crowd decides.</h2>
+          <p>
+            We do not hire moderators to police speech. Votes collapse junk; collapsed
+            comments stay expandable. Karma marks reputation in the room.
+          </p>
+        </article>
+
+        <article class="benefit">
+          <h2>Privacy above everything.</h2>
+          <p>
+            No tracking. No email. Passkeys when you speak. We don't follow you around
+            the web.
+          </p>
+        </article>
+
+        <article class="benefit">
+          <h2>No ads. No tracking.</h2>
+          <p>
+            Everchat will never run ads. If many people use it, we may ask for
+            donations to support the mission, and maybe an optional paid tier later.
+            Never ads.
+          </p>
+        </article>
       </section>
 
-      <section class="section" id="trust">
-        <h2>No staff mods. Crowd decides.</h2>
-        <p>
-          We do not hire moderators to police speech. Votes collapse junk; collapsed
-          comments stay expandable. Karma marks reputation in the room.
-        </p>
-      </section>
-
-      <section class="section" id="privacy">
-        <h2>Privacy above everything.</h2>
-        <p>
-          No tracking. No email. Passkeys when you speak. We don't follow you around
-          the web.
-        </p>
-      </section>
-
-      <section class="section" id="sustain">
-        <h2>No ads. No tracking.</h2>
-        <p>
-          Everchat will never run ads. If many people use it, we may ask for
-          donations to support the mission, and maybe an optional paid tier later.
-          Never ads.
-        </p>
-      </section>
-
-      <section class="section" id="get-extension">
+      <section class="section install" id="get-extension">
         <h2>Install for Chrome</h2>
         <p>
-          Get Everchat from the Chrome Web Store with the badge above. That is the primary path,
-          and we are publishing ASAP.
+          Get Everchat from the Chrome Web Store. That is the primary path, and we are
+          publishing ASAP.
         </p>
+        <a
+          class="chrome-badge-link install-badge"
+          href="#get-extension"
+          aria-label="Install Everchat from the Chrome Web Store"
+        >
+          <img
+            class="chrome-badge"
+            src="/assets/chrome-web-store-badge.png"
+            width="248"
+            height="75"
+            alt="Available in the Chrome Web Store"
+            decoding="async"
+          />
+        </a>
         <p>
           If the listing ever goes down because Google doesn't like what we do, you can still
           load a local build in developer mode as a fallback:

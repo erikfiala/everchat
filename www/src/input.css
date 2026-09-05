@@ -231,7 +231,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: calc(0.65rem + 4px); /* +4px between CWS and Donate */
+  gap: 0.65rem;
   max-width: 100%;
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
 }

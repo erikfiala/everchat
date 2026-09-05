@@ -350,7 +350,8 @@
 
 .browser {
   width: 100%;
-  height: min(70vh, 38rem);
+  /* Compact product shot — ~half the prior tall mock (was min(70vh, 38rem)) */
+  height: min(36vh, 19rem);
   display: grid;
   grid-template-columns: 1fr minmax(11.5rem, 38%);
   grid-template-rows: auto 1fr;
@@ -363,7 +364,7 @@
 
 @media (max-width: 959px) {
   .browser {
-    height: min(58vh, 30rem);
+    height: min(30vh, 15.5rem);
   }
 }
 
@@ -511,12 +512,12 @@
 .sidepanel-head {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  /* Compact chrome row — half the prior tall padded block (~20px) */
-  height: 1.25rem;
+  gap: 0.35rem;
+  /* Match browser chrome row — readable wordmark, not microscopic */
+  height: 1.75rem; /* 28px */
   min-height: 0; /* flex default min-height:auto was expanding past height when img sized intrinsically */
-  max-height: 1.25rem;
-  padding: 0 0.4rem;
+  max-height: 1.75rem;
+  padding: 0 0.45rem;
   box-sizing: border-box;
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
@@ -526,8 +527,8 @@
 .sidepanel-head .sidepanel-logo {
   display: block;
   width: auto;
-  height: 0.5rem; /* 8px — SVG viewBox has internal pad; visual ink ~half prior */
-  max-height: 0.5rem;
+  height: 0.9375rem; /* 15px — SVG has internal pad; readable on mock */
+  max-height: 1rem; /* 16px cap */
   max-width: none; /* defeat img { max-width:100% } aspect blow-up with height:auto */
   flex-shrink: 0;
   object-fit: contain;

@@ -321,7 +321,6 @@
   flex: 0 0 auto;
   width: 1.15rem;
   height: 1.15rem;
-  color: var(--mute);
 }
 
 @keyframes brand-in {

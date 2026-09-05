@@ -40,8 +40,16 @@
 
   @font-face {
     font-family: "Geist Sans";
+    src: url("/fonts/geist-sans-500.woff2") format("woff2");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Geist Sans";
     src: url("/fonts/geist-sans-600.woff2") format("woff2");
-    font-weight: 500 700;
+    font-weight: 600 700;
     font-style: normal;
     font-display: swap;
   }
@@ -311,6 +319,7 @@
   flex: 0 0 auto;
   width: 1.15rem;
   height: 1.15rem;
+  color: var(--mute);
 }
 
 @keyframes brand-in {

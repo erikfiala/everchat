@@ -57,7 +57,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - DMs, follows, awards, paid features
 - Full moderation dashboard / admin UI / staff takedowns of speech
 - Automod / keyword bans / shadowbans as default moderation (community votes only)
-- Edit history / message editing after post
+- Message editing after publish (permanent — posts are immutable once published; delete only)
 - **Email / password / magic link / OTP / Google (or any social) OAuth** — privacy by design
 - Email / push notifications outside the extension (Chrome extension notifications + in-panel inbox only)
 - Account recovery via email (recovery = add a second passkey only)
@@ -796,7 +796,6 @@ Side Panel
 
 - Site-specific URL allowlists (richer YouTube/HN rules)
 - Username change (rate-limited)
-- Message edit window (e.g. 5 minutes)
 - Notify on @mentions beyond direct parent reply
 - Other users’ public activity feeds
 - Optional offline recovery codes (still no email)

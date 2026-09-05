@@ -358,8 +358,8 @@
   /* Compact product shot — ~half the prior tall mock (was min(70vh, 38rem)) */
   height: min(36vh, 19rem);
   display: grid;
-  /* ~40px narrower sidepanel vs prior 1.6fr/1fr; fr tracks keep flush right edge */
-  grid-template-columns: minmax(0, 2.15fr) minmax(9rem, 1fr);
+  /* ~20px wider sidepanel vs 8b87d06; fr tracks keep flush right edge */
+  grid-template-columns: minmax(0, 2.15fr) minmax(10.25rem, 1fr);
   grid-template-rows: auto 1fr;
   justify-content: stretch;
   /* Match sidepanel so any residual column gap stays white, not paper grey */
@@ -373,8 +373,8 @@
 @media (max-width: 959px) {
   .browser {
     height: min(30vh, 15.5rem);
-    /* ~40px narrower sidepanel; fr tracks only — no % max (avoids right gutter) */
-    grid-template-columns: minmax(0, 1.2fr) minmax(8rem, 1fr);
+    /* ~20px wider sidepanel; fr tracks only — no % max (avoids right gutter) */
+    grid-template-columns: minmax(0, 1.2fr) minmax(9.25rem, 1fr);
   }
 
   .page {
@@ -384,8 +384,8 @@
 
 @media (max-width: 560px) {
   .browser {
-    /* Still favor chat, but ~40px more page width than prior 0.85/1.2 */
-    grid-template-columns: minmax(0, 1.1fr) minmax(8.75rem, 1fr);
+    /* Still favor chat; +1.25rem min vs 8b87d06 */
+    grid-template-columns: minmax(0, 1.1fr) minmax(10rem, 1fr);
   }
 
   .page {

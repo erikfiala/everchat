@@ -280,11 +280,11 @@
   gap: 0.45rem;
   box-sizing: border-box;
   align-self: stretch;
-  padding: 0 1.15rem;
+  padding: 0 calc(1.15rem + 4px) 0 1.15rem;
   text-decoration: none;
   font-family: var(--font-sans);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.01em;
   color: var(--ink-soft);
   background: transparent;
@@ -786,8 +786,13 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.35rem 1.1rem;
+  gap: 0.35rem 0.55rem;
   font-size: 0.8rem;
+}
+
+.footer-sep {
+  color: var(--mute);
+  user-select: none;
 }
 
 .footer-links a {

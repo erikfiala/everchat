@@ -20,6 +20,22 @@ export function adminClient() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
+/**
+ * WebAuthn RP ID must be a registrable domain (e.g. everch.at), never a
+ * chrome-extension host. Extension IDs are 32 chars in a–p; using one as
+ * rpID yields Chrome's "<id> is an invalid domain".
+ */
+function normalizeRpId(raw: string | undefined): string {
+  const id = (raw || '').trim();
+  if (!id) return 'everch.at';
+  // Reject full origins mistakenly stuffed into WEBAUTHN_RP_ID
+  if (id.includes('://')) return 'everch.at';
+  // Reject bare Chrome extension IDs (hostname of chrome-extension://…)
+  if (/^[a-p]{32}$/i.test(id)) return 'everch.at';
+  if (id === 'localhost' || id.includes('.')) return id;
+  return 'everch.at';
+}
+
 export function rpConfig() {
   // WEBAUTHN_ORIGIN may be a single origin or comma-separated list
   // (e.g. chrome-extension://…,https://everch.at) for SimpleWebAuthn expectedOrigin.
@@ -30,7 +46,7 @@ export function rpConfig() {
     .map((s) => s.trim())
     .filter(Boolean);
   return {
-    rpID: Deno.env.get('WEBAUTHN_RP_ID') || 'localhost',
+    rpID: normalizeRpId(Deno.env.get('WEBAUTHN_RP_ID') || 'everch.at'),
     rpName: Deno.env.get('WEBAUTHN_RP_NAME') || 'Everchat',
     origin: origins.length <= 1 ? origins[0]! : origins,
   };

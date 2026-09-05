@@ -25,9 +25,7 @@ export function NotificationsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-[var(--color-border)] px-3 py-2">
-        <h1 className="text-sm font-semibold">{t('notifications.title')}</h1>
-      </div>
+      <h1 className="px-3 py-2 text-sm font-semibold">{t('notifications.title')}</h1>
       <div className="min-h-0 flex-1 overflow-y-auto">
         {loading && (
           <div className="space-y-2 p-3">

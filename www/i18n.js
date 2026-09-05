@@ -140,6 +140,13 @@
       var attr = el.getAttribute('data-i18n-attr');
       if (attr) {
         el.setAttribute(attr, text);
+      } else if (el.hasAttribute('data-i18n-html')) {
+        // Trusted catalog fragments may include <code>…</code> only.
+        if (isSafeCodeHtml(text)) {
+          el.innerHTML = text;
+        } else {
+          el.textContent = text.replace(/<\/?code>/gi, '');
+        }
       } else {
         el.textContent = text;
       }
@@ -149,6 +156,12 @@
     if (meta && catalog['www.metaDescription']) {
       meta.setAttribute('content', catalog['www.metaDescription']);
     }
+  }
+
+  /** Allow plain text plus optional <code>…</code> wrappers (no other tags). */
+  function isSafeCodeHtml(html) {
+    var stripped = String(html).replace(/<\/?code>/gi, '');
+    return stripped.indexOf('<') === -1 && stripped.indexOf('>') === -1;
   }
 
   function fillSwitcher(select, pref, locale) {

@@ -101,11 +101,14 @@ Passkey ceremonies run in the **side panel** (`chrome-extension://…`). RP ID i
 
 ```json
 {
-  "origins": ["chrome-extension://mnncloenhbfhdiaffjmmgljfjcagigaj"]
+  "origins": [
+    "chrome-extension://apoahddgobmmgdbjcphhelolagklgkil",
+    "chrome-extension://mnncloenhbfhdiaffjmmgljfjcagigaj"
+  ]
 }
 ```
 
-> **Extension ID note:** Unpacked IDs change if the path/key changes. After reload, check `chrome://extensions`, update `www/.well-known/webauthn` + `WEBAUTHN_ORIGIN`, redeploy site secrets/functions if needed.
+> **Extension ID note:** Unpacked IDs change if the path/key changes. After reload, check `chrome://extensions`, update `www/.well-known/webauthn` + `WEBAUTHN_ORIGIN`, redeploy site + edge secrets/functions if needed. **Never** put the extension ID in `WEBAUTHN_RP_ID` — that must stay `everch.at` (extension hosts are not valid WebAuthn RP domains).
 
 ### 4. Dev / build
 

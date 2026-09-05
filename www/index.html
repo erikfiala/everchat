@@ -29,27 +29,56 @@
   <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
+    <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-stone/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+      <a class="home block leading-none" href="/">
+        <img
+          class="h-auto w-[8.5rem] pb-1"
+          src="/assets/ec-logo-horizontal-black.svg"
+          width="560"
+          height="130"
+          alt="Everchat"
+          data-i18n="www.brandAlt"
+          data-i18n-attr="alt"
+        />
+      </a>
+      <div class="doc-bar-end">
+        <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Site" data-i18n="www.footerAria" data-i18n-attr="aria-label">
+          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>
+          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
+        </nav>
+        <label class="nav-lang">
+          <svg
+            class="nav-lang-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+            <path d="M2 12h20" />
+          </svg>
+          <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
+        </label>
+      </div>
+    </header>
+
     <header
-      class="hero relative mx-auto grid max-w-[72rem] grid-cols-1 items-center gap-[clamp(1.75rem,4vw,2.75rem)] overflow-hidden px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(4rem,10vw,7rem)] pb-[clamp(2rem,5vw,3.5rem)] min-[960px]:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] min-[960px]:gap-[clamp(2rem,4vw,3.5rem)]"
+      class="hero relative mx-auto grid max-w-[72rem] grid-cols-1 items-center gap-[clamp(1.75rem,4vw,2.75rem)] overflow-hidden px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(3rem,8vw,5rem)] pb-[clamp(2rem,5vw,3.5rem)] min-[960px]:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] min-[960px]:gap-[clamp(2rem,4vw,3.5rem)]"
     >
       <div class="hero-copy z-1 flex max-w-none flex-col justify-center p-0">
-        <h1 class="brand mb-6 animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_both]">
-          <img
-            class="brand-logo block h-8 max-w-40 w-auto pb-1 min-[960px]:h-9 min-[960px]:max-w-44"
-            src="/assets/ec-logo-horizontal-black.svg"
-            width="560"
-            height="130"
-            alt="Everchat"
-            data-i18n="www.brandAlt"
-            data-i18n-attr="alt"
-          />
-        </h1>
-        <p
-          class="headline mb-[0.85rem] font-display text-[clamp(1.65rem,3.2vw,2.35rem)] font-semibold leading-[1.15] tracking-[-0.035em] text-ink-soft animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.08s_both]"
+        <h1
+          class="headline mb-[0.85rem] font-display text-[clamp(1.65rem,3.2vw,2.35rem)] font-bold leading-[1.15] tracking-[-0.035em] text-ink-soft animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.08s_both]"
           data-i18n="www.heroHeadline"
         >
           Every URL deserves a conversation.
-        </p>
+        </h1>
         <p
           class="lede mb-7 max-w-160 text-[1.08rem] text-mute animate-[brand-in_0.9s_cubic-bezier(0.22,1,0.36,1)_0.14s_both]"
           data-i18n="www.heroLede"
@@ -163,6 +192,31 @@
     <main
       class="below relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] py-[clamp(3rem,8vw,5.5rem)]"
     >
+      <section
+        class="trending-section mb-[clamp(3.5rem,9vw,5.5rem)]"
+        id="trending"
+        aria-label="Trending chats"
+        data-i18n="www.trendingAria"
+        data-i18n-attr="aria-label"
+        data-ec-trending
+      >
+        <h2
+          class="mb-[0.45rem] font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
+          data-i18n="www.trendingTitle"
+        >
+          Trending chats
+        </h2>
+        <p class="m-0 mb-5 max-w-[40rem] text-mute" data-i18n="www.trendingLede">
+          Rooms lighting up across the web right now.
+        </p>
+        <div class="trending-list" data-ec-trending-list></div>
+        <p
+          class="trending-status m-0 text-mute"
+          data-ec-trending-status
+          hidden
+        ></p>
+      </section>
+
       <section
         class="benefits mb-[clamp(3.5rem,9vw,5.5rem)] grid max-w-none grid-cols-1 gap-[clamp(1.75rem,3vw,2rem)] min-[720px]:grid-cols-2 min-[720px]:gap-x-6 min-[720px]:gap-y-7 min-[960px]:grid-cols-4 min-[960px]:gap-x-[1.35rem] min-[960px]:gap-y-6"
         id="how"
@@ -284,24 +338,23 @@
         id="get-extension"
       >
         <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]" data-i18n="www.installTitle">
-          Install for Chrome locally
+          Install from a local build
         </h2>
         <p class="m-0 max-w-none text-mute" data-i18n="www.installIntro">
-          Load a local build in developer mode while the store listing is on the way, or anytime
-          you want a build you control:
+          Chrome Web Store may reject or remove Everchat depending on how Google reads its policies. Loading a local build in developer mode lets you run a version you control, regardless of the store:
         </p>
-        <p class="mt-3 max-w-none text-warn">
+        <p class="mt-3 max-w-none text-warn" data-i18n="www.installPrivateNote">
           The repo is currently private. Use the official Chrome Web Store link above instead.
         </p>
         <ol class="install-steps">
           <li>
-            <span data-i18n="www.installStep1">Clone the Everchat repo and run <code>pnpm install && pnpm build</code></span>
+            <span data-i18n="www.installStep1" data-i18n-html>Clone the Everchat repo and run <code>pnpm install && pnpm build</code></span>
           </li>
           <li>
-            <span data-i18n="www.installStep2">Open <code>chrome://extensions</code> and turn on Developer mode</span>
+            <span data-i18n="www.installStep2" data-i18n-html>Open <code>chrome://extensions</code> and turn on Developer mode</span>
           </li>
           <li>
-            <span data-i18n="www.installStep3">Load unpacked → select <code>dist/everchat</code></span>
+            <span data-i18n="www.installStep3" data-i18n-html>Load unpacked → select <code>dist/everchat</code></span>
           </li>
           <li>
             <span data-i18n="www.installStep4">Pin Everchat and open the side panel on any page</span>
@@ -327,12 +380,10 @@
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
       </nav>
-      <label class="footer-lang flex items-center justify-center gap-2 text-[0.8rem] text-mute">
-        <span data-i18n="www.language">Language</span>
-        <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
-      </label>
       <p class="m-0 normal-case" data-i18n="www.footerTagline">© 2026 Everchat. Public comments on any URL.</p>
     </footer>
+    <script src="/supabase-public.js"></script>
     <script src="/i18n.js"></script>
+    <script src="/trending.js"></script>
   </body>
 </html>

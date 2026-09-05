@@ -146,3 +146,64 @@ export async function getTrendingPages(limit = 10) {
     .sort((a, b) => b.message_count - a.message_count)
     .slice(0, limit);
 }
+
+export type ExplorePageRow = {
+  id: string;
+  canonical_url: string;
+  title: string | null;
+  description: string | null;
+  favicon_url: string | null;
+  message_count: number;
+  last_active_at: string | null;
+};
+
+/**
+ * Recently active rooms: pages ordered by latest non-deleted message time.
+ * Not “newly created empty pages” — only rooms people are chatting in.
+ */
+export async function getRecentlyActivePages(
+  limit = 10,
+): Promise<ExplorePageRow[]> {
+  const sb = getSupabase();
+  // Over-fetch so we can dedupe to `limit` distinct pages by latest activity.
+  const { data: messages, error } = await sb
+    .from('messages')
+    .select(
+      'page_id, created_at, pages!inner(id, canonical_url, title, description, favicon_url)',
+    )
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false })
+    .limit(Math.max(limit * 25, 50));
+
+  if (error) throw error;
+
+  const ordered: ExplorePageRow[] = [];
+  const indexById = new Map<string, number>();
+
+  for (const row of messages || []) {
+    const page = row.pages as unknown as {
+      id: string;
+      canonical_url: string;
+      title: string | null;
+      description: string | null;
+      favicon_url: string | null;
+    };
+    if (!page) continue;
+
+    const existing = indexById.get(page.id);
+    if (existing != null) {
+      ordered[existing].message_count += 1;
+      continue;
+    }
+    if (ordered.length >= limit) continue;
+
+    indexById.set(page.id, ordered.length);
+    ordered.push({
+      ...page,
+      message_count: 1,
+      last_active_at: row.created_at as string,
+    });
+  }
+
+  return ordered;
+}

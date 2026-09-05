@@ -400,7 +400,12 @@ export interface MessageNode extends MessageWithAuthor {
 
 export type SortMode = 'best' | 'new';
 
-export type PanelTab = 'chat' | 'notifications' | 'profile' | 'settings';
+export type PanelTab =
+  | 'chat'
+  | 'explore'
+  | 'notifications'
+  | 'profile'
+  | 'settings';
 
 export interface TabInfo {
   tabId: number | null;

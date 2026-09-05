@@ -35,14 +35,36 @@
           data-i18n-attr="alt"
         />
       </a>
-      <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Legal">
-        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page" data-i18n="www.footerPrivacy">Privacy</a>
-        <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
-      </nav>
+      <div class="doc-bar-end">
+        <nav class="doc-nav flex gap-4 text-[0.85rem] font-semibold" aria-label="Legal">
+          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline aria-[current=page]:text-accent-deep aria-[current=page]:underline" href="/privacy" aria-current="page" data-i18n="www.footerPrivacy">Privacy</a>
+          <a class="text-ink-soft no-underline hover:text-accent-deep hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
+        </nav>
+        <label class="nav-lang">
+          <svg
+            class="nav-lang-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+            <path d="M2 12h20" />
+          </svg>
+          <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
+        </label>
+      </div>
     </header>
 
     <main class="doc-main relative z-1 mx-auto max-w-168 px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]">
-      <p data-i18n="www.legalEnglishNote" class="mb-3 text-[0.85rem] text-mute">This legal page is provided in English.</p>
+      <p data-i18n="www.legalEnglishNote" class="mb-3 text-[0.85rem] text-mute">This page is in English. The English version is the official legal text.</p>
       <p class="doc-kicker mb-[0.55rem] text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-accent">Legal</p>
       <h1 class="mb-[0.65rem] font-display text-[clamp(1.85rem,4.2vw,2.45rem)] font-bold leading-[1.12] tracking-[-0.04em]">Privacy Policy</h1>
       <p class="doc-lede mb-3 max-w-[42ch] text-[1.08rem] text-ink-soft">
@@ -429,10 +451,6 @@
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
       </nav>
-      <label class="footer-lang flex items-center justify-center gap-2 text-[0.8rem] text-mute">
-        <span data-i18n="www.language">Language</span>
-        <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
-      </label>
       <p class="m-0 normal-case" data-i18n="www.footerTagline">© 2026 Everchat. Public comments on any URL.</p>
     </footer>
     <script src="/i18n.js"></script>

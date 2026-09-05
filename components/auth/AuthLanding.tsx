@@ -84,7 +84,10 @@ export function AuthLanding() {
         </p>
         <div className="mt-4">
           <div className="relative">
-            <span className="absolute start-3 top-1/2 -translate-y-1/2 text-sm text-[var(--color-muted-foreground)]">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm leading-none text-[var(--color-muted-foreground)]"
+            >
               @
             </span>
             <Input
@@ -125,13 +128,14 @@ export function AuthLanding() {
         <p className="mt-3 text-xs text-[var(--color-muted-foreground)]">
           {t('auth.passkeyDisclaimer')}
         </p>
-        <button
+        <Button
           type="button"
-          className="mt-4 text-sm text-[var(--color-muted-foreground)] underline"
+          variant="ghost"
+          className="mt-4 self-start text-[var(--color-foreground)]"
           onClick={() => setStep('landing')}
         >
           {t('common.back')}
-        </button>
+        </Button>
       </div>
     );
   }

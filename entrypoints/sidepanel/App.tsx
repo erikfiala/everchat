@@ -6,6 +6,7 @@ import { NotificationsTab } from '@/components/notifications/NotificationsTab';
 import { ProfileTab } from '@/components/profile/ProfileTab';
 import { ProfileSheet } from '@/components/profile/ProfileSheet';
 import { SettingsTab } from '@/components/settings/SettingsTab';
+import { ExploreTab } from '@/components/explore/ExploreTab';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
@@ -75,6 +76,8 @@ function Shell() {
             clearFocus={clearFocus}
             onOpenProfile={(u) => setProfileUser(u)}
           />
+        ) : tab === 'explore' ? (
+          <ExploreTab />
         ) : tab === 'notifications' ? (
           <NotificationsTab />
         ) : tab === 'settings' ? (
@@ -90,7 +93,8 @@ function Shell() {
       />
       <Toaster
         theme={theme}
-        position="top-center"
+        position="bottom-center"
+        offset={12}
         closeButton
         toastOptions={{
           classNames: {

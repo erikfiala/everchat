@@ -32,9 +32,7 @@ export function SettingsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-[var(--color-border)] px-3 py-2">
-        <h1 className="text-sm font-semibold">{t('settings.title')}</h1>
-      </div>
+      <h1 className="px-3 py-2 text-sm font-semibold">{t('settings.title')}</h1>
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-3">
         <div className="space-y-1.5">
           <label
@@ -48,7 +46,7 @@ export function SettingsTab() {
               <Button
                 id="settings-mode"
                 variant="outline"
-                className="h-9 w-full justify-between gap-2 px-3 font-normal"
+                className="h-9 w-full justify-between gap-2 bg-[var(--color-card)] px-3 font-normal shadow-sm"
               >
                 <span className="truncate">
                   {themeLabel(theme.preference)}
@@ -90,7 +88,7 @@ export function SettingsTab() {
               <Button
                 id="settings-language"
                 variant="outline"
-                className="h-9 w-full justify-between gap-2 px-3 font-normal"
+                className="h-9 w-full justify-between gap-2 bg-[var(--color-card)] px-3 font-normal shadow-sm"
               >
                 <span className="truncate">{languageTriggerLabel}</span>
                 <ChevronDown

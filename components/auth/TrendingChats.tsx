@@ -16,6 +16,7 @@ interface TrendingRow {
   message_count: number;
 }
 
+/** Compact trending list for AuthLanding social proof (logged-out dopamine). */
 export function TrendingChats() {
   const { t } = useLocale();
   const [rows, setRows] = useState<TrendingRow[]>([]);

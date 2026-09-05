@@ -1,0 +1,184 @@
+import { useEffect, useState } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { Check, ChevronDown, Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useLocale } from '@/hooks/useLocale';
+import { canonicalize, httpsUrlFromCanonical } from '@/lib/canonicalize';
+import { DESCRIPTION_TRUNCATE, TRENDING_LIMIT } from '@/lib/constants';
+import {
+  getRecentlyActivePages,
+  getTrendingPages,
+  type ExplorePageRow,
+} from '@/lib/pages';
+import { isSupabaseConfigured } from '@/lib/supabase';
+
+export type ExploreMode = 'trending' | 'new';
+
+function hostFromCanonical(canonicalUrl: string): string {
+  return canonicalize(`https://${canonicalUrl}`).host || canonicalUrl;
+}
+
+export function ExploreTab() {
+  const { t } = useLocale();
+  const [mode, setMode] = useState<ExploreMode>('trending');
+  const [rows, setRows] = useState<ExplorePageRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!isSupabaseConfigured) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const load =
+      mode === 'trending'
+        ? getTrendingPages(TRENDING_LIMIT).then((data) =>
+            (data as ExplorePageRow[]).map((row) => ({
+              ...row,
+              last_active_at: row.last_active_at ?? null,
+              message_count: row.message_count ?? 0,
+            })),
+          )
+        : getRecentlyActivePages(TRENDING_LIMIT);
+
+    load
+      .then((data) => {
+        if (!cancelled) setRows(data);
+      })
+      .catch(() => {
+        if (!cancelled) setRows([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
+
+  const modeLabel =
+    mode === 'trending' ? t('explore.trending') : t('explore.new');
+
+  const open = async (row: ExplorePageRow) => {
+    const url = httpsUrlFromCanonical(row.canonical_url);
+    const tab = await browser.tabs.create({ url });
+    if (tab.id != null) {
+      await browser.runtime.sendMessage({
+        type: 'OPEN_PANEL_FOR_TAB',
+        tabId: tab.id,
+      });
+    }
+  };
+
+  return (
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="flex min-h-14 items-center gap-2 border-b border-[var(--color-border)] px-3 py-2">
+        <span className="text-xs text-[var(--color-muted-foreground)]">
+          {t('explore.mode')}
+        </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="xs"
+              variant="outline"
+              className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+            >
+              {modeLabel}
+              <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onSelect={() => setMode('trending')}
+              className="gap-2 pe-2"
+            >
+              <span className="flex size-3.5 items-center justify-center">
+                {mode === 'trending' ? (
+                  <Check className="size-3.5" aria-hidden />
+                ) : null}
+              </span>
+              {t('explore.trending')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => setMode('new')}
+              className="gap-2 pe-2"
+            >
+              <span className="flex size-3.5 items-center justify-center">
+                {mode === 'new' ? (
+                  <Check className="size-3.5" aria-hidden />
+                ) : null}
+              </span>
+              {t('explore.new')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
+        {loading &&
+          Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="mb-1 h-14 w-full" />
+          ))}
+        {!loading && rows.length === 0 && (
+          <p className="px-1 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
+            {mode === 'trending' ? t('explore.emptyTrending') : t('explore.emptyNew')}
+          </p>
+        )}
+        {!loading &&
+          rows.map((row) => {
+            const host = hostFromCanonical(row.canonical_url);
+            const activity =
+              mode === 'new' && row.last_active_at
+                ? formatDistanceToNow(new Date(row.last_active_at), {
+                    addSuffix: true,
+                  })
+                : t('auth.trendingTalking', { count: row.message_count });
+
+            return (
+              <button
+                key={row.id}
+                type="button"
+                onClick={() => open(row)}
+                className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
+              >
+                {row.favicon_url ? (
+                  <img
+                    src={row.favicon_url}
+                    alt=""
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                  />
+                ) : (
+                  <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
+                )}
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <div className="truncate text-sm font-medium">
+                    {row.title || host || row.canonical_url}
+                  </div>
+                  <div className="truncate text-xs text-[var(--color-muted-foreground)]">
+                    {host ||
+                      (row.description || row.canonical_url).slice(
+                        0,
+                        DESCRIPTION_TRUNCATE,
+                      )}
+                  </div>
+                  <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
+                    {activity}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+      </div>
+    </div>
+  );
+}

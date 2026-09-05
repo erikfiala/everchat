@@ -8,6 +8,11 @@ import { callEdgeFunction } from '../supabase';
 import type { SessionUser } from '../database.types';
 import { saveSession, clearSession } from './session';
 
+/** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
+const RP_ID =
+  (import.meta.env.VITE_WEBAUTHN_RP_ID as string | undefined)?.trim() ||
+  'everch.at';
+
 export interface RegisterOptionsResponse {
   options: PublicKeyCredentialCreationOptionsJSON;
   sessionToken: string;
@@ -22,6 +27,45 @@ export interface AuthSuccessResponse {
     avatar_url: string | null;
     karma: number;
   };
+}
+
+/** Force RP ID to the configured domain (extension origin is not a valid RP ID). */
+function withRegistrationRpId(
+  options: PublicKeyCredentialCreationOptionsJSON,
+): PublicKeyCredentialCreationOptionsJSON {
+  return {
+    ...options,
+    rp: {
+      ...options.rp,
+      id: RP_ID,
+      name: options.rp?.name || 'Everchat',
+    },
+  };
+}
+
+function withAuthenticationRpId(
+  options: PublicKeyCredentialRequestOptionsJSON,
+): PublicKeyCredentialRequestOptionsJSON {
+  return {
+    ...options,
+    rpId: RP_ID,
+  };
+}
+
+/** Map raw WebAuthn / browser noise to an i18n key for toasts. */
+function mapCeremonyError(e: unknown): Error {
+  const err = e as { name?: string; message?: string };
+  const msg = (err?.message ?? '').toLowerCase();
+  if (
+    msg.includes('invalid domain') ||
+    msg.includes('relying party') ||
+    msg.includes('related origin') ||
+    err?.name === 'SecurityError'
+  ) {
+    return new Error('auth.toastPasskeyFailed');
+  }
+  if (e instanceof Error) return e;
+  return new Error(String(e ?? 'auth.toastSignInFailed'));
 }
 
 export async function checkUsernameAvailable(
@@ -43,7 +87,14 @@ export async function registerPasskey(
       username,
     });
 
-  const attestation = await startRegistration({ optionsJSON: options });
+  let attestation;
+  try {
+    attestation = await startRegistration({
+      optionsJSON: withRegistrationRpId(options),
+    });
+  } catch (e) {
+    throw mapCeremonyError(e);
+  }
 
   const result = await callEdgeFunction<AuthSuccessResponse>(
     'webauthn-register',
@@ -73,7 +124,14 @@ export async function loginPasskey(): Promise<SessionUser> {
     challengeId: string;
   }>('webauthn-login', { action: 'options' });
 
-  const assertion = await startAuthentication({ optionsJSON: options });
+  let assertion;
+  try {
+    assertion = await startAuthentication({
+      optionsJSON: withAuthenticationRpId(options),
+    });
+  } catch (e) {
+    throw mapCeremonyError(e);
+  }
 
   const result = await callEdgeFunction<AuthSuccessResponse>('webauthn-login', {
     action: 'verify',
@@ -102,7 +160,14 @@ export async function addPasskeyDevice(
     challengeId: string;
   }>('webauthn-add-device', { action: 'options' }, token);
 
-  const attestation = await startRegistration({ optionsJSON: options });
+  let attestation;
+  try {
+    attestation = await startRegistration({
+      optionsJSON: withRegistrationRpId(options),
+    });
+  } catch (e) {
+    throw mapCeremonyError(e);
+  }
 
   await callEdgeFunction(
     'webauthn-add-device',

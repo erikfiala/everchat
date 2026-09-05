@@ -358,9 +358,12 @@
   /* Compact product shot — ~half the prior tall mock (was min(70vh, 38rem)) */
   height: min(36vh, 19rem);
   display: grid;
-  grid-template-columns: 1fr minmax(11.5rem, 38%);
+  /* fr + % max can leave free space on the right (justify-content:start) */
+  grid-template-columns: minmax(0, 1.6fr) minmax(11.5rem, 1fr);
   grid-template-rows: auto 1fr;
-  background: var(--paper);
+  justify-content: stretch;
+  /* Match sidepanel so any residual column gap stays white, not paper grey */
+  background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 0.65rem;
   overflow: hidden;
@@ -370,8 +373,8 @@
 @media (max-width: 959px) {
   .browser {
     height: min(30vh, 15.5rem);
-    /* Narrower page column / wider sidepanel so mock panel stays visible */
-    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 48%);
+    /* fr tracks only — % max left free space / right gutter beside sidepanel */
+    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 1.05fr);
   }
 
   .page {
@@ -382,7 +385,7 @@
 @media (max-width: 560px) {
   .browser {
     /* Collapse left article further — sidepanel gets majority share */
-    grid-template-columns: minmax(0, 0.72fr) minmax(11.25rem, 56%);
+    grid-template-columns: minmax(0, 0.85fr) minmax(11.25rem, 1.2fr);
   }
 
   .page {
@@ -508,13 +511,18 @@
 .sidepanel {
   grid-column: 2;
   grid-row: 1 / -1;
+  justify-self: stretch;
   align-self: stretch;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
   background: var(--panel);
   border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  overflow: hidden;
   animation: panel-slide 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
 }
 
@@ -759,7 +767,7 @@
   height: 1.6rem;
   line-height: 1.6rem;
   text-align: center;
-  background: var(--accent-soft);
+  background: var(--panel); /* white counters on stone page bg */
   color: var(--accent-deep);
   border-radius: var(--radius);
 }

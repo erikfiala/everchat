@@ -462,7 +462,7 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 
 | Tab | Icon (directional) | Tooltip | Content |
 |---|---|---|---|
-| **Chat** | MessageSquare | Chat | Current page thread + composer (default when opening panel on a page) |
+| **Chat** | MessageCircle | Chat | Current page thread + composer (default when opening panel on a page) |
 | **Notifications** | Bell | Notifications | Inbox of replies to you; unread badge on icon |
 | **Profile** | User | Profile | Your avatar, karma, upload, activity list |
 

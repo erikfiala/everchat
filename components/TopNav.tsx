@@ -1,4 +1,4 @@
-import { Bell, MessageSquare, User } from 'lucide-react';
+import { Bell, MessageCircle, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PanelTab } from '@/lib/database.types';
 import {
@@ -14,8 +14,8 @@ interface TopNavProps {
   unread?: number;
 }
 
-const tabs: { id: PanelTab; label: string; icon: typeof MessageSquare }[] = [
-  { id: 'chat', label: 'Chat', icon: MessageSquare },
+const tabs: { id: PanelTab; label: string; icon: typeof MessageCircle }[] = [
+  { id: 'chat', label: 'Chat', icon: MessageCircle },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'profile', label: 'Profile', icon: User },
 ];

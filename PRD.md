@@ -561,16 +561,16 @@ Three tabs at the **top** of the side panel (mobile-app pattern, but top-aligned
 
 ## 14. Trust and safety (v1 light)
 
-**Philosophy:** No staff moderation queue. Speech stays up; the community **collapses** low-consensus posts via downvotes (see §7). Collapsed ≠ deleted — always expandable.
+**Philosophy:** No staff viewpoint-moderation queue. Speech stays up; the community **collapses** low-consensus posts via downvotes (see §7). Collapsed ≠ deleted — always expandable. Reports are stored and reviewed monthly for illegal abuse / ToS / legal-floor patterns only — not ideology policing.
 
 - Rate limits: posts and votes per user per minute (server-side) — anti-spam, not content policing
 - Community collapse at majority-downvote threshold (Reddit-style show/hide)
-- Report flag on messages (`reports` table) — **store only** for future abuse patterns; **no admin takedown UI in v1**
+- Report flag on messages (`reports` table) — store reporter, message, optional reason; **reviewed monthly** for illegal abuse / ToS / legal-floor patterns (not viewpoint takedowns)
 - Reserved handles blocklist
 - Hard delete for own messages (content purged; structural tombstone only if replies remain)
 - Giphy content filtered via Giphy’s content rating param (e.g. `pg-13` or stricter)
 
-Out of scope v1: bans, shadowban UI, keyword automod, staff removals, spam classifiers beyond rate limits.
+Out of scope v1: bans, shadowban UI, keyword automod, staff opinion takedowns, spam classifiers beyond rate limits.
 
 ---
 
@@ -789,7 +789,7 @@ Side Panel
 - Votes + karma rules
 - **No staff mods** — community collapse at majority-downvote threshold (always expandable)
 - Emoji + Giphy (proxy)
-- Report store-only (no takedown queue)
+- Reports stored + monthly review (illegal / ToS / legal floor only; not viewpoint mods)
 - Rate limits + RLS
 
 ### v1.1 (candidates)
@@ -848,3 +848,4 @@ Plus any key matching `/^utm_/i`. Timestamp-like `t` stripped on known video hos
 | 2026-09-05 | v1.4: auth landing (time-to-dopamine); CTA “Sign in anonymously”; Sonner toasts |
 | 2026-09-05 | v1.5: no staff moderation; community collapse via majority downvotes (Reddit-style, always expandable) |
 | 2026-09-05 | v1.6: trending chats section on auth landing (open site → join convo) |
+| 2026-09-05 | v1.7: reports stored + monthly review for illegal/ToS/legal-floor patterns (not viewpoint mods) |

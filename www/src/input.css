@@ -767,7 +767,7 @@
   height: 1.6rem;
   line-height: 1.6rem;
   text-align: center;
-  background: var(--panel); /* white counters on stone page bg */
+  background: var(--paper); /* match hero mock .page paper */
   color: var(--accent-deep);
   border-radius: var(--radius);
 }

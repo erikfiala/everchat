@@ -60,8 +60,10 @@ function mapCeremonyError(e: unknown): Error {
     msg.includes('invalid domain') ||
     msg.includes('relying party') ||
     msg.includes('related origin') ||
+    msg.includes('permissions') ||
     err?.name === 'SecurityError'
   ) {
+    console.error('[webauthn] ceremony SecurityError — check host_permissions for RP ID', e);
     return new Error('auth.toastPasskeyFailed');
   }
   if (e instanceof Error) return e;

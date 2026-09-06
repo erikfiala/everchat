@@ -93,6 +93,8 @@ Deno.serve(async (req) => {
         return json({ error: 'Unknown passkey' }, 404);
       }
 
+      // Match options userVerification: 'preferred' (library default require=true
+      // would reject UV-unset assertions with the browser-identical error string).
       const verification = await verifyAuthenticationResponse({
         response: assertion,
         expectedChallenge: challengeRow.challenge,
@@ -104,6 +106,7 @@ Deno.serve(async (req) => {
           counter: Number(cred.sign_count),
           transports: cred.transports ?? undefined,
         },
+        requireUserVerification: false,
       });
 
       if (!verification.verified) {

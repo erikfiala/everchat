@@ -86,11 +86,13 @@ Deno.serve(async (req) => {
         return json({ error: 'Challenge expired' }, 400);
       }
 
+      // Match options userVerification: 'preferred' — do not enforce UV flag.
       const verification = await verifyRegistrationResponse({
         response: attestation,
         expectedChallenge: challengeRow.challenge,
         expectedOrigin: origin,
         expectedRPID: rpID,
+        requireUserVerification: false,
       });
 
       if (!verification.verified || !verification.registrationInfo) {

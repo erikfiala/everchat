@@ -102,6 +102,12 @@ function withRegistrationRpId(
       id: RP_ID,
       name: options.rp?.name || 'Everchat',
     },
+    // Defense in depth: never escalate UV beyond preferred in the side panel.
+    authenticatorSelection: {
+      ...options.authenticatorSelection,
+      residentKey: options.authenticatorSelection?.residentKey ?? 'preferred',
+      userVerification: 'preferred',
+    },
   };
 }
 
@@ -111,6 +117,7 @@ function withAuthenticationRpId(
   return {
     ...options,
     rpId: RP_ID,
+    userVerification: 'preferred',
   };
 }
 
@@ -120,6 +127,14 @@ function mapCeremonyError(e: unknown): Error {
   const msg = (err?.message ?? '').toLowerCase();
   if (err?.name === 'TimeoutError' || msg.includes('auth.toastpasskeytimedout')) {
     return new Error('auth.toastPasskeyTimedOut');
+  }
+  // Chrome / SimpleWebAuthn UV failures (Touch ID cancel, UV flag missing).
+  if (
+    msg.includes('user verification') ||
+    msg.includes('could not be verified') ||
+    msg.includes('user could not be verified')
+  ) {
+    return new Error('auth.toastPasskeyUvFailed');
   }
   if (
     msg.includes('invalid domain') ||
@@ -229,6 +244,12 @@ export async function registerPasskey(
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
     const msg = ((e as Error)?.message ?? '').toLowerCase();
+    if (
+      msg.includes('user verification') ||
+      msg.includes('could not be verified')
+    ) {
+      throw new Error('auth.toastPasskeyUvFailed');
+    }
     if (
       msg.includes('ceremony expired') ||
       msg.includes('reservation expired') ||

@@ -140,11 +140,15 @@ Deno.serve(async (req) => {
         return json({ error: 'Username reservation expired' }, 400);
       }
 
+      // Match options userVerification: 'preferred' — SimpleWebAuthn defaults
+      // requireUserVerification to true and rejects authenticators that omit the
+      // UV flag (common after Touch ID cancel/fallback on platform passkeys).
       const verification = await verifyRegistrationResponse({
         response: attestation,
         expectedChallenge: challengeRow.challenge,
         expectedOrigin: origin,
         expectedRPID: rpID,
+        requireUserVerification: false,
       });
 
       if (!verification.verified || !verification.registrationInfo) {

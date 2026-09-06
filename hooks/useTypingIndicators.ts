@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { claimRealtimeChannel } from '@/lib/realtime';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export interface TypingUser {
@@ -49,59 +50,77 @@ export function useTypingIndicators(
       return;
     }
 
+    let cancelled = false;
+    let channel: RealtimeChannel | null = null;
     const sb = getSupabase();
-    const channel = sb.channel(`page:${pageId}:typing`, {
-      config: {
-        presence: {
-          key: user?.id ?? `lurker:${crypto.randomUUID()}`,
+
+    void (async () => {
+      const next = await claimRealtimeChannel(sb, `page:${pageId}:typing`, {
+        config: {
+          presence: {
+            key: user?.id ?? `lurker:${crypto.randomUUID()}`,
+          },
         },
-      },
-    });
-    channelRef.current = channel;
-    readyRef.current = false;
-    typingRef.current = false;
-
-    const sync = () => {
-      setTypers(
-        collectTypers(
-          channel.presenceState() as Record<string, PresenceMeta[]>,
-          userRef.current?.id,
-        ),
-      );
-    };
-
-    const publishIfTyping = () => {
-      const current = userRef.current;
-      if (!typingRef.current || !current?.username) return;
-      void channel.track({
-        user_id: current.id,
-        username: current.username,
-        typing: true,
       });
-    };
+      if (cancelled) {
+        void sb.removeChannel(next);
+        return;
+      }
+      channel = next;
+      channelRef.current = next;
+      readyRef.current = false;
+      typingRef.current = false;
 
-    channel
-      .on('presence', { event: 'sync' }, sync)
-      .on('presence', { event: 'join' }, sync)
-      .on('presence', { event: 'leave' }, sync)
-      .subscribe((status) => {
-        readyRef.current = status === 'SUBSCRIBED';
-        if (status === 'SUBSCRIBED') publishIfTyping();
-      });
+      const sync = () => {
+        setTypers(
+          collectTypers(
+            next.presenceState() as Record<string, PresenceMeta[]>,
+            userRef.current?.id,
+          ),
+        );
+      };
+
+      const publishIfTyping = () => {
+        const current = userRef.current;
+        if (!typingRef.current || !current?.username) return;
+        void next.track({
+          user_id: current.id,
+          username: current.username,
+          typing: true,
+        });
+      };
+
+      next
+        .on('presence', { event: 'sync' }, sync)
+        .on('presence', { event: 'join' }, sync)
+        .on('presence', { event: 'leave' }, sync)
+        .subscribe((status) => {
+          if (cancelled) return;
+          readyRef.current = status === 'SUBSCRIBED';
+          if (status === 'SUBSCRIBED') publishIfTyping();
+        });
+
+      if (cancelled) {
+        void sb.removeChannel(next);
+      }
+    })();
 
     return () => {
+      cancelled = true;
       typingRef.current = false;
       readyRef.current = false;
       channelRef.current = null;
-      try {
-        void channel.untrack();
-      } catch {
-        /* ignore */
-      }
-      try {
-        sb.removeChannel(channel);
-      } catch {
-        /* ignore */
+      if (channel) {
+        try {
+          void channel.untrack();
+        } catch {
+          /* ignore */
+        }
+        try {
+          void sb.removeChannel(channel);
+        } catch {
+          /* ignore */
+        }
       }
       setTypers([]);
     };

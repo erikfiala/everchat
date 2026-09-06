@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { subscribePostgresChanges } from '@/lib/realtime';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import { getPageByCanonical, upsertPage } from '@/lib/pages';
 import {
@@ -92,34 +93,43 @@ export function usePageThread(
     }
   }, [sort, flat, rebuild]);
 
+  const userIdRef = useRef(userId);
+  userIdRef.current = userId;
+  const sortRef = useRef(sort);
+  sortRef.current = sort;
+
   // Realtime
   useEffect(() => {
     if (!pageId || !isSupabaseConfigured) return;
+    let active = true;
     const sb = getSupabase();
-    const channel = sb
-      .channel(`page:${pageId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'messages',
-          filter: `page_id=eq.${pageId}`,
-        },
-        () => {
-          // Refetch on any change for simplicity / correctness
-          fetchMessagesForPage(pageId, userId).then(({ messages, votes }) => {
+    const channel = subscribePostgresChanges(
+      sb,
+      `page:${pageId}`,
+      {
+        event: '*',
+        schema: 'public',
+        table: 'messages',
+        filter: `page_id=eq.${pageId}`,
+      },
+      () => {
+        if (!active) return;
+        // Refetch on any change for simplicity / correctness
+        void fetchMessagesForPage(pageId, userIdRef.current).then(
+          ({ messages, votes }) => {
+            if (!active) return;
             votesRef.current = votes;
-            rebuild(messages, votes, sort);
-          });
-        },
-      )
-      .subscribe();
+            rebuild(messages, votes, sortRef.current);
+          },
+        );
+      },
+    );
 
     return () => {
-      sb.removeChannel(channel);
+      active = false;
+      void sb.removeChannel(channel);
     };
-  }, [pageId, userId, sort, rebuild]);
+  }, [pageId, rebuild]);
 
   const post = useCallback(
     async (body: string, parentId?: string | null, gifUrl?: string | null) => {

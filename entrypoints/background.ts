@@ -14,6 +14,7 @@ import {
   isSupabaseConfigured,
   setSupabaseAccessToken,
 } from '@/lib/supabase';
+import { subscribePostgresChanges } from '@/lib/realtime';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 type TabPayload = {
@@ -80,7 +81,18 @@ async function stopNotifRealtime() {
   subscribedUserId = null;
 }
 
+let startGate: Promise<void> = Promise.resolve();
+
 async function startNotifRealtime(userId: string, token: string) {
+  const run = startGate.then(() => startNotifRealtimeUnlocked(userId, token));
+  startGate = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+async function startNotifRealtimeUnlocked(userId: string, token: string) {
   if (!isSupabaseConfigured) return;
   if (subscribedUserId === userId && notifChannel) return;
 
@@ -90,28 +102,26 @@ async function startNotifRealtime(userId: string, token: string) {
   const sb = getSupabase();
   await sb.realtime.setAuth(token);
 
-  const channel = sb
-    .channel(`bg-notifs:${userId}`)
-    .on(
-      'postgres_changes',
-      {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: `recipient_id=eq.${userId}`,
-      },
-      (payload) => {
-        const row = payload.new as Notification;
-        if (!row?.id || firedOsNotifIds.has(row.id)) return;
-        firedOsNotifIds.add(row.id);
-        if (firedOsNotifIds.size > 200) {
-          const first = firedOsNotifIds.values().next().value;
-          if (first) firedOsNotifIds.delete(first);
-        }
-        void createOsNotification(row);
-      },
-    )
-    .subscribe();
+  const channel = subscribePostgresChanges(
+    sb,
+    `bg-notifs:${userId}`,
+    {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'notifications',
+      filter: `recipient_id=eq.${userId}`,
+    },
+    (payload) => {
+      const row = payload.new as Notification;
+      if (!row?.id || firedOsNotifIds.has(row.id)) return;
+      firedOsNotifIds.add(row.id);
+      if (firedOsNotifIds.size > 200) {
+        const first = firedOsNotifIds.values().next().value;
+        if (first) firedOsNotifIds.delete(first);
+      }
+      void createOsNotification(row);
+    },
+  );
 
   notifChannel = channel;
   subscribedUserId = userId;

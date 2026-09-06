@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 export function NotificationsTab() {
   const { t } = useLocale();
   const { user, loading: authLoading } = useAuth();
-  const { items, loading, openNotification } = useNotifications(user?.id);
+  const { items, loading, openNotification } = useNotifications();
 
   if (authLoading) {
     return (

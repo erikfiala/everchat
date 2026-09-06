@@ -13,7 +13,10 @@ import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
 import { useActiveTab } from '@/hooks/useActiveTab';
-import { useNotifications } from '@/hooks/useNotifications';
+import {
+  NotificationsProvider,
+  useNotifications,
+} from '@/hooks/useNotifications';
 import type { PanelTab } from '@/lib/database.types';
 
 function reportPanelAttention(visible: boolean, tab: PanelTab) {
@@ -32,7 +35,7 @@ function Shell() {
   const { user, showAuthLanding, setShowAuthLanding, loading } = useAuth();
   const { resolved: theme } = useTheme();
   const { tab: activeTab, ready, clearFocus } = useActiveTab();
-  const { unread } = useNotifications(user?.id);
+  const { unread } = useNotifications();
   const [profileUser, setProfileUser] = useState<string | null>(null);
   const wasSignedIn = useRef(Boolean(user));
 
@@ -135,7 +138,9 @@ export default function App() {
     <ThemeProvider>
       <LocaleProvider>
         <AuthProvider>
-          <Shell />
+          <NotificationsProvider>
+            <Shell />
+          </NotificationsProvider>
         </AuthProvider>
       </LocaleProvider>
     </ThemeProvider>

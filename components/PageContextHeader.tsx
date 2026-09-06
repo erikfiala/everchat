@@ -1,4 +1,4 @@
-import { Globe } from 'lucide-react';
+import { Favicon } from '@/components/Favicon';
 import { useLocale } from '@/hooks/useLocale';
 import { cn } from '@/lib/utils';
 
@@ -23,18 +23,7 @@ export function PageContextHeader({
         className,
       )}
     >
-      {faviconUrl ? (
-        <img
-          src={faviconUrl}
-          alt=""
-          className="h-4 w-4 shrink-0 rounded-sm"
-          onError={(e) => {
-            (e.target as HTMLImageElement).style.display = 'none';
-          }}
-        />
-      ) : (
-        <Globe className="h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
-      )}
+      <Favicon src={faviconUrl} className="rounded-sm" />
       <div className="min-w-0 flex-1 overflow-hidden">
         <div className="truncate text-sm font-medium">
           {title || host || t('page.thisPage')}

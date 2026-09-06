@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from 'date-fns';
-import { Globe } from 'lucide-react';
+import { Favicon } from '@/components/Favicon';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
@@ -47,15 +47,7 @@ export function NotificationsTab() {
               !n.read_at && 'bg-[var(--color-muted)]/60',
             )}
           >
-            {n.page?.favicon_url ? (
-              <img
-                src={n.page.favicon_url}
-                alt=""
-                className="mt-0.5 h-4 w-4 shrink-0"
-              />
-            ) : (
-              <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
-            )}
+            <Favicon src={n.page?.favicon_url} className="mt-0.5" />
             <div className="min-w-0 flex-1 overflow-hidden">
               <div className="truncate text-sm font-medium">
                 {n.page?.title || n.page?.canonical_url || t('common.page')}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Check, ChevronDown, Globe } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
+import { Favicon } from '@/components/Favicon';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -151,15 +152,7 @@ export function ExploreTab() {
                 onClick={() => open(row)}
                 className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
               >
-                {row.favicon_url ? (
-                  <img
-                    src={row.favicon_url}
-                    alt=""
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                  />
-                ) : (
-                  <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
-                )}
+                <Favicon src={row.favicon_url} className="mt-0.5" />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="truncate text-sm font-medium">
                     {row.title || host || row.canonical_url}

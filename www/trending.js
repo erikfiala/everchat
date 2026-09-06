@@ -25,6 +25,56 @@
     return 'https://' + canonical;
   }
 
+  /** Lucide `globe` paths — matches extension Favicon fallback. */
+  function globeIcon() {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+
+    var circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('cx', '12');
+    circle.setAttribute('cy', '12');
+    circle.setAttribute('r', '10');
+    svg.appendChild(circle);
+
+    var meridian = document.createElementNS(ns, 'path');
+    meridian.setAttribute('d', 'M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20');
+    svg.appendChild(meridian);
+
+    var equator = document.createElementNS(ns, 'path');
+    equator.setAttribute('d', 'M2 12h20');
+    svg.appendChild(equator);
+
+    return svg;
+  }
+
+  function setFavicon(fav, url) {
+    fav.replaceChildren();
+    if (!url) {
+      fav.appendChild(globeIcon());
+      return;
+    }
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = '';
+    img.width = 16;
+    img.height = 16;
+    img.loading = 'lazy';
+    img.referrerPolicy = 'no-referrer';
+    img.onerror = function () {
+      fav.replaceChildren(globeIcon());
+    };
+    fav.appendChild(img);
+  }
+
   function setStatus(el, text) {
     if (!el) return;
     el.hidden = !text;
@@ -51,18 +101,7 @@
       var fav = document.createElement('span');
       fav.className = 'trending-fav';
       fav.setAttribute('aria-hidden', 'true');
-      if (row.favicon_url) {
-        var img = document.createElement('img');
-        img.src = row.favicon_url;
-        img.alt = '';
-        img.width = 16;
-        img.height = 16;
-        img.loading = 'lazy';
-        img.referrerPolicy = 'no-referrer';
-        fav.appendChild(img);
-      } else {
-        fav.textContent = '◈';
-      }
+      setFavicon(fav, row.favicon_url);
 
       var body = document.createElement('span');
       body.className = 'trending-body';

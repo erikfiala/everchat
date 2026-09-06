@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Camera, Globe, Plus, Trash2 } from 'lucide-react';
+import { Camera, Plus, Trash2 } from 'lucide-react';
+import { Favicon } from '@/components/Favicon';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -193,15 +194,7 @@ export function ProfileTab() {
             onClick={() => openActivity(item)}
             className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
           >
-            {item.page?.favicon_url ? (
-              <img
-                src={item.page.favicon_url}
-                alt=""
-                className="mt-0.5 h-4 w-4 shrink-0"
-              />
-            ) : (
-              <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]" />
-            )}
+            <Favicon src={item.page?.favicon_url} className="mt-0.5" />
             <div className="min-w-0 flex-1 overflow-hidden">
               <div className="flex min-w-0 items-center gap-2">
                 <span className="min-w-0 truncate text-sm font-medium">

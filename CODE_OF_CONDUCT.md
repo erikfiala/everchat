@@ -61,7 +61,7 @@ representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement by contacting
 [@erikfiala](https://github.com/erikfiala) on GitHub, or via
-[GitHub Security Advisories](https://github.com/erikfiala/everchat/security/advisories/new)
+[GitHub Security Advisories](https://github.com/everchathq/everchat/security/advisories/new)
 if the report should stay private.
 
 All complaints will be reviewed and investigated promptly and fairly.

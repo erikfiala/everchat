@@ -7,11 +7,11 @@ Everchat is a Chrome side-panel extension for anonymous public comments on any p
 No email. No ads. No third-party trackers. Free forever.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-slate.svg)](./LICENSE)
-[![GitHub release](https://img.shields.io/github/v/release/erikfiala/everchat?include_prereleases&sort=semver)](https://github.com/erikfiala/everchat/releases/latest)
+[![GitHub release](https://img.shields.io/github/v/release/everchathq/everchat?include_prereleases&sort=semver)](https://github.com/everchathq/everchat/releases/latest)
 
 **Site:** [everch.at](https://everch.at)  
 **Donate:** [opencollective.com/everchat](https://opencollective.com/everchat)  
-**Releases:** [github.com/erikfiala/everchat/releases](https://github.com/erikfiala/everchat/releases)
+**Releases:** [github.com/everchathq/everchat/releases](https://github.com/everchathq/everchat/releases)
 
 ## Why
 
@@ -34,7 +34,7 @@ Web pages have no portable conversation layer. Discussion ends up on Twitter, Re
 
 No Node toolchain. This is the build we publish.
 
-1. Download `everchat-<version>-chrome.zip` from the [latest release](https://github.com/erikfiala/everchat/releases/latest)
+1. Download `everchat-<version>-chrome.zip` from the [latest release](https://github.com/everchathq/everchat/releases/latest)
 2. Unzip it. The folder must contain `manifest.json`
 3. Open `chrome://extensions` → enable **Developer mode**
 4. **Load unpacked** → select that folder
@@ -45,7 +45,7 @@ Chrome will warn that the extension is unpacked. That is expected until the Web 
 ### From source
 
 ```bash
-git clone https://github.com/erikfiala/everchat.git
+git clone https://github.com/everchathq/everchat.git
 cd everchat
 pnpm install
 pnpm build             # → dist/everchat

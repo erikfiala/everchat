@@ -5,6 +5,7 @@ are made so the project can keep working if maintainership changes.
 
 ## Maintainers
 
+The canonical repository is [everchathq/everchat](https://github.com/everchathq/everchat).
 Today the project has one maintainer: [@erikfiala](https://github.com/erikfiala).
 
 Maintainers can:

@@ -3,14 +3,14 @@
 ## Supported versions
 
 Please report issues against the latest release on
-[GitHub Releases](https://github.com/erikfiala/everchat/releases/latest)
+[GitHub Releases](https://github.com/everchathq/everchat/releases/latest)
 and `main`.
 
 ## Reporting a vulnerability
 
 **Do not open a public issue for security problems.**
 
-Use [GitHub Private Vulnerability Reporting](https://github.com/erikfiala/everchat/security/advisories/new).
+Use [GitHub Private Vulnerability Reporting](https://github.com/everchathq/everchat/security/advisories/new).
 
 Include:
 

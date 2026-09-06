@@ -6,11 +6,11 @@
   "license": "MIT",
   "homepage": "https://everch.at",
   "bugs": {
-    "url": "https://github.com/erikfiala/everchat/issues"
+    "url": "https://github.com/everchathq/everchat/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erikfiala/everchat.git"
+    "url": "git+https://github.com/everchathq/everchat.git"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {

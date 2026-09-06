@@ -16,13 +16,13 @@ self-hosting.
 ## Install the extension locally
 
 **Easiest:** download a zip from
-[GitHub Releases](https://github.com/erikfiala/everchat/releases/latest)
+[GitHub Releases](https://github.com/everchathq/everchat/releases/latest)
 and follow the README. You do not need this repo for that.
 
 **From source:**
 
 ```bash
-git clone https://github.com/erikfiala/everchat.git
+git clone https://github.com/everchathq/everchat.git
 cd everchat
 pnpm install
 pnpm build          # → dist/everchat
@@ -76,7 +76,7 @@ fall back to English for missing keys.
    ```
 
 4. The **Release** GitHub Action zips the Chrome extension and publishes
-   [GitHub Releases](https://github.com/erikfiala/everchat/releases) with the
+   [GitHub Releases](https://github.com/everchathq/everchat/releases) with the
    changelog section plus generated commit notes.
 
 Never put the Chrome Web Store upload private key in git. `wxt.config.ts`

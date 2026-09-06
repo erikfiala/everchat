@@ -1,7 +1,7 @@
 blank_issues_enabled: true
 contact_links:
   - name: Security report
-    url: https://github.com/erikfiala/everchat/security/advisories/new
+    url: https://github.com/everchathq/everchat/security/advisories/new
     about: Report a vulnerability privately. Do not file a public issue.
   - name: Donate
     url: https://opencollective.com/everchat

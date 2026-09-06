@@ -129,7 +129,6 @@ export function ProfileTab() {
   const currentDeviceRegistered = devices.some((d) =>
     localCredentialIds.includes(d.credential_id),
   );
-  const showAddCurrentDevice = !currentDeviceRegistered;
 
   const removeDevice = async (id: string) => {
     try {
@@ -217,7 +216,7 @@ export function ProfileTab() {
         <h2 className="mb-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
           {t('profile.devices')}
         </h2>
-        <p className="mb-2 text-[11px] text-[var(--color-muted-foreground)]">
+        <p className="mb-2 text-sm text-[var(--color-muted-foreground)]">
           {t('profile.devicesHint')}
         </p>
         <ul className="space-y-1">
@@ -229,13 +228,20 @@ export function ProfileTab() {
                 onRename={(name) => saveDeviceName(d.id, name)}
                 onRemove={() => removeDevice(d.id)}
               />
-              {i === 0 && showAddCurrentDevice && (
-                <AddCurrentDeviceRow nested onAdd={addDevice} />
+              {i === 0 && (
+                <AddCurrentDeviceRow
+                  nested
+                  disabled={currentDeviceRegistered}
+                  onAdd={addDevice}
+                />
               )}
             </Fragment>
           ))}
-          {!loading && devices.length === 0 && showAddCurrentDevice && (
-            <AddCurrentDeviceRow onAdd={addDevice} />
+          {!loading && devices.length === 0 && (
+            <AddCurrentDeviceRow
+              disabled={currentDeviceRegistered}
+              onAdd={addDevice}
+            />
           )}
         </ul>
       </section>
@@ -333,25 +339,46 @@ export function ProfileTab() {
 
 function AddCurrentDeviceRow({
   nested,
+  disabled,
   onAdd,
 }: {
   nested?: boolean;
+  disabled?: boolean;
   onAdd: () => void;
 }) {
   const { t } = useLocale();
+  const button = (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={disabled ? undefined : onAdd}
+      className={cn(
+        'flex items-center gap-1 rounded-md py-1 text-sm',
+        nested ? 'ps-6' : 'ps-3',
+        disabled
+          ? 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-50'
+          : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]',
+      )}
+    >
+      <Plus className="h-3.5 w-3.5" />
+      {t('profile.addCurrentDevice')}
+    </button>
+  );
+
+  if (!disabled) {
+    return <li>{button}</li>;
+  }
+
   return (
     <li>
-      <button
-        type="button"
-        onClick={onAdd}
-        className={cn(
-          'flex items-center gap-1 rounded-md py-1 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]',
-          nested ? 'ps-6' : 'ps-3',
-        )}
-      >
-        <Plus className="h-3.5 w-3.5" />
-        {t('profile.addCurrentDevice')}
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-flex">{button}</span>
+        </TooltipTrigger>
+        <TooltipContent>
+          {t('profile.addCurrentDeviceAlreadyAdded')}
+        </TooltipContent>
+      </Tooltip>
     </li>
   );
 }
@@ -458,12 +485,12 @@ function DeviceRow({
                 size="icon"
                 className="h-7 w-7 shrink-0"
                 onClick={startEdit}
-                aria-label={renameLabel}
+                aria-label={t('profile.rename')}
               >
                 <PenSquare className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{renameLabel}</TooltipContent>
+            <TooltipContent>{t('profile.rename')}</TooltipContent>
           </Tooltip>
         )}
         <Tooltip>
@@ -474,12 +501,12 @@ function DeviceRow({
               size="icon"
               className="h-7 w-7 shrink-0 text-[var(--color-destructive)]"
               onClick={() => setConfirmRemoveOpen(true)}
-              aria-label={t('profile.removeDevice')}
+              aria-label={t('profile.delete')}
             >
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>{t('profile.removeDevice')}</TooltipContent>
+          <TooltipContent>{t('profile.delete')}</TooltipContent>
         </Tooltip>
       </div>
       <Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>

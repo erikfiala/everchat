@@ -11,6 +11,7 @@ and `main`.
 **Do not open a public issue for security problems.**
 
 Use [GitHub Private Vulnerability Reporting](https://github.com/everchathq/everchat/security/advisories/new).
+Secret scanning and push protection are enabled on this repository.
 
 Include:
 

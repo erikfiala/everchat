@@ -12,9 +12,12 @@ stats.html
 stats-*.json
 .wxt
 web-ext.config.ts
+# Local env files. Committed public client defaults are the exceptions below.
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+!.env.development
+!.env.production
 .supabase
 # Editor directories and files
 .vscode/*
@@ -39,4 +42,6 @@ www/.deploy-*.json
 dist
 coverage
 *.pem
+*.p12
+*.pfx
 supabase/.temp

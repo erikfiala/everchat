@@ -226,6 +226,47 @@
   }
 }
 
+.github-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 1.45rem;
+  padding: 0;
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: color 0.25s ease;
+}
+
+.github-stars:hover {
+  color: var(--ink-soft);
+}
+
+.github-stars:focus-visible {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+}
+
+.github-stars-mark {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+}
+
+.github-stars-count {
+  font-variant-numeric: tabular-nums;
+}
+
 .headline {
   font-family: var(--font-display);
   font-weight: 700;
@@ -1152,7 +1193,7 @@ body.doc {
 }
 
 .doc-lang-note {
-  margin: 0 0 1.75rem; /* breathe before kicker / title */
+  margin: 0 0 2.75rem; /* breathe before kicker / title */
   font-size: 0.85rem;
   color: var(--mute);
 }
@@ -1272,6 +1313,7 @@ body.doc {
 @media (prefers-reduced-motion: reduce) {
   .atmosphere,
   .brand,
+  .github-stars,
   .headline,
   .lede,
   .cta-group,

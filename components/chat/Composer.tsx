@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import EmojiPicker, { type EmojiClickData, Theme } from 'emoji-picker-react';
-import { Image, Smile, X } from 'lucide-react';
+import { ImagePlay, Smile, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { BODY_WARN_AT, MAX_BODY_LENGTH } from '@/lib/constants';
+import { BODY_WARN_REMAINING, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
@@ -90,22 +90,40 @@ export function Composer({
   }, [replyToHandle]);
 
   useEffect(() => {
-    if (!showGiphy || !giphyQ.trim()) {
+    if (!showGiphy) {
       setGifs([]);
+      setSearching(false);
       return;
     }
-    const timer = setTimeout(async () => {
+
+    let cancelled = false;
+    const run = async () => {
       setSearching(true);
       try {
-        const results = await searchGiphy(giphyQ, user?.token);
-        setGifs(results);
+        const results = await searchGiphy(giphyQ.trim(), user?.token);
+        if (!cancelled) setGifs(results);
       } catch {
-        setGifs([]);
+        if (!cancelled) setGifs([]);
       } finally {
-        setSearching(false);
+        if (!cancelled) setSearching(false);
       }
+    };
+
+    // Trending (empty query) on open; debounce only while typing a search.
+    if (!giphyQ.trim()) {
+      void run();
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const timer = setTimeout(() => {
+      void run();
     }, 400);
-    return () => clearTimeout(timer);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
   }, [giphyQ, showGiphy, user?.token]);
 
   if (gated) {
@@ -119,7 +137,7 @@ export function Composer({
   }
 
   const remaining = MAX_BODY_LENGTH - body.length;
-  const overWarn = body.length >= BODY_WARN_AT;
+  const showCounter = remaining < BODY_WARN_REMAINING;
 
   const submit = async () => {
     if (!body.trim() && !gifUrl) return;
@@ -152,7 +170,7 @@ export function Composer({
   return (
     <div className="relative border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
       {replyToHandle && (
-        <div className="mb-2 flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
+        <div className="mb-3 flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
           <span>
             {t('composer.replyingTo', { username: replyToHandle })}
           </span>
@@ -166,6 +184,7 @@ export function Composer({
         value={body}
         maxLength={MAX_BODY_LENGTH}
         placeholder={t('composer.placeholder')}
+        className="resize-none"
         onChange={(e) => {
           const next = e.target.value.slice(0, MAX_BODY_LENGTH);
           setBody(next);
@@ -181,22 +200,22 @@ export function Composer({
         }}
       />
       {gifUrl && (
-        <div className="relative mt-2 inline-block">
+        <div className="relative mt-2 inline-block overflow-hidden rounded">
           <img
             src={gifUrl}
             alt={t('composer.selectedGifAlt')}
-            className="max-h-24 rounded"
+            className="max-h-24"
           />
           <button
             type="button"
-            className="absolute -end-2 -top-2 rounded-full bg-black/70 p-0.5 text-white"
+            className="absolute end-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-white"
             onClick={() => setGifUrl(null)}
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       )}
-      <div className="mt-2 flex items-center gap-1">
+      <div className="mt-3 flex items-center gap-1">
         <Button
           type="button"
           variant="ghost"
@@ -219,20 +238,18 @@ export function Composer({
             setShowEmoji(false);
           }}
         >
-          <Image className="h-4 w-4" />
+          <ImagePlay className="h-4 w-4" />
         </Button>
-        <span
-          className={cn(
-            'ms-auto tabular-nums text-[11px]',
-            overWarn
-              ? 'font-medium text-red-600'
-              : 'text-[var(--color-muted-foreground)]',
-          )}
-          aria-live="polite"
-        >
-          {remaining}
-        </span>
+        {showCounter && (
+          <span
+            className="ms-auto me-2 tabular-nums text-[11px] font-medium text-red-600"
+            aria-live="polite"
+          >
+            {remaining}
+          </span>
+        )}
         <Button
+          className={showCounter ? undefined : 'ms-auto'}
           size="sm"
           disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
           onClick={submit}
@@ -242,7 +259,7 @@ export function Composer({
       </div>
 
       {showEmoji && (
-        <div className="absolute bottom-full start-2 z-30 mb-1">
+        <div className="ec-emoji-picker absolute bottom-full start-2 z-30 mb-3">
           <EmojiPicker
             theme={resolved === 'dark' ? Theme.DARK : Theme.LIGHT}
             onEmojiClick={onEmoji}
@@ -253,14 +270,14 @@ export function Composer({
       )}
 
       {showGiphy && (
-        <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-1 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
+        <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
           <Input
             placeholder={t('composer.searchGiphy')}
             value={giphyQ}
             onChange={(e) => setGiphyQ(e.target.value)}
             autoFocus
           />
-          <div className="mt-2 grid max-h-40 grid-cols-3 gap-1 overflow-y-auto">
+          <div className="mt-2 grid max-h-72 grid-cols-3 gap-1 overflow-y-auto">
             {searching && (
               <p className="col-span-3 text-xs text-[var(--color-muted-foreground)]">
                 {t('composer.searching')}

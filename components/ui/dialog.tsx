@@ -50,3 +50,15 @@ export function DialogTitle({
     />
   );
 }
+
+export function DialogDescription({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description
+      className={cn('text-sm text-[var(--color-muted-foreground)]', className)}
+      {...props}
+    />
+  );
+}

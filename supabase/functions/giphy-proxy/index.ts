@@ -13,14 +13,20 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const q = String(body.q || '').trim();
-    if (!q) return json({ results: [] });
 
-    const url = new URL('https://api.giphy.com/v1/gifs/search');
+    // Empty query → Giphy trending (search requires `q` and used to return []).
+    const url = new URL(
+      q
+        ? 'https://api.giphy.com/v1/gifs/search'
+        : 'https://api.giphy.com/v1/gifs/trending',
+    );
     url.searchParams.set('api_key', apiKey);
-    url.searchParams.set('q', q);
     url.searchParams.set('limit', '12');
     url.searchParams.set('rating', 'pg-13');
-    url.searchParams.set('lang', 'en');
+    if (q) {
+      url.searchParams.set('q', q);
+      url.searchParams.set('lang', 'en');
+    }
 
     const res = await fetch(url.toString());
     if (!res.ok) {

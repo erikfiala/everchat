@@ -114,8 +114,8 @@ function Shell() {
       />
       <Toaster
         theme={theme}
-        position="bottom-center"
-        offset={12}
+        position="top-center"
+        offset={68}
         closeButton
         toastOptions={{
           classNames: {

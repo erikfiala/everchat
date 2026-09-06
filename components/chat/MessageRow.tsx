@@ -1,22 +1,28 @@
 import { useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
 import {
   ChevronDown,
   ChevronUp,
   Flag,
   Link2,
   MoreHorizontal,
-  Reply,
   Trash2,
 } from 'lucide-react';
 import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { DEPTH_COLLAPSE_LEVEL } from '@/lib/constants';
+import { formatRelativeTime } from '@/lib/time';
 import { buildDeepLink } from '@/lib/canonicalize';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import { toast } from 'sonner';
@@ -57,6 +63,7 @@ export function MessageRow({
   const { t, locale } = useLocale();
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [showTranslation, setShowTranslation] = useState(false);
   const [translated, setTranslated] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
@@ -168,7 +175,7 @@ export function MessageRow({
         depth > 0 && 'ms-3 border-s border-[var(--color-border)] ps-3',
       )}
     >
-      <div className="flex gap-2 py-2">
+      <div className="flex items-start gap-2 py-2">
         <button
           type="button"
           onClick={() =>
@@ -196,13 +203,15 @@ export function MessageRow({
             >
               @{node.author?.username || t('message.unknownAuthor')}
             </button>
-            <span className="text-[var(--color-muted-foreground)]">
-              {safeRelativeTime(node.created_at, (d) =>
-                formatDistanceToNow(d, { addSuffix: true }),
-              )}
-            </span>
-            <span className={cn('font-medium', scoreColorClass(node.score))}>
-              {formatScore(node.score)}
+            <span
+              className="text-[var(--color-muted-foreground)]"
+              title={
+                safeRelativeTime(node.created_at, (d) =>
+                  d.toLocaleString(locale),
+                ) || undefined
+              }
+            >
+              {safeRelativeTime(node.created_at, formatRelativeTime)}
             </span>
           </div>
 
@@ -257,6 +266,14 @@ export function MessageRow({
                 >
                   <ChevronUp className="h-4 w-4" />
                 </Button>
+                <span
+                  className={cn(
+                    'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
+                    scoreColorClass(node.score),
+                  )}
+                >
+                  {formatScore(node.score)}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -274,13 +291,12 @@ export function MessageRow({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 gap-1 px-2 text-xs"
+                  className="h-7 px-2 text-xs"
                   onClick={() => {
                     if (!requireAuth()) return;
                     onReply(node);
                   }}
                 >
-                  <Reply className="h-3.5 w-3.5 rtl:-scale-x-100" />
                   {t('message.reply')}
                 </Button>
                 {collapsed && userExpanded && (
@@ -332,8 +348,8 @@ export function MessageRow({
                           type="button"
                           className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"
                           onClick={() => {
-                            onDelete(node.id);
                             setMenuOpen(false);
+                            setConfirmDeleteOpen(true);
                           }}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -382,6 +398,38 @@ export function MessageRow({
             requireAuth={requireAuth}
           />
         ))}
+
+      <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('message.deleteConfirmTitle')}</DialogTitle>
+            <DialogDescription>
+              {t('message.deleteConfirmBody')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmDeleteOpen(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                setConfirmDeleteOpen(false);
+                onDelete(node.id);
+              }}
+            >
+              {t('message.delete')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

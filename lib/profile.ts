@@ -57,11 +57,16 @@ export async function fetchActivity(
 
 export async function listDevices(
   userId: string,
-): Promise<Pick<WebAuthnCredential, 'id' | 'device_label' | 'created_at' | 'last_used_at'>[]> {
+): Promise<
+  Pick<
+    WebAuthnCredential,
+    'id' | 'credential_id' | 'device_label' | 'created_at' | 'last_used_at'
+  >[]
+> {
   const sb = getSupabase();
   const { data, error } = await sb
     .from('webauthn_credentials')
-    .select('id, device_label, created_at, last_used_at')
+    .select('id, credential_id, device_label, created_at, last_used_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
   if (error) throw error;
@@ -88,6 +93,28 @@ export async function revokeDevice(
     .eq('id', credentialId)
     .eq('user_id', userId);
   if (error) throw error;
+}
+
+export const DEVICE_LABEL_MAX_LEN = 64;
+
+export async function renameDevice(
+  credentialId: string,
+  userId: string,
+  label: string,
+): Promise<string> {
+  const device_label = label.trim().slice(0, DEVICE_LABEL_MAX_LEN);
+  if (!device_label) {
+    throw new Error('errors.deviceNameRequired');
+  }
+
+  const sb = getSupabase();
+  const { error } = await sb
+    .from('webauthn_credentials')
+    .update({ device_label })
+    .eq('id', credentialId)
+    .eq('user_id', userId);
+  if (error) throw error;
+  return device_label;
 }
 
 export async function uploadAvatar(

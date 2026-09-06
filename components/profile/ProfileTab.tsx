@@ -1,22 +1,39 @@
-import { useEffect, useRef, useState } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { Camera, Plus, Trash2 } from 'lucide-react';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { Camera, LogOut, PenSquare, Plus, Trash2 } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import {
+  DEVICE_LABEL_MAX_LEN,
   fetchActivity,
   listDevices,
+  renameDevice,
   revokeDevice,
   uploadAvatar,
 } from '@/lib/profile';
+import { getStoredCredentialIds } from '@/lib/auth/passkeyHint';
 import { addPasskeyDevice } from '@/lib/auth/webauthn';
 import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
+import { formatRelativeTime } from '@/lib/time';
 import { buildDeepLink, httpsUrlFromCanonical } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -28,18 +45,32 @@ export function ProfileTab() {
     useAuth();
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [devices, setDevices] = useState<
-    { id: string; device_label: string | null; created_at: string; last_used_at: string | null }[]
+    {
+      id: string;
+      credential_id: string;
+      device_label: string | null;
+      created_at: string;
+      last_used_at: string | null;
+    }[]
   >([]);
+  const [localCredentialIds, setLocalCredentialIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [confirmSignOutOpen, setConfirmSignOutOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
     setLoading(true);
-    Promise.all([fetchActivity(user.id), listDevices(user.id), refreshProfile()])
-      .then(([acts, devs]) => {
+    Promise.all([
+      fetchActivity(user.id),
+      listDevices(user.id),
+      getStoredCredentialIds(),
+      refreshProfile(),
+    ])
+      .then(([acts, devs, ids]) => {
         setActivity(acts);
         setDevices(devs);
+        setLocalCredentialIds(ids);
       })
       .catch((e) => toast.error(tError(e)))
       .finally(() => setLoading(false));
@@ -83,13 +114,22 @@ export function ProfileTab() {
   const addDevice = async () => {
     try {
       await addPasskeyDevice(user.token);
-      const devs = await listDevices(user.id);
+      const [devs, ids] = await Promise.all([
+        listDevices(user.id),
+        getStoredCredentialIds(),
+      ]);
       setDevices(devs);
+      setLocalCredentialIds(ids);
       toast.success(t('profile.toastDeviceAdded'));
     } catch (e) {
       toast.error(tError(e, 'profile.toastAddDeviceFailed'));
     }
   };
+
+  const currentDeviceRegistered = devices.some((d) =>
+    localCredentialIds.includes(d.credential_id),
+  );
+  const showAddCurrentDevice = !currentDeviceRegistered;
 
   const removeDevice = async (id: string) => {
     try {
@@ -101,8 +141,22 @@ export function ProfileTab() {
     }
   };
 
+  const saveDeviceName = async (id: string, label: string) => {
+    try {
+      const device_label = await renameDevice(id, user.id, label);
+      setDevices((d) =>
+        d.map((x) => (x.id === id ? { ...x, device_label } : x)),
+      );
+      toast.success(t('profile.toastDeviceRenamed'));
+    } catch (e) {
+      toast.error(tError(e, 'profile.toastRenameFailed'));
+      throw e;
+    }
+  };
+
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-y-auto">
+    <TooltipProvider delayDuration={200}>
+      <div className="flex h-full min-h-0 flex-col overflow-y-auto">
       <div className="border-b border-[var(--color-border)] px-4 py-4">
         <div className="flex items-center gap-3">
           <button
@@ -127,9 +181,25 @@ export function ProfileTab() {
             className="hidden"
             onChange={(e) => onAvatar(e.target.files?.[0] ?? null)}
           />
-          <div>
-            <div className="text-lg font-semibold">
-              @{user.username || t('message.unknownAuthor')}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 truncate text-lg font-semibold">
+                @{user.username || t('message.unknownAuthor')}
+              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    onClick={() => setConfirmSignOutOpen(true)}
+                    aria-label={t('profile.signOut')}
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('profile.signOut')}</TooltipContent>
+              </Tooltip>
             </div>
             <div
               className={cn(
@@ -141,51 +211,37 @@ export function ProfileTab() {
             </div>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="mt-3"
-          onClick={() => logout()}
-        >
-          {t('profile.signOut')}
-        </Button>
       </div>
 
       <section className="border-b border-[var(--color-border)] px-4 py-3">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
-            {t('profile.devices')}
-          </h2>
-          <Button variant="ghost" size="sm" className="h-7 gap-1" onClick={addDevice}>
-            <Plus className="h-3.5 w-3.5" />
-            {t('profile.addDevice')}
-          </Button>
-        </div>
+        <h2 className="mb-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
+          {t('profile.devices')}
+        </h2>
         <p className="mb-2 text-[11px] text-[var(--color-muted-foreground)]">
           {t('profile.devicesHint')}
         </p>
         <ul className="space-y-1">
-          {devices.map((d) => (
-            <li
-              key={d.id}
-              className="flex items-center justify-between rounded-md px-2 py-1.5 text-sm hover:bg-[var(--color-accent)]"
-            >
-              <span>{d.device_label || t('common.device')}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={() => removeDevice(d.id)}
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
-            </li>
+          {devices.map((d, i) => (
+            <Fragment key={d.id}>
+              <DeviceRow
+                label={d.device_label || t('common.device')}
+                renameLabel={t('profile.renameDevice')}
+                onRename={(name) => saveDeviceName(d.id, name)}
+                onRemove={() => removeDevice(d.id)}
+              />
+              {i === 0 && showAddCurrentDevice && (
+                <AddCurrentDeviceRow nested onAdd={addDevice} />
+              )}
+            </Fragment>
           ))}
+          {!loading && devices.length === 0 && showAddCurrentDevice && (
+            <AddCurrentDeviceRow onAdd={addDevice} />
+          )}
         </ul>
       </section>
 
       <section className="px-2 py-3">
-        <h2 className="mb-2 px-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-muted-foreground)]">
+        <h2 className="mb-2 px-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
           {t('profile.activity')}
         </h2>
         {loading && <Skeleton className="mx-2 h-16" />}
@@ -232,15 +288,231 @@ export function ProfileTab() {
                   {formatScore(item.score)}
                 </span>
                 <span>
-                  {safeRelativeTime(item.created_at, (d) =>
-                    formatDistanceToNow(d, { addSuffix: true }),
-                  )}
+                  {safeRelativeTime(item.created_at, formatRelativeTime)}
                 </span>
               </div>
             </div>
           </button>
         ))}
       </section>
-    </div>
+
+      <Dialog open={confirmSignOutOpen} onOpenChange={setConfirmSignOutOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('profile.signOutConfirmTitle')}</DialogTitle>
+            <DialogDescription>
+              {t('profile.signOutConfirmBody')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmSignOutOpen(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                setConfirmSignOutOpen(false);
+                logout();
+              }}
+            >
+              {t('profile.signOut')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      </div>
+    </TooltipProvider>
+  );
+}
+
+function AddCurrentDeviceRow({
+  nested,
+  onAdd,
+}: {
+  nested?: boolean;
+  onAdd: () => void;
+}) {
+  const { t } = useLocale();
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onAdd}
+        className={cn(
+          'flex items-center gap-1 rounded-md py-1 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]',
+          nested ? 'ps-6' : 'ps-3',
+        )}
+      >
+        <Plus className="h-3.5 w-3.5" />
+        {t('profile.addCurrentDevice')}
+      </button>
+    </li>
+  );
+}
+
+function DeviceRow({
+  label,
+  renameLabel,
+  onRename,
+  onRemove,
+}: {
+  label: string;
+  renameLabel: string;
+  onRename: (name: string) => Promise<void>;
+  onRemove: () => void;
+}) {
+  const { t } = useLocale();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(label);
+  const [saving, setSaving] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const skipBlur = useRef(false);
+  const inFlight = useRef(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!editing) return;
+    const el = inputRef.current;
+    if (!el) return;
+    el.focus();
+    el.select();
+  }, [editing]);
+
+  const startEdit = () => {
+    skipBlur.current = false;
+    setDraft(label);
+    setEditing(true);
+  };
+
+  const cancel = () => {
+    skipBlur.current = true;
+    setDraft(label);
+    setEditing(false);
+  };
+
+  const commit = async () => {
+    if (inFlight.current) return;
+    const next = draft.trim();
+    if (!next || next === label) {
+      setDraft(label);
+      setEditing(false);
+      return;
+    }
+    inFlight.current = true;
+    setSaving(true);
+    try {
+      await onRename(next);
+      setEditing(false);
+    } catch {
+      /* parent toasts */
+    } finally {
+      inFlight.current = false;
+      setSaving(false);
+    }
+  };
+
+  return (
+    <li className="flex items-center gap-1 rounded-md py-1.5 ps-3 pe-2 text-sm hover:bg-[var(--color-accent)]">
+      {editing ? (
+        <Input
+          ref={inputRef}
+          value={draft}
+          maxLength={DEVICE_LABEL_MAX_LEN}
+          disabled={saving}
+          aria-label={renameLabel}
+          className="h-7 min-w-0 flex-1 px-2"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={() => {
+            if (skipBlur.current) {
+              skipBlur.current = false;
+              return;
+            }
+            void commit();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              void commit();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              cancel();
+            }
+          }}
+        />
+      ) : (
+        <span className="min-w-0 flex-1 truncate">{label}</span>
+      )}
+      <div className="flex shrink-0 items-center">
+        {!editing && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0"
+                onClick={startEdit}
+                aria-label={renameLabel}
+              >
+                <PenSquare className="h-3.5 w-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{renameLabel}</TooltipContent>
+          </Tooltip>
+        )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 shrink-0 text-[var(--color-destructive)]"
+              onClick={() => setConfirmRemoveOpen(true)}
+              aria-label={t('profile.removeDevice')}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{t('profile.removeDevice')}</TooltipContent>
+        </Tooltip>
+      </div>
+      <Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('profile.removeDeviceConfirmTitle')}</DialogTitle>
+            <DialogDescription>
+              {t('profile.removeDeviceConfirmBody')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setConfirmRemoveOpen(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                setConfirmRemoveOpen(false);
+                onRemove();
+              }}
+            >
+              {t('profile.removeDevice')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </li>
   );
 }

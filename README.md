@@ -41,6 +41,8 @@ Everchat stays free. Voluntary donations go through [Open Collective](https://op
 
 Stack: WXT + React + TypeScript, Supabase, static `www/` on Vercel (passkey RP at [everch.at](https://everch.at)).
 
+The Vercel project `everchat-www` must use **Root Directory `www`**. If that is left at `.`, Git deploys build the Chrome extension instead of the landing site and [everch.at](https://everch.at) returns `NOT_FOUND`.
+
 ```bash
 pnpm install
 cp .env.example .env   # add Supabase URL + anon key

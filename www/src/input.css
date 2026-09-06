@@ -233,22 +233,28 @@
   width: fit-content;
   max-width: 100%;
   margin: 0 0 1.45rem;
-  padding: 0;
+  padding: 0.28rem 0.55rem 0.28rem 0.5rem;
   text-decoration: none;
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.75rem;
+  font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1;
-  color: var(--mute);
-  background: none;
-  border: 0;
+  color: var(--ink-soft);
+  background: var(--panel);
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: var(--radius);
   animation: brand-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  transition: color 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    background-color 0.25s ease;
 }
 
 .github-stars:hover {
-  color: var(--ink-soft);
+  color: var(--ink);
+  background: var(--panel);
+  border-color: color-mix(in srgb, var(--line) 40%, var(--mute));
 }
 
 .github-stars:focus-visible {
@@ -265,6 +271,10 @@
 
 .github-stars-count {
   font-variant-numeric: tabular-nums;
+}
+
+.github-stars-count:empty {
+  display: none;
 }
 
 .headline {
@@ -414,16 +424,18 @@
 }
 
 .browser {
+  --panel-w: max(9rem, calc(100% / 3.15));
+  --page-copy-w: calc(100% * 2.15 / 3.15);
   width: 100%;
   /* Compact product shot - ~half the prior tall mock (was min(70vh, 38rem)) */
   height: min(36vh, 19rem);
   display: grid;
-  /* ~40px narrower sidepanel vs prior 1.6fr/1fr; fr tracks keep flush right edge */
-  grid-template-columns: minmax(0, 2.15fr) minmax(9rem, 1fr);
+  /* Single track: chrome + page bg are full-bleed until the overlay panel lands */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
   justify-content: stretch;
-  /* Match sidepanel so any residual column gap stays white, not paper grey */
-  background: var(--panel);
+  position: relative;
+  background: linear-gradient(180deg, var(--paper) 0%, #f1f5f9 100%);
   border: 1px solid var(--line);
   border-radius: 0.65rem;
   overflow: hidden;
@@ -432,9 +444,9 @@
 
 @media (max-width: 959px) {
   .browser {
+    --panel-w: max(8rem, calc(100% / 2.2));
+    --page-copy-w: calc(100% * 1.2 / 2.2);
     height: min(30vh, 15.5rem);
-    /* ~40px narrower sidepanel; fr tracks only - no % max (avoids right gutter) */
-    grid-template-columns: minmax(0, 1.2fr) minmax(8rem, 1fr);
   }
 
   .page {
@@ -444,8 +456,8 @@
 
 @media (max-width: 560px) {
   .browser {
-    /* Still favor chat, but ~40px more page width than prior 0.85/1.2 */
-    grid-template-columns: minmax(0, 1.1fr) minmax(8.75rem, 1fr);
+    --panel-w: max(8.75rem, calc(100% / 2.1));
+    --page-copy-w: calc(100% * 1.1 / 2.1);
   }
 
   .page {
@@ -468,6 +480,19 @@
   background: color-mix(in srgb, var(--stone-deep) 72%, var(--paper));
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
+  min-width: 0;
+  /* Rest open (panel width reserved). Keyframe fill-mode covers the pre-slide delay. */
+  margin-right: var(--panel-w);
+  animation: chrome-push 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+}
+
+@keyframes chrome-push {
+  from {
+    margin-right: 0;
+  }
+  to {
+    margin-right: var(--panel-w);
+  }
 }
 
 .dots {
@@ -509,6 +534,13 @@
     linear-gradient(180deg, var(--paper) 0%, #f1f5f9 100%);
   position: relative;
   min-width: 0;
+}
+
+/* Keep article text at the final page-column width; only the bg goes full-bleed */
+.page-kicker,
+.page-title,
+.page-lines {
+  max-width: var(--page-copy-w);
 }
 
 .page-kicker {
@@ -569,11 +601,12 @@
 }
 
 .sidepanel {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  justify-self: stretch;
-  align-self: stretch;
-  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: var(--panel-w);
   max-width: none;
   box-sizing: border-box;
   background: var(--panel);
@@ -1317,6 +1350,7 @@ body.doc {
   .headline,
   .lede,
   .cta-group,
+  .browser-chrome,
   .sidepanel,
   .msg {
     animation: none !important;

@@ -65,7 +65,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - **Email / password / magic link / OTP / Google (or any social) OAuth** — privacy by design
 - Email / push notifications outside the extension (Chrome extension notifications + in-panel inbox only)
 - Account recovery via email (recovery = add a second passkey only)
-- Chrome Web Store listing as the sole install path (CWS badge on www currently anchors to local-install instructions; store listing may come later)
+- Chrome Web Store listing as the sole install path (CWS badge on www currently anchors to GitHub Releases / local-install instructions; store listing may come later)
 
 ### Funding / donations
 

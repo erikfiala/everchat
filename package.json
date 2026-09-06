@@ -3,6 +3,19 @@
   "description": "Public comments on any URL. Chrome side panel.",
   "private": true,
   "version": "1.0.0",
+  "license": "MIT",
+  "homepage": "https://everch.at",
+  "bugs": {
+    "url": "https://github.com/erikfiala/everchat/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erikfiala/everchat.git"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "scripts": {
     "dev": "wxt",

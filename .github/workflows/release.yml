@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm compile
+      - run: pnpm test
+      - run: pnpm zip
+      - name: Prepare release notes and zip
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          VER="${VERSION#v}"
+          mkdir -p release
+          ZIP=$(ls dist/everchat-*-chrome.zip | head -n 1)
+          cp "$ZIP" "release/everchat-${VER}-chrome.zip"
+          python3 - <<'PY'
+          import os, re, pathlib
+          ver = os.environ["VERSION"].lstrip("v")
+          text = pathlib.Path("CHANGELOG.md").read_text()
+          pattern = rf"^## \[{re.escape(ver)}\][^\n]*\n(.*?)(?=^## |\Z)"
+          match = re.search(pattern, text, re.M | re.S)
+          body = match.group(0).strip() if match else f"Everchat v{ver}"
+          extra = (
+              "\n\n## Install\n\n"
+              "1. Download `everchat-" + ver + "-chrome.zip` below.\n"
+              "2. Unzip it (you should see `manifest.json` in the folder).\n"
+              "3. Open `chrome://extensions`, enable **Developer mode**, "
+              "**Load unpacked**, and select that folder.\n"
+              "4. Pin Everchat and open the side panel on any page.\n"
+          )
+          pathlib.Path("release/notes.md").write_text(body + extra)
+          PY
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "Everchat ${{ github.ref_name }}" \
+            --notes-file release/notes.md \
+            release/everchat-*-chrome.zip

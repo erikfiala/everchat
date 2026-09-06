@@ -334,17 +334,40 @@
         id="get-extension"
       >
         <h2 class="mb-3 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]" data-i18n="www.installTitle">
-          Install from a local build
+          Install Everchat
         </h2>
         <p class="m-0 max-w-none text-mute" data-i18n="www.installIntro">
-          In the future, if Google doesn't like what we're doing, the Chrome Web Store might reject or remove Everchat. Loading a local build in developer mode lets you run a version you control, regardless of the store:
+          Chrome Web Store listing is coming. Until then, install from a GitHub release, or build from source. Loading unpacked in developer mode also means you keep a copy if the store ever rejects or removes Everchat.
         </p>
-        <p class="mt-3 max-w-none text-warn" data-i18n="www.installPrivateNote">
-          The repo is currently private. Use the official Chrome Web Store link above instead.
+        <h3 class="install-sub" data-i18n="www.installReleaseTitle">From a GitHub release</h3>
+        <p class="m-0 max-w-none text-mute">
+          <span data-i18n="www.installReleaseIntro">Download the latest Chrome zip from</span>
+          <a
+            class="text-ink-soft underline hover:text-accent"
+            href="https://github.com/erikfiala/everchat/releases/latest"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="www.installReleaseLink"
+          >GitHub Releases</a>.
         </p>
         <ol class="install-steps">
           <li>
-            <span data-i18n="www.installStep1" data-i18n-html>Clone the Everchat repo and run <code>pnpm install && pnpm build</code></span>
+            <span data-i18n="www.installReleaseStep1" data-i18n-html>Download <code>everchat-*-chrome.zip</code></span>
+          </li>
+          <li>
+            <span data-i18n="www.installReleaseStep2">Unzip it. The folder must contain manifest.json</span>
+          </li>
+          <li>
+            <span data-i18n="www.installReleaseStep3" data-i18n-html>Open <code>chrome://extensions</code>, turn on Developer mode, Load unpacked, select that folder</span>
+          </li>
+          <li>
+            <span data-i18n="www.installReleaseStep4">Pin Everchat and open the side panel on any page</span>
+          </li>
+        </ol>
+        <h3 class="install-sub" data-i18n="www.installSourceTitle">From source</h3>
+        <ol class="install-steps">
+          <li>
+            <span data-i18n="www.installStep1" data-i18n-html>Clone the repo and run <code>pnpm install && pnpm build</code></span>
           </li>
           <li>
             <span data-i18n="www.installStep2" data-i18n-html>Open <code>chrome://extensions</code> and turn on Developer mode</span>
@@ -370,6 +393,8 @@
         alt=""
       />
       <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://github.com/erikfiala/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">Source</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>

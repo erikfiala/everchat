@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an improvement to Everchat
+title: '[feat] '
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or missing today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Proposal
+      description: What would you like instead? Check PRD.md if this is already a non-goal.
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Extra context

@@ -1,0 +1,44 @@
+name: Bug report
+description: Something is broken in the extension or on everch.at
+title: '[bug] '
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Do **not** include secrets, session tokens, or
+        private keys. Security issues go to
+        [private vulnerability reporting](https://github.com/erikfiala/everchat/security/advisories/new).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you see instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: GitHub release tag, Chrome Web Store version, or commit.
+      placeholder: v1.0.0
+  - type: input
+    id: chrome
+    attributes:
+      label: Chrome version
+      placeholder: e.g. 140
+  - type: textarea
+    id: extra
+    attributes:
+      label: Extra context
+      description: Screenshots, console errors from the side panel, URL pattern (no secrets).

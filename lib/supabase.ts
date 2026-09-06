@@ -27,7 +27,7 @@ export function setSupabaseAccessToken(token: string | null) {
 export function getSupabase(): SupabaseClient<Database> {
   if (!isSupabaseConfigured) {
     throw new Error(
-      'Supabase is not configured. Copy .env.example to .env and set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY.',
+      'Supabase is not configured. Official builds use .env.production; for a private backend copy .env.example to .env.local.',
     );
   }
   if (!client) {

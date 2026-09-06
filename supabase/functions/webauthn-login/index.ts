@@ -29,11 +29,15 @@ Deno.serve(async (req) => {
       });
 
       const challengeId = crypto.randomUUID();
-      await sb.from('webauthn_challenges').upsert({
+      const { error: challengeError } = await sb.from('webauthn_challenges').upsert({
         id: challengeId,
         challenge: options.challenge,
         expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
       });
+      if (challengeError) {
+        console.error('webauthn_challenges upsert failed', challengeError);
+        return json({ error: 'Could not start passkey sign-in' }, 500);
+      }
 
       return json({ options, challengeId });
     }

@@ -154,6 +154,16 @@ export async function registerPasskey(
     return session;
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
+    const msg = ((e as Error)?.message ?? '').toLowerCase();
+    if (
+      msg.includes('ceremony expired') ||
+      msg.includes('reservation expired') ||
+      msg.includes('verification failed') ||
+      msg.includes('passkey') ||
+      msg.includes('could not start passkey')
+    ) {
+      throw new Error('auth.toastPasskeyFailed');
+    }
     throw e;
   }
 }

@@ -94,13 +94,22 @@ Deno.serve(async (req) => {
         },
       });
 
-      await sb.from('webauthn_challenges').upsert({
+      // user_id is the pending profile id (no FK — profile is created on verify).
+      const { error: challengeError } = await sb.from('webauthn_challenges').upsert({
         id: sessionToken,
         challenge: options.challenge,
         username,
         user_id: userId,
         expires_at: new Date(Date.now() + RESERVATION_MS).toISOString(),
       });
+      if (challengeError) {
+        console.error('webauthn_challenges upsert failed', challengeError);
+        await sb.rpc('release_username', {
+          p_username: username,
+          p_session_token: sessionToken,
+        });
+        return json({ error: 'Could not start passkey setup' }, 500);
+      }
 
       return json({ options, sessionToken, userId });
     }

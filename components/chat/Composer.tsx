@@ -11,12 +11,16 @@ import { useLocale } from '@/hooks/useLocale';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
+const TYPING_IDLE_MS = 2500;
+
 interface ComposerProps {
   replyToHandle?: string | null;
   onCancelReply?: () => void;
   onSubmit: (body: string, gifUrl?: string | null) => Promise<void>;
   gated?: boolean;
   onGate?: () => void;
+  /** Publish ephemeral typing presence (authenticated composers only). */
+  onTypingChange?: (typing: boolean) => void;
 }
 
 export function Composer({
@@ -25,6 +29,7 @@ export function Composer({
   onSubmit,
   gated,
   onGate,
+  onTypingChange,
 }: ComposerProps) {
   const { user } = useAuth();
   const { t } = useLocale();
@@ -42,6 +47,37 @@ export function Composer({
   >([]);
   const [searching, setSearching] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const typingActiveRef = useRef(false);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onTypingChangeRef = useRef(onTypingChange);
+  onTypingChangeRef.current = onTypingChange;
+
+  const stopTyping = () => {
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+    if (typingActiveRef.current) {
+      typingActiveRef.current = false;
+      onTypingChangeRef.current?.(false);
+    }
+  };
+
+  const bumpTyping = () => {
+    if (!onTypingChangeRef.current) return;
+    if (!typingActiveRef.current) {
+      typingActiveRef.current = true;
+      onTypingChangeRef.current(true);
+    }
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(stopTyping, TYPING_IDLE_MS);
+  };
+
+  useEffect(() => () => stopTyping(), []);
+
+  useEffect(() => {
+    if (gated || !onTypingChange) stopTyping();
+  }, [gated, onTypingChange]);
 
   useEffect(() => {
     if (replyToHandle) {
@@ -88,6 +124,7 @@ export function Composer({
   const submit = async () => {
     if (!body.trim() && !gifUrl) return;
     if (body.length > MAX_BODY_LENGTH) return;
+    stopTyping();
     setBusy(true);
     try {
       await onSubmit(body.trim(), gifUrl);
@@ -102,7 +139,12 @@ export function Composer({
   };
 
   const onEmoji = (emoji: EmojiClickData) => {
-    setBody((b) => (b + emoji.emoji).slice(0, MAX_BODY_LENGTH));
+    setBody((b) => {
+      const next = (b + emoji.emoji).slice(0, MAX_BODY_LENGTH);
+      if (next.trim()) bumpTyping();
+      else stopTyping();
+      return next;
+    });
     setShowEmoji(false);
     taRef.current?.focus();
   };
@@ -124,7 +166,13 @@ export function Composer({
         value={body}
         maxLength={MAX_BODY_LENGTH}
         placeholder={t('composer.placeholder')}
-        onChange={(e) => setBody(e.target.value.slice(0, MAX_BODY_LENGTH))}
+        onChange={(e) => {
+          const next = e.target.value.slice(0, MAX_BODY_LENGTH);
+          setBody(next);
+          if (next.trim()) bumpTyping();
+          else stopTyping();
+        }}
+        onBlur={stopTyping}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();

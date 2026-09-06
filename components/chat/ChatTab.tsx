@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PageContextHeader } from '@/components/PageContextHeader';
 import { MessageRow } from './MessageRow';
@@ -11,9 +11,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import { usePageThread } from '@/hooks/usePageThread';
+import { useRoomHistory } from '@/hooks/useRoomHistory';
+import { useTypingIndicators } from '@/hooks/useTypingIndicators';
+import { cn } from '@/lib/utils';
 import type { MessageNode, SortMode, TabInfo } from '@/lib/database.types';
 import { findPathToMessage, reportMessage } from '@/lib/messages';
 import { toast } from 'sonner';
@@ -27,7 +36,13 @@ interface ChatTabProps {
 export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const { user, requireAuth, setShowAuthLanding } = useAuth();
   const { t, tError } = useLocale();
-  const thread = usePageThread(tab, user?.id);
+  const { viewing, canGoBack, canGoForward, goBack, goForward } =
+    useRoomHistory(tab);
+  const thread = usePageThread(viewing, user?.id);
+  const { typers, setLocalTyping } = useTypingIndicators(
+    thread.pageId,
+    user ? { id: user.id, username: user.username } : null,
+  );
   const [replyTo, setReplyTo] = useState<MessageNode | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [continueThreadIds, setContinueThreadIds] = useState<Set<string>>(
@@ -35,8 +50,15 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   );
 
   useEffect(() => {
-    if (!tab.focusMessageId || thread.loading || !thread.roots.length) return;
-    const path = findPathToMessage(thread.roots, tab.focusMessageId);
+    setReplyTo(null);
+    setExpandedIds(new Set());
+    setContinueThreadIds(new Set());
+  }, [viewing.canonicalUrl]);
+
+  useEffect(() => {
+    if (!viewing.focusMessageId || thread.loading || !thread.roots.length)
+      return;
+    const path = findPathToMessage(thread.roots, viewing.focusMessageId);
     if (path) {
       setContinueThreadIds((prev) => {
         const next = new Set(prev);
@@ -49,7 +71,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         return next;
       });
       requestAnimationFrame(() => {
-        const el = document.getElementById(`ec-msg-${tab.focusMessageId}`);
+        const el = document.getElementById(`ec-msg-${viewing.focusMessageId}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           el.classList.add('highlight-pulse');
@@ -58,7 +80,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         clearFocus();
       });
     }
-  }, [tab.focusMessageId, thread.loading, thread.roots, clearFocus]);
+  }, [viewing.focusMessageId, thread.loading, thread.roots, clearFocus]);
 
   const onSubmit = async (body: string, gifUrl?: string | null) => {
     await thread.post(body, replyTo?.id ?? null, gifUrl);
@@ -71,9 +93,9 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageContextHeader
-        title={tab.title}
-        host={tab.host}
-        faviconUrl={tab.favIconUrl}
+        title={viewing.title}
+        host={viewing.host}
+        faviconUrl={viewing.favIconUrl}
       />
       <div className="flex min-h-14 items-center gap-2 border-b border-[var(--color-border)] px-3 py-2">
         <span className="text-xs text-[var(--color-muted-foreground)]">
@@ -99,6 +121,49 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <TooltipProvider delayDuration={200}>
+          <div className="ms-auto flex items-center gap-0.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={goBack}
+                  disabled={!canGoBack}
+                  className={cn(
+                    'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
+                    canGoBack
+                      ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                      : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
+                  )}
+                  aria-label={t('chat.goBack')}
+                >
+                  <ArrowLeft className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{t('chat.goBack')}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={goForward}
+                  disabled={!canGoForward}
+                  className={cn(
+                    'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
+                    canGoForward
+                      ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                      : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
+                  )}
+                  aria-label={t('chat.goForward')}
+                >
+                  <ArrowRight className="size-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{t('chat.goForward')}</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-3">
@@ -135,7 +200,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               key={node.id}
               node={node}
               depth={0}
-              pageUrl={tab.url}
+              pageUrl={viewing.url}
               currentUserId={user?.id}
               expandedIds={expandedIds}
               continueThreadIds={continueThreadIds}
@@ -174,12 +239,30 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
           ))}
       </div>
 
+      <div
+        className="min-h-5 shrink-0 px-3 py-1"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {typers.length === 1 && typers[0] && (
+          <p className="truncate text-xs text-[var(--color-muted-foreground)]">
+            {t('chat.typingOne', { username: typers[0].username })}
+          </p>
+        )}
+        {typers.length > 1 && (
+          <p className="truncate text-xs text-[var(--color-muted-foreground)]">
+            {t('chat.typingMany', { n: typers.length })}
+          </p>
+        )}
+      </div>
+
       <Composer
         replyToHandle={replyTo?.author?.username}
         onCancelReply={() => setReplyTo(null)}
         onSubmit={onSubmit}
         gated={!user}
         onGate={() => setShowAuthLanding(true)}
+        onTypingChange={user ? setLocalTyping : undefined}
       />
     </div>
   );

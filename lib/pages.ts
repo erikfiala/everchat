@@ -192,7 +192,8 @@ export async function getRecentlyActivePages(
 
     const existing = indexById.get(page.id);
     if (existing != null) {
-      ordered[existing].message_count += 1;
+      const row = ordered[existing];
+      if (row) row.message_count += 1;
       continue;
     }
     if (ordered.length >= limit) continue;

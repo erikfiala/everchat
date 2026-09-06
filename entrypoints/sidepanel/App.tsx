@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Toaster } from 'sonner';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { TopNav } from '@/components/TopNav';
 import { ChatTab } from '@/components/chat/ChatTab';
 import { NotificationsTab } from '@/components/notifications/NotificationsTab';
@@ -16,9 +17,13 @@ import { useNotifications } from '@/hooks/useNotifications';
 import type { PanelTab } from '@/lib/database.types';
 
 function reportPanelAttention(visible: boolean, tab: PanelTab) {
-  void browser.runtime
-    .sendMessage({ type: 'PANEL_ATTENTION', visible, tab })
-    .catch(() => undefined);
+  try {
+    void browser.runtime
+      ?.sendMessage({ type: 'PANEL_ATTENTION', visible, tab })
+      ?.catch(() => undefined);
+  } catch {
+    /* runtime unavailable */
+  }
 }
 
 function Shell() {
@@ -29,6 +34,17 @@ function Shell() {
   const { tab: activeTab, ready, clearFocus } = useActiveTab();
   const { unread } = useNotifications(user?.id);
   const [profileUser, setProfileUser] = useState<string | null>(null);
+  const wasSignedIn = useRef(Boolean(user));
+
+  // After passkey success, land on Chat so a Profile/Notifications auth gate
+  // doesn’t remount a fragile authenticated tree on the wrong tab.
+  useEffect(() => {
+    if (user && !wasSignedIn.current) {
+      setTab('chat');
+      setShowAuthLanding(false);
+    }
+    wasSignedIn.current = Boolean(user);
+  }, [user, setShowAuthLanding]);
 
   // Tell the background SW whether the panel is focused on the inbox so it
   // can skip redundant OS toasts while the user is already reading them.
@@ -64,27 +80,29 @@ function Shell() {
     <div className="flex h-full flex-col bg-[var(--color-background)]">
       <TopNav active={tab} onChange={onNav} unread={unread} />
       <main className="min-h-0 flex-1">
-        {loading || !ready ? (
-          <div className="flex h-full items-center justify-center text-sm text-[var(--color-muted-foreground)]">
-            {t('common.loading')}
-          </div>
-        ) : showLanding ? (
-          <AuthLanding />
-        ) : tab === 'chat' ? (
-          <ChatTab
-            tab={activeTab}
-            clearFocus={clearFocus}
-            onOpenProfile={(u) => setProfileUser(u)}
-          />
-        ) : tab === 'explore' ? (
-          <ExploreTab />
-        ) : tab === 'notifications' ? (
-          <NotificationsTab />
-        ) : tab === 'settings' ? (
-          <SettingsTab />
-        ) : (
-          <ProfileTab />
-        )}
+        <ErrorBoundary label="main" key={user?.id ?? 'anon'}>
+          {loading || !ready ? (
+            <div className="flex h-full items-center justify-center text-sm text-[var(--color-muted-foreground)]">
+              {t('common.loading')}
+            </div>
+          ) : showLanding ? (
+            <AuthLanding />
+          ) : tab === 'chat' ? (
+            <ChatTab
+              tab={activeTab}
+              clearFocus={clearFocus}
+              onOpenProfile={(u) => setProfileUser(u)}
+            />
+          ) : tab === 'explore' ? (
+            <ExploreTab />
+          ) : tab === 'notifications' ? (
+            <NotificationsTab />
+          ) : tab === 'settings' ? (
+            <SettingsTab />
+          ) : (
+            <ProfileTab />
+          )}
+        </ErrorBoundary>
       </main>
       <ProfileSheet
         username={profileUser}

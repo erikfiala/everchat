@@ -49,18 +49,22 @@ export function ProfileSheet({
             <Avatar className="h-12 w-12">
               {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
               <AvatarFallback>
-                {profile.username.slice(0, 2).toUpperCase()}
+                {(profile.username || '?').slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <div className="text-base font-semibold">@{profile.username}</div>
+              <div className="text-base font-semibold">
+                @{profile.username || t('message.unknownAuthor')}
+              </div>
               <div
                 className={cn(
                   'text-sm font-medium',
-                  scoreColorClass(profile.karma),
+                  scoreColorClass(profile.karma ?? 0),
                 )}
               >
-                {t('profile.karma', { score: formatScore(profile.karma) })}
+                {t('profile.karma', {
+                  score: formatScore(profile.karma ?? 0),
+                })}
               </div>
             </div>
           </div>

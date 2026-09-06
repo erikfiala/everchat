@@ -238,6 +238,9 @@ export async function registerPasskey(
       token: result.token,
       expiresAt: result.expiresAt,
     };
+    if (!session.id || !session.username || !session.token) {
+      throw new Error('auth.toastSignInFailed');
+    }
     await saveSession(session);
     await setPasskeyHint();
     return session;
@@ -298,6 +301,9 @@ export async function loginPasskey(): Promise<SessionUser> {
     token: result.token,
     expiresAt: result.expiresAt,
   };
+  if (!session.id || !session.username || !session.token) {
+    throw new Error('auth.toastSignInFailed');
+  }
   await saveSession(session);
   await setPasskeyHint();
   return session;

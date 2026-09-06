@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import { useNotifications } from '@/hooks/useNotifications';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
+import { safeRelativeTime } from '@/lib/collapse';
 import { cn } from '@/lib/utils';
 
 export function NotificationsTab() {
@@ -69,9 +70,9 @@ export function NotificationsTab() {
                 </span>
               </div>
               <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
-                {formatDistanceToNow(new Date(n.created_at), {
-                  addSuffix: true,
-                })}
+                {safeRelativeTime(n.created_at, (d) =>
+                  formatDistanceToNow(d, { addSuffix: true }),
+                )}
               </div>
             </div>
           </button>

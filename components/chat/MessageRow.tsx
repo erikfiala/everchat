@@ -10,7 +10,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import type { MessageNode } from '@/lib/database.types';
-import { isCommunityCollapsed, formatScore, scoreColorClass } from '@/lib/collapse';
+import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { DEPTH_COLLAPSE_LEVEL } from '@/lib/constants';
 import { buildDeepLink } from '@/lib/canonicalize';
 import { translateMessageBody } from '@/lib/translate';
@@ -196,9 +196,9 @@ export function MessageRow({
               @{node.author?.username || t('message.unknownAuthor')}
             </button>
             <span className="text-[var(--color-muted-foreground)]">
-              {formatDistanceToNow(new Date(node.created_at), {
-                addSuffix: true,
-              })}
+              {safeRelativeTime(node.created_at, (d) =>
+                formatDistanceToNow(d, { addSuffix: true }),
+              )}
             </span>
             <span className={cn('font-medium', scoreColorClass(node.score))}>
               {formatScore(node.score)}

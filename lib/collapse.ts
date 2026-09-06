@@ -19,3 +19,19 @@ export function formatScore(score: number): string {
   if (score > 0) return `+${score}`;
   return String(score);
 }
+
+/** date-fns throws on Invalid Date — guard message/activity timestamps. */
+export function safeRelativeTime(
+  iso: string | null | undefined,
+  format: (date: Date) => string,
+  fallback = '',
+): string {
+  if (!iso) return fallback;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return fallback;
+  try {
+    return format(date);
+  } catch {
+    return fallback;
+  }
+}

@@ -74,7 +74,10 @@ export async function mintSession(user: {
   username: string;
   avatar_url: string | null;
   karma: number;
-}) {
+} | null | undefined) {
+  if (!user?.id || !user.username) {
+    throw new Error('Invalid profile for session');
+  }
   const secret = jwtSecretKey();
   const kid = Deno.env.get('JWT_KID') || undefined;
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
@@ -96,7 +99,16 @@ export async function mintSession(user: {
     .setExpirationTime(Math.floor(expiresAt / 1000))
     .sign(secret);
 
-  return { token, expiresAt, user };
+  return {
+    token,
+    expiresAt,
+    user: {
+      id: user.id,
+      username: user.username,
+      avatar_url: user.avatar_url ?? null,
+      karma: user.karma ?? 0,
+    },
+  };
 }
 
 export async function verifySessionToken(authHeader: string | null) {

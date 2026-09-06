@@ -123,7 +123,12 @@ Deno.serve(async (req) => {
 
       await sb.from('webauthn_challenges').delete().eq('id', challengeRow.id);
 
-      const profile = cred.profiles;
+      const profile = Array.isArray(cred.profiles)
+        ? cred.profiles[0]
+        : cred.profiles;
+      if (!profile?.id || !profile?.username) {
+        return json({ error: 'Profile missing for passkey' }, 500);
+      }
       const session = await mintSession(profile);
       return json(session);
     }

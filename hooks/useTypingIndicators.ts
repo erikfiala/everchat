@@ -93,8 +93,16 @@ export function useTypingIndicators(
       typingRef.current = false;
       readyRef.current = false;
       channelRef.current = null;
-      void channel.untrack();
-      sb.removeChannel(channel);
+      try {
+        void channel.untrack();
+      } catch {
+        /* ignore */
+      }
+      try {
+        sb.removeChannel(channel);
+      } catch {
+        /* ignore */
+      }
       setTypers([]);
     };
   }, [pageId, user?.id]);

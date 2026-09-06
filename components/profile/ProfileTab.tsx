@@ -16,7 +16,7 @@ import {
 } from '@/lib/profile';
 import { addPasskeyDevice } from '@/lib/auth/webauthn';
 import type { ActivityItem } from '@/lib/database.types';
-import { formatScore, scoreColorClass } from '@/lib/collapse';
+import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { buildDeepLink, httpsUrlFromCanonical } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -113,7 +113,7 @@ export function ProfileTab() {
             <Avatar className="h-14 w-14">
               {user.avatar_url && <AvatarImage src={user.avatar_url} />}
               <AvatarFallback className="text-base">
-                {user.username.slice(0, 2).toUpperCase()}
+                {(user.username || '?').slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <span className="absolute bottom-0 end-0 rounded-full bg-[var(--color-card)] p-1 shadow">
@@ -128,9 +128,16 @@ export function ProfileTab() {
             onChange={(e) => onAvatar(e.target.files?.[0] ?? null)}
           />
           <div>
-            <div className="text-lg font-semibold">@{user.username}</div>
-            <div className={cn('text-sm font-medium', scoreColorClass(user.karma))}>
-              {t('profile.karma', { score: formatScore(user.karma) })}
+            <div className="text-lg font-semibold">
+              @{user.username || t('message.unknownAuthor')}
+            </div>
+            <div
+              className={cn(
+                'text-sm font-medium',
+                scoreColorClass(user.karma ?? 0),
+              )}
+            >
+              {t('profile.karma', { score: formatScore(user.karma ?? 0) })}
             </div>
           </div>
         </div>
@@ -225,9 +232,9 @@ export function ProfileTab() {
                   {formatScore(item.score)}
                 </span>
                 <span>
-                  {formatDistanceToNow(new Date(item.created_at), {
-                    addSuffix: true,
-                  })}
+                  {safeRelativeTime(item.created_at, (d) =>
+                    formatDistanceToNow(d, { addSuffix: true }),
+                  )}
                 </span>
               </div>
             </div>

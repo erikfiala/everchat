@@ -430,21 +430,6 @@
     <script src="/supabase-public.js"></script>
     <script src="/i18n.js"></script>
     <script src="/trending.js"></script>
-    <script>
-      (function () {
-        var el = document.querySelector("[data-github-stars]");
-        if (!el) return;
-        fetch("https://api.github.com/repos/everchathq/everchat")
-          .then(function (res) {
-            if (!res.ok) return null;
-            return res.json();
-          })
-          .then(function (data) {
-            if (!data || typeof data.stargazers_count !== "number") return;
-            el.textContent = String(data.stargazers_count);
-          })
-          .catch(function () {});
-      })();
-    </script>
+    <script src="/github-stars.js"></script>
   </body>
 </html>

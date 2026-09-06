@@ -106,7 +106,19 @@ export function buildMessageTree(
     for (const n of list) sortRecursive(n.children);
   };
   sortRecursive(roots);
-  return roots;
+  return pruneEmptyDeleted(roots);
+}
+
+/** Drop deleted nodes that have no remaining live replies in the thread. */
+function pruneEmptyDeleted(nodes: MessageNode[]): MessageNode[] {
+  const kept: MessageNode[] = [];
+  for (const node of nodes) {
+    const children = pruneEmptyDeleted(node.children);
+    if (node.deleted_at && children.length === 0) continue;
+    node.children = children;
+    kept.push(node);
+  }
+  return kept;
 }
 
 export async function createMessage(input: {

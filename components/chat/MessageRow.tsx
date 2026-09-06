@@ -125,6 +125,7 @@ export function MessageRow({
   }
 
   if (deleted) {
+    if (node.children.length === 0) return null;
     return (
       <div
         id={`ec-msg-${node.id}`}

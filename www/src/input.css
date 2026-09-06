@@ -233,11 +233,11 @@
   width: fit-content;
   max-width: 100%;
   margin: 0 0 1.45rem;
-  padding: 0.28rem 0.55rem 0.28rem 0.5rem;
+  padding: 0.36rem 0.55rem 0.36rem 0.5rem;
   text-decoration: none;
   font-family: var(--font-sans);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1;
   color: var(--ink-soft);

@@ -49,7 +49,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - Composer: text, emoji picker, Giphy GIF insert (via Edge proxy)
 - Per-message **See translation** (Edge Function → Google Translate when configured)
 - **Reply notifications** (in-panel + Chrome OS) that open the page with the side panel focused on the reply (`#ec-msg-{id}`)
-- Auth landing (value-led) with CTA **Sign in anonymously** (no email)
+- Auth landing (value-led) with CTA **Sign up anonymously** (no email)
 - Marketing site **everch.at**: hero, trending, install copy, legal, Open Collective donate
 - Performant MV3 side panel (no host-page CSS leakage)
 - Supabase backend with RLS, realtime messages + typing presence, Storage for avatars, custom WebAuthn Edge Functions
@@ -81,7 +81,7 @@ Signup is not “create an account” and not “sign in with passkeys.” It is
 Install → browse any page → read thread (no account)
         → first write/vote OR open Notifications / Profile while logged out
         → Auth landing (value, not features)
-        → Primary CTA: “Sign in anonymously”
+        → Primary CTA: “Sign up anonymously”
             → tries existing passkey first
             → if none / cancel → Claim @handle → passkey ceremony
         → Write unlocked
@@ -96,7 +96,7 @@ Shown when write/vote is gated, or when **Notifications** / **Profile** are open
 | Principle | Spec |
 |---|---|
 | Lead with desire | Speak freely on the web you’re already on |
-| One CTA | **“Sign in anonymously”** — never “Sign in with Passkeys” / “Create account” / “Continue with Google” |
+| One CTA | **“Sign up anonymously”** — never “Sign in with Passkeys” / “Create account” / “Continue with Google” |
 | Mechanism stays quiet | Passkey runs after CTA (+ handle); microcopy says “no email, no password” — not “passkeys” in the button |
 | Time-to-dopamine | Brand/value → CTA in the first viewport; handle claim immediately after if needed |
 
@@ -104,7 +104,7 @@ Shown when write/vote is gated, or when **Notifications** / **Profile** are open
 
 - **Headline:** “Every URL deserves a conversation”
 - **Lede:** “Anonymous public comments on this page. No email. No trackers. No ads. Free forever.”
-- **Primary CTA:** **Sign in anonymously** — `tryLogin()` first; on fail/cancel → claim step
+- **Primary CTA:** **Sign up anonymously** — `tryLogin()` first; on fail/cancel → claim step
 - **Claim step:** “Claim your @handle”; live Available / Taken / Invalid; Continue → WebAuthn register
 - **Disclaimer:** “Your device will confirm. No email. No password. If you lose all devices, this account can’t be recovered.”
 
@@ -119,7 +119,7 @@ Trending discovery lives on the **Explore** tab and on **everch.at**, not on the
 | Reserved names | Block: `everchat`, `admin`, `mod`, `moderator`, `support`, `system`, `null`, `undefined`, `me`, `root`, `official`, `help`, `api`, `staff`, etc. |
 | Reservation | Handle held only for the short passkey ceremony window (**5 minutes**); released if registration incomplete |
 | Auth | **Passkey only** under the hood — Everchat never asks for or stores email |
-| CTA language | **“Sign in anonymously”** for primary; avoid “passkey” in button labels |
+| CTA language | **“Sign up anonymously”** for primary; avoid “passkey” in button labels |
 | Recovery | User may register **additional passkeys** from Profile → Devices. No email recovery. |
 | Session | Custom JWT (`role: authenticated`, `sub` = profile id), ~**7-day** expiry; stored in `chrome.storage.local` |
 
@@ -330,7 +330,7 @@ Five icon tabs at the top (Everchat logo left → switches to Chat). Lucide icon
 3. **Sort by:** Best | New (dropdown)
 4. Thread list; each row `id="ec-msg-{uuid}"`
 5. Typing indicators above composer when present
-6. Composer pinned at bottom (or **Sign in anonymously** CTA if logged out)
+6. Composer pinned at bottom (or **Sign up anonymously** CTA if logged out)
 
 ### Explore tab
 
@@ -500,7 +500,7 @@ Side Panel
 ├── ProfileSheet (other user, read-only)
 └── AuthLanding
     ├── Headline + lede
-    ├── CTA: “Sign in anonymously”
+    ├── CTA: “Sign up anonymously”
     └── Claim @handle → WebAuthn
 
 www (everch.at)

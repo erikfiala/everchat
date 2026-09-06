@@ -33,7 +33,7 @@ export default defineConfig({
     key: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyna26i/m1MBkUrM8+Ty9KAbWLVDwABPuCEdPp3pbzJz9FzpseX5PBdamKIzvbmLWg0h/2YE6+bfDrabgLtZJ54xGYq8W91XdPhJ9Cq6utVqFm90RnyGbBJmcBf2HW4v/RxtsnA+J0L9vUpKbhuBKnOV6ep5319PKZe60sRZ1fORQtxhix3m/SbFta5S0DxCdAuz/zJmQlhrlzB2ZVb1EwlJESOgChvIV49TF/PTqMnskQZH/Z/6tBlePAc7nhg0cEeLvrd37E0UWpvbyK9qhFKWvDUyMHGvimEouwrUIptVyNp1Sv6bG9dEflrYypCaBdwKRodqVkGlUM+Aff+MggwIDAQAB',
     name: 'Everchat',
     description:
-      'Public comments on any URL. Sign in anonymously with a passkey. No email.',
+      'Public comments on any URL. Sign up anonymously with a passkey. No email.',
     permissions: ['sidePanel', 'tabs', 'storage', 'notifications', 'activeTab'],
     host_permissions: [
       'https://*.supabase.co/*',

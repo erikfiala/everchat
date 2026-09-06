@@ -5,7 +5,7 @@ import type {
   SortMode,
   Vote,
 } from './database.types';
-import { MAX_BODY_LENGTH, RATE_LIMIT_POSTS_PER_MINUTE } from './constants';
+import { MAX_BODY_LENGTH } from './constants';
 
 export async function fetchMessagesForPage(
   pageId: string,
@@ -130,9 +130,7 @@ export async function createMessage(input: {
   const sb = getSupabase();
 
   const { data: allowed, error: rlError } = await sb.rpc('check_rate_limit', {
-    p_user_id: input.authorId,
     p_action: 'post',
-    p_limit: RATE_LIMIT_POSTS_PER_MINUTE,
   });
   if (rlError) throw rlError;
   if (allowed === false) {

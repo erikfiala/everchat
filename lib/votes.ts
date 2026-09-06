@@ -1,5 +1,4 @@
 import { getSupabase } from './supabase';
-import { RATE_LIMIT_VOTES_PER_MINUTE } from './constants';
 
 /**
  * Toggle vote: same value clears; opposite flips; none inserts.
@@ -12,9 +11,7 @@ export async function setVote(input: {
   const sb = getSupabase();
 
   const { data: allowed, error: rlError } = await sb.rpc('check_rate_limit', {
-    p_user_id: input.userId,
     p_action: 'vote',
-    p_limit: RATE_LIMIT_VOTES_PER_MINUTE,
   });
   if (rlError) throw rlError;
   if (allowed === false) {

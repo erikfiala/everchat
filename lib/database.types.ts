@@ -357,7 +357,7 @@ export type Database = {
         Returns: boolean;
       };
       check_rate_limit: {
-        Args: { p_user_id: string; p_action: string; p_limit: number };
+        Args: { p_action: string };
         Returns: boolean;
       };
       delete_own_message: {

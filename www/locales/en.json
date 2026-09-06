@@ -37,7 +37,7 @@
   "auth.headline": "Every URL deserves a conversation",
   "auth.lede": "Anonymous public comments on this page. No email. No trackers. No ads. Free forever.",
   "auth.signInAnonymously": "Sign in anonymously",
-  "auth.useExistingPasskey": "I already have a passkey",
+  "auth.useExistingPasskey": "I already have an account",
   "auth.working": "Working…",
   "auth.supabaseNotConfigured": "Supabase isn’t configured yet. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.",
   "auth.claimHandle": "Claim your @handle",

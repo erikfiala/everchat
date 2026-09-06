@@ -43,11 +43,12 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
   const err = e as { name?: string; message?: string };
   const name = err?.name ?? '';
   const msg = (err?.message ?? '').toLowerCase();
-  // Our ceremony / network timeouts must toast + stay retryable on landing.
+  // Hard timeouts / network: toast + stay on landing (do not treat as "no passkey").
   if (
     name === 'TimeoutError' ||
     msg === 'auth.toastpasskeytimedout' ||
-    msg.includes('network request timed out')
+    msg.includes('network request timed out') ||
+    msg.includes('passkeytimedout')
   ) {
     return false;
   }
@@ -57,6 +58,7 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
     name === 'InvalidStateError' ||
     name === 'NotFoundError' ||
     msg.includes('not allowed') ||
+    // Browser "operation timed out" without our TimeoutError → treat as cancel/miss.
     msg.includes('timed out') ||
     msg.includes('cancel') ||
     msg.includes('no credential') ||

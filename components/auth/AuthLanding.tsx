@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,11 +9,15 @@ import {
   HANDLE_REGEX,
   RESERVED_HANDLES,
 } from '@/lib/constants';
+import { hasPasskeyHint } from '@/lib/auth/passkeyHint';
 import { checkUsernameAvailable } from '@/lib/auth/webauthn';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
 type Step = 'landing' | 'claim';
+
+/** Absolute ceiling so CTA never stays on Working… if a promise hangs. */
+const BUSY_FAILSAFE_MS = 25_000;
 
 export function AuthLanding() {
   const { register, tryLogin, configured } = useAuth();
@@ -24,6 +28,30 @@ export function AuthLanding() {
     'idle' | 'checking' | 'available' | 'taken' | 'invalid'
   >('idle');
   const [busy, setBusy] = useState(false);
+  const busyFailsafeRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearBusyFailsafe = () => {
+    if (busyFailsafeRef.current !== null) {
+      clearTimeout(busyFailsafeRef.current);
+      busyFailsafeRef.current = null;
+    }
+  };
+
+  const beginBusy = () => {
+    clearBusyFailsafe();
+    setBusy(true);
+    busyFailsafeRef.current = setTimeout(() => {
+      busyFailsafeRef.current = null;
+      setBusy(false);
+    }, BUSY_FAILSAFE_MS);
+  };
+
+  const endBusy = () => {
+    clearBusyFailsafe();
+    setBusy(false);
+  };
+
+  useEffect(() => () => clearBusyFailsafe(), []);
 
   useEffect(() => {
     const u = username.trim().toLowerCase();
@@ -54,7 +82,7 @@ export function AuthLanding() {
   const onRegister = async () => {
     const u = username.trim().toLowerCase();
     if (availability !== 'available') return;
-    setBusy(true);
+    beginBusy();
     try {
       await register(u);
     } catch {
@@ -66,20 +94,32 @@ export function AuthLanding() {
         setAvailability('available');
       }
     } finally {
-      setBusy(false);
+      endBusy();
     }
   };
 
-  const onPrimary = async () => {
-    setBusy(true);
+  /** Existing-passkey probe (short timeout). New users should use claim instead. */
+  const runExistingPasskeyLogin = async () => {
+    beginBusy();
     try {
       const ok = await tryLogin();
       if (!ok) setStep('claim');
     } catch {
-      // Timeout / SecurityError / network: toast already shown; stay on landing to retry.
+      // Timeout / SecurityError / network: toast already shown; stay on landing.
     } finally {
-      setBusy(false);
+      endBusy();
     }
+  };
+
+  const onPrimary = async () => {
+    // Discoverable get() in the side panel hangs when no passkey exists.
+    // Skip the probe for first-time installs and go straight to claim.
+    const likelyHasPasskey = await hasPasskeyHint();
+    if (!likelyHasPasskey) {
+      setStep('claim');
+      return;
+    }
+    await runExistingPasskeyLogin();
   };
 
   if (step === 'claim') {
@@ -173,6 +213,15 @@ export function AuthLanding() {
         onClick={onPrimary}
       >
         {busy ? t('auth.working') : t('auth.signInAnonymously')}
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        className="mt-2 w-full text-[var(--color-foreground)]"
+        disabled={busy || !configured}
+        onClick={runExistingPasskeyLogin}
+      >
+        {t('auth.useExistingPasskey')}
       </Button>
     </div>
   );

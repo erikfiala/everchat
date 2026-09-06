@@ -8,6 +8,7 @@ import {
 import { callEdgeFunction } from '../supabase';
 import type { SessionUser } from '../database.types';
 import { saveSession, clearSession } from './session';
+import { setPasskeyHint } from './passkeyHint';
 
 /** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
 const RP_ID =
@@ -15,13 +16,36 @@ const RP_ID =
   'everch.at';
 
 /**
- * Chrome extension side panels can leave navigator.credentials.create/get
- * pending forever when the OS prompt never appears. Abort + reject so UI
- * can clear busy and the user can retry.
+ * Chrome extension side panels often leave navigator.credentials.get pending
+ * forever when no discoverable passkey exists for the RP (OS sheet never
+ * appears). Login-before-claim uses a short probe; create() gets longer.
  */
-const CEREMONY_TIMEOUT_MS = 45_000;
+const LOGIN_PROBE_TIMEOUT_MS = 7_000;
+const CEREMONY_TIMEOUT_MS = 20_000;
 
-async function runCeremonyWithTimeout<T>(run: () => Promise<T>): Promise<T> {
+const RP_ORIGIN = `https://${RP_ID}/*`;
+
+/** Ensure Chrome granted host access so the extension may claim RP ID everch.at. */
+async function ensureRpHostPermission(): Promise<void> {
+  try {
+    const perms = browser.permissions;
+    if (!perms?.contains || !perms.request) return;
+    const ok = await perms.contains({ origins: [RP_ORIGIN] });
+    if (ok) return;
+    const granted = await perms.request({ origins: [RP_ORIGIN] });
+    if (!granted) {
+      throw new Error('auth.toastPasskeyFailed');
+    }
+  } catch (e) {
+    if (e instanceof Error && e.message === 'auth.toastPasskeyFailed') throw e;
+    /* permissions API unavailable — rely on manifest host_permissions */
+  }
+}
+
+async function runCeremonyWithTimeout<T>(
+  run: () => Promise<T>,
+  timeoutMs: number,
+): Promise<T> {
   let timedOut = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -35,7 +59,7 @@ async function runCeremonyWithTimeout<T>(run: () => Promise<T>): Promise<T> {
       const err = new Error('auth.toastPasskeyTimedOut');
       err.name = 'TimeoutError';
       reject(err);
-    }, CEREMONY_TIMEOUT_MS);
+    }, timeoutMs);
   });
   try {
     return await Promise.race([run(), timeoutPromise]);
@@ -153,6 +177,8 @@ export async function checkUsernameAvailable(
 export async function registerPasskey(
   username: string,
 ): Promise<SessionUser> {
+  await ensureRpHostPermission();
+
   const normalized = username.trim().toLowerCase();
   const { options, sessionToken } =
     await callEdgeFunction<RegisterOptionsResponse>('webauthn-register', {
@@ -164,10 +190,12 @@ export async function registerPasskey(
 
   let attestation;
   try {
-    attestation = await runCeremonyWithTimeout(() =>
-      startRegistration({
-        optionsJSON: withRegistrationRpId(options),
-      }),
+    attestation = await runCeremonyWithTimeout(
+      () =>
+        startRegistration({
+          optionsJSON: withRegistrationRpId(options),
+        }),
+      CEREMONY_TIMEOUT_MS,
     );
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
@@ -196,6 +224,7 @@ export async function registerPasskey(
       expiresAt: result.expiresAt,
     };
     await saveSession(session);
+    await setPasskeyHint();
     return session;
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
@@ -214,6 +243,8 @@ export async function registerPasskey(
 }
 
 export async function loginPasskey(): Promise<SessionUser> {
+  await ensureRpHostPermission();
+
   const { options, challengeId } = await callEdgeFunction<{
     options: PublicKeyCredentialRequestOptionsJSON;
     challengeId: string;
@@ -221,10 +252,12 @@ export async function loginPasskey(): Promise<SessionUser> {
 
   let assertion;
   try {
-    assertion = await runCeremonyWithTimeout(() =>
-      startAuthentication({
-        optionsJSON: withAuthenticationRpId(options),
-      }),
+    assertion = await runCeremonyWithTimeout(
+      () =>
+        startAuthentication({
+          optionsJSON: withAuthenticationRpId(options),
+        }),
+      LOGIN_PROBE_TIMEOUT_MS,
     );
   } catch (e) {
     throw mapCeremonyError(e);
@@ -245,6 +278,7 @@ export async function loginPasskey(): Promise<SessionUser> {
     expiresAt: result.expiresAt,
   };
   await saveSession(session);
+  await setPasskeyHint();
   return session;
 }
 
@@ -252,6 +286,8 @@ export async function addPasskeyDevice(
   token: string,
   deviceLabel?: string,
 ): Promise<void> {
+  await ensureRpHostPermission();
+
   const { options, challengeId } = await callEdgeFunction<{
     options: PublicKeyCredentialCreationOptionsJSON;
     challengeId: string;
@@ -259,10 +295,12 @@ export async function addPasskeyDevice(
 
   let attestation;
   try {
-    attestation = await runCeremonyWithTimeout(() =>
-      startRegistration({
-        optionsJSON: withRegistrationRpId(options),
-      }),
+    attestation = await runCeremonyWithTimeout(
+      () =>
+        startRegistration({
+          optionsJSON: withRegistrationRpId(options),
+        }),
+      CEREMONY_TIMEOUT_MS,
     );
   } catch (e) {
     throw mapCeremonyError(e);
@@ -273,6 +311,7 @@ export async function addPasskeyDevice(
     { action: 'verify', attestation, deviceLabel, challengeId },
     token,
   );
+  await setPasskeyHint();
 }
 
 export async function logout(): Promise<void> {

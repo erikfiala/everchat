@@ -34,7 +34,10 @@ interface AuthContextValue {
    * `interactive` (default): long ceremony for explicit CTA.
    * `probe`: short hang-detect window for silent/auto attempts only.
    */
-  tryLogin: (opts?: { intent?: LoginPasskeyIntent }) => Promise<boolean>;
+  tryLogin: (opts?: {
+    intent?: LoginPasskeyIntent;
+    username?: string;
+  }) => Promise<boolean>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   patchUser: (
@@ -109,10 +112,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const tryLogin = useCallback(
-    async (opts?: { intent?: LoginPasskeyIntent }): Promise<boolean> => {
+    async (opts?: {
+      intent?: LoginPasskeyIntent;
+      username?: string;
+    }): Promise<boolean> => {
       const intent = opts?.intent ?? 'interactive';
       try {
-        const session = await loginPasskey(intent);
+        const session = await loginPasskey(intent, {
+          username: opts?.username,
+        });
         setSupabaseAccessToken(session.token);
         setUser(session);
         setShowAuthLanding(false);

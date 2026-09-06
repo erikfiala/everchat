@@ -6,8 +6,10 @@ import {
   adminClient,
   b64urlToUint8,
   corsHeaders,
+  isValidUsername,
   json,
   mintSession,
+  normalizeUsername,
   rpConfig,
 } from '../_shared/auth.ts';
 
@@ -23,9 +25,38 @@ Deno.serve(async (req) => {
     const { rpID, origin } = rpConfig();
 
     if (action === 'options') {
+      const username = normalizeUsername(body.username || '');
+      let allowCredentials: { id: string }[] | undefined;
+
+      if (username) {
+        if (!isValidUsername(username)) {
+          return json({ error: 'Invalid username' }, 400);
+        }
+        const { data: profile } = await sb
+          .from('profiles')
+          .select('id')
+          .eq('username', username)
+          .maybeSingle();
+        if (!profile) {
+          return json({ error: 'Unknown handle' }, 404);
+        }
+        const { data: creds } = await sb
+          .from('webauthn_credentials')
+          .select('credential_id')
+          .eq('user_id', profile.id);
+        allowCredentials = (creds || []).map((c) => ({
+          id: c.credential_id,
+        }));
+        if (!allowCredentials.length) {
+          return json({ error: 'Unknown passkey' }, 404);
+        }
+      }
+
       const options = await generateAuthenticationOptions({
         rpID,
         userVerification: 'preferred',
+        timeout: 120_000,
+        ...(allowCredentials?.length ? { allowCredentials } : {}),
       });
 
       const challengeId = crypto.randomUUID();

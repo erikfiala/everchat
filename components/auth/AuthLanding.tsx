@@ -9,7 +9,10 @@ import {
   HANDLE_REGEX,
   RESERVED_HANDLES,
 } from '@/lib/constants';
-import { hasPasskeyHint } from '@/lib/auth/passkeyHint';
+import {
+  getStoredCredentialIds,
+  hasPasskeyHint,
+} from '@/lib/auth/passkeyHint';
 import {
   checkUsernameAvailable,
   LOGIN_INTERACTIVE_TIMEOUT_MS,
@@ -17,7 +20,7 @@ import {
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
-type Step = 'landing' | 'claim';
+type Step = 'landing' | 'claim' | 'returning';
 
 /** Absolute ceiling so CTA never stays on Working… if a promise hangs. */
 const BUSY_FAILSAFE_MS = LOGIN_INTERACTIVE_TIMEOUT_MS + 10_000;
@@ -101,12 +104,11 @@ export function AuthLanding() {
     }
   };
 
-  /** Explicit returning-user login (long ceremony — not the 7s silent probe). */
-  const runExistingPasskeyLogin = async () => {
+  /** Returning-user login: never usernameless get() in the side panel. */
+  const runExistingPasskeyLogin = async (username?: string) => {
     beginBusy();
     try {
-      const ok = await tryLogin({ intent: 'interactive' });
-      if (!ok) setStep('claim');
+      await tryLogin({ intent: 'interactive', username });
     } catch {
       // Timeout / not-found / SecurityError / network: toast already shown; stay.
     } finally {
@@ -122,8 +124,92 @@ export function AuthLanding() {
       setStep('claim');
       return;
     }
-    await runExistingPasskeyLogin();
+    const ids = await getStoredCredentialIds();
+    if (ids.length) {
+      await runExistingPasskeyLogin();
+      return;
+    }
+    setStep('returning');
   };
+
+  const onExistingAccount = async () => {
+    const ids = await getStoredCredentialIds();
+    if (ids.length) {
+      await runExistingPasskeyLogin();
+      return;
+    }
+    setStep('returning');
+  };
+
+  const onReturningContinue = async () => {
+    const u = username.trim().toLowerCase();
+    if (availability !== 'taken') return;
+    await runExistingPasskeyLogin(u);
+  };
+
+  if (step === 'returning') {
+    return (
+      <div className="flex h-full flex-col overflow-y-auto px-5 py-8">
+        <h1 className="text-xl font-semibold tracking-tight">
+          {t('auth.welcomeBack')}
+        </h1>
+        <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
+          {t('auth.returningLede')}
+        </p>
+        <div className="mt-4">
+          <div className="relative">
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm leading-none text-[var(--color-muted-foreground)]"
+            >
+              @
+            </span>
+            <Input
+              className="ps-7"
+              value={username}
+              maxLength={HANDLE_MAX}
+              minLength={HANDLE_MIN}
+              autoFocus
+              placeholder={t('auth.handlePlaceholder')}
+              onChange={(e) =>
+                setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))
+              }
+            />
+          </div>
+          <p
+            className={cn(
+              'mt-2 text-xs',
+              availability === 'taken' && 'text-[var(--color-success)]',
+              (availability === 'available' || availability === 'invalid') &&
+                'text-[var(--color-destructive)]',
+              availability === 'checking' && 'text-[var(--color-muted-foreground)]',
+            )}
+          >
+            {availability === 'idle' && ' '}
+            {availability === 'checking' && t('auth.checking')}
+            {availability === 'taken' && t('auth.returningReady')}
+            {availability === 'available' && t('auth.noAccount')}
+            {availability === 'invalid' && t('auth.invalidOrReserved')}
+          </p>
+        </div>
+        <Button
+          className="mt-4 w-full"
+          disabled={busy || availability !== 'taken'}
+          onClick={onReturningContinue}
+        >
+          {busy ? t('auth.working') : t('common.continue')}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="mt-4 w-full text-[var(--color-foreground)]"
+          onClick={() => setStep('landing')}
+        >
+          {t('common.back')}
+        </Button>
+      </div>
+    );
+  }
 
   if (step === 'claim') {
     return (
@@ -222,7 +308,7 @@ export function AuthLanding() {
         variant="ghost"
         className="mt-2 w-full text-[var(--color-foreground)]"
         disabled={busy || !configured}
-        onClick={runExistingPasskeyLogin}
+        onClick={onExistingAccount}
       >
         {t('auth.useExistingPasskey')}
       </Button>

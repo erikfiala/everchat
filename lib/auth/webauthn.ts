@@ -8,7 +8,11 @@ import {
 import { callEdgeFunction } from '../supabase';
 import type { SessionUser } from '../database.types';
 import { saveSession, clearSession } from './session';
-import { setPasskeyHint } from './passkeyHint';
+import {
+  getStoredCredentialIds,
+  rememberCredentialId,
+} from './passkeyHint';
+import { allowCredentialsForLogin } from './allowCredentials';
 
 /** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
 const RP_ID =
@@ -117,13 +121,17 @@ function withRegistrationRpId(
 
 function withAuthenticationRpId(
   options: PublicKeyCredentialRequestOptionsJSON,
+  timeoutMs: number,
 ): PublicKeyCredentialRequestOptionsJSON {
   return {
     ...options,
     rpId: RP_ID,
     userVerification: 'preferred',
+    timeout: timeoutMs,
   };
 }
+
+export { allowCredentialsForLogin } from './allowCredentials';
 
 /** Map raw WebAuthn / browser noise to an i18n key for toasts. */
 function mapCeremonyError(
@@ -281,7 +289,7 @@ export async function registerPasskey(
       throw new Error('auth.toastSignInFailed');
     }
     await saveSession(session);
-    await setPasskeyHint();
+    await rememberCredentialId(attestation.id);
     return session;
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
@@ -307,13 +315,41 @@ export async function registerPasskey(
 
 export async function loginPasskey(
   intent: LoginPasskeyIntent = 'interactive',
+  opts?: { username?: string },
 ): Promise<SessionUser> {
   await ensureRpHostPermission();
 
-  const { options, challengeId } = await callEdgeFunction<{
-    options: PublicKeyCredentialRequestOptionsJSON;
-    challengeId: string;
-  }>('webauthn-login', { action: 'options' });
+  const storedIds = await getStoredCredentialIds();
+  const username = opts?.username?.trim().toLowerCase();
+  let options: PublicKeyCredentialRequestOptionsJSON;
+  let challengeId: string;
+  try {
+    const started = await callEdgeFunction<{
+      options: PublicKeyCredentialRequestOptionsJSON;
+      challengeId: string;
+    }>('webauthn-login', {
+      action: 'options',
+      username: username || undefined,
+    });
+    options = started.options;
+    challengeId = started.challengeId;
+  } catch (e) {
+    const msg = ((e as Error)?.message ?? '').toLowerCase();
+    if (msg.includes('unknown handle') || msg.includes('unknown passkey')) {
+      throw new Error('auth.toastPasskeyNotFound');
+    }
+    throw e;
+  }
+
+  const allowCredentials = allowCredentialsForLogin(
+    options.allowCredentials,
+    storedIds,
+  );
+  // Empty allow-list = usernameless picker. Chrome's side panel never shows it
+  // and navigator.credentials.get hangs until our timeout.
+  if (allowCredentials.length === 0) {
+    throw new Error('auth.toastPasskeyNotFound');
+  }
 
   const timeoutMs =
     intent === 'probe'
@@ -325,7 +361,10 @@ export async function loginPasskey(
     assertion = await runCeremonyWithTimeout(
       () =>
         startAuthentication({
-          optionsJSON: withAuthenticationRpId(options),
+          optionsJSON: withAuthenticationRpId(
+            { ...options, allowCredentials },
+            timeoutMs,
+          ),
         }),
       timeoutMs,
     );
@@ -351,7 +390,7 @@ export async function loginPasskey(
     throw new Error('auth.toastSignInFailed');
   }
   await saveSession(session);
-  await setPasskeyHint();
+  await rememberCredentialId(assertion.id);
   return session;
 }
 
@@ -384,7 +423,7 @@ export async function addPasskeyDevice(
     { action: 'verify', attestation, deviceLabel, challengeId },
     token,
   );
-  await setPasskeyHint();
+  await rememberCredentialId(attestation.id);
 }
 
 export async function logout(): Promise<void> {

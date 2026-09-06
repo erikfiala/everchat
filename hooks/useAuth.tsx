@@ -43,6 +43,14 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
   const err = e as { name?: string; message?: string };
   const name = err?.name ?? '';
   const msg = (err?.message ?? '').toLowerCase();
+  // Our ceremony / network timeouts must toast + stay retryable on landing.
+  if (
+    name === 'TimeoutError' ||
+    msg === 'auth.toastpasskeytimedout' ||
+    msg.includes('network request timed out')
+  ) {
+    return false;
+  }
   return (
     name === 'NotAllowedError' ||
     name === 'AbortError' ||
@@ -100,9 +108,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
       return true;
     } catch (e) {
+      // Cancel / no credential → claim flow. Hard failures rethrow so the
+      // landing CTA clears busy, toasts, and stays retryable (not claim).
       if (isExpectedPasskeyMiss(e)) return false;
       toast.error(tError(e, 'auth.toastSignInFailed'));
-      return false;
+      throw e;
     }
   }, [t, tError]);
 

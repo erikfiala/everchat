@@ -1,6 +1,7 @@
 import {
   startRegistration,
   startAuthentication,
+  WebAuthnAbortService,
   type PublicKeyCredentialCreationOptionsJSON,
   type PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/browser';
@@ -12,6 +13,43 @@ import { saveSession, clearSession } from './session';
 const RP_ID =
   (import.meta.env.VITE_WEBAUTHN_RP_ID as string | undefined)?.trim() ||
   'everch.at';
+
+/**
+ * Chrome extension side panels can leave navigator.credentials.create/get
+ * pending forever when the OS prompt never appears. Abort + reject so UI
+ * can clear busy and the user can retry.
+ */
+const CEREMONY_TIMEOUT_MS = 45_000;
+
+async function runCeremonyWithTimeout<T>(run: () => Promise<T>): Promise<T> {
+  let timedOut = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      timedOut = true;
+      try {
+        WebAuthnAbortService.cancelCeremony();
+      } catch {
+        /* ignore */
+      }
+      const err = new Error('auth.toastPasskeyTimedOut');
+      err.name = 'TimeoutError';
+      reject(err);
+    }, CEREMONY_TIMEOUT_MS);
+  });
+  try {
+    return await Promise.race([run(), timeoutPromise]);
+  } catch (e) {
+    if (timedOut) {
+      const err = new Error('auth.toastPasskeyTimedOut');
+      err.name = 'TimeoutError';
+      throw err;
+    }
+    throw e;
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}
 
 export interface RegisterOptionsResponse {
   options: PublicKeyCredentialCreationOptionsJSON;
@@ -56,6 +94,9 @@ function withAuthenticationRpId(
 function mapCeremonyError(e: unknown): Error {
   const err = e as { name?: string; message?: string };
   const msg = (err?.message ?? '').toLowerCase();
+  if (err?.name === 'TimeoutError' || msg.includes('auth.toastpasskeytimedout')) {
+    return new Error('auth.toastPasskeyTimedOut');
+  }
   if (
     msg.includes('invalid domain') ||
     msg.includes('relying party') ||
@@ -123,9 +164,11 @@ export async function registerPasskey(
 
   let attestation;
   try {
-    attestation = await startRegistration({
-      optionsJSON: withRegistrationRpId(options),
-    });
+    attestation = await runCeremonyWithTimeout(() =>
+      startRegistration({
+        optionsJSON: withRegistrationRpId(options),
+      }),
+    );
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
     throw mapCeremonyError(e);
@@ -178,9 +221,11 @@ export async function loginPasskey(): Promise<SessionUser> {
 
   let assertion;
   try {
-    assertion = await startAuthentication({
-      optionsJSON: withAuthenticationRpId(options),
-    });
+    assertion = await runCeremonyWithTimeout(() =>
+      startAuthentication({
+        optionsJSON: withAuthenticationRpId(options),
+      }),
+    );
   } catch (e) {
     throw mapCeremonyError(e);
   }
@@ -214,9 +259,11 @@ export async function addPasskeyDevice(
 
   let attestation;
   try {
-    attestation = await startRegistration({
-      optionsJSON: withRegistrationRpId(options),
-    });
+    attestation = await runCeremonyWithTimeout(() =>
+      startRegistration({
+        optionsJSON: withRegistrationRpId(options),
+      }),
+    );
   } catch (e) {
     throw mapCeremonyError(e);
   }

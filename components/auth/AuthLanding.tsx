@@ -75,6 +75,8 @@ export function AuthLanding() {
     try {
       const ok = await tryLogin();
       if (!ok) setStep('claim');
+    } catch {
+      // Timeout / SecurityError / network: toast already shown; stay on landing to retry.
     } finally {
       setBusy(false);
     }

@@ -62,6 +62,7 @@
   "auth.toastWelcomeBack": "Welcome back, @{{username}}",
   "auth.toastSignInFailed": "Couldn't finish sign-in. Try again.",
   "auth.toastPasskeyFailed": "Couldn't set up your passkey. Try again.",
+  "auth.toastPasskeyTimedOut": "Passkey prompt timed out. Try again.",
   "composer.placeholder": "Leave a comment…",
   "composer.replyingTo": "Replying to @{{username}}",
   "composer.post": "Post",

@@ -59,6 +59,8 @@ export function getFunctionsBaseUrl(): string {
   return `${supabaseUrl.replace(/\/$/, '')}/functions/v1`;
 }
 
+const EDGE_FETCH_TIMEOUT_MS = 20_000;
+
 export async function callEdgeFunction<T>(
   name: string,
   body: unknown,
@@ -68,15 +70,31 @@ export async function callEdgeFunction<T>(
   if (!base || !supabaseAnonKey) {
     throw new Error('Supabase functions URL not configured');
   }
-  const res = await fetch(`${base}/${name}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${token || accessToken || supabaseAnonKey}`,
-    },
-    body: JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), EDGE_FETCH_TIMEOUT_MS);
+  let res: Response;
+  try {
+    res = await fetch(`${base}/${name}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${token || accessToken || supabaseAnonKey}`,
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (e) {
+    if (
+      (e as { name?: string })?.name === 'AbortError' ||
+      controller.signal.aborted
+    ) {
+      throw new Error('Network request timed out');
+    }
+    throw e;
+  } finally {
+    clearTimeout(timer);
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(

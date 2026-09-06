@@ -18,10 +18,14 @@ const RP_ID =
 /**
  * Chrome extension side panels often leave navigator.credentials.get pending
  * forever when no discoverable passkey exists for the RP (OS sheet never
- * appears). Login-before-claim uses a short probe; create() gets longer.
+ * appears). Silent/auto probes use a short window; explicit "I already have
+ * an account" needs long enough for Touch ID / OS UI.
  */
-const LOGIN_PROBE_TIMEOUT_MS = 7_000;
+export const LOGIN_PROBE_TIMEOUT_MS = 7_000;
+export const LOGIN_INTERACTIVE_TIMEOUT_MS = 55_000;
 const CEREMONY_TIMEOUT_MS = 20_000;
+
+export type LoginPasskeyIntent = 'probe' | 'interactive';
 
 const RP_ORIGIN = `https://${RP_ID}/*`;
 
@@ -122,13 +126,15 @@ function withAuthenticationRpId(
 }
 
 /** Map raw WebAuthn / browser noise to an i18n key for toasts. */
-function mapCeremonyError(e: unknown): Error {
+function mapCeremonyError(
+  e: unknown,
+  opts?: { intent?: LoginPasskeyIntent },
+): Error {
   const err = e as { name?: string; message?: string };
   const msg = (err?.message ?? '').toLowerCase();
-  if (err?.name === 'TimeoutError' || msg.includes('auth.toastpasskeytimedout')) {
-    return new Error('auth.toastPasskeyTimedOut');
-  }
-  // Chrome / SimpleWebAuthn UV failures (Touch ID cancel, UV flag missing).
+  const name = err?.name ?? '';
+
+  // Chrome / SimpleWebAuthn UV failures (before generic NotAllowed cancel).
   if (
     msg.includes('user verification') ||
     msg.includes('could not be verified') ||
@@ -136,12 +142,45 @@ function mapCeremonyError(e: unknown): Error {
   ) {
     return new Error('auth.toastPasskeyUvFailed');
   }
+
+  // Our race abort: probe hang ≈ no discoverable passkey; interactive ≈ slow/missed UI.
+  if (name === 'TimeoutError' || msg.includes('auth.toastpasskeytimedout')) {
+    return new Error(
+      opts?.intent === 'probe'
+        ? 'auth.toastPasskeyNotFound'
+        : 'auth.toastPasskeyTimedOut',
+    );
+  }
+
+  // No credential on device (or browser reported none).
+  if (
+    name === 'NotFoundError' ||
+    msg.includes('no credential') ||
+    msg.includes('no passkey') ||
+    msg.includes('unknown passkey')
+  ) {
+    return new Error('auth.toastPasskeyNotFound');
+  }
+
+  // User dismissed OS sheet / cancelled Touch ID — keep cancel semantics for callers.
+  if (
+    name === 'NotAllowedError' ||
+    name === 'AbortError' ||
+    msg.includes('the operation either timed out or was not allowed') ||
+    (msg.includes('not allowed') && !msg.includes('auth.toast'))
+  ) {
+    if (e instanceof Error) return e;
+    const cancel = new Error(String(e ?? 'NotAllowedError'));
+    cancel.name = 'NotAllowedError';
+    return cancel;
+  }
+
   if (
     msg.includes('invalid domain') ||
     msg.includes('relying party') ||
     msg.includes('related origin') ||
     msg.includes('permissions') ||
-    err?.name === 'SecurityError'
+    name === 'SecurityError'
   ) {
     console.error('[webauthn] ceremony SecurityError — check host_permissions for RP ID', e);
     return new Error('auth.toastPasskeyFailed');
@@ -266,13 +305,20 @@ export async function registerPasskey(
   }
 }
 
-export async function loginPasskey(): Promise<SessionUser> {
+export async function loginPasskey(
+  intent: LoginPasskeyIntent = 'interactive',
+): Promise<SessionUser> {
   await ensureRpHostPermission();
 
   const { options, challengeId } = await callEdgeFunction<{
     options: PublicKeyCredentialRequestOptionsJSON;
     challengeId: string;
   }>('webauthn-login', { action: 'options' });
+
+  const timeoutMs =
+    intent === 'probe'
+      ? LOGIN_PROBE_TIMEOUT_MS
+      : LOGIN_INTERACTIVE_TIMEOUT_MS;
 
   let assertion;
   try {
@@ -281,10 +327,10 @@ export async function loginPasskey(): Promise<SessionUser> {
         startAuthentication({
           optionsJSON: withAuthenticationRpId(options),
         }),
-      LOGIN_PROBE_TIMEOUT_MS,
+      timeoutMs,
     );
   } catch (e) {
-    throw mapCeremonyError(e);
+    throw mapCeremonyError(e, { intent });
   }
 
   const result = await callEdgeFunction<AuthSuccessResponse>('webauthn-login', {

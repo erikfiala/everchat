@@ -13,6 +13,7 @@ import {
   registerPasskey,
   loginPasskey,
   logout as doLogout,
+  type LoginPasskeyIntent,
 } from '@/lib/auth/webauthn';
 import { setSupabaseAccessToken, isSupabaseConfigured } from '@/lib/supabase';
 import { fetchProfile } from '@/lib/profile';
@@ -27,8 +28,13 @@ interface AuthContextValue {
   setShowAuthLanding: (v: boolean) => void;
   requireAuth: () => boolean;
   register: (username: string) => Promise<void>;
-  /** Assert existing passkey. Returns true on success. Quiet expected cancel/no-cred failures. */
-  tryLogin: () => Promise<boolean>;
+  /**
+   * Assert existing passkey. Returns true on success.
+   * Quiet on user cancel; toasts hard failures (timeout / not found / network).
+   * `interactive` (default): long ceremony for explicit CTA.
+   * `probe`: short hang-detect window for silent/auto attempts only.
+   */
+  tryLogin: (opts?: { intent?: LoginPasskeyIntent }) => Promise<boolean>;
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   patchUser: (
@@ -38,17 +44,19 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-/** User cancelled, no credential on device, or similar: fall through to claim. */
+/** User cancelled or similar: fall through to claim. Hard failures toast instead. */
 function isExpectedPasskeyMiss(e: unknown): boolean {
   const err = e as { name?: string; message?: string };
   const name = err?.name ?? '';
   const msg = (err?.message ?? '').toLowerCase();
-  // Hard timeouts / network: toast + stay on landing (do not treat as "no passkey").
+  // Hard timeouts / not-found / network: toast + stay on landing.
   if (
     name === 'TimeoutError' ||
     msg === 'auth.toastpasskeytimedout' ||
+    msg === 'auth.toastpasskeynotfound' ||
     msg.includes('network request timed out') ||
-    msg.includes('passkeytimedout')
+    msg.includes('passkeytimedout') ||
+    msg.includes('passkeynotfound')
   ) {
     return false;
   }
@@ -56,6 +64,7 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
     name === 'NotAllowedError' ||
     name === 'AbortError' ||
     name === 'InvalidStateError' ||
+    // Raw NotFoundError (if unmapped): quiet fallthrough. Mapped keys toast above.
     name === 'NotFoundError' ||
     msg.includes('not allowed') ||
     // Browser "operation timed out" without our TimeoutError → treat as cancel/miss.
@@ -99,24 +108,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [t, tError],
   );
 
-  const tryLogin = useCallback(async (): Promise<boolean> => {
-    try {
-      const session = await loginPasskey();
-      setSupabaseAccessToken(session.token);
-      setUser(session);
-      setShowAuthLanding(false);
-      toast.success(
-        t('auth.toastWelcomeBack', { username: session.username }),
-      );
-      return true;
-    } catch (e) {
-      // Cancel / no credential → claim flow. Hard failures rethrow so the
-      // landing CTA clears busy, toasts, and stays retryable (not claim).
-      if (isExpectedPasskeyMiss(e)) return false;
-      toast.error(tError(e, 'auth.toastSignInFailed'));
-      throw e;
-    }
-  }, [t, tError]);
+  const tryLogin = useCallback(
+    async (opts?: { intent?: LoginPasskeyIntent }): Promise<boolean> => {
+      const intent = opts?.intent ?? 'interactive';
+      try {
+        const session = await loginPasskey(intent);
+        setSupabaseAccessToken(session.token);
+        setUser(session);
+        setShowAuthLanding(false);
+        toast.success(
+          t('auth.toastWelcomeBack', { username: session.username }),
+        );
+        return true;
+      } catch (e) {
+        // Cancel → claim flow. Hard failures rethrow so the landing CTA
+        // clears busy, toasts, and stays retryable (not claim).
+        if (isExpectedPasskeyMiss(e)) return false;
+        toast.error(tError(e, 'auth.toastSignInFailed'));
+        throw e;
+      }
+    },
+    [t, tError],
+  );
 
   const logout = useCallback(async () => {
     await doLogout();

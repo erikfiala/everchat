@@ -10,14 +10,17 @@ import {
   RESERVED_HANDLES,
 } from '@/lib/constants';
 import { hasPasskeyHint } from '@/lib/auth/passkeyHint';
-import { checkUsernameAvailable } from '@/lib/auth/webauthn';
+import {
+  checkUsernameAvailable,
+  LOGIN_INTERACTIVE_TIMEOUT_MS,
+} from '@/lib/auth/webauthn';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
 type Step = 'landing' | 'claim';
 
 /** Absolute ceiling so CTA never stays on Working… if a promise hangs. */
-const BUSY_FAILSAFE_MS = 25_000;
+const BUSY_FAILSAFE_MS = LOGIN_INTERACTIVE_TIMEOUT_MS + 10_000;
 
 export function AuthLanding() {
   const { register, tryLogin, configured } = useAuth();
@@ -98,14 +101,14 @@ export function AuthLanding() {
     }
   };
 
-  /** Existing-passkey probe (short timeout). New users should use claim instead. */
+  /** Explicit returning-user login (long ceremony — not the 7s silent probe). */
   const runExistingPasskeyLogin = async () => {
     beginBusy();
     try {
-      const ok = await tryLogin();
+      const ok = await tryLogin({ intent: 'interactive' });
       if (!ok) setStep('claim');
     } catch {
-      // Timeout / SecurityError / network: toast already shown; stay on landing.
+      // Timeout / not-found / SecurityError / network: toast already shown; stay.
     } finally {
       endBusy();
     }

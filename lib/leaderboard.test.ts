@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   assignLeaderboardRanks,
   compareLeaderboardOrder,
+  leaderboardHasMore,
   splitLeaderboardRows,
   type LeaderboardRow,
 } from './leaderboard';
@@ -32,6 +33,15 @@ describe('compareLeaderboardOrder', () => {
 });
 
 describe('assignLeaderboardRanks', () => {
+  it('can start ranks at an offset for paged fetches', () => {
+    const ranked = assignLeaderboardRanks(
+      [{ username: 'zoe', avatar_url: null, karma: 3 }],
+      null,
+      21,
+    );
+    expect(ranked[0]?.rank).toBe(21);
+  });
+
   it('assigns 1-based ranks and marks the current handle', () => {
     const ranked = assignLeaderboardRanks(
       [
@@ -84,5 +94,13 @@ describe('splitLeaderboardRows', () => {
     expect(me?.username).toBe('amy');
     expect(top[0]?.username).toBe('amy');
     expect(top).toHaveLength(2);
+  });
+});
+
+describe('leaderboardHasMore', () => {
+  it('stops at a short page or the top-100 cap', () => {
+    expect(leaderboardHasMore(20, 20)).toBe(true);
+    expect(leaderboardHasMore(40, 19)).toBe(false);
+    expect(leaderboardHasMore(100, 20)).toBe(false);
   });
 });

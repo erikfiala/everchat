@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Camera, LogOut, PenSquare, Trash2 } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
+import { ListSentinel } from '@/components/ListSentinel';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
+import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
 import {
   ABOUT_MAX_LEN,
@@ -41,7 +43,8 @@ import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
 import { hrefFromPage } from '@/lib/canonicalize';
-import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
+import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
+import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -51,6 +54,11 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { user, loading: authLoading, logout, patchUser, refreshProfile } =
     useAuth();
   const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [activityHasMore, setActivityHasMore] = useState(false);
+  const [activityLoadingMore, setActivityLoadingMore] = useState(false);
+  const activityRef = useRef<ActivityItem[]>([]);
+  const activityLoadingMoreRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [devices, setDevices] = useState<
     {
       id: string;
@@ -70,23 +78,56 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
     void guessDeviceLabel().then(setGuessedLabel);
   }, []);
 
+  activityRef.current = activity;
+
   useEffect(() => {
     if (!user) return;
     setLoading(true);
     Promise.all([
-      fetchActivity(user.id),
+      fetchActivity(user.id, { limit: LIST_PAGE_SIZE }),
       listDevices(user.id),
       getStoredCredentialIds(),
       refreshProfile(),
     ])
       .then(([acts, devs, ids]) => {
         setActivity(acts);
+        setActivityHasMore(pageHasMore(acts.length));
         setDevices(devs);
         setLocalCredentialIds(ids);
       })
       .catch((e) => toast.error(tError(e)))
       .finally(() => setLoading(false));
   }, [user?.id]);
+
+  const loadMoreActivity = useCallback(async () => {
+    if (!user || activityLoadingMoreRef.current || !activityHasMore) return;
+    const before = activityRef.current[activityRef.current.length - 1]?.created_at;
+    if (!before) return;
+    activityLoadingMoreRef.current = true;
+    setActivityLoadingMore(true);
+    try {
+      const next = await fetchActivity(user.id, {
+        limit: LIST_PAGE_SIZE,
+        before,
+      });
+      setActivity((prev) => appendUniqueById(prev, next, (row) => row.id));
+      setActivityHasMore(pageHasMore(next.length));
+    } catch (e) {
+      toast.error(tError(e));
+    } finally {
+      activityLoadingMoreRef.current = false;
+      setActivityLoadingMore(false);
+    }
+  }, [user, activityHasMore, tError]);
+
+  const activitySentinelRef = useListSentinel(
+    activityHasMore && !loading,
+    () => {
+      void loadMoreActivity();
+    },
+    scrollRef,
+    activity.length,
+  );
 
   if (authLoading) {
     return (
@@ -168,7 +209,10 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="flex h-full min-h-0 flex-col overflow-y-auto">
+      <div
+        ref={scrollRef}
+        className="flex h-full min-h-0 flex-col overflow-y-auto"
+      >
       <div className="border-b border-[var(--color-border)] px-4 py-4">
         <div className="flex items-center gap-3">
           <button
@@ -297,50 +341,62 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             {t('profile.emptyActivity')}
           </p>
         )}
-        {activity.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => openActivity(item)}
-            className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
-          >
-            <Favicon src={item.page?.favicon_url} className="mt-0.5" />
-            <div className="min-w-0 flex-1 overflow-hidden">
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="min-w-0 truncate text-sm font-medium">
-                  {item.page?.title || item.page?.canonical_url}
-                </span>
-                <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium">
-                  {item.parent_id
-                    ? t('profile.activityReply')
-                    : t('profile.activityPost')}
-                </span>
+        {activity.map((item) => {
+          const time = safeRelativeTime(item.created_at, formatTime);
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => openActivity(item)}
+              className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
+            >
+              <Favicon src={item.page?.favicon_url} className="mt-0.5" />
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="min-w-0 truncate text-sm font-medium">
+                    {item.page?.title || item.page?.canonical_url}
+                  </span>
+                  <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium">
+                    {item.parent_id
+                      ? t('profile.activityReply')
+                      : t('profile.activityPost')}
+                  </span>
+                </div>
+                <div className="truncate text-xs text-[var(--color-muted-foreground)]">
+                  {(
+                    item.page?.description ||
+                    item.page?.canonical_url ||
+                    ''
+                  ).slice(0, DESCRIPTION_TRUNCATE)}
+                </div>
+                <div className="mt-0.5 truncate text-xs">
+                  {item.gif_url && !item.body
+                    ? t('profile.gifPlaceholder')
+                    : item.body}
+                </div>
+                <div className="mt-0.5 truncate text-[11px] text-[var(--color-muted-foreground)]">
+                  <span
+                    className={cn('font-medium', scoreColorClass(item.score))}
+                  >
+                    {formatScore(item.score)}
+                  </span>
+                  {time ? (
+                    <span>
+                      {' • '}
+                      {time}
+                    </span>
+                  ) : null}
+                </div>
               </div>
-              <div className="truncate text-xs text-[var(--color-muted-foreground)]">
-                {(
-                  item.page?.description ||
-                  item.page?.canonical_url ||
-                  ''
-                ).slice(0, DESCRIPTION_TRUNCATE)}
-              </div>
-              <div className="mt-0.5 truncate text-xs">
-                {item.gif_url && !item.body
-                  ? t('profile.gifPlaceholder')
-                  : item.body}
-              </div>
-              <div className="mt-0.5 flex gap-2 text-[11px] text-[var(--color-muted-foreground)]">
-                <span
-                  className={cn('font-medium', scoreColorClass(item.score))}
-                >
-                  {formatScore(item.score)}
-                </span>
-                <span>
-                  {safeRelativeTime(item.created_at, formatTime)}
-                </span>
-              </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
+        {activityHasMore ? (
+          <ListSentinel
+            sentinelRef={activitySentinelRef}
+            loading={activityLoadingMore}
+          />
+        ) : null}
       </section>
 
       <Dialog open={confirmSignOutOpen} onOpenChange={setConfirmSignOutOpen}>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { dateFnsLocaleFor } from '@/lib/dateFnsLocale';
 import { Check, ChevronDown } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
+import { ListSentinel } from '@/components/ListSentinel';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,15 +12,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
 import { canonicalize, hrefFromPage } from '@/lib/canonicalize';
-import { DESCRIPTION_TRUNCATE, TRENDING_LIMIT } from '@/lib/constants';
+import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
+import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import {
   getRecentlyActivePages,
   getTrendingPages,
   type ExplorePageRow,
 } from '@/lib/pages';
 import { isSupabaseConfigured } from '@/lib/supabase';
+import { toast } from 'sonner';
 
 export type ExploreMode = 'trending' | 'new';
 
@@ -27,38 +31,66 @@ function hostFromCanonical(canonicalUrl: string): string {
   return canonicalize(`https://${canonicalUrl}`).host || canonicalUrl;
 }
 
+function normalizeTrending(rows: ExplorePageRow[]): ExplorePageRow[] {
+  return rows.map((row) => ({
+    ...row,
+    url: row.url ?? null,
+    last_active_at: row.last_active_at ?? null,
+    message_count: row.message_count ?? 0,
+  }));
+}
+
 export function ExploreTab() {
-  const { t, locale } = useLocale();
+  const { t, tError, locale } = useLocale();
   const [mode, setMode] = useState<ExploreMode>('trending');
   const [rows, setRows] = useState<ExplorePageRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState<unknown>(null);
+  const rowsRef = useRef<ExplorePageRow[]>([]);
+  const loadingMoreRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  rowsRef.current = rows;
+
+  const fetchPage = useCallback(
+    (offsetRows: ExplorePageRow[]) => {
+      if (mode === 'trending') {
+        return getTrendingPages(LIST_PAGE_SIZE, offsetRows.length).then(
+          (data) => normalizeTrending(data as ExplorePageRow[]),
+        );
+      }
+      const last = offsetRows[offsetRows.length - 1];
+      return getRecentlyActivePages(LIST_PAGE_SIZE, {
+        before: last?.last_active_at,
+        excludeIds: offsetRows.map((row) => row.id),
+      });
+    },
+    [mode],
+  );
 
   useEffect(() => {
     let cancelled = false;
     if (!isSupabaseConfigured) {
       setRows([]);
+      setHasMore(false);
+      setError(null);
       setLoading(false);
       return;
     }
     setLoading(true);
-    const load =
-      mode === 'trending'
-        ? getTrendingPages(TRENDING_LIMIT).then((data) =>
-            (data as ExplorePageRow[]).map((row) => ({
-              ...row,
-              url: row.url ?? null,
-              last_active_at: row.last_active_at ?? null,
-              message_count: row.message_count ?? 0,
-            })),
-          )
-        : getRecentlyActivePages(TRENDING_LIMIT);
-
-    load
+    setError(null);
+    fetchPage([])
       .then((data) => {
-        if (!cancelled) setRows(data);
+        if (cancelled) return;
+        setRows(data);
+        setHasMore(pageHasMore(data.length));
       })
-      .catch(() => {
-        if (!cancelled) setRows([]);
+      .catch((e) => {
+        if (cancelled) return;
+        setRows([]);
+        setHasMore(false);
+        setError(e);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -67,7 +99,32 @@ export function ExploreTab() {
     return () => {
       cancelled = true;
     };
-  }, [mode]);
+  }, [fetchPage]);
+
+  const loadMore = useCallback(async () => {
+    if (!isSupabaseConfigured || loadingMoreRef.current || !hasMore) return;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+    try {
+      const data = await fetchPage(rowsRef.current);
+      setRows((prev) => appendUniqueById(prev, data, (row) => row.id));
+      setHasMore(pageHasMore(data.length));
+    } catch (e) {
+      toast.error(tError(e));
+    } finally {
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
+    }
+  }, [fetchPage, hasMore, tError]);
+
+  const sentinelRef = useListSentinel(
+    hasMore && !loading && !error,
+    () => {
+      void loadMore();
+    },
+    scrollRef,
+    rows.length,
+  );
 
   const modeLabel =
     mode === 'trending' ? t('explore.trending') : t('explore.new');
@@ -127,18 +184,49 @@ export function ExploreTab() {
         </DropdownMenu>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-3">
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-3"
+      >
         {loading &&
+          rows.length === 0 &&
           Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="mb-1 h-14 w-full" />
           ))}
-        {!loading && rows.length === 0 && (
+        {error && rows.length === 0 ? (
+          <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
+            {tError(error)}
+            <div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => {
+                  setError(null);
+                  setLoading(true);
+                  fetchPage([])
+                    .then((data) => {
+                      setRows(data);
+                      setHasMore(pageHasMore(data.length));
+                    })
+                    .catch((e) => {
+                      setRows([]);
+                      setError(e);
+                    })
+                    .finally(() => setLoading(false));
+                }}
+              >
+                {t('chat.retry')}
+              </Button>
+            </div>
+          </div>
+        ) : null}
+        {!loading && !error && rows.length === 0 && (
           <p className="px-1 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
             {mode === 'trending' ? t('explore.emptyTrending') : t('explore.emptyNew')}
           </p>
         )}
-        {!loading &&
-          rows.map((row) => {
+        {rows.map((row) => {
             const host = hostFromCanonical(row.canonical_url);
             const showOnline = !(mode === 'new' && row.last_active_at);
             const activity = showOnline
@@ -186,6 +274,9 @@ export function ExploreTab() {
               </button>
             );
           })}
+        {hasMore ? (
+          <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+        ) : null}
       </div>
     </div>
   );

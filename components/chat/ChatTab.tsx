@@ -1,10 +1,12 @@
 import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PageContextHeader } from '@/components/PageContextHeader';
+import { ListSentinel } from '@/components/ListSentinel';
 import { MessageRow } from './MessageRow';
 import { Composer } from './Composer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { useListSentinel } from '@/hooks/useListSentinel';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +50,13 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const [continueThreadIds, setContinueThreadIds] = useState<Set<string>>(
     new Set(),
   );
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useListSentinel(
+    thread.hasMore && !thread.loading && !thread.error,
+    thread.loadMore,
+    scrollRef,
+    thread.roots.length,
+  );
 
   useEffect(() => {
     setReplyTo(null);
@@ -56,30 +65,31 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   }, [viewing.canonicalUrl]);
 
   useEffect(() => {
-    if (!viewing.focusMessageId || thread.loading || !thread.roots.length)
-      return;
+    if (!viewing.focusMessageId || thread.loading) return;
     const path = findPathToMessage(thread.roots, viewing.focusMessageId);
-    if (path) {
-      setContinueThreadIds((prev) => {
-        const next = new Set(prev);
-        path.forEach((id) => next.add(id));
-        return next;
-      });
-      setExpandedIds((prev) => {
-        const next = new Set(prev);
-        path.forEach((id) => next.add(id));
-        return next;
-      });
-      requestAnimationFrame(() => {
-        const el = document.getElementById(`ec-msg-${viewing.focusMessageId}`);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          el.classList.add('highlight-pulse');
-          setTimeout(() => el.classList.remove('highlight-pulse'), 1600);
-        }
-        clearFocus();
-      });
+    if (!path) {
+      void thread.ensureMessage(viewing.focusMessageId);
+      return;
     }
+    setContinueThreadIds((prev) => {
+      const next = new Set(prev);
+      path.forEach((id) => next.add(id));
+      return next;
+    });
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      path.forEach((id) => next.add(id));
+      return next;
+    });
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`ec-msg-${viewing.focusMessageId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('highlight-pulse');
+        setTimeout(() => el.classList.remove('highlight-pulse'), 1600);
+      }
+      clearFocus();
+    });
   }, [viewing.focusMessageId, thread.loading, thread.roots, clearFocus]);
 
   const onSubmit = async (body: string, gifUrl?: string | null) => {
@@ -166,15 +176,18 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         </TooltipProvider>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-3">
-        {thread.loading && (
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 overflow-y-auto px-3 pt-3"
+      >
+        {thread.loading && thread.roots.length === 0 && (
           <div className="space-y-3 py-4">
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
           </div>
         )}
-        {thread.error && (
+        {thread.error && thread.roots.length === 0 && (
           <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
             {tError(thread.error)}
             <div>
@@ -194,8 +207,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
             {t('chat.beFirst')}
           </p>
         )}
-        {!thread.loading &&
-          thread.roots.map((node) => (
+        {thread.roots.map((node) => (
             <MessageRow
               key={node.id}
               node={node}
@@ -237,6 +249,12 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               requireAuth={requireAuth}
             />
           ))}
+        {thread.hasMore ? (
+          <ListSentinel
+            sentinelRef={sentinelRef}
+            loading={thread.loadingMore}
+          />
+        ) : null}
       </div>
 
       <div

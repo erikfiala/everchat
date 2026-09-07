@@ -1,17 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ListSentinel } from '@/components/ListSentinel';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
+import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
 import { formatScore, scoreColorClass } from '@/lib/collapse';
+import { LIST_PAGE_SIZE } from '@/lib/constants';
+import { appendUniqueById } from '@/lib/listPage';
 import {
   fetchLeaderboard,
+  leaderboardHasMore,
   type LeaderboardPayload,
   type LeaderboardRow,
 } from '@/lib/leaderboard';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface LeaderboardTabProps {
   onOpenProfile: (username: string) => void;
@@ -79,53 +85,94 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   const { user } = useAuth();
   const [data, setData] = useState<LeaderboardPayload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const dataRef = useRef<LeaderboardPayload | null>(null);
+  const loadingMoreRef = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  dataRef.current = data;
 
-  useEffect(() => {
-    let cancelled = false;
+  const applyPage = useCallback(
+    (payload: LeaderboardPayload, append: boolean) => {
+      setData((prev) => {
+        if (!append || !prev) return payload;
+        return {
+          me: prev.me ?? payload.me,
+          top: appendUniqueById(
+            prev.top,
+            payload.top,
+            (row) => `${row.rank}-${row.username}`,
+          ),
+        };
+      });
+      const nextTop = append
+        ? appendUniqueById(
+            dataRef.current?.top ?? [],
+            payload.top,
+            (row) => `${row.rank}-${row.username}`,
+          )
+        : payload.top;
+      setHasMore(leaderboardHasMore(nextTop.length, payload.top.length));
+    },
+    [],
+  );
+
+  const loadFirst = useCallback(() => {
     if (!isSupabaseConfigured) {
       setData({ me: null, top: [] });
       setError(null);
+      setHasMore(false);
       setLoading(false);
       return;
     }
 
-    setLoading(true);
+    const showLoading = !dataRef.current?.top.length && !dataRef.current?.me;
+    if (showLoading) setLoading(true);
     setError(null);
-    fetchLeaderboard(user?.id)
-      .then((payload) => {
-        if (!cancelled) setData(payload);
-      })
-      .catch((e) => {
-        if (!cancelled) {
-          setData(null);
-          setError(e);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [user?.id]);
-
-  const reload = () => {
-    if (!isSupabaseConfigured) return;
-    setLoading(true);
-    setError(null);
-    fetchLeaderboard(user?.id)
-      .then(setData)
+    fetchLeaderboard(user?.id, { limit: LIST_PAGE_SIZE, offset: 0 })
+      .then((payload) => applyPage(payload, false))
       .catch((e) => {
         setData(null);
+        setHasMore(false);
         setError(e);
       })
       .finally(() => setLoading(false));
-  };
+  }, [user?.id, applyPage]);
+
+  useEffect(() => {
+    loadFirst();
+  }, [loadFirst]);
+
+  const loadMore = useCallback(async () => {
+    if (!isSupabaseConfigured || loadingMoreRef.current || !hasMore) return;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+    try {
+      const offset = dataRef.current?.top.length ?? 0;
+      const payload = await fetchLeaderboard(user?.id, {
+        limit: LIST_PAGE_SIZE,
+        offset,
+      });
+      applyPage(payload, true);
+    } catch (e) {
+      toast.error(tError(e, 'leaderboard.error'));
+    } finally {
+      loadingMoreRef.current = false;
+      setLoadingMore(false);
+    }
+  }, [user?.id, hasMore, applyPage, tError]);
 
   const me = data?.me ?? null;
   const top = data?.top ?? [];
+  const sentinelRef = useListSentinel(
+    hasMore && !loading && !error,
+    () => {
+      void loadMore();
+    },
+    scrollRef,
+    top.length,
+  );
   const empty = !loading && !error && !me && top.length === 0;
   const rankCh = rankColumnCh([
     ...(me ? [me.rank] : []),
@@ -133,8 +180,8 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   ]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col pt-3">
-      {me && !loading && !error && (
+    <div className="flex h-full min-h-0 flex-col px-3 pt-3">
+      {me && !error && (
         <>
           <LeaderboardRowButton
             row={me}
@@ -149,12 +196,13 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
         </>
       )}
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
         {loading &&
+          top.length === 0 &&
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="mx-3 mb-1 h-11 w-[calc(100%-1.5rem)]" />
+            <Skeleton key={i} className="mb-1 h-11 w-full" />
           ))}
-        {error ? (
+        {error && top.length === 0 ? (
           <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
             {tError(error, 'leaderboard.error')}
             <div>
@@ -162,7 +210,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
                 variant="outline"
                 size="sm"
                 className="mt-2"
-                onClick={reload}
+                onClick={loadFirst}
               >
                 {t('chat.retry')}
               </Button>
@@ -174,9 +222,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
             {t('leaderboard.empty')}
           </p>
         )}
-        {!loading &&
-          !error &&
-          top.map((row) => (
+        {top.map((row) => (
             <LeaderboardRowButton
               key={`${row.rank}-${row.username}`}
               row={row}
@@ -184,6 +230,9 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
               rankCh={rankCh}
             />
           ))}
+        {hasMore ? (
+          <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+        ) : null}
       </div>
     </div>
   );

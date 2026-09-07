@@ -211,13 +211,16 @@ export function Composer({
           <span>
             {t('composer.replyingTo', { username: replyToHandle })}
           </span>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            aria-label={t('common.cancel')}
             onClick={onCancelReply}
-            className="text-sm hover:underline"
           >
-            {t('common.cancel')}
-          </button>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
       )}
       <Textarea

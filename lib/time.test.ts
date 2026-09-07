@@ -21,19 +21,20 @@ describe('formatRelativeTime', () => {
     ).toBe('Vor weniger als einer Minute');
   });
 
-  it('uses long-form date-fns distances with a suffix', () => {
+  it('uses long-form date-fns distances with a suffix, sentence-cased', () => {
     expect(formatRelativeTime(ago(60_000), now)).toBe('1 minute ago');
     expect(formatRelativeTime(ago(7 * 60_000), now)).toBe('7 minutes ago');
-    expect(formatRelativeTime(ago(5 * 3_600_000), now)).toBe('about 5 hours ago');
+    expect(formatRelativeTime(ago(3_600_000), now)).toBe('About 1 hour ago');
+    expect(formatRelativeTime(ago(5 * 3_600_000), now)).toBe('About 5 hours ago');
     expect(formatRelativeTime(ago(24 * 3_600_000), now)).toBe('1 day ago');
   });
 
-  it('passes a date-fns locale through', () => {
+  it('passes a date-fns locale through and sentence-cases it', () => {
     expect(formatRelativeTime(ago(60_000), now, { locale: de })).toBe(
-      'vor 1 Minute',
+      'Vor 1 Minute',
     );
     expect(formatRelativeTime(ago(60_000), now, { locale: 'de' })).toBe(
-      'vor 1 Minute',
+      'Vor 1 Minute',
     );
   });
 });

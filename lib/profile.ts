@@ -1,5 +1,5 @@
 import { callEdgeFunction } from './supabase';
-import { AVATAR_MAX_BYTES } from './constants';
+import { AVATAR_MAX_BYTES, LIST_PAGE_SIZE } from './constants';
 import { getSupabase } from './supabase';
 import type { ActivityItem, Profile, WebAuthnCredential } from './database.types';
 
@@ -29,15 +29,19 @@ export async function fetchProfileByUsername(
 
 export async function fetchActivity(
   userId: string,
+  opts?: { limit?: number; before?: string | null },
 ): Promise<ActivityItem[]> {
+  const limit = opts?.limit ?? LIST_PAGE_SIZE;
   const sb = getSupabase();
-  const { data: messages, error } = await sb
+  let query = sb
     .from('messages')
     .select('*')
     .eq('author_id', userId)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
-    .limit(100);
+    .limit(limit);
+  if (opts?.before) query = query.lt('created_at', opts.before);
+  const { data: messages, error } = await query;
   if (error) throw error;
   if (!messages?.length) return [];
 

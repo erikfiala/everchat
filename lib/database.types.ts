@@ -404,7 +404,7 @@ export type Database = {
         Returns: string;
       };
       leaderboard: {
-        Args: Record<PropertyKey, never>;
+        Args: { p_limit?: number; p_offset?: number };
         Returns: {
           rank: number;
           username: string;

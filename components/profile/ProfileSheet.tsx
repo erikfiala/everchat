@@ -46,32 +46,34 @@ export function ProfileSheet({
         </DialogHeader>
         {loading && <Skeleton className="h-20 w-full" />}
         {!loading && profile && (
-          <div className="flex items-start gap-3 py-2">
-            <Avatar className="h-12 w-12">
-              {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
-              <AvatarFallback>
-                {(profile.username || '?').slice(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <div className="text-base font-semibold">
-                @{profile.username || t('message.unknownAuthor')}
+          <div className="py-2">
+            <div className="flex items-start gap-3">
+              <Avatar className="h-12 w-12">
+                {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
+                <AvatarFallback>
+                  {(profile.username || '?').slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <div className="text-base font-semibold">
+                  @{profile.username || t('message.unknownAuthor')}
+                </div>
+                <div
+                  className={cn(
+                    'text-sm font-normal',
+                    scoreColorClass(profile.karma ?? 0),
+                  )}
+                >
+                  {t('profile.karma', {
+                    score: formatScore(profile.karma ?? 0),
+                  })}
+                </div>
               </div>
-              <div
-                className={cn(
-                  'text-sm font-normal',
-                  scoreColorClass(profile.karma ?? 0),
-                )}
-              >
-                {t('profile.karma', {
-                  score: formatScore(profile.karma ?? 0),
-                })}
-              </div>
-              <ProfilePublicMeta
-                about={profile.about}
-                website={profile.website}
-              />
             </div>
+            <ProfilePublicMeta
+              about={profile.about}
+              website={profile.website}
+            />
           </div>
         )}
         {!loading && !profile && (

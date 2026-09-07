@@ -5,43 +5,163 @@ import type {
   SortMode,
   Vote,
 } from './database.types';
-import { MAX_BODY_LENGTH } from './constants';
+import { LIST_PAGE_SIZE, MAX_BODY_LENGTH } from './constants';
+import { chunkIds, pageHasMore } from './listPage';
 
-export async function fetchMessagesForPage(
-  pageId: string,
-  userId?: string | null,
-): Promise<{ messages: MessageWithAuthor[]; votes: Vote[] }> {
-  const sb = getSupabase();
-  const { data, error } = await sb
-    .from('messages')
-    .select(
-      `
+const MESSAGE_WITH_AUTHOR = `
       *,
       author:profiles!messages_author_id_fkey(id, username, avatar_url, karma)
-    `,
-    )
-    .eq('page_id', pageId)
-    .order('created_at', { ascending: true });
+    `;
 
-  if (error) throw error;
+export type MessagePage = {
+  messages: MessageWithAuthor[];
+  votes: Vote[];
+  rootCount: number;
+  hasMore: boolean;
+};
 
-  let votes: Vote[] = [];
-  if (userId) {
-    const { data: voteData } = await sb
+export async function fetchVotesForMessages(
+  userId: string | null | undefined,
+  messageIds: string[],
+): Promise<Vote[]> {
+  if (!userId || !messageIds.length) return [];
+  const sb = getSupabase();
+  const votes: Vote[] = [];
+  for (const batch of chunkIds(messageIds)) {
+    const { data, error } = await sb
       .from('votes')
       .select('*')
       .eq('user_id', userId)
-      .in(
-        'message_id',
-        (data || []).map((m) => m.id),
-      );
-    votes = voteData || [];
+      .in('message_id', batch);
+    if (error) throw error;
+    votes.push(...(data || []));
+  }
+  return votes;
+}
+
+export async function fetchMessageWithAuthor(
+  id: string,
+): Promise<MessageWithAuthor | null> {
+  const sb = getSupabase();
+  const { data, error } = await sb
+    .from('messages')
+    .select(MESSAGE_WITH_AUTHOR)
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as MessageWithAuthor | null) ?? null;
+}
+
+async function fetchDescendantMessages(
+  pageId: string,
+  rootIds: string[],
+): Promise<MessageWithAuthor[]> {
+  if (!rootIds.length) return [];
+  const sb = getSupabase();
+  const found: MessageWithAuthor[] = [];
+  let frontier = rootIds;
+  const seen = new Set(rootIds);
+
+  while (frontier.length) {
+    const next: string[] = [];
+    for (const batch of chunkIds(frontier)) {
+      const { data, error } = await sb
+        .from('messages')
+        .select(MESSAGE_WITH_AUTHOR)
+        .eq('page_id', pageId)
+        .in('parent_id', batch);
+      if (error) throw error;
+      for (const row of (data || []) as MessageWithAuthor[]) {
+        if (seen.has(row.id)) continue;
+        seen.add(row.id);
+        found.push(row);
+        next.push(row.id);
+      }
+    }
+    frontier = next;
+  }
+  return found;
+}
+
+/** Root threads (page size) plus their reply trees — not the whole room. */
+export async function fetchMessagesForPage(
+  pageId: string,
+  userId?: string | null,
+  page?: { sort: SortMode; offset?: number; limit?: number },
+): Promise<MessagePage> {
+  const sort = page?.sort ?? 'new';
+  const limit = page?.limit ?? LIST_PAGE_SIZE;
+  const offset = page?.offset ?? 0;
+  const sb = getSupabase();
+
+  let rootQuery = sb
+    .from('messages')
+    .select(MESSAGE_WITH_AUTHOR)
+    .eq('page_id', pageId)
+    .is('parent_id', null);
+
+  if (sort === 'best') {
+    rootQuery = rootQuery
+      .order('score', { ascending: false })
+      .order('created_at', { ascending: false });
+  } else {
+    rootQuery = rootQuery.order('created_at', { ascending: false });
   }
 
+  const { data: roots, error } = await rootQuery.range(
+    offset,
+    offset + limit - 1,
+  );
+  if (error) throw error;
+
+  const rootRows = (roots || []) as MessageWithAuthor[];
+  const descendants = await fetchDescendantMessages(
+    pageId,
+    rootRows.map((row) => row.id),
+  );
+  const messages = [...rootRows, ...descendants];
+  const votes = await fetchVotesForMessages(
+    userId,
+    messages.map((row) => row.id),
+  );
+
   return {
-    messages: (data || []) as MessageWithAuthor[],
+    messages,
     votes,
+    rootCount: rootRows.length,
+    hasMore: pageHasMore(rootRows.length, limit),
   };
+}
+
+/** Load the root thread that contains `messageId` (deep-link / focus). */
+export async function fetchThreadContainingMessage(
+  pageId: string,
+  messageId: string,
+  userId?: string | null,
+): Promise<MessagePage | null> {
+  const start = await fetchMessageWithAuthor(messageId);
+  if (!start || start.page_id !== pageId) return null;
+
+  let root = start;
+  const seen = new Set([start.id]);
+  while (root.parent_id && !seen.has(root.parent_id)) {
+    seen.add(root.parent_id);
+    const parent = await fetchMessageWithAuthor(root.parent_id);
+    if (!parent) break;
+    root = parent;
+  }
+
+  const descendants = await fetchDescendantMessages(pageId, [root.id]);
+  const byId = new Map<string, MessageWithAuthor>();
+  byId.set(root.id, root);
+  for (const row of descendants) byId.set(row.id, row);
+  const messages = [...byId.values()];
+  const votes = await fetchVotesForMessages(
+    userId,
+    messages.map((row) => row.id),
+  );
+
+  return { messages, votes, rootCount: 1, hasMore: false };
 }
 
 export function buildMessageTree(

@@ -1,6 +1,6 @@
 import { getSupabase } from './supabase';
 import type { Page } from './database.types';
-import { DESCRIPTION_TRUNCATE } from './constants';
+import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from './constants';
 import { originalHref } from './canonicalize';
 
 function isUniqueViolation(error: { code?: string; message?: string } | null) {
@@ -164,20 +164,26 @@ export async function getPageByCanonical(
   return data;
 }
 
-export async function getTrendingPages(limit = 10) {
+export async function getTrendingPages(
+  limit = LIST_PAGE_SIZE,
+  offset = 0,
+) {
   const sb = getSupabase();
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  // Prefer view if available; fallback to aggregation query
   const { data: viewData, error: viewError } = await sb
     .from('trending_pages')
     .select('*')
-    .limit(limit);
+    .order('message_count', { ascending: false })
+    .order('id', { ascending: true })
+    .range(offset, offset + limit - 1);
 
-  if (!viewError && viewData && viewData.length > 0) {
-    return viewData;
+  if (!viewError) {
+    return viewData ?? [];
   }
 
+  // View missing: must aggregate last-24h messages, then slice.
+  // No paginated SQL aggregate without `trending_pages`.
   const { data: messages, error } = await sb
     .from('messages')
     .select(
@@ -220,8 +226,8 @@ export async function getTrendingPages(limit = 10) {
   }
 
   return [...counts.values()]
-    .sort((a, b) => b.message_count - a.message_count)
-    .slice(0, limit);
+    .sort((a, b) => b.message_count - a.message_count || a.id.localeCompare(b.id))
+    .slice(offset, offset + limit);
 }
 
 export type ExplorePageRow = {
@@ -240,50 +246,61 @@ export type ExplorePageRow = {
  * Not “newly created empty pages” — only rooms people are chatting in.
  */
 export async function getRecentlyActivePages(
-  limit = 10,
+  limit = LIST_PAGE_SIZE,
+  opts?: { before?: string | null; excludeIds?: Iterable<string> },
 ): Promise<ExplorePageRow[]> {
   const sb = getSupabase();
-  // Over-fetch so we can dedupe to `limit` distinct pages by latest activity.
-  const { data: messages, error } = await sb
-    .from('messages')
-    .select(
-      'page_id, created_at, pages!inner(*)',
-    )
-    .is('deleted_at', null)
-    .order('created_at', { ascending: false })
-    .limit(Math.max(limit * 25, 50));
-
-  if (error) throw error;
-
+  const excluded = new Set(opts?.excludeIds ?? []);
   const ordered: ExplorePageRow[] = [];
   const indexById = new Map<string, number>();
+  let cursor = opts?.before ?? null;
+  let exhausted = false;
+  const batchSize = Math.max(limit * 25, 50);
 
-  for (const row of messages || []) {
-    const page = row.pages as unknown as {
-      id: string;
-      canonical_url: string;
-      url: string | null;
-      title: string | null;
-      description: string | null;
-      favicon_url: string | null;
-    };
-    if (!page) continue;
+  while (ordered.length < limit && !exhausted) {
+    let query = sb
+      .from('messages')
+      .select('page_id, created_at, pages!inner(*)')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(batchSize);
+    if (cursor) query = query.lt('created_at', cursor);
 
-    const existing = indexById.get(page.id);
-    if (existing != null) {
-      const row = ordered[existing];
-      if (row) row.message_count += 1;
-      continue;
+    const { data: messages, error } = await query;
+    if (error) throw error;
+    if (!messages?.length) break;
+
+    exhausted = messages.length < batchSize;
+    const last = messages[messages.length - 1];
+    if (last) cursor = last.created_at as string;
+
+    for (const row of messages) {
+      const page = row.pages as unknown as {
+        id: string;
+        canonical_url: string;
+        url: string | null;
+        title: string | null;
+        description: string | null;
+        favicon_url: string | null;
+      };
+      if (!page || excluded.has(page.id)) continue;
+
+      const existing = indexById.get(page.id);
+      if (existing != null) {
+        const seen = ordered[existing];
+        if (seen) seen.message_count += 1;
+        continue;
+      }
+      if (ordered.length >= limit) continue;
+
+      indexById.set(page.id, ordered.length);
+      ordered.push({
+        ...page,
+        url: page.url ?? null,
+        message_count: 1,
+        last_active_at: row.created_at as string,
+      });
     }
-    if (ordered.length >= limit) continue;
-
-    indexById.set(page.id, ordered.length);
-    ordered.push({
-      ...page,
-      url: page.url ?? null,
-      message_count: 1,
-      last_active_at: row.created_at as string,
-    });
   }
 
   return ordered;

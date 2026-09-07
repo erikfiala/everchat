@@ -8,7 +8,12 @@ export type FormatRelativeTimeOptions = {
   lessThanMinute?: string;
 };
 
-/** Long-form relative time; under a minute is sentence-cased. */
+function sentenceCase(value: string): string {
+  if (!value) return value;
+  return value.charAt(0).toLocaleUpperCase() + value.slice(1);
+}
+
+/** Long-form relative time; date-fns distances are sentence-cased. */
 export function formatRelativeTime(
   date: Date,
   now: Date = new Date(),
@@ -22,7 +27,7 @@ export function formatRelativeTime(
     typeof options?.locale === 'string'
       ? dateFnsLocaleFor(options.locale)
       : options?.locale;
-  return formatDistance(date, now, { addSuffix: true, locale });
+  return sentenceCase(formatDistance(date, now, { addSuffix: true, locale }));
 }
 
 /** Bind locale + under-a-minute copy for `safeRelativeTime`. */

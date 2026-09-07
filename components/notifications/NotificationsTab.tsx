@@ -1,7 +1,10 @@
+import { useRef } from 'react';
 import { Favicon } from '@/components/Favicon';
+import { ListSentinel } from '@/components/ListSentinel';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
+import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
 import { useNotifications } from '@/hooks/useNotifications';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
@@ -13,7 +16,17 @@ export function NotificationsTab() {
   const { t, locale } = useLocale();
   const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user, loading: authLoading } = useAuth();
-  const { items, loading, openNotification } = useNotifications();
+  const { items, loading, loadingMore, hasMore, loadMore, openNotification } =
+    useNotifications();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useListSentinel(
+    hasMore && !loading,
+    () => {
+      void loadMore();
+    },
+    scrollRef,
+    items.length,
+  );
 
   if (authLoading) {
     return (
@@ -27,8 +40,8 @@ export function NotificationsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto pt-1">
-        {loading && (
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto pt-1">
+        {loading && items.length === 0 && (
           <div className="space-y-2 p-3 pt-3">
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
@@ -76,6 +89,9 @@ export function NotificationsTab() {
             </div>
           </button>
         ))}
+        {hasMore ? (
+          <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+        ) : null}
       </div>
     </div>
   );

@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "അജ്ഞാതമായി സൈൻ ഇൻ ചെയ്യുക",
   "message.reply": "മറുപടി",
   "message.hide": "മറയ്ക്കുക",
-  "message.shareLink": "ലിങ്ക് പങ്കിടുക",
+  "message.shareLink": "ലിങ്ക് വഴി പങ്കിടുക",
   "message.delete": "ഇല്ലാതാക്കുക",
   "message.deleteConfirmTitle": "ഈ അഭിപ്രായം ഇല്ലാതാക്കണോ?",
   "message.deleteConfirmBody": "ഇത് പഴയപടിയാക്കാനാവില്ല.",

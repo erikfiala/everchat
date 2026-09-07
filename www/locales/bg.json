@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Влез анонимно",
   "message.reply": "Отговор",
   "message.hide": "Скрий",
-  "message.shareLink": "Сподели връзка",
+  "message.shareLink": "Сподели чрез връзка",
   "message.delete": "Изтрий",
   "message.deleteConfirmTitle": "Изтриване на този коментар?",
   "message.deleteConfirmBody": "Това не може да бъде отменено.",

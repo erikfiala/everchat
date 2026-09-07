@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Log ind anonymt",
   "message.reply": "Svar",
   "message.hide": "Skjul",
-  "message.shareLink": "Del link",
+  "message.shareLink": "Del via link",
   "message.delete": "Slet",
   "message.deleteConfirmTitle": "Slet denne kommentar?",
   "message.deleteConfirmBody": "Dette kan ikke fortrydes.",

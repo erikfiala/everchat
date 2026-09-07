@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "تسجيل الدخول مجهولاً",
   "message.reply": "رد",
   "message.hide": "إخفاء",
-  "message.shareLink": "مشاركة الرابط",
+  "message.shareLink": "المشاركة عبر الرابط",
   "message.delete": "حذف",
   "message.deleteConfirmTitle": "حذف هذا التعليق؟",
   "message.deleteConfirmBody": "لا يمكن التراجع عن هذا.",

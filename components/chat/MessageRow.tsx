@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -64,11 +64,36 @@ export function MessageRow({
   const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [showTranslation, setShowTranslation] = useState(false);
   const [translated, setTranslated] = useState<string | null>(null);
   const [translating, setTranslating] = useState(false);
   const [translateError, setTranslateError] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeMenu = () => setMenuOpen(false);
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (menuRef.current?.contains(target)) return;
+      closeMenu();
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMenu();
+    };
+
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [menuOpen]);
 
   const deleted = Boolean(node.deleted_at);
   const collapsed =
@@ -331,7 +356,7 @@ export function MessageRow({
                         : t('message.seeTranslation')}
                   </Button>
                 )}
-                <div className="relative ms-auto">
+                <div className="relative ms-auto" ref={menuRef}>
                   <Button
                     variant="ghost"
                     size="icon"

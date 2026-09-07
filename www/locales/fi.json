@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Kirjaudu anonyymisti",
   "message.reply": "Vastaa",
   "message.hide": "Piilota",
-  "message.shareLink": "Jaa linkki",
+  "message.shareLink": "Jaa linkin kautta",
   "message.delete": "Poista",
   "message.deleteConfirmTitle": "Poistetaanko tämä kommentti?",
   "message.deleteConfirmBody": "Tätä ei voi perua.",

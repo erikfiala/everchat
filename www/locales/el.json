@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Σύνδεση ανώνυμα",
   "message.reply": "Απάντηση",
   "message.hide": "Απόκρυψη",
-  "message.shareLink": "Κοινοποίηση συνδέσμου",
+  "message.shareLink": "Κοινοποίηση μέσω συνδέσμου",
   "message.delete": "Διαγραφή",
   "message.deleteConfirmTitle": "Διαγραφή αυτού του σχολίου;",
   "message.deleteConfirmBody": "Αυτό δεν μπορεί να αναιρεθεί.",

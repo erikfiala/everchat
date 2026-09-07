@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "匿名登入",
   "message.reply": "回覆",
   "message.hide": "隱藏",
-  "message.shareLink": "分享連結",
+  "message.shareLink": "透過連結分享",
   "message.delete": "刪除",
   "message.deleteConfirmTitle": "刪除這則留言？",
   "message.deleteConfirmBody": "此操作無法復原。",

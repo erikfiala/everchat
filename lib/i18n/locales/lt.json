@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Prisijungti anonimiškai",
   "message.reply": "Atsakyti",
   "message.hide": "Slėpti",
-  "message.shareLink": "Bendrinti nuorodą",
+  "message.shareLink": "Bendrinti per nuorodą",
   "message.delete": "Ištrinti",
   "message.deleteConfirmTitle": "Ištrinti šį komentarą?",
   "message.deleteConfirmBody": "Šio veiksmo atšaukti negalima.",

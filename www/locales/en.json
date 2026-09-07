@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Sign up anonymously",
   "message.reply": "Reply",
   "message.hide": "Hide",
-  "message.shareLink": "Share link",
+  "message.shareLink": "Share via link",
   "message.delete": "Delete",
   "message.deleteConfirmTitle": "Delete this comment?",
   "message.deleteConfirmBody": "This cannot be undone.",

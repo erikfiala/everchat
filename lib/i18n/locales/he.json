@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "התחברות אנונימית",
   "message.reply": "הגב",
   "message.hide": "הסתר",
-  "message.shareLink": "שתף קישור",
+  "message.shareLink": "שתף באמצעות קישור",
   "message.delete": "מחק",
   "message.deleteConfirmTitle": "למחוק את התגובה הזו?",
   "message.deleteConfirmBody": "לא ניתן לבטל פעולה זו.",

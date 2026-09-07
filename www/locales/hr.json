@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Prijavi se anonimno",
   "message.reply": "Odgovori",
   "message.hide": "Sakrij",
-  "message.shareLink": "Podijeli poveznicu",
+  "message.shareLink": "Podijeli putem poveznice",
   "message.delete": "Izbriši",
   "message.deleteConfirmTitle": "Izbrisati ovaj komentar?",
   "message.deleteConfirmBody": "Ovo se ne može poništiti.",

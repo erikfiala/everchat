@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Anonim giriş yap",
   "message.reply": "Yanıtla",
   "message.hide": "Gizle",
-  "message.shareLink": "Bağlantıyı paylaş",
+  "message.shareLink": "Bağlantı yoluyla paylaş",
   "message.delete": "Sil",
   "message.deleteConfirmTitle": "Bu yorum silinsin mi?",
   "message.deleteConfirmBody": "Bu işlem geri alınamaz.",

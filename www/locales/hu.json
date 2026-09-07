@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Bejelentkezés névtelenül",
   "message.reply": "Válasz",
   "message.hide": "Elrejtés",
-  "message.shareLink": "Link megosztása",
+  "message.shareLink": "Megosztás linken keresztül",
   "message.delete": "Törlés",
   "message.deleteConfirmTitle": "Törlöd ezt a kommentet?",
   "message.deleteConfirmBody": "Ez nem vonható vissza.",

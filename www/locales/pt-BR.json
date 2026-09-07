@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Entrar anonimamente",
   "message.reply": "Responder",
   "message.hide": "Ocultar",
-  "message.shareLink": "Compartilhar link",
+  "message.shareLink": "Compartilhar via link",
   "message.delete": "Excluir",
   "message.deleteConfirmTitle": "Excluir este comentário?",
   "message.deleteConfirmBody": "Isso não pode ser desfeito.",

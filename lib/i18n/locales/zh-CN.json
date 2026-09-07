@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "匿名登录",
   "message.reply": "回复",
   "message.hide": "隐藏",
-  "message.shareLink": "分享链接",
+  "message.shareLink": "通过链接分享",
   "message.delete": "删除",
   "message.deleteConfirmTitle": "删除这条评论？",
   "message.deleteConfirmBody": "此操作无法撤销。",

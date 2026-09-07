@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Logga in anonymt",
   "message.reply": "Svara",
   "message.hide": "Dölj",
-  "message.shareLink": "Dela länk",
+  "message.shareLink": "Dela via länk",
   "message.delete": "Ta bort",
   "message.deleteConfirmTitle": "Ta bort den här kommentaren?",
   "message.deleteConfirmBody": "Detta går inte att ångra.",

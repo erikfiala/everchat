@@ -46,7 +46,7 @@ export function ProfileSheet({
         </DialogHeader>
         {loading && <Skeleton className="h-20 w-full" />}
         {!loading && profile && (
-          <div className="py-2">
+          <div className="pt-2">
             <div className="flex items-start gap-3">
               <Avatar className="h-12 w-12">
                 {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}

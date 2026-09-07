@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "ورود ناشناس",
   "message.reply": "پاسخ",
   "message.hide": "پنهان کردن",
-  "message.shareLink": "اشتراک‌گذاری پیوند",
+  "message.shareLink": "اشتراک‌گذاری از طریق پیوند",
   "message.delete": "حذف",
   "message.deleteConfirmTitle": "این نظر حذف شود؟",
   "message.deleteConfirmBody": "این کار قابل بازگشت نیست.",

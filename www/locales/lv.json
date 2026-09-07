@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Pierakstīties anonīmi",
   "message.reply": "Atbildēt",
   "message.hide": "Paslēpt",
-  "message.shareLink": "Kopīgot saiti",
+  "message.shareLink": "Kopīgot, izmantojot saiti",
   "message.delete": "Dzēst",
   "message.deleteConfirmTitle": "Dzēst šo komentāru?",
   "message.deleteConfirmBody": "To nevar atsaukt.",

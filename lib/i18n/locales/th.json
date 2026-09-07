@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "เข้าสู่ระบบแบบไม่ระบุตัวตน",
   "message.reply": "ตอบ",
   "message.hide": "ซ่อน",
-  "message.shareLink": "แชร์ลิงก์",
+  "message.shareLink": "แชร์ผ่านลิงก์",
   "message.delete": "ลบ",
   "message.deleteConfirmTitle": "ลบความคิดเห็นนี้?",
   "message.deleteConfirmBody": "การกระทำนี้ย้อนกลับไม่ได้",

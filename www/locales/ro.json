@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Autentificare anonimă",
   "message.reply": "Răspunde",
   "message.hide": "Ascunde",
-  "message.shareLink": "Distribuie linkul",
+  "message.shareLink": "Distribuie prin link",
   "message.delete": "Șterge",
   "message.deleteConfirmTitle": "Ștergi acest comentariu?",
   "message.deleteConfirmBody": "Această acțiune nu poate fi anulată.",

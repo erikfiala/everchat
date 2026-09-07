@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Inicia la sessió de forma anònima",
   "message.reply": "Respon",
   "message.hide": "Amaga",
-  "message.shareLink": "Comparteix l’enllaç",
+  "message.shareLink": "Comparteix via enllaç",
   "message.delete": "Elimina",
   "message.deleteConfirmTitle": "Vols eliminar aquest comentari?",
   "message.deleteConfirmBody": "Això no es pot desfer.",

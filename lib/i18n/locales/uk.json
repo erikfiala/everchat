@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Увійти анонімно",
   "message.reply": "Відповісти",
   "message.hide": "Приховати",
-  "message.shareLink": "Поділитися посиланням",
+  "message.shareLink": "Поділитися за посиланням",
   "message.delete": "Видалити",
   "message.deleteConfirmTitle": "Видалити цей коментар?",
   "message.deleteConfirmBody": "Це не можна скасувати.",

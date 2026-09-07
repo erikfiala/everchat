@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Se connecter anonymement",
   "message.reply": "Répondre",
   "message.hide": "Masquer",
-  "message.shareLink": "Partager le lien",
+  "message.shareLink": "Partager via le lien",
   "message.delete": "Supprimer",
   "message.deleteConfirmTitle": "Supprimer ce commentaire ?",
   "message.deleteConfirmBody": "Cette action est irréversible.",

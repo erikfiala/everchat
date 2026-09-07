@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "匿名でサインイン",
   "message.reply": "返信",
   "message.hide": "非表示",
-  "message.shareLink": "リンクを共有",
+  "message.shareLink": "リンクで共有",
   "message.delete": "削除",
   "message.deleteConfirmTitle": "このコメントを削除しますか？",
   "message.deleteConfirmBody": "この操作は元に戻せません。",

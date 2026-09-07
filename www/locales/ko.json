@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "익명으로 로그인",
   "message.reply": "답글",
   "message.hide": "숨기기",
-  "message.shareLink": "링크 공유",
+  "message.shareLink": "링크로 공유",
   "message.delete": "삭제",
   "message.deleteConfirmTitle": "이 댓글을 삭제할까요?",
   "message.deleteConfirmBody": "이 작업은 되돌릴 수 없습니다.",

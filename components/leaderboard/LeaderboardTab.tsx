@@ -35,30 +35,20 @@ function rankColumnCh(ranks: number[]): number {
 function LeaderboardRow({
   row,
   onOpenProfile,
-  pinned,
   rankCh,
-  roundTop,
-  roundBottom,
 }: {
   row: LeaderboardRow;
   onOpenProfile: (username: string) => void;
-  pinned?: boolean;
   rankCh: number;
-  roundTop?: boolean;
-  roundBottom?: boolean;
 }) {
   const { t } = useLocale();
   const handle = row.username || t('message.unknownAuthor');
 
   return (
-    <div
-      className={cn(
-        'flex w-full items-center gap-2 px-3 py-2 hover:bg-[var(--color-accent)]',
-        pinned && 'bg-[var(--color-muted)]/50',
-        row.is_me && !pinned && 'bg-[var(--color-muted)]/40',
-        roundTop && 'rounded-t-md',
-        roundBottom && 'rounded-b-md',
-      )}
+    <button
+      type="button"
+      onClick={() => onOpenProfile(row.username)}
+      className="group flex w-full items-center gap-2 rounded-md bg-transparent px-3 py-2 text-start hover:bg-[var(--color-accent)] active:bg-[var(--color-accent)] focus-visible:bg-[var(--color-accent)]"
     >
       <span
         className="shrink-0 text-end text-sm font-normal tabular-nums text-[var(--color-muted-foreground)]"
@@ -66,19 +56,13 @@ function LeaderboardRow({
       >
         {row.rank}
       </span>
-      <button
-        type="button"
-        onClick={() => onOpenProfile(row.username)}
-        className="flex min-w-0 items-center gap-2 text-start"
-      >
-        <Avatar className="h-5 w-5 shrink-0">
-          {row.avatar_url && <AvatarImage src={row.avatar_url} />}
-          <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
-        </Avatar>
-        <span className="min-w-0 truncate text-sm font-medium hover:underline">
-          @{handle}
-        </span>
-      </button>
+      <Avatar className="h-5 w-5 shrink-0">
+        {row.avatar_url && <AvatarImage src={row.avatar_url} />}
+        <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
+      </Avatar>
+      <span className="min-w-0 truncate text-sm font-medium group-hover:underline">
+        @{handle}
+      </span>
       <span
         className={cn(
           'ms-auto shrink-0 text-sm font-normal tabular-nums',
@@ -87,7 +71,7 @@ function LeaderboardRow({
       >
         {formatScore(row.karma)}
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -185,7 +169,6 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
     top.length,
   );
   const empty = !loading && !error && !me && top.length === 0;
-  const hasPinned = Boolean(me && !error);
   const rankCh = rankColumnCh([
     ...(me ? [me.rank] : []),
     ...top.map((row) => row.rank),
@@ -198,10 +181,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
           <LeaderboardRow
             row={me}
             onOpenProfile={onOpenProfile}
-            pinned
             rankCh={rankCh}
-            roundTop
-            roundBottom={top.length === 0}
           />
           {top.length > 0 ? (
             <div
@@ -238,14 +218,12 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
             {t('leaderboard.empty')}
           </p>
         )}
-        {top.map((row, i) => (
+        {top.map((row) => (
             <LeaderboardRow
               key={`${row.rank}-${row.username}`}
               row={row}
               onOpenProfile={onOpenProfile}
               rankCh={rankCh}
-              roundTop={!hasPinned && i === 0}
-              roundBottom={i === top.length - 1}
             />
           ))}
         {hasMore ? (

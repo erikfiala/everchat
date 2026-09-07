@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Пријави се анонимно",
   "message.reply": "Одговори",
   "message.hide": "Сакриј",
-  "message.shareLink": "Подели везу",
+  "message.shareLink": "Подели путем везе",
   "message.delete": "Обриши",
   "message.deleteConfirmTitle": "Обрисати овај коментар?",
   "message.deleteConfirmBody": "Ово се не може опозвати.",

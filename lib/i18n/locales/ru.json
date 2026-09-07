@@ -91,7 +91,7 @@
   "composer.signInAnonymously": "Войти анонимно",
   "message.reply": "Ответить",
   "message.hide": "Скрыть",
-  "message.shareLink": "Поделиться ссылкой",
+  "message.shareLink": "Поделиться по ссылке",
   "message.delete": "Удалить",
   "message.deleteConfirmTitle": "Удалить этот комментарий?",
   "message.deleteConfirmBody": "Это нельзя отменить.",

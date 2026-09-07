@@ -382,7 +382,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
                   </span>
                   {time ? (
                     <span>
-                      {' • '}
+                      {' · '}
                       {time}
                     </span>
                   ) : null}

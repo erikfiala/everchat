@@ -37,11 +37,15 @@ function LeaderboardRowButton({
   onOpenProfile,
   pinned,
   rankCh,
+  roundTop,
+  roundBottom,
 }: {
   row: LeaderboardRow;
   onOpenProfile: (username: string) => void;
   pinned?: boolean;
   rankCh: number;
+  roundTop?: boolean;
+  roundBottom?: boolean;
 }) {
   const { t } = useLocale();
 
@@ -53,6 +57,8 @@ function LeaderboardRowButton({
         'flex w-full items-center gap-2 px-3 py-2 text-start hover:bg-[var(--color-accent)]',
         pinned && 'bg-[var(--color-muted)]/50',
         row.is_me && !pinned && 'bg-[var(--color-muted)]/40',
+        roundTop && 'rounded-t-md',
+        roundBottom && 'rounded-b-md',
       )}
     >
       <span
@@ -174,6 +180,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
     top.length,
   );
   const empty = !loading && !error && !me && top.length === 0;
+  const hasPinned = Boolean(me && !error);
   const rankCh = rankColumnCh([
     ...(me ? [me.rank] : []),
     ...top.map((row) => row.rank),
@@ -188,11 +195,15 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
             onOpenProfile={onOpenProfile}
             pinned
             rankCh={rankCh}
+            roundTop
+            roundBottom={top.length === 0}
           />
-          <div
-            className="border-b border-[var(--color-border)]"
-            role="separator"
-          />
+          {top.length > 0 ? (
+            <div
+              className="border-b border-[var(--color-border)]"
+              role="separator"
+            />
+          ) : null}
         </>
       )}
 
@@ -222,12 +233,14 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
             {t('leaderboard.empty')}
           </p>
         )}
-        {top.map((row) => (
+        {top.map((row, i) => (
             <LeaderboardRowButton
               key={`${row.rank}-${row.username}`}
               row={row}
               onOpenProfile={onOpenProfile}
               rankCh={rankCh}
+              roundTop={!hasPinned && i === 0}
+              roundBottom={i === top.length - 1}
             />
           ))}
         {hasMore ? (

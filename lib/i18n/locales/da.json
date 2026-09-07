@@ -131,7 +131,7 @@
   "profile.removeDevice": "Fjern enhed",
   "profile.removeDeviceConfirmTitle": "Fjern denne enhed?",
   "profile.removeDeviceConfirmBody": "Dette fjerner den oplåsningsmetode. Du kan stadig logge ind med dine andre enheder.",
-  "profile.removeLastDeviceConfirmTitle": "Slet denne kontos sidste oplåsningsmetode?",
+  "profile.removeLastDeviceConfirmTitle": "Slet den sidste oplåsningsmetode?",
   "profile.removeLastDeviceConfirmBody": "Dette er den sidste oplåsningsmetode på denne konto. Der er ingen e-mailgendannelse. Fjerner du den, mister du permanent adgangen til kontoen.",
   "profile.signOutConfirmTitle": "Log ud?",
   "profile.signOutConfirmBody": "Du kan logge ind igen med en registreret enhed.",

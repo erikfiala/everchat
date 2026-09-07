@@ -131,7 +131,7 @@
   "profile.removeDevice": "Премахни устройство",
   "profile.removeDeviceConfirmTitle": "Премахване на това устройство?",
   "profile.removeDeviceConfirmBody": "Това премахва този метод за отключване. Все още можете да влизате с останалите си устройства.",
-  "profile.removeLastDeviceConfirmTitle": "Изтриване на последния метод за отключване на този акаунт?",
+  "profile.removeLastDeviceConfirmTitle": "Изтриване на последния метод за отключване?",
   "profile.removeLastDeviceConfirmBody": "Това е последният метод за отключване на този акаунт. Няма възстановяване по имейл. Премахването му означава, че ще загубите достъп до акаунта завинаги.",
   "profile.signOutConfirmTitle": "Излизане?",
   "profile.signOutConfirmBody": "Можете да влезете отново с регистрирано устройство.",

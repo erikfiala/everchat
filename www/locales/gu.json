@@ -131,7 +131,7 @@
   "profile.removeDevice": "ડિવાઇસ કાઢી નાખો",
   "profile.removeDeviceConfirmTitle": "આ ડિવાઇસ કાઢી નાખીએ?",
   "profile.removeDeviceConfirmBody": "આ તે અનલૉક પદ્ધતિ દૂર કરે છે. તમે હજુ તમારા અન્ય ડિવાઇસથી સાઇન ઇન કરી શકો છો.",
-  "profile.removeLastDeviceConfirmTitle": "આ એકાઉન્ટની છેલ્લી અનલૉક પદ્ધતિ કાઢી નાખીએ?",
+  "profile.removeLastDeviceConfirmTitle": "છેલ્લી અનલૉક પદ્ધતિ કાઢી નાખીએ?",
   "profile.removeLastDeviceConfirmBody": "આ આ એકાઉન્ટની છેલ્લી અનલૉક પદ્ધતિ છે. ઈમેઇલથી પુનઃપ્રાપ્તિ નથી. તે દૂર કરવાથી તમે આ એકાઉન્ટની પહોંચ કાયમ માટે ગુમાવશો.",
   "profile.signOutConfirmTitle": "સાઇન આઉટ કરીએ?",
   "profile.signOutConfirmBody": "નોંધાયેલા ડિવાઇસથી ફરી સાઇન ઇન કરી શકો છો.",

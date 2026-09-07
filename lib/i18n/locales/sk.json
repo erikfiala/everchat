@@ -131,7 +131,7 @@
   "profile.removeDevice": "Odstrániť zariadenie",
   "profile.removeDeviceConfirmTitle": "Odstrániť toto zariadenie?",
   "profile.removeDeviceConfirmBody": "Tým sa odstráni táto metóda odomknutia. Stále sa môžete prihlásiť pomocou ostatných zariadení.",
-  "profile.removeLastDeviceConfirmTitle": "Odstrániť poslednú metódu odomknutia tohto účtu?",
+  "profile.removeLastDeviceConfirmTitle": "Odstrániť poslednú metódu odomknutia?",
   "profile.removeLastDeviceConfirmBody": "Toto je posledná metóda odomknutia tohto účtu. Obnova e-mailom neexistuje. Jej odstránením natrvalo stratíte prístup k tomuto účtu.",
   "profile.signOutConfirmTitle": "Odhlásiť sa?",
   "profile.signOutConfirmBody": "Späť sa môžete prihlásiť registrovaným zariadením.",

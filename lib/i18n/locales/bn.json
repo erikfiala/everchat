@@ -131,7 +131,7 @@
   "profile.removeDevice": "ডিভাইস সরান",
   "profile.removeDeviceConfirmTitle": "এই ডিভাইস সরাবেন?",
   "profile.removeDeviceConfirmBody": "এতে সেই আনলক পদ্ধতিটি সরানো হবে। আপনি অন্য ডিভাইস দিয়ে এখনও সাইন ইন করতে পারবেন।",
-  "profile.removeLastDeviceConfirmTitle": "এই অ্যাকাউন্টের শেষ আনলক পদ্ধতি মুছবেন?",
+  "profile.removeLastDeviceConfirmTitle": "শেষ আনলক পদ্ধতি মুছবেন?",
   "profile.removeLastDeviceConfirmBody": "এটি এই অ্যাকাউন্টের শেষ আনলক পদ্ধতি। ইমেইল দিয়ে পুনরুদ্ধার নেই। এটি সরালে আপনি স্থায়ীভাবে এই অ্যাকাউন্টে প্রবেশাধিকার হারাবেন।",
   "profile.signOutConfirmTitle": "সাইন আউট করবেন?",
   "profile.signOutConfirmBody": "নিবন্ধিত ডিভাইস দিয়ে আবার সাইন ইন করতে পারবেন।",

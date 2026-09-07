@@ -131,7 +131,7 @@
   "profile.removeDevice": "إزالة الجهاز",
   "profile.removeDeviceConfirmTitle": "إزالة هذا الجهاز؟",
   "profile.removeDeviceConfirmBody": "سيؤدي هذا إلى إزالة طريقة إلغاء القفل هذه. سيظل بإمكانك تسجيل الدخول بأجهزتك الأخرى.",
-  "profile.removeLastDeviceConfirmTitle": "حذف آخر طريقة لإلغاء قفل هذا الحساب؟",
+  "profile.removeLastDeviceConfirmTitle": "حذف آخر طريقة لإلغاء القفل؟",
   "profile.removeLastDeviceConfirmBody": "هذه آخر طريقة لإلغاء قفل هذا الحساب. لا توجد استعادة عبر البريد الإلكتروني. إزالتها تعني أنك ستفقد الوصول إلى هذا الحساب نهائياً.",
   "profile.signOutConfirmTitle": "تسجيل الخروج؟",
   "profile.signOutConfirmBody": "يمكنك تسجيل الدخول مجددًا بجهاز مسجّل.",

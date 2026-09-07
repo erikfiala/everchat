@@ -131,7 +131,7 @@
   "profile.removeDevice": "Удалить устройство",
   "profile.removeDeviceConfirmTitle": "Удалить это устройство?",
   "profile.removeDeviceConfirmBody": "Это удалит этот способ разблокировки. Вы по-прежнему сможете входить с остальных устройств.",
-  "profile.removeLastDeviceConfirmTitle": "Удалить последний способ разблокировки этой учётной записи?",
+  "profile.removeLastDeviceConfirmTitle": "Удалить последний способ разблокировки?",
   "profile.removeLastDeviceConfirmBody": "Это последний способ разблокировки этой учётной записи. Восстановления по почте нет. Удалив его, вы навсегда потеряете доступ к этой учётной записи.",
   "profile.signOutConfirmTitle": "Выйти?",
   "profile.signOutConfirmBody": "Вы сможете войти снова с зарегистрированного устройства.",

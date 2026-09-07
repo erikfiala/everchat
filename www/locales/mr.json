@@ -131,7 +131,7 @@
   "profile.removeDevice": "डिव्हाइस काढा",
   "profile.removeDeviceConfirmTitle": "हे डिव्हाइस काढायचे?",
   "profile.removeDeviceConfirmBody": "हे ते अनलॉक पद्धत काढते. तुम्ही इतर डिव्हाइसने अजून साइन इन करू शकता.",
-  "profile.removeLastDeviceConfirmTitle": "या खात्याची शेवटची अनलॉक पद्धत काढायची?",
+  "profile.removeLastDeviceConfirmTitle": "शेवटची अनलॉक पद्धत काढायची?",
   "profile.removeLastDeviceConfirmBody": "ही या खात्याची शेवटची अनलॉक पद्धत आहे. ईमेल पुनर्प्राप्ती नाही. ती काढल्यास तुम्ही या खात्याचा प्रवेश कायमचा गमवाल.",
   "profile.signOutConfirmTitle": "साइन आउट करायचे?",
   "profile.signOutConfirmBody": "नोंदणीकृत डिव्हाइसने पुन्हा साइन इन करू शकता.",

@@ -131,7 +131,7 @@
   "profile.removeDevice": "Odebrat zařízení",
   "profile.removeDeviceConfirmTitle": "Odebrat toto zařízení?",
   "profile.removeDeviceConfirmBody": "Tím se odebere tato metoda odemčení. Stále se můžete přihlásit pomocí ostatních zařízení.",
-  "profile.removeLastDeviceConfirmTitle": "Smazat poslední metodu odemčení tohoto účtu?",
+  "profile.removeLastDeviceConfirmTitle": "Smazat poslední metodu odemčení?",
   "profile.removeLastDeviceConfirmBody": "Toto je poslední metoda odemčení tohoto účtu. Obnova e-mailem neexistuje. Jejím odebráním trvale ztratíte přístup k tomuto účtu.",
   "profile.signOutConfirmTitle": "Odhlásit se?",
   "profile.signOutConfirmBody": "Zpět se můžete přihlásit registrovaným zařízením.",

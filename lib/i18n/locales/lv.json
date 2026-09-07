@@ -131,7 +131,7 @@
   "profile.removeDevice": "Noņemt ierīci",
   "profile.removeDeviceConfirmTitle": "Noņemt šo ierīci?",
   "profile.removeDeviceConfirmBody": "Tas noņem šo atbloķēšanas metodi. Joprojām vari pierakstīties ar pārējām ierīcēm.",
-  "profile.removeLastDeviceConfirmTitle": "Dzēst šī konta pēdējo atbloķēšanas metodi?",
+  "profile.removeLastDeviceConfirmTitle": "Dzēst pēdējo atbloķēšanas metodi?",
   "profile.removeLastDeviceConfirmBody": "Šī ir šī konta pēdējā atbloķēšanas metode. E-pasta atjaunošanas nav. To noņemot, tu neatgriezeniski zaudēsi piekļuvi šim kontam.",
   "profile.signOutConfirmTitle": "Izrakstīties?",
   "profile.signOutConfirmBody": "Vari atkal pierakstīties ar reģistrētu ierīci.",

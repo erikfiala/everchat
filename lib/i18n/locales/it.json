@@ -131,7 +131,7 @@
   "profile.removeDevice": "Rimuovi dispositivo",
   "profile.removeDeviceConfirmTitle": "Rimuovere questo dispositivo?",
   "profile.removeDeviceConfirmBody": "Questo rimuove quel metodo di sblocco. Potrai ancora accedere con gli altri dispositivi.",
-  "profile.removeLastDeviceConfirmTitle": "Eliminare l’ultimo metodo di sblocco di questo account?",
+  "profile.removeLastDeviceConfirmTitle": "Eliminare l’ultimo metodo di sblocco?",
   "profile.removeLastDeviceConfirmBody": "Questo è l’ultimo metodo di sblocco di questo account. Non c’è recupero via e-mail. Rimuoverlo significa perdere definitivamente l’accesso a questo account.",
   "profile.signOutConfirmTitle": "Uscire?",
   "profile.signOutConfirmBody": "Potrai accedere di nuovo con un dispositivo registrato.",

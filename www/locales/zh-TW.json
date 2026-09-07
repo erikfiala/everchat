@@ -131,7 +131,7 @@
   "profile.removeDevice": "移除裝置",
   "profile.removeDeviceConfirmTitle": "移除此裝置？",
   "profile.removeDeviceConfirmBody": "這會移除該解鎖方式。你仍可用其餘裝置登入。",
-  "profile.removeLastDeviceConfirmTitle": "刪除此帳號的最後一種解鎖方式？",
+  "profile.removeLastDeviceConfirmTitle": "刪除最後一種解鎖方式？",
   "profile.removeLastDeviceConfirmBody": "這是此帳號的最後一種解鎖方式。沒有電子郵件復原。移除後，你將永久失去此帳號的存取權。",
   "profile.signOutConfirmTitle": "登出？",
   "profile.signOutConfirmBody": "你可以用已註冊的裝置再次登入。",

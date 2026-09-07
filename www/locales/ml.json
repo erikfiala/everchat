@@ -131,7 +131,7 @@
   "profile.removeDevice": "ഉപകരണം നീക്കം ചെയ്യുക",
   "profile.removeDeviceConfirmTitle": "ഈ ഉപകരണം നീക്കം ചെയ്യണോ?",
   "profile.removeDeviceConfirmBody": "ഇത് ആ അൺലോക്ക് രീതി നീക്കം ചെയ്യുന്നു. മറ്റ് ഉപകരണങ്ങളിൽ നിന്ന് ഇപ്പോഴും സൈൻ ഇൻ ചെയ്യാം.",
-  "profile.removeLastDeviceConfirmTitle": "ഈ അക്കൗണ്ടിന്റെ അവസാന അൺലോക്ക് രീതി ഇല്ലാതാക്കട്ടെ?",
+  "profile.removeLastDeviceConfirmTitle": "അവസാന അൺലോക്ക് രീതി ഇല്ലാതാക്കട്ടെ?",
   "profile.removeLastDeviceConfirmBody": "ഇതാണ് ഈ അക്കൗണ്ടിന്റെ അവസാന അൺലോക്ക് രീതി. ഇമെയിൽ വഴി വീണ്ടെടുക്കൽ ഇല്ല. ഇത് നീക്കം ചെയ്താൽ ഈ അക്കൗണ്ടിലേക്കുള്ള പ്രവേശനം നിങ്ങൾ ശാശ്വതമായി നഷ്ടപ്പെടുത്തും.",
   "profile.signOutConfirmTitle": "സൈൻ ഔട്ട് ചെയ്യണോ?",
   "profile.signOutConfirmBody": "രജിസ്റ്റർ ചെയ്ത ഉപകരണം ഉപയോഗിച്ച് വീണ്ടും സൈൻ ഇൻ ചെയ്യാം.",

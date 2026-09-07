@@ -131,7 +131,7 @@
   "profile.removeDevice": "Уклони уређај",
   "profile.removeDeviceConfirmTitle": "Уклонити овај уређај?",
   "profile.removeDeviceConfirmBody": "Ово уклања тај начин откључавања. И даље можете да се пријавите са осталим уређајима.",
-  "profile.removeLastDeviceConfirmTitle": "Обрисати последњи начин откључавања овог налога?",
+  "profile.removeLastDeviceConfirmTitle": "Обрисати последњи начин откључавања?",
   "profile.removeLastDeviceConfirmBody": "Ово је последњи начин откључавања овог налога. Нема опоравка путем е-поште. Уклањањем трајно губите приступ овом налогу.",
   "profile.signOutConfirmTitle": "Одјавити се?",
   "profile.signOutConfirmBody": "Можете се поново пријавити регистрованим уређајем.",

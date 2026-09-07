@@ -131,7 +131,7 @@
   "profile.removeDevice": "ಸಾಧನ ತೆಗೆದುಹಾಕಿ",
   "profile.removeDeviceConfirmTitle": "ಈ ಸಾಧನವನ್ನು ತೆಗೆದುಹಾಕುವುದೇ?",
   "profile.removeDeviceConfirmBody": "ಇದು ಆ ಅನ್‌ಲಾಕ್ ವಿಧಾನವನ್ನು ತೆಗೆಯುತ್ತದೆ. ನಿಮ್ಮ ಇತರ ಸಾಧನಗಳಿಂದ ಇನ್ನೂ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು.",
-  "profile.removeLastDeviceConfirmTitle": "ಈ ಖಾತೆಯ ಕೊನೆಯ ಅನ್‌ಲಾಕ್ ವಿಧಾನವನ್ನು ಅಳಿಸುವುದೇ?",
+  "profile.removeLastDeviceConfirmTitle": "ಕೊನೆಯ ಅನ್‌ಲಾಕ್ ವಿಧಾನವನ್ನು ಅಳಿಸುವುದೇ?",
   "profile.removeLastDeviceConfirmBody": "ಇದು ಈ ಖಾತೆಯ ಕೊನೆಯ ಅನ್‌ಲಾಕ್ ವಿಧಾನ. ಇಮೇಲ್ ಮರುಪಡೆಯುವಿಕೆ ಇಲ್ಲ. ಇದನ್ನು ತೆಗೆದರೆ ಈ ಖಾತೆಯ ಪ್ರವೇಶವನ್ನು ಶಾಶ್ವತವಾಗಿ ಕಳೆದುಕೊಳ್ಳುತ್ತೀರಿ.",
   "profile.signOutConfirmTitle": "ಸೈನ್ ಔಟ್ ಮಾಡುವುದೇ?",
   "profile.signOutConfirmBody": "ನೋಂದಾಯಿತ ಸಾಧನದೊಂದಿಗೆ ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು.",

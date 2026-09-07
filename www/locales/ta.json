@@ -131,7 +131,7 @@
   "profile.removeDevice": "சாதனத்தை நீக்கு",
   "profile.removeDeviceConfirmTitle": "இந்தச் சாதனத்தை நீக்கவா?",
   "profile.removeDeviceConfirmBody": "இது அந்த திறக்கும் முறையை நீக்குகிறது. உங்கள் பிற சாதனங்களில் இன்னும் உள்நுழையலாம்.",
-  "profile.removeLastDeviceConfirmTitle": "இந்தக் கணக்கின் கடைசி திறக்கும் முறையை நீக்கவா?",
+  "profile.removeLastDeviceConfirmTitle": "கடைசி திறக்கும் முறையை நீக்கவா?",
   "profile.removeLastDeviceConfirmBody": "இது இந்தக் கணக்கின் கடைசி திறக்கும் முறை. மின்னஞ்சல் மூலம் மீட்பு இல்லை. இதை நீக்கினால் இந்தக் கணக்கிற்கான அணுகலை நிரந்தரமாக இழப்பீர்கள்.",
   "profile.signOutConfirmTitle": "வெளியேறவா?",
   "profile.signOutConfirmBody": "பதிவுசெய்யப்பட்ட சாதனத்துடன் மீண்டும் உள்நுழையலாம்.",

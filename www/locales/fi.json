@@ -131,7 +131,7 @@
   "profile.removeDevice": "Poista laite",
   "profile.removeDeviceConfirmTitle": "Poistetaanko tämä laite?",
   "profile.removeDeviceConfirmBody": "Tämä poistaa kyseisen avausmenetelmän. Voit yhä kirjautua muilla laitteillasi.",
-  "profile.removeLastDeviceConfirmTitle": "Poistetaanko tämän tilin viimeinen avausmenetelmä?",
+  "profile.removeLastDeviceConfirmTitle": "Poistetaanko viimeinen avausmenetelmä?",
   "profile.removeLastDeviceConfirmBody": "Tämä on tilin viimeinen avausmenetelmä. Sähköpostipalautusta ei ole. Sen poistaminen tarkoittaa, että menetät pysyvästi pääsyn tähän tiliin.",
   "profile.signOutConfirmTitle": "Kirjaudutaanko ulos?",
   "profile.signOutConfirmBody": "Voit kirjautua takaisin rekisteröidyllä laitteella.",

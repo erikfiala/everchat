@@ -131,7 +131,7 @@
   "profile.removeDevice": "移除设备",
   "profile.removeDeviceConfirmTitle": "移除此设备？",
   "profile.removeDeviceConfirmBody": "这将移除该解锁方式。你仍可用其余设备登录。",
-  "profile.removeLastDeviceConfirmTitle": "删除此账户的最后一种解锁方式？",
+  "profile.removeLastDeviceConfirmTitle": "删除最后一种解锁方式？",
   "profile.removeLastDeviceConfirmBody": "这是此账户的最后一种解锁方式。没有电子邮件恢复。移除后，你将永久失去对此账户的访问权限。",
   "profile.signOutConfirmTitle": "退出登录？",
   "profile.signOutConfirmBody": "你可以用已注册的设备重新登录。",

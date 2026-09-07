@@ -131,7 +131,7 @@
   "profile.removeDevice": "Cihazı kaldır",
   "profile.removeDeviceConfirmTitle": "Bu cihaz kaldırılsın mı?",
   "profile.removeDeviceConfirmBody": "Bu, o kilit açma yöntemini kaldırır. Diğer cihazlarınızla hâlâ oturum açabilirsiniz.",
-  "profile.removeLastDeviceConfirmTitle": "Bu hesabın son kilit açma yöntemi silinsin mi?",
+  "profile.removeLastDeviceConfirmTitle": "Son kilit açma yöntemi silinsin mi?",
   "profile.removeLastDeviceConfirmBody": "Bu, bu hesabın son kilit açma yöntemidir. E-posta ile kurtarma yoktur. Kaldırmak, bu hesaba erişimi kalıcı olarak kaybedeceğiniz anlamına gelir.",
   "profile.signOutConfirmTitle": "Çıkış yapılsın mı?",
   "profile.signOutConfirmBody": "Kayıtlı bir cihazla tekrar giriş yapabilirsiniz.",

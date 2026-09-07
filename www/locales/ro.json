@@ -131,7 +131,7 @@
   "profile.removeDevice": "Elimină dispozitivul",
   "profile.removeDeviceConfirmTitle": "Elimini acest dispozitiv?",
   "profile.removeDeviceConfirmBody": "Aceasta elimină acea metodă de deblocare. Te poți autentifica în continuare cu celelalte dispozitive.",
-  "profile.removeLastDeviceConfirmTitle": "Ștergi ultima metodă de deblocare a acestui cont?",
+  "profile.removeLastDeviceConfirmTitle": "Ștergi ultima metodă de deblocare?",
   "profile.removeLastDeviceConfirmBody": "Aceasta este ultima metodă de deblocare a acestui cont. Nu există recuperare prin e-mail. Eliminarea ei înseamnă că vei pierde definitiv accesul la acest cont.",
   "profile.signOutConfirmTitle": "Te deconectezi?",
   "profile.signOutConfirmBody": "Te poți reconecta cu un dispozitiv înregistrat.",

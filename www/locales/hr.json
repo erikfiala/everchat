@@ -131,7 +131,7 @@
   "profile.removeDevice": "Ukloni uređaj",
   "profile.removeDeviceConfirmTitle": "Ukloniti ovaj uređaj?",
   "profile.removeDeviceConfirmBody": "Time se uklanja ta metoda otključavanja. I dalje se možete prijaviti s ostalim uređajima.",
-  "profile.removeLastDeviceConfirmTitle": "Izbrisati posljednju metodu otključavanja ovog računa?",
+  "profile.removeLastDeviceConfirmTitle": "Izbrisati posljednju metodu otključavanja?",
   "profile.removeLastDeviceConfirmBody": "Ovo je posljednja metoda otključavanja ovog računa. Nema oporavka e-poštom. Uklanjanjem gubite trajni pristup ovom računu.",
   "profile.signOutConfirmTitle": "Odjaviti se?",
   "profile.signOutConfirmBody": "Možete se ponovno prijaviti registriranim uređajem.",

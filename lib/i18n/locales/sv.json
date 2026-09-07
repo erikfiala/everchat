@@ -131,7 +131,7 @@
   "profile.removeDevice": "Ta bort enhet",
   "profile.removeDeviceConfirmTitle": "Ta bort den här enheten?",
   "profile.removeDeviceConfirmBody": "Detta tar bort den upplåsningsmetoden. Du kan fortfarande logga in med dina andra enheter.",
-  "profile.removeLastDeviceConfirmTitle": "Ta bort kontots sista upplåsningsmetod?",
+  "profile.removeLastDeviceConfirmTitle": "Ta bort den sista upplåsningsmetoden?",
   "profile.removeLastDeviceConfirmBody": "Detta är kontots sista upplåsningsmetod. Det finns ingen e-poståterställning. Tar du bort den förlorar du permanent åtkomsten till kontot.",
   "profile.signOutConfirmTitle": "Logga ut?",
   "profile.signOutConfirmBody": "Du kan logga in igen med en registrerad enhet.",

@@ -131,7 +131,7 @@
   "profile.removeDevice": "הסר מכשיר",
   "profile.removeDeviceConfirmTitle": "להסיר את המכשיר הזה?",
   "profile.removeDeviceConfirmBody": "פעולה זו מסירה את שיטת הביטול הזו. עדיין אפשר להיכנס עם המכשירים האחרים.",
-  "profile.removeLastDeviceConfirmTitle": "למחוק את שיטת הביטול האחרונה של החשבון הזה?",
+  "profile.removeLastDeviceConfirmTitle": "למחוק את שיטת הביטול האחרונה?",
   "profile.removeLastDeviceConfirmBody": "זו שיטת הביטול האחרונה בחשבון הזה. אין שחזור באימייל. הסרה שלה פירושה שתאבדו לצמיתות את הגישה לחשבון.",
   "profile.signOutConfirmTitle": "להתנתק?",
   "profile.signOutConfirmBody": "אפשר להתחבר שוב עם מכשיר רשום.",

@@ -131,7 +131,7 @@
   "profile.removeDevice": "기기 제거",
   "profile.removeDeviceConfirmTitle": "이 기기를 제거할까요?",
   "profile.removeDeviceConfirmBody": "이 잠금 해제 방법이 삭제됩니다. 나머지 기기로 계속 로그인할 수 있습니다.",
-  "profile.removeLastDeviceConfirmTitle": "이 계정의 마지막 잠금 해제 방법을 삭제할까요?",
+  "profile.removeLastDeviceConfirmTitle": "마지막 잠금 해제 방법을 삭제할까요?",
   "profile.removeLastDeviceConfirmBody": "이 계정의 마지막 잠금 해제 방법입니다. 이메일 복구는 없습니다. 삭제하면 이 계정에 영구적으로 접근할 수 없습니다.",
   "profile.signOutConfirmTitle": "로그아웃할까요?",
   "profile.signOutConfirmBody": "등록된 기기로 다시 로그인할 수 있습니다.",

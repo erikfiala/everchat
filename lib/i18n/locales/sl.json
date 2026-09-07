@@ -131,7 +131,7 @@
   "profile.removeDevice": "Odstrani napravo",
   "profile.removeDeviceConfirmTitle": "Odstraniti to napravo?",
   "profile.removeDeviceConfirmBody": "S tem odstranite ta način odklepanja. Še vedno se lahko prijavite z ostalimi napravami.",
-  "profile.removeLastDeviceConfirmTitle": "Izbrišem zadnji način odklepanja tega računa?",
+  "profile.removeLastDeviceConfirmTitle": "Izbrišem zadnji način odklepanja?",
   "profile.removeLastDeviceConfirmBody": "To je zadnji način odklepanja tega računa. Obnovitve po e-pošti ni. Če ga odstranite, boste trajno izgubili dostop do tega računa.",
   "profile.signOutConfirmTitle": "Odjava?",
   "profile.signOutConfirmBody": "Ponovno se lahko prijavite z registrirano napravo.",

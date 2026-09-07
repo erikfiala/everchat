@@ -131,7 +131,7 @@
   "profile.removeDevice": "Pašalinti įrenginį",
   "profile.removeDeviceConfirmTitle": "Pašalinti šį įrenginį?",
   "profile.removeDeviceConfirmBody": "Tai pašalina šį atrakinimo būdą. Vis tiek galėsite prisijungti kitais įrenginiais.",
-  "profile.removeLastDeviceConfirmTitle": "Ištrinti paskutinį šios paskyros atrakinimo būdą?",
+  "profile.removeLastDeviceConfirmTitle": "Ištrinti paskutinį atrakinimo būdą?",
   "profile.removeLastDeviceConfirmBody": "Tai paskutinis šios paskyros atrakinimo būdas. Atkūrimo el. paštu nėra. Jį pašalinus visam laikui prarasite prieigą prie šios paskyros.",
   "profile.signOutConfirmTitle": "Atsijungti?",
   "profile.signOutConfirmBody": "Galite vėl prisijungti registruotu įrenginiu.",

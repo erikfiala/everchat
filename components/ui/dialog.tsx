@@ -16,13 +16,13 @@ export const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-3 z-50 w-[90%] max-w-sm -translate-x-1/2 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-lg',
+        'fixed left-1/2 top-3 z-50 w-[90%] max-w-sm -translate-x-1/2 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] p-5 shadow-lg',
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute end-3 top-3 rounded-sm opacity-70 hover:opacity-100">
+      <DialogPrimitive.Close className="absolute end-5 top-5 rounded-sm opacity-70 hover:opacity-100">
         <X className="h-4 w-4" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
@@ -45,7 +45,7 @@ export function DialogTitle({
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-base font-semibold', className)}
+      className={cn('text-base font-semibold leading-tight', className)}
       {...props}
     />
   );

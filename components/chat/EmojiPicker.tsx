@@ -13,7 +13,7 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
   const results = useMemo(() => searchEmoji(query), [query]);
 
   return (
-    <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
+    <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] px-1 py-2 shadow-lg">
       <Input
         placeholder={t('composer.searchEmoji')}
         value={query}

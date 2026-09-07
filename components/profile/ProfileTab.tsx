@@ -267,7 +267,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             </div>
           </div>
         </div>
-        <div className="mt-3 space-y-2">
+        <div className="mt-3 space-y-4">
           <AboutField
             value={user.about ?? ''}
             onSave={async (next) => {

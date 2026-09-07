@@ -94,7 +94,7 @@
     rows.forEach(function (row) {
       var a = document.createElement('a');
       a.className = 'trending-row';
-      a.href = httpsUrl(row.canonical_url);
+      a.href = row.url || httpsUrl(row.canonical_url);
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
 
@@ -118,7 +118,7 @@
       meta.className = 'trending-meta';
       meta.textContent =
         t('www.trendingTalking', { count: row.message_count || 0 }) ||
-        (row.message_count || 0) + ' talking';
+        (row.message_count || 0) + ' online';
 
       body.appendChild(title);
       body.appendChild(host);

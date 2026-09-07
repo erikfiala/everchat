@@ -44,7 +44,7 @@ export async function fetchActivity(
   const pageIds = [...new Set(messages.map((m) => m.page_id))];
   const { data: pages, error: pageError } = await sb
     .from('pages')
-    .select('id, canonical_url, title, description, favicon_url')
+    .select('*')
     .in('id', pageIds);
   if (pageError) throw pageError;
 
@@ -87,6 +87,102 @@ export async function revokeDevice(
 }
 
 export const DEVICE_LABEL_MAX_LEN = 64;
+/** Short public bio — same range as a typical social about (160–280). */
+export const ABOUT_MAX_LEN = 160;
+export const WEBSITE_MAX_LEN = 500;
+
+const HAS_URL_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+
+/** Empty → null. Otherwise a normalized http(s) URL, or throws `errors.websiteInvalid`. */
+export function normalizeWebsiteUrl(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  if (trimmed.length > WEBSITE_MAX_LEN) {
+    throw new Error('errors.websiteInvalid');
+  }
+
+  const candidate = HAS_URL_SCHEME.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    throw new Error('errors.websiteInvalid');
+  }
+
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+    throw new Error('errors.websiteInvalid');
+  }
+  if (url.username || url.password) {
+    throw new Error('errors.websiteInvalid');
+  }
+
+  const host = url.hostname.toLowerCase();
+  if (!host || host === 'localhost' || !host.includes('.')) {
+    throw new Error('errors.websiteInvalid');
+  }
+  if (url.href.length > WEBSITE_MAX_LEN) {
+    throw new Error('errors.websiteInvalid');
+  }
+  return url.href;
+}
+
+export function normalizeAbout(raw: string): string | null {
+  const next = raw.trim().slice(0, ABOUT_MAX_LEN);
+  return next || null;
+}
+
+/** Hostname without www, or the stored string if it is not a parseable URL. */
+export function websiteDisplayLabel(website: string): string {
+  try {
+    const host = new URL(website).hostname.replace(/^www\./i, '');
+    return host || website;
+  } catch {
+    return website;
+  }
+}
+
+/** Open a validated profile website in a new tab (extension `browser.tabs`). */
+export async function openExternalUrl(raw: string): Promise<void> {
+  let href: string | null;
+  try {
+    href = normalizeWebsiteUrl(raw);
+  } catch {
+    return;
+  }
+  if (!href) return;
+  await browser.tabs.create({ url: href });
+}
+
+export async function updateProfileAbout(
+  userId: string,
+  about: string,
+): Promise<string | null> {
+  const next = normalizeAbout(about);
+  const sb = getSupabase();
+  const { error } = await sb
+    .from('profiles')
+    .update({ about: next })
+    .eq('id', userId);
+  if (error) throw error;
+  return next;
+}
+
+export async function updateProfileWebsite(
+  userId: string,
+  website: string,
+): Promise<string | null> {
+  const next = normalizeWebsiteUrl(website);
+  const sb = getSupabase();
+  const { error } = await sb
+    .from('profiles')
+    .update({ website: next })
+    .eq('id', userId);
+  if (error) throw error;
+  return next;
+}
 
 export async function renameDevice(
   credentialId: string,

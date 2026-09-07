@@ -3,7 +3,7 @@ import {
   ChevronDown,
   ChevronUp,
   Flag,
-  Link2,
+  Link,
   MoreHorizontal,
   Trash2,
 } from 'lucide-react';
@@ -11,7 +11,7 @@ import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { DEPTH_COLLAPSE_LEVEL } from '@/lib/constants';
 import { bindRelativeTime } from '@/lib/time';
-import { buildDeepLink } from '@/lib/canonicalize';
+import { buildShareLink } from '@/lib/canonicalize';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -78,9 +78,8 @@ export function MessageRow({
   const hideDeep =
     depth >= DEPTH_COLLAPSE_LEVEL && !continueThreadIds.has(node.id);
 
-  const copyLink = async () => {
-    if (!pageUrl) return;
-    const link = buildDeepLink(pageUrl, node.id);
+  const shareLink = async () => {
+    const link = buildShareLink(node.id);
     await navigator.clipboard.writeText(link);
     toast.success(t('toast.linkCopied'));
     setMenuOpen(false);
@@ -123,7 +122,7 @@ export function MessageRow({
       <div className="ms-4 border-s border-[var(--color-border)] ps-3 py-1">
         <button
           type="button"
-          className="text-xs font-medium text-blue-600 hover:underline"
+          className="text-sm font-medium text-blue-600 hover:underline"
           onClick={() => onContinueThread(node.id)}
         >
           {t('message.continueThread')}
@@ -219,7 +218,7 @@ export function MessageRow({
           {collapsed && !userExpanded && (
             <button
               type="button"
-              className="mt-1 text-xs text-[var(--color-muted-foreground)] hover:underline"
+              className="mt-1 text-sm text-[var(--color-muted-foreground)] hover:underline"
               onClick={() => onToggleExpand(node.id)}
             >
               {t('message.communityCollapsed', {
@@ -253,46 +252,48 @@ export function MessageRow({
               )}
 
               <div className="mt-1.5 flex flex-wrap items-center gap-0.5">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    'h-7 w-7',
-                    node.myVote === 1 && 'text-[var(--color-score-pos)]',
-                  )}
-                  onClick={() => {
-                    if (!requireAuth()) return;
-                    onVote(node.id, 1);
-                  }}
-                >
-                  <ChevronUp className="h-4 w-4" />
-                </Button>
-                <span
-                  className={cn(
-                    'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
-                    scoreColorClass(node.score),
-                  )}
-                >
-                  {formatScore(node.score)}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    'h-7 w-7',
-                    node.myVote === -1 && 'text-[var(--color-score-neg)]',
-                  )}
-                  onClick={() => {
-                    if (!requireAuth()) return;
-                    onVote(node.id, -1);
-                  }}
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
+                <div className="me-2 flex items-center gap-0.5">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      'h-7 w-7',
+                      node.myVote === 1 && 'text-[var(--color-score-pos)]',
+                    )}
+                    onClick={() => {
+                      if (!requireAuth()) return;
+                      onVote(node.id, 1);
+                    }}
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </Button>
+                  <span
+                    className={cn(
+                      'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
+                      scoreColorClass(node.score),
+                    )}
+                  >
+                    {formatScore(node.score)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      'h-7 w-7',
+                      node.myVote === -1 && 'text-[var(--color-score-neg)]',
+                    )}
+                    onClick={() => {
+                      if (!requireAuth()) return;
+                      onVote(node.id, -1);
+                    }}
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 px-2 text-xs"
+                  className="h-7 px-2"
                   onClick={() => {
                     if (!requireAuth()) return;
                     onReply(node);
@@ -304,7 +305,7 @@ export function MessageRow({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 px-2 text-xs"
+                    className="h-7 px-2"
                     onClick={() => onToggleExpand(node.id)}
                   >
                     {t('message.hide')}
@@ -314,7 +315,12 @@ export function MessageRow({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 px-2 text-xs text-[var(--color-muted-foreground)]"
+                    className={cn(
+                      'h-7 px-2 text-[var(--color-muted-foreground)]',
+                      !showTranslation &&
+                        !translating &&
+                        'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+                    )}
                     disabled={translating}
                     onClick={() => void toggleTranslation()}
                   >
@@ -338,16 +344,16 @@ export function MessageRow({
                     <div className="absolute end-0 z-20 mt-1 w-40 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] py-1 shadow-md">
                       <button
                         type="button"
-                        className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs hover:bg-[var(--color-accent)]"
-                        onClick={copyLink}
+                        className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm hover:bg-[var(--color-accent)]"
+                        onClick={shareLink}
                       >
-                        <Link2 className="h-3.5 w-3.5" />
-                        {t('message.copyLink')}
+                        <Link className="h-3.5 w-3.5" />
+                        {t('message.shareLink')}
                       </button>
                       {currentUserId === node.author_id ? (
                         <button
                           type="button"
-                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"
+                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"
                           onClick={() => {
                             setMenuOpen(false);
                             setConfirmDeleteOpen(true);
@@ -359,7 +365,7 @@ export function MessageRow({
                       ) : (
                         <button
                           type="button"
-                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-xs hover:bg-[var(--color-accent)]"
+                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm hover:bg-[var(--color-accent)]"
                           onClick={() => {
                             if (!requireAuth()) return;
                             onReport(node.id);

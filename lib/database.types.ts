@@ -14,6 +14,8 @@ export type Database = {
           id: string;
           username: string;
           avatar_url: string | null;
+          about: string | null;
+          website: string | null;
           karma: number;
           created_at: string;
         };
@@ -21,6 +23,8 @@ export type Database = {
           id?: string;
           username: string;
           avatar_url?: string | null;
+          about?: string | null;
+          website?: string | null;
           karma?: number;
           created_at?: string;
         };
@@ -28,6 +32,8 @@ export type Database = {
           id?: string;
           username?: string;
           avatar_url?: string | null;
+          about?: string | null;
+          website?: string | null;
           karma?: number;
           created_at?: string;
         };
@@ -91,6 +97,7 @@ export type Database = {
         Row: {
           id: string;
           canonical_url: string;
+          url: string | null;
           title: string | null;
           description: string | null;
           favicon_url: string | null;
@@ -100,6 +107,7 @@ export type Database = {
         Insert: {
           id?: string;
           canonical_url: string;
+          url?: string | null;
           title?: string | null;
           description?: string | null;
           favicon_url?: string | null;
@@ -109,6 +117,7 @@ export type Database = {
         Update: {
           id?: string;
           canonical_url?: string;
+          url?: string | null;
           title?: string | null;
           description?: string | null;
           favicon_url?: string | null;
@@ -364,6 +373,7 @@ export type Database = {
         Row: {
           id: string;
           canonical_url: string;
+          url: string | null;
           title: string | null;
           description: string | null;
           favicon_url: string | null;
@@ -425,14 +435,14 @@ export type NotificationWithJoins = Notification & {
   actor: Pick<Profile, 'id' | 'username' | 'avatar_url'> | null;
   page: Pick<
     Page,
-    'id' | 'canonical_url' | 'title' | 'description' | 'favicon_url'
+    'id' | 'canonical_url' | 'url' | 'title' | 'description' | 'favicon_url'
   > | null;
 };
 
 export type ActivityItem = Message & {
   page: Pick<
     Page,
-    'id' | 'canonical_url' | 'title' | 'description' | 'favicon_url'
+    'id' | 'canonical_url' | 'url' | 'title' | 'description' | 'favicon_url'
   > | null;
 };
 
@@ -465,6 +475,8 @@ export interface SessionUser {
   id: string;
   username: string;
   avatar_url: string | null;
+  about?: string | null;
+  website?: string | null;
   karma: number;
   token: string;
   expiresAt: number;

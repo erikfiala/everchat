@@ -59,6 +59,7 @@ export function usePageThread(
       const page = userId
         ? await upsertPage({
             canonicalUrl: tab.canonicalUrl,
+            url: tab.url,
             title: tab.title,
             faviconUrl: tab.favIconUrl,
           })
@@ -80,7 +81,7 @@ export function usePageThread(
     } finally {
       setLoading(false);
     }
-  }, [tab.canonicalUrl, tab.title, tab.favIconUrl, userId, sort, rebuild]);
+  }, [tab.canonicalUrl, tab.url, tab.title, tab.favIconUrl, userId, sort, rebuild]);
 
   useEffect(() => {
     load();

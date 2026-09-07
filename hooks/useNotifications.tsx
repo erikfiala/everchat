@@ -16,7 +16,7 @@ import {
 import type { NotificationWithJoins } from '@/lib/database.types';
 import { subscribePostgresChanges } from '@/lib/realtime';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
-import { buildDeepLink } from '@/lib/canonicalize';
+import { hrefFromPage } from '@/lib/canonicalize';
 import { useAuth } from '@/hooks/useAuth';
 
 export type NotificationsValue = {
@@ -94,7 +94,7 @@ function useNotificationsState(userId: string | null | undefined): Notifications
     );
     setUnread((c) => Math.max(0, c - (n.read_at ? 0 : 1)));
 
-    const url = buildDeepLink(n.page_url, n.message_id);
+    const url = n.page ? hrefFromPage(n.page) : n.page_url;
     const tab = await browser.tabs.create({ url });
     if (tab.id != null) {
       await browser.runtime.sendMessage({

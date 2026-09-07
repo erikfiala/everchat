@@ -37,6 +37,8 @@ export const DESCRIPTION_TRUNCATE = 120;
 export const TRENDING_LIMIT = 10;
 export const LEADERBOARD_LIMIT = 100;
 export const EC_MSG_PREFIX = 'ec-msg-';
+/** Public marketing origin used in share URLs (everch.at). */
+export const WWW_ORIGIN = 'https://everch.at';
 
 export const TRACKING_PARAM_DENYLIST = new Set([
   'utm_source',

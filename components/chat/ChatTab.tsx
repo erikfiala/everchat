@@ -166,7 +166,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         </TooltipProvider>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3">
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-3">
         {thread.loading && (
           <div className="space-y-3 py-4">
             <Skeleton className="h-16 w-full" />

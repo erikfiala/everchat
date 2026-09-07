@@ -50,6 +50,13 @@ function Shell() {
     wasSignedIn.current = Boolean(user);
   }, [user, setShowAuthLanding]);
 
+  // Activity / share / notification deep-links focus a message — show Chat.
+  useEffect(() => {
+    if (!activeTab.focusMessageId) return;
+    setTab('chat');
+    setShowAuthLanding(false);
+  }, [activeTab.focusMessageId, setShowAuthLanding]);
+
   // Tell the background SW whether the panel is focused on the inbox so it
   // can skip redundant OS toasts while the user is already reading them.
   useEffect(() => {
@@ -106,7 +113,7 @@ function Shell() {
           ) : tab === 'settings' ? (
             <SettingsTab />
           ) : (
-            <ProfileTab />
+            <ProfileTab onOpenChat={() => setTab('chat')} />
           )}
         </ErrorBoundary>
       </main>

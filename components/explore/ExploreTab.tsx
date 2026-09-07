@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLocale } from '@/hooks/useLocale';
-import { canonicalize, httpsUrlFromCanonical } from '@/lib/canonicalize';
+import { canonicalize, hrefFromPage } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE, TRENDING_LIMIT } from '@/lib/constants';
 import {
   getRecentlyActivePages,
@@ -46,6 +46,7 @@ export function ExploreTab() {
         ? getTrendingPages(TRENDING_LIMIT).then((data) =>
             (data as ExplorePageRow[]).map((row) => ({
               ...row,
+              url: row.url ?? null,
               last_active_at: row.last_active_at ?? null,
               message_count: row.message_count ?? 0,
             })),
@@ -72,7 +73,7 @@ export function ExploreTab() {
     mode === 'trending' ? t('explore.trending') : t('explore.new');
 
   const open = async (row: ExplorePageRow) => {
-    const url = httpsUrlFromCanonical(row.canonical_url);
+    const url = hrefFromPage(row);
     const tab = await browser.tabs.create({ url });
     if (tab.id != null) {
       await browser.runtime.sendMessage({
@@ -126,7 +127,7 @@ export function ExploreTab() {
         </DropdownMenu>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
+      <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 pt-3">
         {loading &&
           Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="mb-1 h-14 w-full" />
@@ -139,13 +140,13 @@ export function ExploreTab() {
         {!loading &&
           rows.map((row) => {
             const host = hostFromCanonical(row.canonical_url);
-            const activity =
-              mode === 'new' && row.last_active_at
-                ? formatDistanceToNow(new Date(row.last_active_at), {
-                    addSuffix: true,
-                    locale: dateFnsLocaleFor(locale),
-                  })
-                : t('auth.trendingTalking', { count: row.message_count });
+            const showOnline = !(mode === 'new' && row.last_active_at);
+            const activity = showOnline
+              ? t('auth.trendingTalking', { count: row.message_count })
+              : formatDistanceToNow(new Date(row.last_active_at!), {
+                  addSuffix: true,
+                  locale: dateFnsLocaleFor(locale),
+                });
 
             return (
               <button
@@ -166,7 +167,19 @@ export function ExploreTab() {
                         DESCRIPTION_TRUNCATE,
                       )}
                   </div>
-                  <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
+                  <div
+                    className={
+                      showOnline
+                        ? 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-success)]'
+                        : 'mt-0.5 text-[11px] text-[var(--color-muted-foreground)]'
+                    }
+                  >
+                    {showOnline ? (
+                      <span
+                        className="size-1.5 shrink-0 rounded-full bg-[var(--color-success)]"
+                        aria-hidden
+                      />
+                    ) : null}
                     {activity}
                   </div>
                 </div>

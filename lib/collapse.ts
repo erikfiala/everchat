@@ -16,7 +16,6 @@ export function scoreColorClass(score: number): string {
 }
 
 export function formatScore(score: number): string {
-  if (score > 0) return `+${score}`;
   return String(score);
 }
 

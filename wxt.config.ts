@@ -40,6 +40,10 @@ export default defineConfig({
       // Required to claim WebAuthn RP ID `everch.at` from the extension origin.
       'https://everch.at/*',
     ],
+    // www share trampoline (`/m/{id}`) pings the extension via sendMessage.
+    externally_connectable: {
+      matches: ['https://everch.at/*', 'https://www.everch.at/*'],
+    },
     action: {
       default_title: 'Everchat',
     },

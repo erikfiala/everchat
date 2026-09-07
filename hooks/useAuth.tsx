@@ -41,7 +41,9 @@ interface AuthContextValue {
   logout: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   patchUser: (
-    patch: Partial<Pick<SessionUser, 'username' | 'avatar_url' | 'karma'>>,
+    patch: Partial<
+      Pick<SessionUser, 'username' | 'avatar_url' | 'about' | 'website' | 'karma'>
+    >,
   ) => Promise<void>;
 }
 
@@ -153,6 +155,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const next = await updateSessionProfile({
           username: profile.username,
           avatar_url: profile.avatar_url,
+          about: profile.about,
+          website: profile.website,
           karma: profile.karma,
         });
         if (next) setUser(next);
@@ -164,7 +168,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const patchUser = useCallback(
     async (
-      patch: Partial<Pick<SessionUser, 'username' | 'avatar_url' | 'karma'>>,
+      patch: Partial<
+        Pick<SessionUser, 'username' | 'avatar_url' | 'about' | 'website' | 'karma'>
+      >,
     ) => {
       const next = await updateSessionProfile(patch);
       if (next) setUser(next);

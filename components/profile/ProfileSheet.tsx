@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useLocale } from '@/hooks/useLocale';
+import { ProfilePublicMeta } from '@/components/profile/ProfilePublicMeta';
 import { fetchProfileByUsername } from '@/lib/profile';
 import type { Profile } from '@/lib/database.types';
 import { formatScore, scoreColorClass } from '@/lib/collapse';
@@ -45,14 +46,14 @@ export function ProfileSheet({
         </DialogHeader>
         {loading && <Skeleton className="h-20 w-full" />}
         {!loading && profile && (
-          <div className="flex items-center gap-3 py-2">
+          <div className="flex items-start gap-3 py-2">
             <Avatar className="h-12 w-12">
               {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
               <AvatarFallback>
                 {(profile.username || '?').slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="text-base font-semibold">
                 @{profile.username || t('message.unknownAuthor')}
               </div>
@@ -66,6 +67,10 @@ export function ProfileSheet({
                   score: formatScore(profile.karma ?? 0),
                 })}
               </div>
+              <ProfilePublicMeta
+                about={profile.about}
+                website={profile.website}
+              />
             </div>
           </div>
         )}

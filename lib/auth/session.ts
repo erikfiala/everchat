@@ -26,7 +26,9 @@ export async function clearSession(): Promise<void> {
 }
 
 export async function updateSessionProfile(
-  patch: Partial<Pick<SessionUser, 'username' | 'avatar_url' | 'karma'>>,
+  patch: Partial<
+    Pick<SessionUser, 'username' | 'avatar_url' | 'about' | 'website' | 'karma'>
+  >,
 ): Promise<SessionUser | null> {
   const current = await loadSession();
   if (!current) return null;

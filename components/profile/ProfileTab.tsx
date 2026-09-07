@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
@@ -22,11 +23,15 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import {
+  ABOUT_MAX_LEN,
   DEVICE_LABEL_MAX_LEN,
+  WEBSITE_MAX_LEN,
   fetchActivity,
   listDevices,
   renameDevice,
   revokeDevice,
+  updateProfileAbout,
+  updateProfileWebsite,
   uploadAvatar,
 } from '@/lib/profile';
 import { getStoredCredentialIds } from '@/lib/auth/passkeyHint';
@@ -35,12 +40,12 @@ import { displayDeviceLabel, guessDeviceLabel } from '@/lib/deviceLabel';
 import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
-import { buildDeepLink, httpsUrlFromCanonical } from '@/lib/canonicalize';
+import { hrefFromPage } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-export function ProfileTab() {
+export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { t, tError, locale } = useLocale();
   const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user, loading: authLoading, logout, patchUser, refreshProfile } =
@@ -106,8 +111,8 @@ export function ProfileTab() {
 
   const openActivity = async (item: ActivityItem) => {
     if (!item.page) return;
-    const base = httpsUrlFromCanonical(item.page.canonical_url);
-    const url = buildDeepLink(base, item.id);
+    const url = hrefFromPage(item.page);
+    onOpenChat?.();
     const tab = await browser.tabs.create({ url });
     if (tab.id != null) {
       await browser.runtime.sendMessage({
@@ -218,6 +223,24 @@ export function ProfileTab() {
             </div>
           </div>
         </div>
+        <div className="mt-3 space-y-2">
+          <AboutField
+            value={user.about ?? ''}
+            onSave={async (next) => {
+              const about = await updateProfileAbout(user.id, next);
+              await patchUser({ about });
+              return about ?? '';
+            }}
+          />
+          <WebsiteField
+            value={user.website ?? ''}
+            onSave={async (next) => {
+              const website = await updateProfileWebsite(user.id, next);
+              await patchUser({ website });
+              return website ?? '';
+            }}
+          />
+        </div>
       </div>
 
       <section className="border-b border-[var(--color-border)] px-4 py-3">
@@ -287,7 +310,7 @@ export function ProfileTab() {
                 <span className="min-w-0 truncate text-sm font-medium">
                   {item.page?.title || item.page?.canonical_url}
                 </span>
-                <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium uppercase">
+                <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium">
                   {item.parent_id
                     ? t('profile.activityReply')
                     : t('profile.activityPost')}
@@ -564,5 +587,162 @@ function DeviceRow({
         </DialogContent>
       </Dialog>
     </li>
+  );
+}
+
+function AboutField({
+  value,
+  onSave,
+}: {
+  value: string;
+  onSave: (next: string) => Promise<string>;
+}) {
+  const { t, tError } = useLocale();
+  const [draft, setDraft] = useState(value);
+  const [saving, setSaving] = useState(false);
+  const inFlight = useRef(false);
+  const dirty = useRef(false);
+
+  useEffect(() => {
+    if (dirty.current) return;
+    setDraft(value);
+  }, [value]);
+
+  const commit = async () => {
+    if (inFlight.current) return;
+    if (draft.trim() === value.trim()) {
+      dirty.current = false;
+      setDraft(value);
+      return;
+    }
+    inFlight.current = true;
+    setSaving(true);
+    try {
+      const saved = await onSave(draft);
+      dirty.current = false;
+      setDraft(saved);
+      toast.success(t('profile.toastAboutSaved'));
+    } catch (e) {
+      toast.error(tError(e));
+    } finally {
+      inFlight.current = false;
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div>
+      <label
+        htmlFor="profile-about"
+        className="mb-1 block text-xs font-semibold text-[var(--color-muted-foreground)]"
+      >
+        {t('profile.about')}
+      </label>
+      <Textarea
+        id="profile-about"
+        value={draft}
+        maxLength={ABOUT_MAX_LEN}
+        disabled={saving}
+        rows={3}
+        placeholder={t('profile.aboutPlaceholder')}
+        aria-label={t('profile.about')}
+        className="min-h-[4.5rem] resize-none px-2.5 py-1.5"
+        onChange={(e) => {
+          dirty.current = true;
+          setDraft(e.target.value);
+        }}
+        onBlur={() => {
+          void commit();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            dirty.current = false;
+            setDraft(value);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+function WebsiteField({
+  value,
+  onSave,
+}: {
+  value: string;
+  onSave: (next: string) => Promise<string>;
+}) {
+  const { t, tError } = useLocale();
+  const [draft, setDraft] = useState(value);
+  const [saving, setSaving] = useState(false);
+  const inFlight = useRef(false);
+  const dirty = useRef(false);
+
+  useEffect(() => {
+    if (dirty.current) return;
+    setDraft(value);
+  }, [value]);
+
+  const commit = async () => {
+    if (inFlight.current) return;
+    if (draft.trim() === value.trim()) {
+      dirty.current = false;
+      setDraft(value);
+      return;
+    }
+    inFlight.current = true;
+    setSaving(true);
+    try {
+      const saved = await onSave(draft);
+      dirty.current = false;
+      setDraft(saved);
+      toast.success(t('profile.toastWebsiteSaved'));
+    } catch (e) {
+      toast.error(tError(e));
+    } finally {
+      inFlight.current = false;
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div>
+      <label
+        htmlFor="profile-website"
+        className="mb-1 block text-xs font-semibold text-[var(--color-muted-foreground)]"
+      >
+        {t('profile.website')}
+      </label>
+      <Input
+        id="profile-website"
+        type="text"
+        inputMode="url"
+        autoComplete="url"
+        value={draft}
+        maxLength={WEBSITE_MAX_LEN}
+        disabled={saving}
+        placeholder={t('profile.websitePlaceholder')}
+        aria-label={t('profile.website')}
+        className="h-8 px-2.5"
+        onChange={(e) => {
+          dirty.current = true;
+          setDraft(e.target.value);
+        }}
+        onBlur={() => {
+          void commit();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            void commit();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            dirty.current = false;
+            setDraft(value);
+          }
+        }}
+      />
+    </div>
   );
 }

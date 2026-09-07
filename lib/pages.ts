@@ -1,6 +1,7 @@
 import { getSupabase } from './supabase';
 import type { Page } from './database.types';
 import { DESCRIPTION_TRUNCATE } from './constants';
+import { originalHref } from './canonicalize';
 
 function isUniqueViolation(error: { code?: string; message?: string } | null) {
   return (
@@ -9,8 +10,19 @@ function isUniqueViolation(error: { code?: string; message?: string } | null) {
   );
 }
 
+function isUnknownUrlColumn(error: { code?: string; message?: string } | null) {
+  if (!error) return false;
+  const msg = (error.message ?? '').toLowerCase();
+  return (
+    error.code === '42703' ||
+    error.code === 'PGRST204' ||
+    (msg.includes("'url'") && msg.includes('column'))
+  );
+}
+
 export async function upsertPage(input: {
   canonicalUrl: string;
+  url?: string | null;
   title?: string | null;
   description?: string | null;
   faviconUrl?: string | null;
@@ -19,6 +31,7 @@ export async function upsertPage(input: {
   const description = input.description
     ? input.description.slice(0, DESCRIPTION_TRUNCATE)
     : null;
+  const url = input.url ? originalHref(input.url) : null;
 
   const { data: existing } = await sb
     .from('pages')
@@ -27,53 +40,115 @@ export async function upsertPage(input: {
     .maybeSingle();
 
   if (existing) {
-    return updatePageMeta(existing, input, description);
+    return updatePageMeta(existing, { ...input, url }, description);
   }
 
-  const { data: created, error: insertError } = await sb
-    .from('pages')
-    .insert({
-      canonical_url: input.canonicalUrl,
-      title: input.title ?? null,
-      description,
-      favicon_url: input.faviconUrl ?? null,
-    })
-    .select()
-    .single();
+  const { data: created, error: insertError } = await insertPageRow({
+    canonical_url: input.canonicalUrl,
+    url,
+    title: input.title ?? null,
+    description,
+    favicon_url: input.faviconUrl ?? null,
+  });
 
   if (!insertError && created) return created;
 
   // Concurrent insert won the race: load + update instead of failing.
   if (isUniqueViolation(insertError)) {
     const raced = await getPageByCanonical(input.canonicalUrl);
-    if (raced) return updatePageMeta(raced, input, description);
+    if (raced) return updatePageMeta(raced, { ...input, url }, description);
   }
 
   throw insertError ?? new Error('Could not create page room');
 }
 
+async function insertPageRow(row: {
+  canonical_url: string;
+  url: string | null;
+  title: string | null;
+  description: string | null;
+  favicon_url: string | null;
+}): Promise<{ data: Page | null; error: { code?: string; message?: string } | null }> {
+  const sb = getSupabase();
+  const withUrl = await sb.from('pages').insert(row).select().single();
+  if (!isUnknownUrlColumn(withUrl.error)) {
+    return { data: withUrl.data, error: withUrl.error };
+  }
+  const { url: _drop, ...legacy } = row;
+  const retry = await sb.from('pages').insert(legacy).select().single();
+  return { data: retry.data, error: retry.error };
+}
+
 async function updatePageMeta(
   existing: Page,
   input: {
+    url?: string | null;
     title?: string | null;
     faviconUrl?: string | null;
   },
   description: string | null,
 ): Promise<Page> {
   const sb = getSupabase();
+  const nextUrl = existing.url || input.url || null;
+  const patch: {
+    title: string | null;
+    description: string | null;
+    favicon_url: string | null;
+    updated_at: string;
+    url?: string;
+  } = {
+    title: input.title || existing.title,
+    description: description || existing.description,
+    favicon_url: input.faviconUrl || existing.favicon_url,
+    updated_at: new Date().toISOString(),
+  };
+  if (nextUrl && nextUrl !== existing.url) {
+    patch.url = nextUrl;
+  }
+
   const { data, error } = await sb
     .from('pages')
-    .update({
-      title: input.title || existing.title,
-      description: description || existing.description,
-      favicon_url: input.faviconUrl || existing.favicon_url,
-      updated_at: new Date().toISOString(),
-    })
+    .update(patch)
     .eq('id', existing.id)
     .select()
     .single();
+  if (!error && data) return data;
+
+  if (isUnknownUrlColumn(error) && patch.url) {
+    const { url: _drop, ...legacy } = patch;
+    const retry = await sb
+      .from('pages')
+      .update(legacy)
+      .eq('id', existing.id)
+      .select()
+      .single();
+    if (retry.error) throw retry.error;
+    return retry.data;
+  }
+
   if (error) throw error;
   return data;
+}
+
+export async function getPageForMessage(
+  messageId: string,
+): Promise<Page | null> {
+  const sb = getSupabase();
+  const { data: message, error } = await sb
+    .from('messages')
+    .select('page_id')
+    .eq('id', messageId)
+    .maybeSingle();
+  if (error) throw error;
+  if (!message) return null;
+
+  const { data: page, error: pageError } = await sb
+    .from('pages')
+    .select('*')
+    .eq('id', message.page_id)
+    .maybeSingle();
+  if (pageError) throw pageError;
+  return page;
 }
 
 export async function getPageByCanonical(
@@ -106,7 +181,7 @@ export async function getTrendingPages(limit = 10) {
   const { data: messages, error } = await sb
     .from('messages')
     .select(
-      'page_id, pages!inner(id, canonical_url, title, description, favicon_url)',
+      'page_id, pages!inner(*)',
     )
     .gte('created_at', since)
     .is('deleted_at', null);
@@ -118,6 +193,7 @@ export async function getTrendingPages(limit = 10) {
     {
       id: string;
       canonical_url: string;
+      url: string | null;
       title: string | null;
       description: string | null;
       favicon_url: string | null;
@@ -129,6 +205,7 @@ export async function getTrendingPages(limit = 10) {
     const page = row.pages as unknown as {
       id: string;
       canonical_url: string;
+      url: string | null;
       title: string | null;
       description: string | null;
       favicon_url: string | null;
@@ -150,6 +227,7 @@ export async function getTrendingPages(limit = 10) {
 export type ExplorePageRow = {
   id: string;
   canonical_url: string;
+  url: string | null;
   title: string | null;
   description: string | null;
   favicon_url: string | null;
@@ -169,7 +247,7 @@ export async function getRecentlyActivePages(
   const { data: messages, error } = await sb
     .from('messages')
     .select(
-      'page_id, created_at, pages!inner(id, canonical_url, title, description, favicon_url)',
+      'page_id, created_at, pages!inner(*)',
     )
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
@@ -184,6 +262,7 @@ export async function getRecentlyActivePages(
     const page = row.pages as unknown as {
       id: string;
       canonical_url: string;
+      url: string | null;
       title: string | null;
       description: string | null;
       favicon_url: string | null;
@@ -201,6 +280,7 @@ export async function getRecentlyActivePages(
     indexById.set(page.id, ordered.length);
     ordered.push({
       ...page,
+      url: page.url ?? null,
       message_count: 1,
       last_active_at: row.created_at as string,
     });

@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { canonicalize, parseFocusMessageId, buildDeepLink } from './canonicalize';
+import {
+  canonicalize,
+  parseFocusMessageId,
+  buildDeepLink,
+  buildShareLink,
+  httpsUrlFromCanonical,
+  originalHref,
+  hrefFromPage,
+  parseShareMessageId,
+} from './canonicalize';
 
 describe('canonicalize', () => {
   it('strips www, protocol, utm, and hash for identity', () => {
@@ -32,6 +41,12 @@ describe('canonicalize', () => {
     expect(r.canonicalUrl).toBe('nytimes.com/2026/01/01/world/foo.html');
     expect(r.focusMessageId).toBe(id);
   });
+
+  it('stores chrome-internal pages as host/path without scheme', () => {
+    const r = canonicalize('chrome://extensions/');
+    expect(r.canonicalUrl).toBe('extensions/');
+    expect(r.host).toBe('extensions');
+  });
 });
 
 describe('parseFocusMessageId', () => {
@@ -44,6 +59,95 @@ describe('buildDeepLink', () => {
   it('appends hash', () => {
     expect(buildDeepLink('https://example.com/a', 'xyz')).toBe(
       'https://example.com/a#ec-msg-xyz',
+    );
+  });
+
+  it('appends hash on chrome-internal pages', () => {
+    expect(buildDeepLink('chrome://extensions/', 'xyz')).toBe(
+      'chrome://extensions/#ec-msg-xyz',
+    );
+  });
+});
+
+describe('buildShareLink', () => {
+  it('uses the public everch.at /m/{id} path', () => {
+    const id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    expect(buildShareLink(id)).toBe(`https://everch.at/m/${id}`);
+  });
+});
+
+describe('parseShareMessageId', () => {
+  it('reads /m/{id}', () => {
+    expect(parseShareMessageId('/m/abc-def-ghi')).toBe('abc-def-ghi');
+    expect(parseShareMessageId('/m/abc-def-ghi/')).toBe('abc-def-ghi');
+  });
+
+  it('rejects missing or short ids', () => {
+    expect(parseShareMessageId('/m')).toBeNull();
+    expect(parseShareMessageId('/m/short')).toBeNull();
+    expect(parseShareMessageId('/privacy')).toBeNull();
+  });
+});
+
+describe('httpsUrlFromCanonical', () => {
+  it('rebuilds https URLs for public hosts', () => {
+    expect(httpsUrlFromCanonical('chromewebstore.google.com/category/extensions')).toBe(
+      'https://chromewebstore.google.com/category/extensions',
+    );
+    expect(httpsUrlFromCanonical('localhost:3000/app')).toBe(
+      'https://localhost:3000/app',
+    );
+  });
+
+  it('rebuilds chrome:// for browser-internal pages', () => {
+    expect(httpsUrlFromCanonical('extensions/')).toBe('chrome://extensions/');
+    expect(httpsUrlFromCanonical('settings/help')).toBe('chrome://settings/help');
+  });
+
+  it('leaves already-absolute URLs alone', () => {
+    expect(httpsUrlFromCanonical('https://example.com/a')).toBe(
+      'https://example.com/a',
+    );
+  });
+});
+
+describe('originalHref', () => {
+  it('keeps the real page href including scheme and query', () => {
+    expect(originalHref('https://www.example.com/foo?id=1#comments')).toBe(
+      'https://www.example.com/foo?id=1#comments',
+    );
+    expect(originalHref('https://chromewebstore.google.com/detail/abc')).toBe(
+      'https://chromewebstore.google.com/detail/abc',
+    );
+    expect(originalHref('chrome://extensions/')).toBe('chrome://extensions/');
+  });
+
+  it('strips only an Everchat focus hash', () => {
+    expect(originalHref('https://example.com/foo#ec-msg-xyzxyzxy')).toBe(
+      'https://example.com/foo',
+    );
+  });
+});
+
+describe('hrefFromPage', () => {
+  it('prefers the stored original href as-is', () => {
+    expect(
+      hrefFromPage({
+        url: 'https://chromewebstore.google.com/detail/abc',
+        canonical_url: 'extensions/',
+      }),
+    ).toBe('https://chromewebstore.google.com/detail/abc');
+  });
+
+  it('falls back to https for public canonical keys', () => {
+    expect(
+      hrefFromPage({ url: null, canonical_url: 'example.com/foo' }),
+    ).toBe('https://example.com/foo');
+  });
+
+  it('falls back to chrome:// for internal keys without a message hash', () => {
+    expect(hrefFromPage({ url: null, canonical_url: 'extensions/' })).toBe(
+      'chrome://extensions/',
     );
   });
 });

@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "buildCommand": "pnpm install && pnpm build",
   "outputDirectory": ".",
+  "rewrites": [{ "source": "/m/:id", "destination": "/m.html" }],
   "headers": [
     {
       "source": "/(.*)",

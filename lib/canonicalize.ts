@@ -1,4 +1,4 @@
-import { EC_MSG_PREFIX, TRACKING_PARAM_DENYLIST } from './constants';
+import { EC_MSG_PREFIX, TRACKING_PARAM_DENYLIST, WWW_ORIGIN } from './constants';
 
 export interface CanonicalResult {
   canonicalUrl: string;
@@ -95,6 +95,87 @@ export function buildDeepLink(pageUrl: string, messageId: string): string {
   }
 }
 
+const SHARE_MESSAGE_ID = /^[A-Za-z0-9_-]{8,80}$/;
+
+/** Public share URL: `https://everch.at/m/{messageId}`. */
+export function buildShareLink(messageId: string): string {
+  return `${WWW_ORIGIN}/m/${encodeURIComponent(messageId)}`;
+}
+
+export function isShareMessageId(id: string | null | undefined): id is string {
+  return Boolean(id && SHARE_MESSAGE_ID.test(id));
+}
+
+/** Parse `/m/{messageId}` from a share-page pathname. */
+export function parseShareMessageId(
+  pathname: string | null | undefined,
+): string | null {
+  if (!pathname) return null;
+  const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  if (parts.length !== 2 || parts[0] !== 'm') return null;
+  const raw = parts[1];
+  if (!raw) return null;
+  let id: string;
+  try {
+    id = decodeURIComponent(raw);
+  } catch {
+    return null;
+  }
+  return isShareMessageId(id) ? id : null;
+}
+
+function looksLikeHttpHost(host: string): boolean {
+  const hostname = host.replace(/:\d+$/, '').toLowerCase();
+  if (!hostname) return false;
+  if (hostname === 'localhost') return true;
+  return hostname.includes('.');
+}
+
+/**
+ * Rebuild a navigable URL from a stored canonical key (`host/path`).
+ * Public sites stay `https://`. Browser-internal pages such as
+ * `chrome://extensions/` are stored as `extensions/` — do not invent
+ * `https://extensions`.
+ */
 export function httpsUrlFromCanonical(canonicalUrl: string): string {
-  return `https://${canonicalUrl}`;
+  const trimmed = canonicalUrl.trim();
+  if (!trimmed) return trimmed;
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) return trimmed;
+
+  const host = trimmed.split('/')[0]?.split('?')[0] ?? '';
+  const scheme = looksLikeHttpHost(host) ? 'https' : 'chrome';
+  return `${scheme}://${trimmed}`;
+}
+
+const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+
+/**
+ * Persistable original href from tab.url / location.href.
+ * Drops only an Everchat `#ec-msg-` focus hash; other fragments stay.
+ */
+export function originalHref(rawUrl: string): string {
+  const trimmed = rawUrl.trim();
+  if (!trimmed) return trimmed;
+  try {
+    const url = new URL(trimmed);
+    if (parseFocusMessageId(url.hash)) {
+      url.hash = '';
+    }
+    return url.href;
+  } catch {
+    return trimmed;
+  }
+}
+
+/**
+ * URL to open for a stored page: prefer the original href, else reconstruct
+ * from canonical_url (https for public hosts, chrome:// for internal keys).
+ */
+export function hrefFromPage(page: {
+  url?: string | null;
+  canonical_url: string;
+}): string {
+  const stored = page.url?.trim();
+  if (stored && HAS_SCHEME.test(stored)) return stored;
+  return httpsUrlFromCanonical(page.canonical_url);
 }

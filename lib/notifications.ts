@@ -11,7 +11,7 @@ export async function fetchNotifications(
       `
       *,
       actor:profiles!notifications_actor_id_fkey(id, username, avatar_url),
-      page:pages!notifications_page_id_fkey(id, canonical_url, title, description, favicon_url)
+      page:pages!notifications_page_id_fkey(*)
     `,
     )
     .eq('recipient_id', userId)

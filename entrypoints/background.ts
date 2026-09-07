@@ -1,4 +1,9 @@
-import { canonicalize, parseFocusMessageId } from '@/lib/canonicalize';
+import {
+  canonicalize,
+  hrefFromPage,
+  isShareMessageId,
+  parseFocusMessageId,
+} from '@/lib/canonicalize';
 import { loadSession, SESSION_KEY } from '@/lib/auth/session';
 import { STORAGE_KEY as LOCALE_STORAGE_KEY } from '@/lib/i18n';
 import { hydrateTranslatorFromStorage } from '@/lib/i18n/runtime';
@@ -9,6 +14,7 @@ import {
   setPanelAttention,
 } from '@/lib/os-notifications';
 import type { Notification, PanelTab } from '@/lib/database.types';
+import { getPageForMessage } from '@/lib/pages';
 import {
   getSupabase,
   isSupabaseConfigured,
@@ -41,6 +47,78 @@ async function getActiveTabPayload(): Promise<TabPayload | null> {
     favIconUrl: tab.favIconUrl,
     focusMessageId: focus,
   };
+}
+
+function isEverchatWww(url?: string | null): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') return false;
+    const host = parsed.hostname.toLowerCase();
+    return host === 'everch.at' || host === 'www.everch.at';
+  } catch {
+    return false;
+  }
+}
+
+async function openPanelForTab(
+  tabId: number,
+  focusMessageId?: string | null,
+) {
+  try {
+    await browser.sidePanel.open({ tabId });
+  } catch {
+    /* older chrome */
+  }
+  if (!focusMessageId) return;
+  await browser.storage.session.set({
+    pendingFocus: {
+      tabId,
+      focusMessageId,
+    },
+  });
+  setTimeout(() => {
+    browser.runtime
+      .sendMessage({
+        type: 'FOCUS_MESSAGE',
+        focusMessageId,
+      })
+      .catch(() => undefined);
+  }, 500);
+}
+
+/** Same path as Activity: original page URL + Chat side panel. */
+async function openSharedMessage(
+  messageId: string,
+  landingTabId?: number,
+): Promise<{ ok: boolean }> {
+  if (!isSupabaseConfigured) return { ok: false };
+  try {
+    const page = await getPageForMessage(messageId);
+    if (!page) return { ok: false };
+    const url = hrefFromPage(page);
+
+    let tabId = landingTabId;
+    if (tabId != null) {
+      try {
+        await browser.tabs.update(tabId, { url, active: true });
+      } catch {
+        tabId = undefined;
+      }
+    }
+    if (tabId == null) {
+      const tab = await browser.tabs.create({ url });
+      tabId = tab.id ?? undefined;
+      if (landingTabId != null && tabId != null && tabId !== landingTabId) {
+        await browser.tabs.remove(landingTabId).catch(() => undefined);
+      }
+    }
+    if (tabId == null) return { ok: false };
+    await openPanelForTab(tabId, messageId);
+    return { ok: true };
+  } catch {
+    return { ok: false };
+  }
 }
 
 async function broadcastTab(tabId: number) {
@@ -176,27 +254,7 @@ export default defineBackground(() => {
 
       if (message?.type === 'OPEN_PANEL_FOR_TAB') {
         const tabId = message.tabId as number;
-        try {
-          await browser.sidePanel.open({ tabId });
-        } catch {
-          /* older chrome */
-        }
-        if (message.focusMessageId) {
-          await browser.storage.session.set({
-            pendingFocus: {
-              tabId,
-              focusMessageId: message.focusMessageId,
-            },
-          });
-          setTimeout(() => {
-            browser.runtime
-              .sendMessage({
-                type: 'FOCUS_MESSAGE',
-                focusMessageId: message.focusMessageId,
-              })
-              .catch(() => undefined);
-          }, 500);
-        }
+        await openPanelForTab(tabId, message.focusMessageId);
         sendResponse({ ok: true });
         return;
       }
@@ -222,6 +280,29 @@ export default defineBackground(() => {
     })();
     return true;
   });
+
+  browser.runtime.onMessageExternal.addListener(
+    (message, sender, sendResponse) => {
+      (async () => {
+        if (!isEverchatWww(sender.url)) {
+          sendResponse({ ok: false });
+          return;
+        }
+        if (message?.type !== 'OPEN_SHARED_MESSAGE') {
+          sendResponse({ ok: false });
+          return;
+        }
+        const messageId =
+          typeof message.messageId === 'string' ? message.messageId : '';
+        if (!isShareMessageId(messageId)) {
+          sendResponse({ ok: false });
+          return;
+        }
+        sendResponse(await openSharedMessage(messageId, sender.tab?.id));
+      })();
+      return true;
+    },
+  );
 
   browser.notifications.onClicked.addListener((notificationId) => {
     if (!notificationId.startsWith(OS_NOTIF_PREFIX)) return;

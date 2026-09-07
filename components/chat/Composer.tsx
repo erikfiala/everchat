@@ -38,9 +38,7 @@ export function Composer({
 }: ComposerProps) {
   const { user } = useAuth();
   const { t } = useLocale();
-  const [body, setBody] = useState(
-    replyToHandle ? `@${replyToHandle} ` : '',
-  );
+  const [body, setBody] = useState('');
   const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
@@ -88,10 +86,6 @@ export function Composer({
 
   useEffect(() => {
     if (replyToHandle) {
-      setBody((prev) => {
-        if (prev.startsWith(`@${replyToHandle}`)) return prev;
-        return `@${replyToHandle} `;
-      });
       taRef.current?.focus();
     }
   }, [replyToHandle]);
@@ -189,7 +183,7 @@ export function Composer({
     setBusy(true);
     try {
       await onSubmit(body.trim(), gifUrl);
-      setBody(replyToHandle ? `@${replyToHandle} ` : '');
+      setBody('');
       setGifUrl(null);
       setShowGiphy(false);
       setShowEmoji(false);
@@ -217,7 +211,11 @@ export function Composer({
           <span>
             {t('composer.replyingTo', { username: replyToHandle })}
           </span>
-          <button type="button" onClick={onCancelReply} className="hover:underline">
+          <button
+            type="button"
+            onClick={onCancelReply}
+            className="text-sm hover:underline"
+          >
             {t('common.cancel')}
           </button>
         </div>
@@ -307,7 +305,7 @@ export function Composer({
             </span>
           )}
           <Button
-            className={showCounter ? undefined : 'ms-auto'}
+            className={cn('text-xs', !showCounter && 'ms-auto')}
             size="sm"
             disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
             onClick={submit}

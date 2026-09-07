@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "GIF ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ",
   "composer.giphyNoResults": "GIFಗಳು ಸಿಗಲಿಲ್ಲ",
   "composer.giphyError": "GIFಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಲಿಲ್ಲ. ಹುಡುಕಲು ಟೈಪ್ ಮಾಡಿ.",
+  "composer.searchEmoji": "ಎಮೋಜಿ ಹುಡುಕಿ…",
+  "composer.emojiNoResults": "ಎಮೋಜಿ ಸಿಗಲಿಲ್ಲ",
   "composer.emoji": "ಎಮೋಜಿ",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "ಆಯ್ಕೆಮಾಡಿದ GIF",

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Typ om GIFs te zoeken",
   "composer.giphyNoResults": "Geen GIFs gevonden",
   "composer.giphyError": "GIFs konden niet worden geladen. Typ om te zoeken.",
+  "composer.searchEmoji": "Zoek emoji…",
+  "composer.emojiNoResults": "Geen emoji gevonden",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Geselecteerde GIF",

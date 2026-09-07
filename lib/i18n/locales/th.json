@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "พิมพ์เพื่อค้นหา GIF",
   "composer.giphyNoResults": "ไม่พบ GIF",
   "composer.giphyError": "โหลด GIF ไม่ได้ พิมพ์เพื่อค้นหา",
+  "composer.searchEmoji": "ค้นหาอิโมจิ…",
+  "composer.emojiNoResults": "ไม่พบอิโมจิ",
   "composer.emoji": "อิโมจิ",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF ที่เลือก",

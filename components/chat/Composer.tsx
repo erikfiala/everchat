@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import EmojiPicker, { type EmojiClickData, Theme } from 'emoji-picker-react';
 import { ImagePlay, Smile, X } from 'lucide-react';
+import { EmojiPicker } from '@/components/chat/EmojiPicker';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,6 @@ import { BODY_WARN_REMAINING, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
-import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 
 const TYPING_IDLE_MS = 2500;
@@ -39,7 +38,6 @@ export function Composer({
 }: ComposerProps) {
   const { user } = useAuth();
   const { t } = useLocale();
-  const { resolved } = useTheme();
   const [body, setBody] = useState(
     replyToHandle ? `@${replyToHandle} ` : '',
   );
@@ -171,9 +169,9 @@ export function Composer({
     }
   };
 
-  const onEmoji = (emoji: EmojiClickData) => {
+  const onEmoji = (emoji: string) => {
     setBody((b) => {
-      const next = (b + emoji.emoji).slice(0, MAX_BODY_LENGTH);
+      const next = (b + emoji).slice(0, MAX_BODY_LENGTH);
       if (next.trim()) bumpTyping();
       else stopTyping();
       return next;
@@ -287,16 +285,7 @@ export function Composer({
         </div>
       </TooltipProvider>
 
-      {showEmoji && (
-        <div className="ec-emoji-picker absolute bottom-full start-2 z-30 mb-3">
-          <EmojiPicker
-            theme={resolved === 'dark' ? Theme.DARK : Theme.LIGHT}
-            onEmojiClick={onEmoji}
-            width={280}
-            height={360}
-          />
-        </div>
-      )}
+      {showEmoji && <EmojiPicker onSelect={onEmoji} />}
 
       {showGiphy && (
         <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "GIF തിരയാൻ ടൈപ്പ് ചെയ്യുക",
   "composer.giphyNoResults": "GIF ഒന്നും കണ്ടെത്തിയില്ല",
   "composer.giphyError": "GIF ലോഡ് ചെയ്യാനായില്ല. തിരയാൻ ടൈപ്പ് ചെയ്യുക.",
+  "composer.searchEmoji": "ഇമോജി തിരയുക…",
+  "composer.emojiNoResults": "ഇമോജി ഒന്നും കണ്ടെത്തിയില്ല",
   "composer.emoji": "ഇമോജി",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "തിരഞ്ഞെടുത്ത GIF",

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Ketik untuk mencari GIF",
   "composer.giphyNoResults": "GIF tidak ditemukan",
   "composer.giphyError": "GIF tidak dapat dimuat. Ketik untuk mencari.",
+  "composer.searchEmoji": "Cari emoji…",
+  "composer.emojiNoResults": "Emoji tidak ditemukan",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF terpilih",

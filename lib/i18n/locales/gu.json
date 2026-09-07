@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "GIF શોધવા ટાઈપ કરો",
   "composer.giphyNoResults": "કોઈ GIF મળ્યા નથી",
   "composer.giphyError": "GIF લોડ થઈ શક્યા નહીં. શોધવા ટાઈપ કરો.",
+  "composer.searchEmoji": "ઇમોજી શોધો…",
+  "composer.emojiNoResults": "કોઈ ઇમોજી મળ્યા નથી",
   "composer.emoji": "ઇમોજી",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "પસંદ કરેલ GIF",

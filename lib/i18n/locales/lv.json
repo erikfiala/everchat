@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Rakstiet, lai meklētu GIF",
   "composer.giphyNoResults": "Nav atrasts neviens GIF",
   "composer.giphyError": "Neizdevās ielādēt GIF. Rakstiet, lai meklētu.",
+  "composer.searchEmoji": "Meklēt emoji…",
+  "composer.emojiNoResults": "Nav atrasts neviens emoji",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Izvēlētais GIF",

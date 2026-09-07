@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Andika kutafuta GIFs",
   "composer.giphyNoResults": "Hakuna GIFs zilizopatikana",
   "composer.giphyError": "GIFs hazikuweza kupakiwa. Andika kutafuta.",
+  "composer.searchEmoji": "Tafuta emoji…",
+  "composer.emojiNoResults": "Hakuna emoji zilizopatikana",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF iliyochaguliwa",

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Rašykite, kad ieškotumėte GIF",
   "composer.giphyNoResults": "GIF nerasta",
   "composer.giphyError": "Nepavyko įkelti GIF. Rašykite paieškai.",
+  "composer.searchEmoji": "Ieškoti jaustukų…",
+  "composer.emojiNoResults": "Jaustukų nerasta",
   "composer.emoji": "Jaustukas",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Pasirinktas GIF",

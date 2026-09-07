@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Píšte pre vyhľadávanie GIFov",
   "composer.giphyNoResults": "Nenašli sa žiadne GIFy",
   "composer.giphyError": "GIFy sa nepodarilo načítať. Píšte pre vyhľadávanie.",
+  "composer.searchEmoji": "Hľadať emoji…",
+  "composer.emojiNoResults": "Nenašli sa žiadne emoji",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Vybraný GIF",

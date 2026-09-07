@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "برای جستجوی GIF تایپ کنید",
   "composer.giphyNoResults": "هیچ GIF‌ای یافت نشد",
   "composer.giphyError": "بارگذاری GIF ممکن نشد. برای جستجو تایپ کنید.",
+  "composer.searchEmoji": "جستجوی ایموجی…",
+  "composer.emojiNoResults": "هیچ ایموجی‌ای یافت نشد",
   "composer.emoji": "ایموجی",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF انتخاب‌شده",

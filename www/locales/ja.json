@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "入力してGIFを検索",
   "composer.giphyNoResults": "GIFが見つかりません",
   "composer.giphyError": "GIFを読み込めませんでした。入力して検索してください。",
+  "composer.searchEmoji": "絵文字を検索…",
+  "composer.emojiNoResults": "絵文字が見つかりません",
   "composer.emoji": "絵文字",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "選択したGIF",

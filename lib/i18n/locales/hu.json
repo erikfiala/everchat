@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Írjon a GIF-ek kereséséhez",
   "composer.giphyNoResults": "Nincs találat",
   "composer.giphyError": "A GIF-ek nem tölthetők be. Írjon a kereséshez.",
+  "composer.searchEmoji": "Emoji keresése…",
+  "composer.emojiNoResults": "Nincs találat",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Kiválasztott GIF",

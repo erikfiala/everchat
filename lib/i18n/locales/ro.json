@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Tastează pentru a căuta GIF-uri",
   "composer.giphyNoResults": "Niciun GIF găsit",
   "composer.giphyError": "GIF-urile nu au putut fi încărcate. Tastează pentru a căuta.",
+  "composer.searchEmoji": "Caută emoji…",
+  "composer.emojiNoResults": "Niciun emoji găsit",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF selectat",

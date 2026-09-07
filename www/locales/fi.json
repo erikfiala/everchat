@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Kirjoita hakeaksesi GIFejä",
   "composer.giphyNoResults": "GIFejä ei löytynyt",
   "composer.giphyError": "GIFejä ei voitu ladata. Kirjoita hakeaksesi.",
+  "composer.searchEmoji": "Hae emojeja…",
+  "composer.emojiNoResults": "Emojeja ei löytynyt",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Valittu GIF",

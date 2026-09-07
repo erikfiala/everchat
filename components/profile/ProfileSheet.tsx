@@ -58,7 +58,7 @@ export function ProfileSheet({
               </div>
               <div
                 className={cn(
-                  'text-sm font-medium',
+                  'text-sm font-normal',
                   scoreColorClass(profile.karma ?? 0),
                 )}
               >

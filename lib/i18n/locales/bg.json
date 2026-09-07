@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Пишете, за да търсите GIF-ове",
   "composer.giphyNoResults": "Няма намерени GIF-ове",
   "composer.giphyError": "GIF-овете не можаха да се заредят. Пишете, за да търсите.",
+  "composer.searchEmoji": "Търсене на емоджи…",
+  "composer.emojiNoResults": "Няма намерени емоджи",
   "composer.emoji": "Емоджи",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Избран GIF",

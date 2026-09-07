@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Upišite za pretraživanje GIF-ova",
   "composer.giphyNoResults": "Nema pronađenih GIF-ova",
   "composer.giphyError": "GIF-ovi se nisu mogli učitati. Upišite za pretraživanje.",
+  "composer.searchEmoji": "Pretraži emoji…",
+  "composer.emojiNoResults": "Nema pronađenih emoji-ja",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Odabrani GIF",

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Skriv for å søke etter GIFer",
   "composer.giphyNoResults": "Ingen GIFer funnet",
   "composer.giphyError": "Kunne ikke laste GIFer. Skriv for å søke.",
+  "composer.searchEmoji": "Søk emoji…",
+  "composer.emojiNoResults": "Ingen emoji funnet",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Valgt GIF",

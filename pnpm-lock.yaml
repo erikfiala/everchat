@@ -53,9 +53,6 @@ importers:
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
-      emoji-picker-react:
-        specifier: ^4.20.1
-        version: 4.20.1(react@19.2.8)
       lucide-react:
         specifier: ^1.41.0
         version: 1.41.0(react@19.2.8)
@@ -1353,12 +1350,6 @@ packages:
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
-  emoji-picker-react@4.20.1:
-    resolution: {integrity: sha512-vsgsdNOf0zFahv7+Pj5u3WNz9ennqUAkSZw1ZvUEAh8Kfel292AjmKbCLI7t9Hq2DN3lFGVMb1G7Iqa2Jl4HWg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16'
-
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
 
@@ -1525,10 +1516,6 @@ packages:
   first-chunk-stream@3.0.0:
     resolution: {integrity: sha512-LNRvR4hr/S8cXXkIY5pTgVP7L3tq6LlYWcg9nWBuW7o1NMxKZo6oOVa/6GIekMGI0Iw7uC+HWimMe9u/VAeKqw==}
     engines: {node: '>=8'}
-
-  flairup@1.1.1:
-    resolution: {integrity: sha512-NRdjAYpQLEOmvLebVCfL2D88M6CZOz3LCK06arH1HKSHbrJgEDbqzgJjur2yuRtbb1YAtElacR57tf5GBAHaqg==}
-    engines: {node: ^20.19.0 || >=22.12.0}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -3970,11 +3957,6 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  emoji-picker-react@4.20.1(react@19.2.8):
-    dependencies:
-      flairup: 1.1.1
-      react: 19.2.8
-
   emoji-regex@10.6.0: {}
 
   emoji-regex@8.0.0: {}
@@ -4133,8 +4115,6 @@ snapshots:
       xml2js: 0.6.2
 
   first-chunk-stream@3.0.0: {}
-
-  flairup@1.1.1: {}
 
   flat-cache@4.0.1:
     dependencies:

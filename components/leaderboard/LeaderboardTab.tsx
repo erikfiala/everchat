@@ -21,14 +21,21 @@ function handleInitials(username: string): string {
   return (username || '?').slice(0, 2).toUpperCase();
 }
 
+function rankColumnCh(ranks: number[]): number {
+  const maxRank = ranks.reduce((max, rank) => Math.max(max, rank), 1);
+  return String(maxRank).length;
+}
+
 function LeaderboardRowButton({
   row,
   onOpenProfile,
   pinned,
+  rankCh,
 }: {
   row: LeaderboardRow;
   onOpenProfile: (username: string) => void;
   pinned?: boolean;
+  rankCh: number;
 }) {
   const { t } = useLocale();
 
@@ -37,12 +44,15 @@ function LeaderboardRowButton({
       type="button"
       onClick={() => onOpenProfile(row.username)}
       className={cn(
-        'flex w-full items-center gap-2 px-3 py-2 text-start hover:bg-[var(--color-accent)]',
+        'flex w-full items-center gap-2 ps-2 pe-3 py-2 text-start hover:bg-[var(--color-accent)]',
         pinned && 'bg-[var(--color-muted)]/50',
         row.is_me && !pinned && 'bg-[var(--color-muted)]/40',
       )}
     >
-      <span className="w-8 shrink-0 text-end text-sm tabular-nums text-[var(--color-muted-foreground)]">
+      <span
+        className="shrink-0 text-end text-sm tabular-nums text-[var(--color-muted-foreground)]"
+        style={{ width: `${rankCh}ch` }}
+      >
         {row.rank}
       </span>
       <Avatar className="h-7 w-7">
@@ -117,6 +127,10 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   const me = data?.me ?? null;
   const top = data?.top ?? [];
   const empty = !loading && !error && !me && top.length === 0;
+  const rankCh = rankColumnCh([
+    ...(me ? [me.rank] : []),
+    ...top.map((row) => row.rank),
+  ]);
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -126,6 +140,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
             row={me}
             onOpenProfile={onOpenProfile}
             pinned
+            rankCh={rankCh}
           />
           <div
             className="border-b border-[var(--color-border)]"
@@ -166,6 +181,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
               key={`${row.rank}-${row.username}`}
               row={row}
               onOpenProfile={onOpenProfile}
+              rankCh={rankCh}
             />
           ))}
       </div>

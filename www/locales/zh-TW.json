@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "輸入以搜尋 GIF",
   "composer.giphyNoResults": "找不到 GIF",
   "composer.giphyError": "無法載入 GIF。輸入以搜尋。",
+  "composer.searchEmoji": "搜尋表情…",
+  "composer.emojiNoResults": "找不到表情",
   "composer.emoji": "表情",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "已選 GIF",

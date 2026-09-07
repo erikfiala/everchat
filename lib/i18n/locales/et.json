@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Kirjuta GIFide otsimiseks",
   "composer.giphyNoResults": "GIFe ei leitud",
   "composer.giphyError": "GIFe ei õnnestunud laadida. Kirjuta otsimiseks.",
+  "composer.searchEmoji": "Otsi emotikone…",
+  "composer.emojiNoResults": "Emotikone ei leitud",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Valitud GIF",

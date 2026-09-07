@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Type to search GIFs",
   "composer.giphyNoResults": "No GIFs found",
   "composer.giphyError": "Couldn't load GIFs. Type to search.",
+  "composer.searchEmoji": "Search emoji…",
+  "composer.emojiNoResults": "No emoji found",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Selected GIF",

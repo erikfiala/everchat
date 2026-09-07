@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "اكتب للبحث عن صور GIF",
   "composer.giphyNoResults": "لم يتم العثور على صور GIF",
   "composer.giphyError": "تعذّر تحميل صور GIF. اكتب للبحث.",
+  "composer.searchEmoji": "البحث عن إيموجي…",
+  "composer.emojiNoResults": "لم يتم العثور على إيموجي",
   "composer.emoji": "إيموجي",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "صورة GIF محددة",

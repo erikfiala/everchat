@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "GIF தேட தட்டச்சு செய்யவும்",
   "composer.giphyNoResults": "GIF எதுவும் இல்லை",
   "composer.giphyError": "GIF-களை ஏற்ற முடியவில்லை. தேட தட்டச்சு செய்யவும்.",
+  "composer.searchEmoji": "எமோஜி தேடு…",
+  "composer.emojiNoResults": "எமோஜி எதுவும் இல்லை",
   "composer.emoji": "எமோஜி",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "தேர்ந்தெடுக்கப்பட்ட GIF",

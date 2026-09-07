@@ -107,25 +107,6 @@ button[aria-disabled='true'],
   animation: highlight-pulse 1.6s ease-out;
 }
 
-/* Match emoji-picker search to composer Giphy Input (h-9, rounded-md, token border/bg). */
-.ec-emoji-picker .EmojiPickerReact {
-  --epr-search-input-height: 36px !important;
-  --epr-search-input-border-radius: var(--radius-md) !important;
-  --epr-search-input-bg-color: var(--color-card) !important;
-  --epr-search-input-bg-color-active: var(--color-card) !important;
-  --epr-dark-search-input-bg-color: var(--color-card) !important;
-  --epr-dark-search-input-bg-color-active: var(--color-card) !important;
-  --epr-search-border-color: var(--color-border) !important;
-  --epr-search-border-color-active: var(--color-border) !important;
-  --epr-search-input-text-color: var(--color-foreground) !important;
-  --epr-search-input-placeholder-color: var(--color-muted-foreground) !important;
-}
-
-.ec-emoji-picker .epr-search-container input {
-  font-size: 0.875rem;
-  line-height: 1;
-}
-
 /* Sonner: surface follows theme; color only title/description/status icon (not close X) */
 [data-sonner-toaster] [data-sonner-toast].ec-toast {
   background: var(--color-card) !important;

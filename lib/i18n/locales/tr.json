@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "GIF aramak için yazın",
   "composer.giphyNoResults": "GIF bulunamadı",
   "composer.giphyError": "GIF’ler yüklenemedi. Aramak için yazın.",
+  "composer.searchEmoji": "Emoji ara…",
+  "composer.emojiNoResults": "Emoji bulunamadı",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Seçilen GIF",

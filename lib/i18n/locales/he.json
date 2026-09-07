@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "הקלידו כדי לחפש GIFs",
   "composer.giphyNoResults": "לא נמצאו GIFs",
   "composer.giphyError": "לא ניתן לטעון GIFs. הקלידו כדי לחפש.",
+  "composer.searchEmoji": "חיפוש אימוג׳י…",
+  "composer.emojiNoResults": "לא נמצא אימוג׳י",
   "composer.emoji": "אימוג'י",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "GIF שנבחר",

@@ -83,6 +83,8 @@
   "composer.giphyEmpty": "Πληκτρολογήστε για αναζήτηση GIF",
   "composer.giphyNoResults": "Δεν βρέθηκαν GIF",
   "composer.giphyError": "Αδυναμία φόρτωσης GIF. Πληκτρολογήστε για αναζήτηση.",
+  "composer.searchEmoji": "Αναζήτηση emoji…",
+  "composer.emojiNoResults": "Δεν βρέθηκαν emoji",
   "composer.emoji": "Emoji",
   "composer.gif": "GIF",
   "composer.selectedGifAlt": "Επιλεγμένο GIF",

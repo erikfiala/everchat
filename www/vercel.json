@@ -3,8 +3,8 @@
   "buildCommand": "pnpm install && pnpm build",
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/m", "destination": "/share.html" },
-    { "source": "/m/:id", "destination": "/share.html" }
+    { "source": "/m", "destination": "/share" },
+    { "source": "/m/:id", "destination": "/share" }
   ],
   "headers": [
     {

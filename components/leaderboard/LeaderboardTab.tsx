@@ -44,7 +44,7 @@ function LeaderboardRowButton({
       type="button"
       onClick={() => onOpenProfile(row.username)}
       className={cn(
-        'flex w-full items-center gap-2 ps-2 pe-3 py-2 text-start hover:bg-[var(--color-accent)]',
+        'flex w-full items-center gap-2 px-3 py-2 text-start hover:bg-[var(--color-accent)]',
         pinned && 'bg-[var(--color-muted)]/50',
         row.is_me && !pinned && 'bg-[var(--color-muted)]/40',
       )}
@@ -133,7 +133,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   ]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col pt-3">
       {me && !loading && !error && (
         <>
           <LeaderboardRowButton

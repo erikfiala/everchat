@@ -724,7 +724,6 @@ function WebsiteField({
         disabled={saving}
         placeholder={t('profile.websitePlaceholder')}
         aria-label={t('profile.website')}
-        className="h-8 px-2.5"
         onChange={(e) => {
           dirty.current = true;
           setDraft(e.target.value);

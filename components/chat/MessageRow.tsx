@@ -257,7 +257,7 @@ export function MessageRow({
                     variant="ghost"
                     size="icon"
                     className={cn(
-                      'h-7 w-7',
+                      'h-7 w-6 px-0',
                       node.myVote === 1 && 'text-[var(--color-score-pos)]',
                     )}
                     onClick={() => {
@@ -279,7 +279,7 @@ export function MessageRow({
                     variant="ghost"
                     size="icon"
                     className={cn(
-                      'h-7 w-7',
+                      'h-7 w-6 px-0',
                       node.myVote === -1 && 'text-[var(--color-score-neg)]',
                     )}
                     onClick={() => {
@@ -293,7 +293,7 @@ export function MessageRow({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-7 px-2"
+                  className="h-7 px-2 text-xs"
                   onClick={() => {
                     if (!requireAuth()) return;
                     onReply(node);
@@ -305,7 +305,7 @@ export function MessageRow({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 px-2"
+                    className="h-7 px-2 text-xs"
                     onClick={() => onToggleExpand(node.id)}
                   >
                     {t('message.hide')}
@@ -316,7 +316,7 @@ export function MessageRow({
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      'h-7 px-2 text-[var(--color-muted-foreground)]',
+                      'h-7 px-2 text-xs text-[var(--color-muted-foreground)]',
                       !showTranslation &&
                         !translating &&
                         'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',

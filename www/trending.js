@@ -116,9 +116,18 @@
 
       var meta = document.createElement('span');
       meta.className = 'trending-meta';
-      meta.textContent =
+
+      var dot = document.createElement('span');
+      dot.className = 'trending-online-dot';
+      dot.setAttribute('aria-hidden', 'true');
+
+      var talking = document.createElement('span');
+      talking.textContent =
         t('www.trendingTalking', { count: row.message_count || 0 }) ||
         (row.message_count || 0) + ' online';
+
+      meta.appendChild(dot);
+      meta.appendChild(talking);
 
       body.appendChild(title);
       body.appendChild(host);

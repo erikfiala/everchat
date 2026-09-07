@@ -78,15 +78,6 @@ export async function revokeDevice(
   userId: string,
 ): Promise<void> {
   const sb = getSupabase();
-  const { count } = await sb
-    .from('webauthn_credentials')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', userId);
-
-  if ((count ?? 0) <= 1) {
-    throw new Error('errors.keepOneDevice');
-  }
-
   const { error } = await sb
     .from('webauthn_credentials')
     .delete()

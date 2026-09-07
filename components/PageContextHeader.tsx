@@ -23,7 +23,7 @@ export function PageContextHeader({
         className,
       )}
     >
-      <Favicon src={faviconUrl} className="rounded-sm" />
+      <Favicon src={faviconUrl} />
       <div className="min-w-0 flex-1 overflow-hidden">
         <div className="truncate text-sm font-medium">
           {title || host || t('page.thisPage')}

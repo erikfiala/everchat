@@ -181,6 +181,35 @@ export type Database = {
           },
         ];
       };
+      message_translations: {
+        Row: {
+          message_id: string;
+          locale: string;
+          body: string;
+          created_at: string;
+        };
+        Insert: {
+          message_id: string;
+          locale: string;
+          body: string;
+          created_at?: string;
+        };
+        Update: {
+          message_id?: string;
+          locale?: string;
+          body?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'message_translations_message_id_fkey';
+            columns: ['message_id'];
+            isOneToOne: false;
+            referencedRelation: 'messages';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       votes: {
         Row: {
           message_id: string;
@@ -364,6 +393,16 @@ export type Database = {
         Args: { p_message_id: string };
         Returns: string;
       };
+      leaderboard: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          rank: number;
+          username: string;
+          avatar_url: string | null;
+          karma: number;
+          is_me: boolean;
+        }[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -407,6 +446,7 @@ export type SortMode = 'best' | 'new';
 export type PanelTab =
   | 'chat'
   | 'explore'
+  | 'leaderboard'
   | 'notifications'
   | 'profile'
   | 'settings';

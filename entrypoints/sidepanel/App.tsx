@@ -8,6 +8,7 @@ import { ProfileTab } from '@/components/profile/ProfileTab';
 import { ProfileSheet } from '@/components/profile/ProfileSheet';
 import { SettingsTab } from '@/components/settings/SettingsTab';
 import { ExploreTab } from '@/components/explore/ExploreTab';
+import { LeaderboardTab } from '@/components/leaderboard/LeaderboardTab';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
@@ -98,6 +99,8 @@ function Shell() {
             />
           ) : tab === 'explore' ? (
             <ExploreTab />
+          ) : tab === 'leaderboard' ? (
+            <LeaderboardTab onOpenProfile={(u) => setProfileUser(u)} />
           ) : tab === 'notifications' ? (
             <NotificationsTab />
           ) : tab === 'settings' ? (

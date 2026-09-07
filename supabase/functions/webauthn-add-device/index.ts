@@ -73,7 +73,9 @@ Deno.serve(async (req) => {
     if (action === 'verify') {
       const challengeId = body.challengeId as string;
       const attestation = body.attestation;
-      const deviceLabel = (body.deviceLabel as string) || 'Additional device';
+      const rawLabel =
+        typeof body.deviceLabel === 'string' ? body.deviceLabel.trim() : '';
+      const deviceLabel = rawLabel.slice(0, 64) || 'Chrome';
 
       const { data: challengeRow } = await sb
         .from('webauthn_challenges')

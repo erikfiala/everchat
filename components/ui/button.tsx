@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors aria-disabled:opacity-50 aria-disabled:hover:opacity-50',
   {
     variants: {
       variant: {
@@ -41,13 +41,51 @@ export interface ButtonProps
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      disabled = false,
+      onClick,
+      onKeyDown,
+      tabIndex,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size }), className)}
-        ref={ref}
         {...props}
+        className={cn(
+          buttonVariants({ variant, size }),
+          className,
+          // Exclusive class: `cursor-pointer` must not stay on disabled, or it
+          // wins the cascade. Native `disabled` is omitted so hover can set
+          // cursor (Chromium/WebKit ignore `cursor` on :disabled controls).
+          disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        )}
+        ref={ref}
+        aria-disabled={disabled || undefined}
+        tabIndex={disabled ? -1 : tabIndex}
+        onClick={(event) => {
+          if (disabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          onClick?.(event);
+        }}
+        onKeyDown={(event) => {
+          if (disabled && (event.key === 'Enter' || event.key === ' ')) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          onKeyDown?.(event);
+        }}
       />
     );
   },

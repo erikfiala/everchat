@@ -13,6 +13,8 @@ import {
   rememberCredentialId,
 } from './passkeyHint';
 import { allowCredentialsForLogin } from './allowCredentials';
+import { guessDeviceLabel } from '../deviceLabel';
+import { DEVICE_LABEL_MAX_LEN } from '../profile';
 
 /** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
 const RP_ID =
@@ -249,6 +251,7 @@ export async function registerPasskey(
     });
 
   pendingRegister = { username: normalized, sessionToken };
+  const deviceLabelPromise = guessDeviceLabel();
 
   let attestation;
   try {
@@ -265,6 +268,7 @@ export async function registerPasskey(
   }
 
   try {
+    const deviceLabel = (await deviceLabelPromise).slice(0, DEVICE_LABEL_MAX_LEN);
     const result = await callEdgeFunction<AuthSuccessResponse>(
       'webauthn-register',
       {
@@ -272,6 +276,7 @@ export async function registerPasskey(
         username: normalized,
         sessionToken,
         attestation,
+        deviceLabel,
       },
     );
 
@@ -400,6 +405,10 @@ export async function addPasskeyDevice(
 ): Promise<void> {
   await ensureRpHostPermission();
 
+  const labelPromise = deviceLabel?.trim()
+    ? Promise.resolve(deviceLabel.trim())
+    : guessDeviceLabel();
+
   const { options, challengeId } = await callEdgeFunction<{
     options: PublicKeyCredentialCreationOptionsJSON;
     challengeId: string;
@@ -418,9 +427,10 @@ export async function addPasskeyDevice(
     throw mapCeremonyError(e);
   }
 
+  const label = (await labelPromise).slice(0, DEVICE_LABEL_MAX_LEN);
   await callEdgeFunction(
     'webauthn-add-device',
-    { action: 'verify', attestation, deviceLabel, challengeId },
+    { action: 'verify', attestation, deviceLabel: label, challengeId },
     token,
   );
   await rememberCredentialId(attestation.id);

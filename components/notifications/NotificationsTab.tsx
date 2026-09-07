@@ -6,11 +6,12 @@ import { useLocale } from '@/hooks/useLocale';
 import { useNotifications } from '@/hooks/useNotifications';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { safeRelativeTime } from '@/lib/collapse';
-import { formatRelativeTime } from '@/lib/time';
+import { bindRelativeTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
 
 export function NotificationsTab() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user, loading: authLoading } = useAuth();
   const { items, loading, openNotification } = useNotifications();
 
@@ -70,7 +71,7 @@ export function NotificationsTab() {
                 </span>
               </div>
               <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
-                {safeRelativeTime(n.created_at, formatRelativeTime)}
+                {safeRelativeTime(n.created_at, formatTime)}
               </div>
             </div>
           </button>

@@ -172,13 +172,17 @@ Deno.serve(async (req) => {
           : toBase64Url(credential.id);
       const publicKey = toBase64Url(credential.publicKey);
 
+      const rawLabel =
+        typeof body.deviceLabel === 'string' ? body.deviceLabel.trim() : '';
+      const deviceLabel = rawLabel.slice(0, 64) || 'Chrome';
+
       await sb.from('webauthn_credentials').insert({
         user_id: userId,
         credential_id: credentialId,
         public_key: publicKey,
         sign_count: credential.counter,
         transports: attestation.response?.transports ?? null,
-        device_label: 'Primary device',
+        device_label: deviceLabel,
       });
 
       await sb.from('username_reservations').delete().eq('username', username);

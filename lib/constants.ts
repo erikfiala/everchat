@@ -35,6 +35,7 @@ export const RATE_LIMIT_VOTES_PER_MINUTE = 60;
 export const AVATAR_MAX_BYTES = 2 * 1024 * 1024;
 export const DESCRIPTION_TRUNCATE = 120;
 export const TRENDING_LIMIT = 10;
+export const LEADERBOARD_LIMIT = 100;
 export const EC_MSG_PREFIX = 'ec-msg-';
 
 export const TRACKING_PARAM_DENYLIST = new Set([

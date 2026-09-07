@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { Camera, LogOut, PenSquare, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Camera, LogOut, PenSquare, Trash2 } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -31,16 +31,18 @@ import {
 } from '@/lib/profile';
 import { getStoredCredentialIds } from '@/lib/auth/passkeyHint';
 import { addPasskeyDevice } from '@/lib/auth/webauthn';
+import { displayDeviceLabel, guessDeviceLabel } from '@/lib/deviceLabel';
 import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
-import { formatRelativeTime } from '@/lib/time';
+import { bindRelativeTime } from '@/lib/time';
 import { buildDeepLink, httpsUrlFromCanonical } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export function ProfileTab() {
-  const { t, tError } = useLocale();
+  const { t, tError, locale } = useLocale();
+  const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user, loading: authLoading, logout, patchUser, refreshProfile } =
     useAuth();
   const [activity, setActivity] = useState<ActivityItem[]>([]);
@@ -54,9 +56,14 @@ export function ProfileTab() {
     }[]
   >([]);
   const [localCredentialIds, setLocalCredentialIds] = useState<string[]>([]);
+  const [guessedLabel, setGuessedLabel] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmSignOutOpen, setConfirmSignOutOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    void guessDeviceLabel().then(setGuessedLabel);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -129,6 +136,7 @@ export function ProfileTab() {
   const currentDeviceRegistered = devices.some((d) =>
     localCredentialIds.includes(d.credential_id),
   );
+  const firstDevice = devices[0];
 
   const removeDevice = async (id: string) => {
     try {
@@ -202,7 +210,7 @@ export function ProfileTab() {
             </div>
             <div
               className={cn(
-                'text-sm font-medium',
+                'text-sm font-normal',
                 scoreColorClass(user.karma ?? 0),
               )}
             >
@@ -220,29 +228,39 @@ export function ProfileTab() {
           {t('profile.devicesHint')}
         </p>
         <ul className="space-y-1">
-          {devices.map((d, i) => (
-            <Fragment key={d.id}>
-              <DeviceRow
-                label={d.device_label || t('common.device')}
-                renameLabel={t('profile.renameDevice')}
-                onRename={(name) => saveDeviceName(d.id, name)}
-                onRemove={() => removeDevice(d.id)}
-              />
-              {i === 0 && (
-                <AddCurrentDeviceRow
-                  nested
-                  disabled={currentDeviceRegistered}
-                  onAdd={addDevice}
-                />
-              )}
-            </Fragment>
-          ))}
-          {!loading && devices.length === 0 && (
-            <AddCurrentDeviceRow
-              disabled={currentDeviceRegistered}
-              onAdd={addDevice}
+          {firstDevice && (
+            <DeviceRow
+              label={displayDeviceLabel(firstDevice.device_label, {
+                isCurrent: localCredentialIds.includes(
+                  firstDevice.credential_id,
+                ),
+                guessed: guessedLabel,
+                fallback: t('common.device'),
+              })}
+              renameLabel={t('profile.renameDevice')}
+              isLastDevice={devices.length === 1}
+              onRename={(name) => saveDeviceName(firstDevice.id, name)}
+              onRemove={() => removeDevice(firstDevice.id)}
             />
           )}
+          <AddCurrentDeviceRow
+            disabled={loading || currentDeviceRegistered}
+            onAdd={addDevice}
+          />
+          {devices.slice(1).map((d) => (
+            <DeviceRow
+              key={d.id}
+              label={displayDeviceLabel(d.device_label, {
+                isCurrent: localCredentialIds.includes(d.credential_id),
+                guessed: guessedLabel,
+                fallback: t('common.device'),
+              })}
+              renameLabel={t('profile.renameDevice')}
+              isLastDevice={false}
+              onRename={(name) => saveDeviceName(d.id, name)}
+              onRemove={() => removeDevice(d.id)}
+            />
+          ))}
         </ul>
       </section>
 
@@ -294,7 +312,7 @@ export function ProfileTab() {
                   {formatScore(item.score)}
                 </span>
                 <span>
-                  {safeRelativeTime(item.created_at, formatRelativeTime)}
+                  {safeRelativeTime(item.created_at, formatTime)}
                 </span>
               </div>
             </div>
@@ -338,47 +356,40 @@ export function ProfileTab() {
 }
 
 function AddCurrentDeviceRow({
-  nested,
   disabled,
   onAdd,
 }: {
-  nested?: boolean;
   disabled?: boolean;
   onAdd: () => void;
 }) {
   const { t } = useLocale();
   const button = (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       disabled={disabled}
+      aria-disabled={disabled}
       onClick={disabled ? undefined : onAdd}
-      className={cn(
-        'flex items-center gap-1 rounded-md py-1 text-sm',
-        nested ? 'ps-6' : 'ps-3',
-        disabled
-          ? 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-50'
-          : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]',
-      )}
+      className="h-auto min-h-7 w-full justify-center py-1.5 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
     >
-      <Plus className="h-3.5 w-3.5" />
       {t('profile.addCurrentDevice')}
-    </button>
+    </Button>
   );
 
-  if (!disabled) {
-    return <li>{button}</li>;
-  }
-
   return (
-    <li>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="inline-flex">{button}</span>
-        </TooltipTrigger>
-        <TooltipContent>
-          {t('profile.addCurrentDeviceAlreadyAdded')}
-        </TooltipContent>
-      </Tooltip>
+    <li className="min-h-7 w-full text-center">
+      {disabled ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="block w-full">{button}</span>
+          </TooltipTrigger>
+          <TooltipContent>
+            {t('profile.addCurrentDeviceAlreadyAdded')}
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        button
+      )}
     </li>
   );
 }
@@ -386,11 +397,13 @@ function AddCurrentDeviceRow({
 function DeviceRow({
   label,
   renameLabel,
+  isLastDevice,
   onRename,
   onRemove,
 }: {
   label: string;
   renameLabel: string;
+  isLastDevice: boolean;
   onRename: (name: string) => Promise<void>;
   onRemove: () => void;
 }) {
@@ -512,9 +525,19 @@ function DeviceRow({
       <Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('profile.removeDeviceConfirmTitle')}</DialogTitle>
+            <DialogTitle>
+              {t(
+                isLastDevice
+                  ? 'profile.removeLastDeviceConfirmTitle'
+                  : 'profile.removeDeviceConfirmTitle',
+              )}
+            </DialogTitle>
             <DialogDescription>
-              {t('profile.removeDeviceConfirmBody')}
+              {t(
+                isLastDevice
+                  ? 'profile.removeLastDeviceConfirmBody'
+                  : 'profile.removeDeviceConfirmBody',
+              )}
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4 flex justify-end gap-2">

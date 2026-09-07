@@ -1,4 +1,4 @@
-import { Bell, Compass, MessageCircle, Settings, User } from 'lucide-react';
+import { Bell, Compass, MessageCircle, Settings, Trophy, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PanelTab } from '@/lib/database.types';
 import { useLocale } from '@/hooks/useLocale';
@@ -23,6 +23,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
   const tabs: { id: PanelTab; label: string; icon: typeof MessageCircle }[] = [
     { id: 'chat', label: t('nav.chat'), icon: MessageCircle },
     { id: 'explore', label: t('nav.explore'), icon: Compass },
+    { id: 'leaderboard', label: t('nav.leaderboard'), icon: Trophy },
     { id: 'notifications', label: t('nav.notifications'), icon: Bell },
     { id: 'profile', label: t('nav.profile'), icon: User },
     { id: 'settings', label: t('nav.settings'), icon: Settings },
@@ -60,7 +61,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
                     type="button"
                     onClick={() => onChange(id)}
                     className={cn(
-                      'relative box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
+                      'relative box-border flex size-8 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
                       isActive
                         ? 'bg-[var(--color-muted)] text-[var(--color-foreground)]'
                         : 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]',

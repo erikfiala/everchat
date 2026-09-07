@@ -4,6 +4,12 @@ import { ImagePlay, Smile, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { BODY_WARN_REMAINING, MAX_BODY_LENGTH } from '@/lib/constants';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
@@ -46,6 +52,7 @@ export function Composer({
     { id: string; url: string; preview: string; title: string }[]
   >([]);
   const [searching, setSearching] = useState(false);
+  const [giphyError, setGiphyError] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const typingActiveRef = useRef(false);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -93,17 +100,25 @@ export function Composer({
     if (!showGiphy) {
       setGifs([]);
       setSearching(false);
+      setGiphyError(false);
       return;
     }
 
     let cancelled = false;
     const run = async () => {
       setSearching(true);
+      setGiphyError(false);
       try {
         const results = await searchGiphy(giphyQ.trim(), user?.token);
-        if (!cancelled) setGifs(results);
+        if (!cancelled) {
+          setGifs(results);
+          setGiphyError(false);
+        }
       } catch {
-        if (!cancelled) setGifs([]);
+        if (!cancelled) {
+          setGifs([]);
+          setGiphyError(true);
+        }
       } finally {
         if (!cancelled) setSearching(false);
       }
@@ -215,48 +230,62 @@ export function Composer({
           </button>
         </div>
       )}
-      <div className="mt-3 flex items-center gap-1">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => {
-            setShowEmoji((v) => !v);
-            setShowGiphy(false);
-          }}
-        >
-          <Smile className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => {
-            setShowGiphy((v) => !v);
-            setShowEmoji(false);
-          }}
-        >
-          <ImagePlay className="h-4 w-4" />
-        </Button>
-        {showCounter && (
-          <span
-            className="ms-auto me-2 tabular-nums text-[11px] font-medium text-red-600"
-            aria-live="polite"
+      <TooltipProvider delayDuration={200}>
+        <div className="mt-3 flex items-center gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                aria-label={t('composer.emoji')}
+                onClick={() => {
+                  setShowEmoji((v) => !v);
+                  setShowGiphy(false);
+                }}
+              >
+                <Smile className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('composer.emoji')}</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                aria-label={t('composer.gif')}
+                onClick={() => {
+                  setShowGiphy((v) => !v);
+                  setShowEmoji(false);
+                }}
+              >
+                <ImagePlay className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('composer.gif')}</TooltipContent>
+          </Tooltip>
+          {showCounter && (
+            <span
+              className="ms-auto me-2 tabular-nums text-[11px] font-medium text-red-600"
+              aria-live="polite"
+            >
+              {remaining}
+            </span>
+          )}
+          <Button
+            className={showCounter ? undefined : 'ms-auto'}
+            size="sm"
+            disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
+            onClick={submit}
           >
-            {remaining}
-          </span>
-        )}
-        <Button
-          className={showCounter ? undefined : 'ms-auto'}
-          size="sm"
-          disabled={busy || (!body.trim() && !gifUrl) || body.length > MAX_BODY_LENGTH}
-          onClick={submit}
-        >
-          {busy ? t('composer.sending') : t('composer.post')}
-        </Button>
-      </div>
+            {busy ? t('composer.sending') : t('composer.post')}
+          </Button>
+        </div>
+      </TooltipProvider>
 
       {showEmoji && (
         <div className="ec-emoji-picker absolute bottom-full start-2 z-30 mb-3">
@@ -277,10 +306,25 @@ export function Composer({
             onChange={(e) => setGiphyQ(e.target.value)}
             autoFocus
           />
-          <div className="mt-2 grid max-h-72 grid-cols-3 gap-1 overflow-y-auto">
+          <div className="mt-2 grid max-h-72 min-h-32 grid-cols-3 gap-1 overflow-y-auto">
             {searching && (
-              <p className="col-span-3 text-xs text-[var(--color-muted-foreground)]">
+              <p
+                role="status"
+                className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+              >
                 {t('composer.searching')}
+              </p>
+            )}
+            {!searching && gifs.length === 0 && (
+              <p
+                role="status"
+                className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+              >
+                {giphyError
+                  ? t('composer.giphyError')
+                  : giphyQ.trim()
+                    ? t('composer.giphyNoResults')
+                    : t('composer.giphyEmpty')}
               </p>
             )}
             {!searching &&

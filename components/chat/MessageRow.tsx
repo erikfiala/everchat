@@ -10,7 +10,7 @@ import {
 import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { DEPTH_COLLAPSE_LEVEL } from '@/lib/constants';
-import { formatRelativeTime } from '@/lib/time';
+import { bindRelativeTime } from '@/lib/time';
 import { buildDeepLink } from '@/lib/canonicalize';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
@@ -61,6 +61,7 @@ export function MessageRow({
   requireAuth,
 }: MessageRowProps) {
   const { t, locale } = useLocale();
+  const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -211,7 +212,7 @@ export function MessageRow({
                 ) || undefined
               }
             >
-              {safeRelativeTime(node.created_at, formatRelativeTime)}
+              {safeRelativeTime(node.created_at, formatTime)}
             </span>
           </div>
 

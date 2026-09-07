@@ -83,9 +83,15 @@ html[data-theme='dark'] body {
   outline: none;
 }
 
-button:not(:disabled),
+button:not(:disabled):not([aria-disabled='true']),
 [role='button']:not([aria-disabled='true']) {
   cursor: pointer;
+}
+
+button:disabled,
+button[aria-disabled='true'],
+[role='button'][aria-disabled='true'] {
+  cursor: not-allowed;
 }
 
 @keyframes highlight-pulse {

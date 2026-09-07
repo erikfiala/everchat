@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import { dateFnsLocaleFor } from '@/lib/dateFnsLocale';
 import { Check, ChevronDown } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { Button } from '@/components/ui/button';
@@ -27,7 +28,7 @@ function hostFromCanonical(canonicalUrl: string): string {
 }
 
 export function ExploreTab() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [mode, setMode] = useState<ExploreMode>('trending');
   const [rows, setRows] = useState<ExplorePageRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,6 +143,7 @@ export function ExploreTab() {
               mode === 'new' && row.last_active_at
                 ? formatDistanceToNow(new Date(row.last_active_at), {
                     addSuffix: true,
+                    locale: dateFnsLocaleFor(locale),
                   })
                 : t('auth.trendingTalking', { count: row.message_count });
 

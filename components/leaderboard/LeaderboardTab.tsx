@@ -55,7 +55,7 @@ function LeaderboardRowButton({
       >
         {row.rank}
       </span>
-      <Avatar className="h-6 w-6">
+      <Avatar className="h-5 w-5">
         {row.avatar_url && <AvatarImage src={row.avatar_url} />}
         <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
       </Avatar>

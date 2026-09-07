@@ -50,12 +50,12 @@ function LeaderboardRowButton({
       )}
     >
       <span
-        className="shrink-0 text-end text-sm tabular-nums text-[var(--color-muted-foreground)]"
+        className="shrink-0 text-end text-sm font-normal tabular-nums text-[var(--color-muted-foreground)]"
         style={{ width: `${rankCh}ch` }}
       >
         {row.rank}
       </span>
-      <Avatar className="h-7 w-7">
+      <Avatar className="h-6 w-6">
         {row.avatar_url && <AvatarImage src={row.avatar_url} />}
         <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
       </Avatar>
@@ -64,7 +64,7 @@ function LeaderboardRowButton({
       </span>
       <span
         className={cn(
-          'shrink-0 text-sm tabular-nums font-medium',
+          'shrink-0 text-sm font-normal tabular-nums',
           scoreColorClass(row.karma),
         )}
       >

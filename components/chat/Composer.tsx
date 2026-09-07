@@ -52,6 +52,8 @@ export function Composer({
   const [searching, setSearching] = useState(false);
   const [giphyError, setGiphyError] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLDivElement>(null);
   const typingActiveRef = useRef(false);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onTypingChangeRef = useRef(onTypingChange);
@@ -93,6 +95,34 @@ export function Composer({
       taRef.current?.focus();
     }
   }, [replyToHandle]);
+
+  useEffect(() => {
+    if (!showEmoji && !showGiphy) return;
+
+    const closePickers = () => {
+      setShowEmoji(false);
+      setShowGiphy(false);
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (pickerRef.current?.contains(target)) return;
+      if (toggleRef.current?.contains(target)) return;
+      closePickers();
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closePickers();
+    };
+
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [showEmoji, showGiphy]);
 
   useEffect(() => {
     if (!showGiphy) {
@@ -230,42 +260,44 @@ export function Composer({
       )}
       <TooltipProvider delayDuration={200}>
         <div className="mt-3 flex items-center gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                aria-label={t('composer.emoji')}
-                onClick={() => {
-                  setShowEmoji((v) => !v);
-                  setShowGiphy(false);
-                }}
-              >
-                <Smile className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{t('composer.emoji')}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                aria-label={t('composer.gif')}
-                onClick={() => {
-                  setShowGiphy((v) => !v);
-                  setShowEmoji(false);
-                }}
-              >
-                <ImagePlay className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{t('composer.gif')}</TooltipContent>
-          </Tooltip>
+          <div ref={toggleRef} className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label={t('composer.emoji')}
+                  onClick={() => {
+                    setShowEmoji((v) => !v);
+                    setShowGiphy(false);
+                  }}
+                >
+                  <Smile className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{t('composer.emoji')}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label={t('composer.gif')}
+                  onClick={() => {
+                    setShowGiphy((v) => !v);
+                    setShowEmoji(false);
+                  }}
+                >
+                  <ImagePlay className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{t('composer.gif')}</TooltipContent>
+            </Tooltip>
+          </div>
           {showCounter && (
             <span
               className="ms-auto me-2 tabular-nums text-[11px] font-medium text-red-600"
@@ -285,61 +317,63 @@ export function Composer({
         </div>
       </TooltipProvider>
 
-      {showEmoji && <EmojiPicker onSelect={onEmoji} />}
+      <div ref={pickerRef}>
+        {showEmoji && <EmojiPicker onSelect={onEmoji} />}
 
-      {showGiphy && (
-        <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
-          <Input
-            placeholder={t('composer.searchGiphy')}
-            value={giphyQ}
-            onChange={(e) => setGiphyQ(e.target.value)}
-            autoFocus
-          />
-          <div className="mt-2 grid max-h-72 min-h-32 grid-cols-3 gap-1 overflow-y-auto">
-            {searching && (
-              <p
-                role="status"
-                className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
-              >
-                {t('composer.searching')}
-              </p>
-            )}
-            {!searching && gifs.length === 0 && (
-              <p
-                role="status"
-                className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
-              >
-                {giphyError
-                  ? t('composer.giphyError')
-                  : giphyQ.trim()
-                    ? t('composer.giphyNoResults')
-                    : t('composer.giphyEmpty')}
-              </p>
-            )}
-            {!searching &&
-              gifs.map((g) => (
-                <button
-                  key={g.id}
-                  type="button"
-                  className={cn(
-                    'overflow-hidden rounded',
-                    gifUrl === g.url && 'ring-2 ring-[var(--color-primary)]',
-                  )}
-                  onClick={() => {
-                    setGifUrl(g.url);
-                    setShowGiphy(false);
-                  }}
+        {showGiphy && (
+          <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] p-2 shadow-lg">
+            <Input
+              placeholder={t('composer.searchGiphy')}
+              value={giphyQ}
+              onChange={(e) => setGiphyQ(e.target.value)}
+              autoFocus
+            />
+            <div className="mt-2 grid max-h-72 min-h-32 grid-cols-3 gap-1 overflow-y-auto">
+              {searching && (
+                <p
+                  role="status"
+                  className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
                 >
-                  <img
-                    src={g.preview || g.url}
-                    alt={g.title}
-                    className="h-16 w-full object-cover"
-                  />
-                </button>
-              ))}
+                  {t('composer.searching')}
+                </p>
+              )}
+              {!searching && gifs.length === 0 && (
+                <p
+                  role="status"
+                  className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+                >
+                  {giphyError
+                    ? t('composer.giphyError')
+                    : giphyQ.trim()
+                      ? t('composer.giphyNoResults')
+                      : t('composer.giphyEmpty')}
+                </p>
+              )}
+              {!searching &&
+                gifs.map((g) => (
+                  <button
+                    key={g.id}
+                    type="button"
+                    className={cn(
+                      'overflow-hidden rounded',
+                      gifUrl === g.url && 'ring-2 ring-[var(--color-primary)]',
+                    )}
+                    onClick={() => {
+                      setGifUrl(g.url);
+                      setShowGiphy(false);
+                    }}
+                  >
+                    <img
+                      src={g.preview || g.url}
+                      alt={g.title}
+                      className="h-16 w-full object-cover"
+                    />
+                  </button>
+                ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

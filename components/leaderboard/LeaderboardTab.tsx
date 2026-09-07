@@ -60,7 +60,7 @@ function LeaderboardRow({
         {row.avatar_url && <AvatarImage src={row.avatar_url} />}
         <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
       </Avatar>
-      <span className="min-w-0 truncate text-sm font-medium group-hover:underline">
+      <span className="min-w-0 truncate text-sm font-medium">
         @{handle}
       </span>
       <span
@@ -175,28 +175,23 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   ]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col px-3 pt-3">
+    <div className="flex h-full min-h-0 flex-col gap-0.5 px-3 pt-3">
       {me && !error && (
-        <>
-          <LeaderboardRow
-            row={me}
-            onOpenProfile={onOpenProfile}
-            rankCh={rankCh}
-          />
-          {top.length > 0 ? (
-            <div
-              className="border-b border-[var(--color-border)]"
-              role="separator"
-            />
-          ) : null}
-        </>
+        <LeaderboardRow
+          row={me}
+          onOpenProfile={onOpenProfile}
+          rankCh={rankCh}
+        />
       )}
 
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
+      <div
+        ref={scrollRef}
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto"
+      >
         {loading &&
           top.length === 0 &&
           Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="mb-1 h-11 w-full" />
+            <Skeleton key={i} className="h-11 w-full" />
           ))}
         {error && top.length === 0 ? (
           <div className="py-6 text-center text-sm text-[var(--color-destructive)]">

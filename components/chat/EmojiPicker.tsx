@@ -14,12 +14,14 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
 
   return (
     <div className="absolute start-0 end-0 bottom-full z-30 mx-2 mb-3 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] px-1 py-2 shadow-lg">
-      <Input
-        placeholder={t('composer.searchEmoji')}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        autoFocus
-      />
+      <div className="px-1">
+        <Input
+          placeholder={t('composer.searchEmoji')}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          autoFocus
+        />
+      </div>
       <div className="mt-2 grid max-h-72 min-h-32 grid-cols-8 gap-1 overflow-y-auto">
         {results.length === 0 ? (
           <p

@@ -331,13 +331,13 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
         </ul>
       </section>
 
-      <section className="px-2 py-3">
-        <h2 className="mb-2 px-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
+      <section className="px-3 pb-4 pt-3">
+        <h2 className="mb-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
           {t('profile.activity')}
         </h2>
-        {loading && <Skeleton className="mx-2 h-16" />}
+        {loading && <Skeleton className="h-16" />}
         {!loading && activity.length === 0 && (
-          <p className="px-2 py-6 text-center text-sm text-[var(--color-muted-foreground)]">
+          <p className="py-6 text-center text-sm text-[var(--color-muted-foreground)]">
             {t('profile.emptyActivity')}
           </p>
         )}

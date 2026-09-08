@@ -150,13 +150,45 @@ export function httpsUrlFromCanonical(canonicalUrl: string): string {
 const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
 /**
- * Human-facing host/URL text. Drops trailing slashes; stored keys stay unchanged.
+ * Human-facing URL text only. Never use this for hrefs, identity, or storage.
+ * Strips http(s) scheme, www, trailing slashes, and tracking query params
+ * (same denylist / `utm_*` / video-host rules as canonicalize). Hashes follow
+ * canonicalize and are omitted. Useful path and non-tracker query stay.
  */
-export function displayUrl(value: string | null | undefined): string {
+export function formatDisplayUrl(value: string | null | undefined): string {
   const trimmed = (value ?? '').trim();
   if (!trimmed || trimmed === '/') return trimmed;
-  return trimmed.replace(/\/+$/, '');
+
+  const candidate = HAS_SCHEME.test(trimmed) ? trimmed : `https://${trimmed}`;
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    return trimmed.replace(/\/+$/, '');
+  }
+
+  let host = url.hostname.toLowerCase();
+  if (host.startsWith('www.')) host = host.slice(4);
+  const hostWithPort = url.port ? `${host}:${url.port}` : host;
+
+  let path = url.pathname || '/';
+  if (path.length > 1 && path.endsWith('/')) {
+    path = path.slice(0, -1);
+  }
+
+  const kept = new URLSearchParams();
+  url.searchParams.forEach((paramValue, key) => {
+    if (!shouldStripParam(key, host)) {
+      kept.append(key, paramValue);
+    }
+  });
+  const query = kept.toString();
+  const pathPart = path === '/' ? '' : path;
+  return query ? `${hostWithPort}${pathPart}?${query}` : `${hostWithPort}${pathPart}`;
 }
+
+/** Alias for {@link formatDisplayUrl}. */
+export const displayUrl = formatDisplayUrl;
 
 /** Hostname from a stored canonical key (`host/path`), without a trailing slash. */
 export function hostFromCanonical(canonicalUrl: string): string {

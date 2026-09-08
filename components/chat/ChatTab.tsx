@@ -207,7 +207,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
     <div className="flex h-full min-h-0 flex-col">
       <PageContextHeader
         title={viewing.title}
-        host={viewing.host}
+        host={viewing.url || viewing.canonicalUrl || viewing.host}
         faviconUrl={viewing.favIconUrl}
         isCurrentPage={isCurrentPage}
       />

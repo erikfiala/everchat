@@ -20,6 +20,8 @@
     if (!value) return '';
     var trimmed = String(value).trim();
     if (!trimmed || trimmed === '/') return trimmed;
+    trimmed = trimmed.replace(/^https?:\/\//i, '');
+    trimmed = trimmed.replace(/^www\./i, '');
     return trimmed.replace(/\/+$/, '');
   }
 
@@ -119,12 +121,13 @@
       title.className = 'trending-title';
       title.textContent =
         row.title ||
-        hostFromCanonical(row.canonical_url) ||
-        displayUrl(row.canonical_url);
+        displayUrl(row.canonical_url) ||
+        hostFromCanonical(row.canonical_url);
 
       var host = document.createElement('span');
       host.className = 'trending-host';
-      host.textContent = hostFromCanonical(row.canonical_url);
+      host.textContent =
+        displayUrl(row.canonical_url) || hostFromCanonical(row.canonical_url);
 
       var online = row.online_count || 0;
       var live = online > 0;

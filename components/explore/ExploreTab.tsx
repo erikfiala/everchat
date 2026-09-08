@@ -253,6 +253,7 @@ export function ExploreTab() {
         )}
         {rows.map((row) => {
             const host = hostFromCanonical(row.canonical_url);
+            const urlLabel = displayUrl(row.canonical_url);
             const showOnline = !(mode === 'new' && row.last_active_at);
             const live = showOnline && (row.online_count ?? 0) > 0;
             const activity = showOnline
@@ -272,11 +273,11 @@ export function ExploreTab() {
                 <Favicon src={row.favicon_url} className="mt-0.5" />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="truncate text-sm font-medium">
-                    {row.title || host || displayUrl(row.canonical_url)}
+                    {row.title || urlLabel || host}
                   </div>
                   <div className="truncate text-xs text-[var(--color-muted-foreground)]">
-                    {host ||
-                      (row.description || displayUrl(row.canonical_url)).slice(
+                    {urlLabel ||
+                      (row.description || host || '').slice(
                         0,
                         DESCRIPTION_TRUNCATE,
                       )}

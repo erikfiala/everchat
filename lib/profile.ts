@@ -163,14 +163,9 @@ export function normalizeAbout(raw: string): string | null {
   return next || null;
 }
 
-/** Hostname without www, or the stored string if it is not a parseable URL. */
+/** Cleaned website text for UI; stored href stays the full URL. */
 export function websiteDisplayLabel(website: string): string {
-  try {
-    const host = new URL(website).hostname.replace(/^www\./i, '');
-    return host || displayUrl(website);
-  } catch {
-    return displayUrl(website);
-  }
+  return displayUrl(website);
 }
 
 /** Open a validated profile website in a new tab (extension `browser.tabs`). */

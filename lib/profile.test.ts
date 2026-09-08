@@ -80,11 +80,14 @@ describe('normalizeWebsiteUrl', () => {
 });
 
 describe('websiteDisplayLabel', () => {
-  it('shows hostname without www', () => {
+  it('shows the cleaned URL, not the stored href', () => {
     expect(websiteDisplayLabel('https://www.example.com/path')).toBe(
-      'example.com',
+      'example.com/path',
     );
     expect(websiteDisplayLabel('https://everch.at')).toBe('everch.at');
+    expect(
+      websiteDisplayLabel('https://news.example/story?utm_source=x'),
+    ).toBe('news.example/story');
   });
 
   it('falls back to the stored string', () => {

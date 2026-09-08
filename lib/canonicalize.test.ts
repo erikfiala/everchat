@@ -10,6 +10,7 @@ import {
   parseShareMessageId,
   sameCanonicalRoom,
   displayUrl,
+  formatDisplayUrl,
   hostFromCanonical,
 } from './canonicalize';
 
@@ -155,23 +156,60 @@ describe('hrefFromPage', () => {
   });
 });
 
-describe('displayUrl', () => {
-  it('strips trailing slashes from canonical keys and hrefs', () => {
-    expect(displayUrl('erikfiala.com/')).toBe('erikfiala.com');
-    expect(displayUrl('extensions/')).toBe('extensions');
-    expect(displayUrl('https://erikfiala.com/')).toBe('https://erikfiala.com');
-    expect(displayUrl('https://example.com/about/')).toBe(
-      'https://example.com/about',
+describe('formatDisplayUrl', () => {
+  it('strips scheme, www, trailing slash, and tracking params', () => {
+    expect(formatDisplayUrl('https://www.example.com/')).toBe('example.com');
+    expect(formatDisplayUrl('http://www.example.com/')).toBe('example.com');
+    expect(formatDisplayUrl('https://news.example/story?utm_source=x')).toBe(
+      'news.example/story',
+    );
+    expect(
+      formatDisplayUrl(
+        'https://www.nytimes.com/2026/01/01/world/foo.html?utm_source=twitter#comments',
+      ),
+    ).toBe('nytimes.com/2026/01/01/world/foo.html');
+  });
+
+  it('keeps useful path and non-tracker query', () => {
+    expect(formatDisplayUrl('https://news.ycombinator.com/item?id=123&utm_source=share')).toBe(
+      'news.ycombinator.com/item?id=123',
+    );
+    expect(formatDisplayUrl('https://example.com/search?q=hello&fbclid=abc')).toBe(
+      'example.com/search?q=hello',
     );
   });
 
-  it('leaves paths and empty values alone', () => {
+  it('follows canonicalize hash and video-host tracker rules', () => {
+    expect(formatDisplayUrl('https://example.com/a#section')).toBe('example.com/a');
+    expect(
+      formatDisplayUrl('https://www.youtube.com/watch?v=abc&t=30s&si=xyz'),
+    ).toBe('youtube.com/watch?v=abc');
+  });
+
+  it('keeps relative chrome-internal display and ports', () => {
+    expect(formatDisplayUrl('chrome://extensions/')).toBe('extensions');
+    expect(formatDisplayUrl('extensions/')).toBe('extensions');
+    expect(formatDisplayUrl('chrome://settings/help')).toBe('settings/help');
+    expect(formatDisplayUrl('http://localhost:3000/app/')).toBe(
+      'localhost:3000/app',
+    );
+  });
+
+  it('leaves empty and invalid values safe', () => {
+    expect(formatDisplayUrl('')).toBe('');
+    expect(formatDisplayUrl(null)).toBe('');
+    expect(formatDisplayUrl('/')).toBe('/');
+    expect(formatDisplayUrl('not a url')).toBe('not a url');
+    expect(formatDisplayUrl('not-a-url/')).toBe('not-a-url');
+  });
+
+  it('aliases displayUrl', () => {
+    expect(displayUrl('https://www.example.com/about/')).toBe(
+      'example.com/about',
+    );
     expect(displayUrl('nytimes.com/2026/01/01/world/foo.html')).toBe(
       'nytimes.com/2026/01/01/world/foo.html',
     );
-    expect(displayUrl('')).toBe('');
-    expect(displayUrl(null)).toBe('');
-    expect(displayUrl('/')).toBe('/');
   });
 });
 

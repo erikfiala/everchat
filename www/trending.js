@@ -114,19 +114,22 @@
       host.className = 'trending-host';
       host.textContent = hostFromCanonical(row.canonical_url);
 
-      var meta = document.createElement('span');
-      meta.className = 'trending-meta';
+      var online = row.online_count || 0;
+      var live = online > 0;
 
-      var dot = document.createElement('span');
-      dot.className = 'trending-online-dot';
-      dot.setAttribute('aria-hidden', 'true');
+      var meta = document.createElement('span');
+      meta.className = live ? 'trending-meta' : 'trending-meta is-offline';
+
+      if (live) {
+        var dot = document.createElement('span');
+        dot.className = 'trending-online-dot';
+        dot.setAttribute('aria-hidden', 'true');
+        meta.appendChild(dot);
+      }
 
       var talking = document.createElement('span');
       talking.textContent =
-        t('www.trendingTalking', { count: row.message_count || 0 }) ||
-        (row.message_count || 0) + ' online';
-
-      meta.appendChild(dot);
+        t('www.trendingTalking', { count: online }) || online + ' online';
       meta.appendChild(talking);
 
       body.appendChild(title);
@@ -138,6 +141,83 @@
     });
   }
 
+  var lastRows = null;
+  var pollTimer = null;
+
+  function supabaseHeaders(cfg) {
+    return {
+      apikey: cfg.anonKey,
+      Authorization: 'Bearer ' + cfg.anonKey,
+      Accept: 'application/json',
+    };
+  }
+
+  function mergeOnlineCounts(rows, counts) {
+    var map = {};
+    (counts || []).forEach(function (row) {
+      if (row && row.canonical_url) {
+        map[row.canonical_url] = row.online_count || 0;
+      }
+    });
+    return rows.map(function (row) {
+      var next = {};
+      Object.keys(row).forEach(function (key) {
+        next[key] = row[key];
+      });
+      next.online_count = map[row.canonical_url] || 0;
+      return next;
+    });
+  }
+
+  function fetchOnlineCounts(cfg, urls) {
+    if (!urls.length) return Promise.resolve([]);
+    var endpoint =
+      cfg.url.replace(/\/$/, '') + '/rest/v1/rpc/page_online_counts';
+    var headers = supabaseHeaders(cfg);
+    headers['Content-Type'] = 'application/json';
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({ p_canonical_urls: urls }),
+    }).then(function (res) {
+      if (!res.ok) throw new Error('presence ' + res.status);
+      return res.json();
+    });
+  }
+
+  function paintRows(list, rows) {
+    lastRows = rows;
+    renderRows(list, rows);
+  }
+
+  function refreshOnlineCounts(list) {
+    var cfg = window.EC_SUPABASE;
+    if (!list || !cfg || !cfg.url || !cfg.anonKey || !lastRows || !lastRows.length) {
+      return;
+    }
+    var urls = lastRows
+      .map(function (row) {
+        return row.canonical_url;
+      })
+      .filter(Boolean);
+    fetchOnlineCounts(cfg, urls)
+      .then(function (counts) {
+        paintRows(list, mergeOnlineCounts(lastRows, counts));
+      })
+      .catch(function () {
+        /* keep last paint */
+      });
+  }
+
+  function ensurePoll() {
+    if (pollTimer) return;
+    pollTimer = setInterval(function () {
+      var root = document.querySelector('[data-ec-trending]');
+      if (!root) return;
+      refreshOnlineCounts(root.querySelector('[data-ec-trending-list]'));
+    }, 30000);
+  }
+
   function loadTrending() {
     var root = document.querySelector('[data-ec-trending]');
     if (!root) return;
@@ -146,6 +226,7 @@
     var cfg = window.EC_SUPABASE;
     if (!list || !cfg || !cfg.url || !cfg.anonKey) {
       setStatus(status, '');
+      lastRows = null;
       renderEmpty(list);
       return;
     }
@@ -158,11 +239,7 @@
       LIMIT;
 
     fetch(endpoint, {
-      headers: {
-        apikey: cfg.anonKey,
-        Authorization: 'Bearer ' + cfg.anonKey,
-        Accept: 'application/json',
-      },
+      headers: supabaseHeaders(cfg),
     })
       .then(function (res) {
         if (!res.ok) throw new Error('trending ' + res.status);
@@ -171,14 +248,30 @@
       .then(function (rows) {
         if (!rows || !rows.length) {
           setStatus(status, '');
+          lastRows = null;
           renderEmpty(list);
           return;
         }
-        setStatus(status, '');
-        renderRows(list, rows);
+        var urls = rows
+          .map(function (row) {
+            return row.canonical_url;
+          })
+          .filter(Boolean);
+        return fetchOnlineCounts(cfg, urls)
+          .then(function (counts) {
+            setStatus(status, '');
+            paintRows(list, mergeOnlineCounts(rows, counts));
+            ensurePoll();
+          })
+          .catch(function () {
+            setStatus(status, '');
+            paintRows(list, mergeOnlineCounts(rows, []));
+            ensurePoll();
+          });
       })
       .catch(function () {
         setStatus(status, '');
+        lastRows = null;
         renderEmpty(list);
       });
   }

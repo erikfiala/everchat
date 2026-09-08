@@ -367,6 +367,32 @@ export type Database = {
         };
         Relationships: [];
       };
+      page_presence: {
+        Row: {
+          user_id: string;
+          canonical_url: string;
+          last_seen: string;
+        };
+        Insert: {
+          user_id: string;
+          canonical_url: string;
+          last_seen?: string;
+        };
+        Update: {
+          user_id?: string;
+          canonical_url?: string;
+          last_seen?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'page_presence_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       trending_pages: {
@@ -411,6 +437,21 @@ export type Database = {
           avatar_url: string | null;
           karma: number;
           is_me: boolean;
+        }[];
+      };
+      touch_page_presence: {
+        Args: { p_canonical_url: string };
+        Returns: undefined;
+      };
+      clear_page_presence: {
+        Args: Record<string, never>;
+        Returns: undefined;
+      };
+      page_online_counts: {
+        Args: { p_canonical_urls: string[] };
+        Returns: {
+          canonical_url: string;
+          online_count: number;
         }[];
       };
     };

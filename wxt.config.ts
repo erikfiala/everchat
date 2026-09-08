@@ -34,7 +34,14 @@ export default defineConfig({
     name: 'Everchat',
     description:
       'Public comments on any URL. Sign up anonymously with a passkey. No email.',
-    permissions: ['sidePanel', 'tabs', 'storage', 'notifications', 'activeTab'],
+    permissions: [
+      'sidePanel',
+      'tabs',
+      'storage',
+      'notifications',
+      'activeTab',
+      'alarms',
+    ],
     host_permissions: [
       'https://*.supabase.co/*',
       // Required to claim WebAuthn RP ID `everch.at` from the extension origin.

@@ -22,6 +22,10 @@ import {
   getTrendingPages,
   type ExplorePageRow,
 } from '@/lib/pages';
+import {
+  applyOnlineCounts,
+  fetchPageOnlineCounts,
+} from '@/lib/presence';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from 'sonner';
 
@@ -37,7 +41,21 @@ function normalizeTrending(rows: ExplorePageRow[]): ExplorePageRow[] {
     url: row.url ?? null,
     last_active_at: row.last_active_at ?? null,
     message_count: row.message_count ?? 0,
+    online_count: row.online_count ?? 0,
   }));
+}
+
+async function withOnlineCounts(
+  rows: ExplorePageRow[],
+): Promise<ExplorePageRow[]> {
+  try {
+    const counts = await fetchPageOnlineCounts(
+      rows.map((row) => row.canonical_url),
+    );
+    return applyOnlineCounts(rows, counts);
+  } catch {
+    return applyOnlineCounts(rows, new Map());
+  }
 }
 
 export function ExploreTab() {
@@ -81,6 +99,7 @@ export function ExploreTab() {
     setLoading(true);
     setError(null);
     fetchPage([])
+      .then((data) => withOnlineCounts(data))
       .then((data) => {
         if (cancelled) return;
         setRows(data);
@@ -101,12 +120,45 @@ export function ExploreTab() {
     };
   }, [fetchPage]);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let cancelled = false;
+
+    const tick = async () => {
+      if (document.hidden) return;
+      const current = rowsRef.current;
+      if (!current.length) return;
+      try {
+        const counts = await fetchPageOnlineCounts(
+          current.map((row) => row.canonical_url),
+        );
+        if (cancelled) return;
+        setRows((prev) => applyOnlineCounts(prev, counts));
+      } catch {
+        /* keep last counts */
+      }
+    };
+
+    const id = window.setInterval(() => {
+      void tick();
+    }, 20_000);
+    const onVisibility = () => {
+      if (!document.hidden) void tick();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [mode]);
+
   const loadMore = useCallback(async () => {
     if (!isSupabaseConfigured || loadingMoreRef.current || !hasMore) return;
     loadingMoreRef.current = true;
     setLoadingMore(true);
     try {
-      const data = await fetchPage(rowsRef.current);
+      const data = await withOnlineCounts(await fetchPage(rowsRef.current));
       setRows((prev) => appendUniqueById(prev, data, (row) => row.id));
       setHasMore(pageHasMore(data.length));
     } catch (e) {
@@ -205,6 +257,7 @@ export function ExploreTab() {
                   setError(null);
                   setLoading(true);
                   fetchPage([])
+                    .then((data) => withOnlineCounts(data))
                     .then((data) => {
                       setRows(data);
                       setHasMore(pageHasMore(data.length));
@@ -229,8 +282,9 @@ export function ExploreTab() {
         {rows.map((row) => {
             const host = hostFromCanonical(row.canonical_url);
             const showOnline = !(mode === 'new' && row.last_active_at);
+            const live = showOnline && (row.online_count ?? 0) > 0;
             const activity = showOnline
-              ? t('auth.trendingTalking', { count: row.message_count })
+              ? t('auth.trendingTalking', { count: row.online_count ?? 0 })
               : formatDistanceToNow(new Date(row.last_active_at!), {
                   addSuffix: true,
                   locale: dateFnsLocaleFor(locale),
@@ -257,12 +311,12 @@ export function ExploreTab() {
                   </div>
                   <div
                     className={
-                      showOnline
+                      live
                         ? 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-success)]'
-                        : 'mt-0.5 text-[11px] text-[var(--color-muted-foreground)]'
+                        : 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-muted-foreground)]'
                     }
                   >
-                    {showOnline ? (
+                    {live ? (
                       <span
                         className="size-1.5 shrink-0 rounded-full bg-[var(--color-success)]"
                         aria-hidden

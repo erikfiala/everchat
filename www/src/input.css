@@ -850,6 +850,10 @@
   background: var(--color-success);
 }
 
+.trending-meta.is-offline {
+  color: var(--mute);
+}
+
 .trending-empty {
   display: flex;
   align-items: center;

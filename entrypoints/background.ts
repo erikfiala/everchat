@@ -16,6 +16,11 @@ import {
 import type { Notification, PanelTab } from '@/lib/database.types';
 import { getPageForMessage } from '@/lib/pages';
 import {
+  clearPagePresence,
+  presenceKeyFromTabUrl,
+  touchPagePresence,
+} from '@/lib/presence';
+import {
   getSupabase,
   isSupabaseConfigured,
   setSupabaseAccessToken,
@@ -215,6 +220,59 @@ async function syncNotifRealtimeFromSession() {
   await startNotifRealtime(session.id, session.token);
 }
 
+const PRESENCE_ALARM = 'everchat-presence';
+
+/** True only after a successful touch this SW lifetime — skip clear RPCs when logged out. */
+let presenceTracked = false;
+let lastPresenceToken: string | null = null;
+let presenceGate: Promise<void> = Promise.resolve();
+
+function queuePagePresence() {
+  const run = presenceGate.then(() => syncPagePresence());
+  presenceGate = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+async function syncPagePresence() {
+  if (!isSupabaseConfigured) return;
+  try {
+    const session = await loadSession();
+    if (!session) {
+      if (presenceTracked) {
+        if (lastPresenceToken) setSupabaseAccessToken(lastPresenceToken);
+        try {
+          await clearPagePresence();
+        } finally {
+          presenceTracked = false;
+          lastPresenceToken = null;
+        }
+      }
+      return;
+    }
+
+    lastPresenceToken = session.token;
+    setSupabaseAccessToken(session.token);
+
+    const tab = await getActiveTabPayload();
+    const canonical = presenceKeyFromTabUrl(tab?.url);
+    if (!canonical) {
+      if (presenceTracked) {
+        await clearPagePresence();
+        presenceTracked = false;
+      }
+      return;
+    }
+
+    await touchPagePresence(canonical);
+    presenceTracked = true;
+  } catch {
+    /* SW must stay alive */
+  }
+}
+
 export default defineBackground(() => {
   // Open side panel on action click
   browser.sidePanel
@@ -223,11 +281,22 @@ export default defineBackground(() => {
 
   void hydrateTranslatorFromStorage();
   void syncNotifRealtimeFromSession();
+  void queuePagePresence();
+
+  if (browser.alarms) {
+    void browser.alarms.create(PRESENCE_ALARM, { periodInMinutes: 1 });
+    browser.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === PRESENCE_ALARM) void queuePagePresence();
+    });
+  }
 
   browser.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
     if (changes[SESSION_KEY]) {
-      void syncNotifRealtimeFromSession();
+      void (async () => {
+        await queuePagePresence();
+        await syncNotifRealtimeFromSession();
+      })();
     }
     if (changes[LOCALE_STORAGE_KEY]) {
       void hydrateTranslatorFromStorage();
@@ -236,12 +305,18 @@ export default defineBackground(() => {
 
   browser.tabs.onActivated.addListener(({ tabId }) => {
     broadcastTab(tabId);
+    void queuePagePresence();
   });
 
   browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
     if (changeInfo.url || changeInfo.title || changeInfo.favIconUrl) {
       broadcastTab(tabId);
     }
+    if (changeInfo.url) void queuePagePresence();
+  });
+
+  browser.windows.onFocusChanged.addListener(() => {
+    void queuePagePresence();
   });
 
   browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {

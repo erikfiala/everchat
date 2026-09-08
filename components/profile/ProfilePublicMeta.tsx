@@ -19,7 +19,7 @@ export function ProfilePublicMeta({
   if (!bio && !href) return null;
 
   return (
-    <div className="mt-2 min-w-0 space-y-1">
+    <div className="mt-4 min-w-0 space-y-1">
       {bio ? (
         <p className="whitespace-pre-wrap break-words text-sm">{bio}</p>
       ) : null}

@@ -77,7 +77,7 @@ export function ProfileSheet({
                 </div>
               </div>
             </div>
-            <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
+            <p className="mt-4 text-sm text-[var(--color-muted-foreground)]">
               {t('profile.anonymousReserved')}
             </p>
           </div>

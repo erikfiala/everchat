@@ -239,6 +239,7 @@ export type ExplorePageRow = {
   favicon_url: string | null;
   message_count: number;
   last_active_at: string | null;
+  online_count: number;
 };
 
 /**
@@ -299,6 +300,7 @@ export async function getRecentlyActivePages(
         url: page.url ?? null,
         message_count: 1,
         last_active_at: row.created_at as string,
+        online_count: 0,
       });
     }
   }

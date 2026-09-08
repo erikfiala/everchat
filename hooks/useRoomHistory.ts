@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { sameCanonicalRoom } from '@/lib/canonicalize';
 import type { TabInfo } from '@/lib/database.types';
 
 type HistoryState = {
@@ -84,8 +85,14 @@ export function useRoomHistory(live: TabInfo) {
   const canGoForward =
     state.entries.length > 0 && state.index < state.entries.length - 1;
 
+  const isCurrentPage = sameCanonicalRoom(
+    viewing.canonicalUrl,
+    live.canonicalUrl,
+  );
+
   return {
     viewing,
+    isCurrentPage,
     canGoBack,
     canGoForward,
     goBack: () =>

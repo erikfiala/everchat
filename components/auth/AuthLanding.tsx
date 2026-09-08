@@ -297,7 +297,6 @@ export function AuthLanding() {
 
       <Button
         className="w-full"
-        size="lg"
         disabled={busy || !configured}
         onClick={onPrimary}
       >

@@ -164,20 +164,242 @@
     return stripped.indexOf('<') === -1 && stripped.indexOf('>') === -1;
   }
 
-  function fillSwitcher(select, pref, locale) {
-    if (!select) return;
-    select.innerHTML = '';
-    var sys = document.createElement('option');
-    sys.value = 'system';
-    sys.textContent = (window.__ecCatalog && window.__ecCatalog['chat.languageSystem']) || 'System';
-    select.appendChild(sys);
-    LANGUAGES.forEach(function (l) {
-      var opt = document.createElement('option');
-      opt.value = l.code;
-      opt.textContent = l.nativeLabel;
-      select.appendChild(opt);
+  var enhanceId = 0;
+  var openRoot = null;
+  var activeIndex = -1;
+  var typeBuffer = '';
+  var typeTimer = null;
+
+  function systemLabel() {
+    return (
+      (window.__ecCatalog && window.__ecCatalog['chat.languageSystem']) ||
+      'System'
+    );
+  }
+
+  function labelForValue(value) {
+    if (value === 'system') return systemLabel();
+    for (var i = 0; i < LANGUAGES.length; i++) {
+      if (LANGUAGES[i].code === value) return LANGUAGES[i].nativeLabel;
+    }
+    return value;
+  }
+
+  function optionsOf(root) {
+    return Array.prototype.slice.call(root.querySelectorAll('[role="option"]'));
+  }
+
+  function closeMenu(root) {
+    if (!root) return;
+    var trigger = root.querySelector('[data-ec-lang-trigger]');
+    var menu = root.querySelector('[data-ec-lang-menu]');
+    if (menu) menu.hidden = true;
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.removeAttribute('aria-activedescendant');
+    }
+    root.classList.remove('is-open');
+    if (openRoot === root) openRoot = null;
+    activeIndex = -1;
+    typeBuffer = '';
+  }
+
+  function highlight(root, index) {
+    var opts = optionsOf(root);
+    if (!opts.length) return;
+    if (index < 0) index = opts.length - 1;
+    if (index >= opts.length) index = 0;
+    activeIndex = index;
+    opts.forEach(function (opt, i) {
+      opt.classList.toggle('is-active', i === index);
     });
-    select.value = pref === 'system' ? 'system' : locale;
+    var trigger = root.querySelector('[data-ec-lang-trigger]');
+    if (trigger && opts[index].id) {
+      trigger.setAttribute('aria-activedescendant', opts[index].id);
+    }
+    if (opts[index].scrollIntoView) {
+      opts[index].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function openMenu(root) {
+    if (openRoot && openRoot !== root) closeMenu(openRoot);
+    var trigger = root.querySelector('[data-ec-lang-trigger]');
+    var menu = root.querySelector('[data-ec-lang-menu]');
+    if (!menu || !trigger) return;
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    root.classList.add('is-open');
+    openRoot = root;
+    var opts = optionsOf(root);
+    var selected = -1;
+    for (var i = 0; i < opts.length; i++) {
+      if (opts[i].getAttribute('aria-selected') === 'true') {
+        selected = i;
+        break;
+      }
+    }
+    highlight(root, selected >= 0 ? selected : 0);
+  }
+
+  function toggleMenu(root) {
+    if (openRoot === root) closeMenu(root);
+    else openMenu(root);
+  }
+
+  function commitValue(root, value) {
+    var next = value || 'system';
+    root.value = next;
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch (_) {}
+    closeMenu(root);
+    apply(next);
+    root.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function typeFind(root, key) {
+    if (key.length !== 1 || key < ' ') return;
+    typeBuffer += key.toLowerCase();
+    clearTimeout(typeTimer);
+    typeTimer = setTimeout(function () {
+      typeBuffer = '';
+    }, 500);
+    var opts = optionsOf(root);
+    var start = activeIndex + 1;
+    for (var n = 0; n < opts.length; n++) {
+      var i = (start + n) % opts.length;
+      var text = (opts[i].textContent || '').trim().toLowerCase();
+      if (text.indexOf(typeBuffer) === 0) {
+        highlight(root, i);
+        return;
+      }
+    }
+  }
+
+  function handleTriggerKey(root, e) {
+    var open = openRoot === root;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) {
+        openMenu(root);
+        if (e.key === 'ArrowUp') highlight(root, optionsOf(root).length - 1);
+        return;
+      }
+      highlight(root, activeIndex + (e.key === 'ArrowDown' ? 1 : -1));
+      return;
+    }
+    if (e.key === 'Home' && open) {
+      e.preventDefault();
+      highlight(root, 0);
+      return;
+    }
+    if (e.key === 'End' && open) {
+      e.preventDefault();
+      highlight(root, optionsOf(root).length - 1);
+      return;
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && open) {
+      e.preventDefault();
+      var opts = optionsOf(root);
+      if (opts[activeIndex]) {
+        commitValue(root, opts[activeIndex].getAttribute('data-value'));
+      }
+      return;
+    }
+    if (e.key === 'Escape' && open) {
+      e.preventDefault();
+      closeMenu(root);
+      return;
+    }
+    if (e.key === 'Tab' && open) {
+      closeMenu(root);
+      return;
+    }
+    if (e.key.length === 1 && e.key !== ' ' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (!open) openMenu(root);
+      typeFind(root, e.key);
+    }
+  }
+
+  function fillSwitcher(root, pref, locale) {
+    if (!root) return;
+    var selected = pref === 'system' ? 'system' : locale;
+    root.value = selected;
+    var label = root.querySelector('[data-ec-lang-label]');
+    var menu = root.querySelector('[data-ec-lang-menu]');
+    var trigger = root.querySelector('[data-ec-lang-trigger]');
+    if (label) label.textContent = labelForValue(selected);
+    if (!menu) return;
+
+    var wasOpen = openRoot === root;
+    if (wasOpen) closeMenu(root);
+
+    var uid = menu.id || (trigger && trigger.id) || 'ec-lang';
+    menu.innerHTML = '';
+    var items = [{ code: 'system', nativeLabel: systemLabel() }].concat(
+      LANGUAGES,
+    );
+    items.forEach(function (l) {
+      var opt = document.createElement('div');
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('data-value', l.code);
+      opt.id = uid + '-opt-' + l.code;
+      opt.className = 'ec-select-item';
+      if (l.code === selected) opt.setAttribute('aria-selected', 'true');
+      var check = document.createElement('span');
+      check.className = 'ec-select-check';
+      check.setAttribute('aria-hidden', 'true');
+      if (l.code === selected) {
+        check.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      }
+      var text = document.createElement('span');
+      text.className = 'ec-select-item-label';
+      text.textContent = l.nativeLabel;
+      opt.appendChild(check);
+      opt.appendChild(text);
+      menu.appendChild(opt);
+    });
+  }
+
+  function enhanceSwitcher(root) {
+    if (root.getAttribute('data-ec-enhanced') === '1') return;
+    root.setAttribute('data-ec-enhanced', '1');
+    if (root.value == null) root.value = 'system';
+
+    var trigger = root.querySelector('[data-ec-lang-trigger]');
+    var menu = root.querySelector('[data-ec-lang-menu]');
+    if (!trigger || !menu) return;
+
+    enhanceId += 1;
+    var uid = 'ec-lang-' + enhanceId;
+    if (!trigger.id) trigger.id = uid + '-trigger';
+    if (!menu.id) menu.id = uid + '-menu';
+    trigger.setAttribute('aria-controls', menu.id);
+
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      toggleMenu(root);
+    });
+    trigger.addEventListener('keydown', function (e) {
+      handleTriggerKey(root, e);
+    });
+    menu.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+    });
+    menu.addEventListener('click', function (e) {
+      var opt = e.target.closest('[role="option"]');
+      if (opt && menu.contains(opt)) {
+        commitValue(root, opt.getAttribute('data-value'));
+      }
+    });
+    menu.addEventListener('mousemove', function (e) {
+      var opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      var i = optionsOf(root).indexOf(opt);
+      if (i >= 0) highlight(root, i);
+    });
   }
 
   function loadLocale(code) {
@@ -205,17 +427,12 @@
     });
   }
 
+  document.addEventListener('mousedown', function (e) {
+    if (openRoot && !openRoot.contains(e.target)) closeMenu(openRoot);
+  });
+
   document.addEventListener('DOMContentLoaded', function () {
-    var pref = readPreference();
-    apply(pref);
-    document.querySelectorAll('[data-ec-lang]').forEach(function (sel) {
-      sel.addEventListener('change', function () {
-        var next = sel.value || 'system';
-        try {
-          localStorage.setItem(STORAGE_KEY, next);
-        } catch (_) {}
-        apply(next);
-      });
-    });
+    document.querySelectorAll('[data-ec-lang]').forEach(enhanceSwitcher);
+    apply(readPreference());
   });
 })();

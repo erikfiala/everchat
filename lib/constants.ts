@@ -9,7 +9,11 @@ export const HANDLE_MIN = 3;
 export const HANDLE_MAX = 20;
 export const HANDLE_REGEX = /^[a-z0-9_]{3,20}$/;
 
+/** Reserved system handle shown on deleted comments. Not a real user. */
+export const ANONYMOUS_HANDLE = 'anonymous';
+
 export const RESERVED_HANDLES = new Set([
+  ANONYMOUS_HANDLE,
   'everchat',
   'admin',
   'mod',

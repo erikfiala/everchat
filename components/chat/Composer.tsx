@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ImagePlay, Smile, X } from 'lucide-react';
 import { EmojiPicker } from '@/components/chat/EmojiPicker';
+import { MentionList } from '@/components/chat/MentionList';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { BODY_WARN_REMAINING, MAX_BODY_LENGTH } from '@/lib/constants';
+import {
+  filterMentionParticipants,
+  findMentionQuery,
+  insertMention,
+  type MentionParticipant,
+} from '@/lib/mentions';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
@@ -26,6 +33,8 @@ interface ComposerProps {
   onGate?: () => void;
   /** Publish ephemeral typing presence (authenticated composers only). */
   onTypingChange?: (typing: boolean) => void;
+  /** Live authors in this URL's chat (for @ autocomplete). */
+  mentionParticipants?: MentionParticipant[];
 }
 
 export function Composer({
@@ -35,6 +44,7 @@ export function Composer({
   gated,
   onGate,
   onTypingChange,
+  mentionParticipants = [],
 }: ComposerProps) {
   const { user } = useAuth();
   const { t } = useLocale();
@@ -49,6 +59,9 @@ export function Composer({
   >([]);
   const [searching, setSearching] = useState(false);
   const [giphyError, setGiphyError] = useState(false);
+  const [caret, setCaret] = useState(0);
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [mentionDismissed, setMentionDismissed] = useState(false);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -163,6 +176,63 @@ export function Composer({
     };
   }, [giphyQ, showGiphy, user?.token]);
 
+  const mention = useMemo(
+    () => findMentionQuery(body, caret),
+    [body, caret],
+  );
+  const mentionMatches = useMemo(
+    () =>
+      mention
+        ? filterMentionParticipants(mentionParticipants, mention.query)
+        : [],
+    [mention, mentionParticipants],
+  );
+  const mentionOpen = Boolean(
+    mention && mentionParticipants.length > 0 && !mentionDismissed,
+  );
+  const activeMentionIndex =
+    mentionMatches.length === 0
+      ? 0
+      : Math.min(mentionIndex, mentionMatches.length - 1);
+
+  useEffect(() => {
+    setMentionDismissed(false);
+    setMentionIndex(0);
+  }, [mention?.start, mention?.query]);
+
+  useEffect(() => {
+    if (mentionOpen) {
+      setShowEmoji(false);
+      setShowGiphy(false);
+    }
+  }, [mentionOpen]);
+
+  const applyMention = (username: string) => {
+    if (!mention) return;
+    const next = insertMention(
+      body,
+      caret,
+      mention.start,
+      username,
+      MAX_BODY_LENGTH,
+    );
+    setBody(next.text);
+    setCaret(next.caret);
+    setMentionDismissed(true);
+    if (next.text.trim()) bumpTyping();
+    else stopTyping();
+    requestAnimationFrame(() => {
+      const el = taRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(next.caret, next.caret);
+    });
+  };
+
+  const syncCaret = (el: HTMLTextAreaElement) => {
+    setCaret(el.selectionStart ?? 0);
+  };
+
   if (gated) {
     return (
       <div className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
@@ -184,9 +254,11 @@ export function Composer({
     try {
       await onSubmit(body.trim(), gifUrl);
       setBody('');
+      setCaret(0);
       setGifUrl(null);
       setShowGiphy(false);
       setShowEmoji(false);
+      setMentionDismissed(false);
       onCancelReply?.();
     } finally {
       setBusy(false);
@@ -223,26 +295,80 @@ export function Composer({
           </Button>
         </div>
       )}
-      <Textarea
-        ref={taRef}
-        value={body}
-        maxLength={MAX_BODY_LENGTH}
-        placeholder={t('composer.placeholder')}
-        className="resize-none"
-        onChange={(e) => {
-          const next = e.target.value.slice(0, MAX_BODY_LENGTH);
-          setBody(next);
-          if (next.trim()) bumpTyping();
-          else stopTyping();
-        }}
-        onBlur={stopTyping}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            submit();
+      <div className="relative">
+        {mentionOpen && (
+          <MentionList
+            items={mentionMatches}
+            activeIndex={activeMentionIndex}
+            onHover={setMentionIndex}
+            onSelect={(item) => applyMention(item.username)}
+          />
+        )}
+        <Textarea
+          ref={taRef}
+          value={body}
+          maxLength={MAX_BODY_LENGTH}
+          placeholder={t('composer.placeholder')}
+          className="resize-none"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded={mentionOpen}
+          aria-controls={mentionOpen ? 'ec-mention-list' : undefined}
+          aria-activedescendant={
+            mentionOpen && mentionMatches[activeMentionIndex]
+              ? `ec-mention-${mentionMatches[activeMentionIndex].username}`
+              : undefined
           }
-        }}
-      />
+          onChange={(e) => {
+            const next = e.target.value.slice(0, MAX_BODY_LENGTH);
+            setBody(next);
+            syncCaret(e.target);
+            if (next.trim()) bumpTyping();
+            else stopTyping();
+          }}
+          onClick={(e) => syncCaret(e.currentTarget)}
+          onKeyUp={(e) => syncCaret(e.currentTarget)}
+          onSelect={(e) => syncCaret(e.currentTarget)}
+          onBlur={stopTyping}
+          onKeyDown={(e) => {
+            if (mentionOpen) {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (mentionMatches.length === 0) return;
+                setMentionIndex((i) => (i + 1) % mentionMatches.length);
+                return;
+              }
+              if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (mentionMatches.length === 0) return;
+                setMentionIndex(
+                  (i) =>
+                    (i - 1 + mentionMatches.length) % mentionMatches.length,
+                );
+                return;
+              }
+              if (e.key === 'Enter' || e.key === 'Tab') {
+                const chosen = mentionMatches[activeMentionIndex];
+                if (chosen && !e.metaKey && !e.ctrlKey) {
+                  e.preventDefault();
+                  applyMention(chosen.username);
+                  return;
+                }
+              }
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                setMentionDismissed(true);
+                return;
+              }
+            }
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              submit();
+            }
+          }}
+        />
+      </div>
       {gifUrl && (
         <div className="relative mt-2 inline-block overflow-hidden rounded">
           <img

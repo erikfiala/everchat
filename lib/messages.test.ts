@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildMessageTree } from './messages';
+import {
+  buildMessageTree,
+  conversationStackForFocus,
+  findMessageNode,
+  findPathToMessage,
+} from './messages';
 import type { MessageWithAuthor } from './database.types';
 
 function msg(
@@ -51,7 +56,35 @@ describe('buildMessageTree deleted nodes', () => {
     expect(roots).toHaveLength(1);
     expect(roots[0]?.id).toBe('parent');
     expect(roots[0]?.deleted_at).toBeTruthy();
+    expect(roots[0]?.author).toBeNull();
     expect(roots[0]?.children.map((n) => n.id)).toEqual(['child']);
+    expect(roots[0]?.children[0]?.author?.username).toBe('alice');
+  });
+
+  it('does not attach a reply author to a missing deleted parent', () => {
+    const roots = buildMessageTree(
+      [
+        msg({
+          id: 'child',
+          parent_id: 'missing',
+          body: 'reply',
+          author_id: 'child-author',
+          author: {
+            id: 'child-author',
+            username: 'bob',
+            avatar_url: 'https://example.com/bob.png',
+            karma: 3,
+          },
+        }),
+      ],
+      [],
+      'new',
+    );
+    expect(roots[0]?.id).toBe('missing');
+    expect(roots[0]?.deleted_at).toBeTruthy();
+    expect(roots[0]?.author).toBeNull();
+    expect(roots[0]?.author_id).toBe('');
+    expect(roots[0]?.children[0]?.author?.username).toBe('bob');
   });
 
   it('drops a chain of deleted nodes with no live descendant', () => {
@@ -107,5 +140,37 @@ describe('buildMessageTree deleted nodes', () => {
     );
     expect(roots[0]?.id).toBe('parent');
     expect(roots[0]?.children).toEqual([]);
+  });
+});
+
+describe('thread navigation helpers', () => {
+  const tree = buildMessageTree(
+    [
+      msg({ id: 'root', body: 'root' }),
+      msg({ id: 'child', parent_id: 'root', body: 'child' }),
+      msg({ id: 'grand', parent_id: 'child', body: 'grand' }),
+    ],
+    [],
+    'new',
+  );
+
+  it('finds a nested node by id', () => {
+    expect(findMessageNode(tree, 'grand')?.body).toBe('grand');
+    expect(findMessageNode(tree, 'missing')).toBeNull();
+  });
+
+  it('returns the path from root to the target', () => {
+    expect(findPathToMessage(tree, 'grand')).toEqual(['root', 'child', 'grand']);
+    expect(findPathToMessage(tree, 'root')).toEqual(['root']);
+    expect(findPathToMessage(tree, 'missing')).toBeNull();
+  });
+
+  it('opens ancestor conversations so the focused reply is visible', () => {
+    expect(conversationStackForFocus(['root', 'child', 'grand'])).toEqual([
+      'root',
+      'child',
+    ]);
+    expect(conversationStackForFocus(['root'])).toEqual([]);
+    expect(conversationStackForFocus(null)).toEqual([]);
   });
 });

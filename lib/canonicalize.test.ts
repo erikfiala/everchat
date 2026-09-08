@@ -8,6 +8,7 @@ import {
   originalHref,
   hrefFromPage,
   parseShareMessageId,
+  sameCanonicalRoom,
 } from './canonicalize';
 
 describe('canonicalize', () => {
@@ -149,5 +150,44 @@ describe('hrefFromPage', () => {
     expect(hrefFromPage({ url: null, canonical_url: 'extensions/' })).toBe(
       'chrome://extensions/',
     );
+  });
+});
+
+describe('sameCanonicalRoom', () => {
+  it('matches already-canonical keys and rejects missing ones', () => {
+    expect(
+      sameCanonicalRoom('youtube.com/watch?v=abc', 'youtube.com/watch?v=abc'),
+    ).toBe(true);
+    expect(
+      sameCanonicalRoom('youtube.com/watch?v=abc', 'youtube.com/watch?v=xyz'),
+    ).toBe(false);
+    expect(sameCanonicalRoom(null, 'youtube.com/watch?v=abc')).toBe(false);
+    expect(sameCanonicalRoom('', '')).toBe(false);
+  });
+
+  it('follows canonicalize identity (www, slash, youtube noise)', () => {
+    const live = canonicalize(
+      'https://www.youtube.com/watch?v=abc&t=30s&si=xyz/',
+    );
+    const viewing = canonicalize('https://youtube.com/watch?v=abc');
+    expect(sameCanonicalRoom(live.canonicalUrl, viewing.canonicalUrl)).toBe(
+      true,
+    );
+    expect(
+      sameCanonicalRoom(
+        live.canonicalUrl,
+        canonicalize('https://youtube.com/watch?v=other').canonicalUrl,
+      ),
+    ).toBe(false);
+  });
+
+  it('mirrors chat history: tag only when viewing matches the live tab', () => {
+    const live = canonicalize('https://www.youtube.com/watch?v=abc').canonicalUrl;
+    const previous = canonicalize(
+      'https://www.nytimes.com/2026/01/01/world/foo.html/',
+    ).canonicalUrl;
+    expect(sameCanonicalRoom(live, live)).toBe(true);
+    expect(sameCanonicalRoom(previous, live)).toBe(false);
+    expect(sameCanonicalRoom(live, live)).toBe(true);
   });
 });

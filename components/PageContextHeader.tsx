@@ -6,6 +6,7 @@ interface PageContextHeaderProps {
   title?: string | null;
   host?: string | null;
   faviconUrl?: string | null;
+  isCurrentPage?: boolean;
   className?: string;
 }
 
@@ -13,6 +14,7 @@ export function PageContextHeader({
   title,
   host,
   faviconUrl,
+  isCurrentPage = false,
   className,
 }: PageContextHeaderProps) {
   const { t } = useLocale();
@@ -29,8 +31,14 @@ export function PageContextHeader({
           {title || host || t('page.thisPage')}
         </div>
         {host && (
-          <div className="truncate text-xs text-[var(--color-muted-foreground)]">
-            {host}
+          <div className="inline-flex min-w-0 max-w-full items-baseline gap-0.5 text-xs text-[var(--color-muted-foreground)]">
+            <span className="truncate mr-px">{host}</span>
+            {isCurrentPage && (
+              <>
+                <span aria-hidden className="shrink-0 opacity-50">•</span>
+                <span className="shrink-0" data-current-page="">{t('page.thisPage')}</span>
+              </>
+            )}
           </div>
         )}
       </div>

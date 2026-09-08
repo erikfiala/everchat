@@ -1,10 +1,32 @@
 import { describe, expect, it } from 'vitest';
+import { ANONYMOUS_HANDLE, RESERVED_HANDLES } from './constants';
 import {
   ABOUT_MAX_LEN,
+  getAnonymousProfile,
+  isAnonymousHandle,
   normalizeAbout,
   normalizeWebsiteUrl,
   websiteDisplayLabel,
 } from './profile';
+
+describe('anonymous reserved handle', () => {
+  it('matches the reserved handle case-insensitively', () => {
+    expect(isAnonymousHandle(ANONYMOUS_HANDLE)).toBe(true);
+    expect(isAnonymousHandle('Anonymous')).toBe(true);
+    expect(isAnonymousHandle('  ANONYMOUS  ')).toBe(true);
+    expect(isAnonymousHandle('alice')).toBe(false);
+    expect(isAnonymousHandle(null)).toBe(false);
+    expect(RESERVED_HANDLES.has(ANONYMOUS_HANDLE)).toBe(true);
+  });
+
+  it('builds a synthetic profile with no avatar or about leak', () => {
+    const profile = getAnonymousProfile();
+    expect(profile.username).toBe(ANONYMOUS_HANDLE);
+    expect(profile.avatar_url).toBeNull();
+    expect(profile.about).toBeNull();
+    expect(profile.id).toBe(ANONYMOUS_HANDLE);
+  });
+});
 
 describe('normalizeAbout', () => {
   it('trims and treats empty as unset', () => {

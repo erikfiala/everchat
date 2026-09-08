@@ -1089,7 +1089,7 @@ body.doc {
   border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 20;
   background: color-mix(in srgb, var(--paper) 86%, transparent);
   backdrop-filter: blur(10px);
 }
@@ -1145,57 +1145,125 @@ body.doc {
   color: var(--mute);
 }
 
-.nav-lang select,
-.site-footer select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: var(--panel);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.55rem center;
-  background-size: 0.75rem;
+/* shadcn-style field + listbox (mirrors extension Settings DropdownMenu + outline Button) */
+.ec-select {
+  position: relative;
+  min-width: 0;
+  max-width: 11rem;
+}
+
+.ec-select-trigger {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  height: 2.25rem;
+  margin: 0;
+  padding: 0 0.65rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-site);
+  background: var(--panel);
   color: var(--ink);
   font: inherit;
   font-size: 0.85rem;
-  line-height: 1.2;
-  min-height: 2rem;
-  padding: 0.3rem 1.7rem 0.3rem 0.6rem;
-  max-width: 11rem;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+}
+
+.ec-select-value {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Closed control truncates; native dropdown options keep full labels */
-.nav-lang select option,
-.site-footer select option {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
+.ec-select-chevron {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  opacity: 0.6;
+  color: var(--mute);
 }
 
-/* Header lang select: compact width; truncate with ellipsis (home + doc) */
+.ec-select.is-open .ec-select-chevron {
+  transform: rotate(180deg);
+}
+
+.ec-select-trigger:hover {
+  border-color: var(--stone-deep);
+  background: color-mix(in srgb, var(--accent-soft) 55%, var(--panel));
+}
+
+.ec-select-trigger:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  outline-offset: 1px;
+}
+
+.ec-select-menu {
+  position: absolute;
+  z-index: 40;
+  inset-inline-end: 0;
+  top: calc(100% + 0.25rem);
+  min-width: max(100%, 12.5rem);
+  max-width: min(16.5rem, 90vw);
+  max-height: 18rem;
+  overflow: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-site);
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow:
+    0 4px 6px -1px rgb(15 23 42 / 0.08),
+    0 10px 20px -8px rgb(15 23 42 / 0.14);
+}
+
+.ec-select-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.4rem;
+  border-radius: calc(var(--radius-site) * 0.75);
+  font-size: 0.85rem;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.ec-select-item.is-active,
+.ec-select-item[aria-selected="true"].is-active {
+  background: var(--accent-soft);
+}
+
+.ec-select-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.ec-select-item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Header lang field: compact width; truncate with ellipsis (home + doc) */
 .doc-bar .nav-lang {
   max-width: 8.25rem;
 }
 
-.doc-bar .nav-lang select {
+.doc-bar .ec-select {
   width: 7.25rem;
   max-width: 7.25rem;
-}
-
-.nav-lang select:hover,
-.site-footer select:hover {
-  border-color: var(--stone-deep);
-}
-
-.nav-lang select:focus,
-.site-footer select:focus {
-  outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
-  outline-offset: 1px;
 }
 
 .doc-bar-end {
@@ -1226,15 +1294,13 @@ body.doc {
     max-width: min(7.25rem, 40vw);
   }
 
-  .nav-lang select,
-  .site-footer select {
+  .ec-select-trigger {
+    height: 2rem;
     font-size: 0.78rem;
-    padding: 0.25rem 1.45rem 0.25rem 0.45rem;
-    background-position: right 0.4rem center;
-    max-width: 100%;
+    padding-inline: 0.5rem;
   }
 
-  .doc-bar .nav-lang select {
+  .doc-bar .ec-select {
     width: 100%;
     max-width: 100%;
   }

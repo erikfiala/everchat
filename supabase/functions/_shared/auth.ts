@@ -124,6 +124,7 @@ export async function verifySessionToken(authHeader: string | null) {
 }
 
 export const RESERVED = new Set([
+  'anonymous',
   'everchat',
   'admin',
   'mod',

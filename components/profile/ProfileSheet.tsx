@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { HatGlasses } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useLocale } from '@/hooks/useLocale';
 import { ProfilePublicMeta } from '@/components/profile/ProfilePublicMeta';
-import { fetchProfileByUsername } from '@/lib/profile';
+import { fetchProfileByUsername, isAnonymousHandle } from '@/lib/profile';
+import { ANONYMOUS_HANDLE } from '@/lib/constants';
 import type { Profile } from '@/lib/database.types';
 import { formatScore, scoreColorClass } from '@/lib/collapse';
 import { cn } from '@/lib/utils';
@@ -28,9 +30,15 @@ export function ProfileSheet({
   const { t } = useLocale();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
+  const anonymous = isAnonymousHandle(username);
 
   useEffect(() => {
     if (!open || !username) return;
+    if (isAnonymousHandle(username)) {
+      setProfile(null);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     fetchProfileByUsername(username)
       .then(setProfile)
@@ -45,7 +53,26 @@ export function ProfileSheet({
           <DialogTitle>{t('profile.title')}</DialogTitle>
         </DialogHeader>
         {loading && <Skeleton className="h-20 w-full" />}
-        {!loading && profile && (
+        {!loading && anonymous && (
+          <div className="pt-2">
+            <div className="flex items-start gap-3">
+              <Avatar className="h-12 w-12">
+                <AvatarFallback>
+                  <HatGlasses className="h-5 w-5" aria-hidden />
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <div className="text-base font-semibold">
+                  @{ANONYMOUS_HANDLE}
+                </div>
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">
+              {t('profile.anonymousReserved')}
+            </p>
+          </div>
+        )}
+        {!loading && !anonymous && profile && (
           <div className="pt-2">
             <div className="flex items-start gap-3">
               <Avatar className="h-12 w-12">
@@ -76,7 +103,7 @@ export function ProfileSheet({
             />
           </div>
         )}
-        {!loading && !profile && (
+        {!loading && !anonymous && !profile && (
           <p className="text-sm text-[var(--color-muted-foreground)]">
             {t('profile.userNotFound')}
           </p>

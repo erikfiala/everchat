@@ -173,21 +173,24 @@ export function buildMessageTree(
   const nodes = new Map<string, MessageNode>();
 
   for (const m of messages) {
+    const deleted = Boolean(m.deleted_at);
     nodes.set(m.id, {
       ...m,
+      // Tombstones keep author_id for the row, but never expose the poster.
+      author: deleted ? null : m.author,
       children: [],
       myVote: voteMap.get(m.id) ?? null,
     });
   }
 
   // Orphan replies whose parent row is gone: synthesize a deleted placeholder
-  // so the tree stays nested under italic "Deleted comment."
+  // so the tree stays nested under the reserved @anonymous row.
   for (const node of [...nodes.values()]) {
     if (!node.parent_id || nodes.has(node.parent_id)) continue;
     nodes.set(node.parent_id, {
       id: node.parent_id,
       page_id: node.page_id,
-      author_id: node.author_id,
+      author_id: '',
       parent_id: null,
       body: '',
       gif_url: null,
@@ -328,4 +331,25 @@ export function findPathToMessage(
     return false;
   };
   return walk(roots) ? path : null;
+}
+
+export function findMessageNode(
+  roots: MessageNode[],
+  targetId: string,
+): MessageNode | null {
+  for (const node of roots) {
+    if (node.id === targetId) return node;
+    const found = findMessageNode(node.children, targetId);
+    if (found) return found;
+  }
+  return null;
+}
+
+/**
+ * Stack of conversation parents to open so the focused message is visible
+ * as a reply in its parent pane. Roots stay on the main feed.
+ */
+export function conversationStackForFocus(path: string[] | null): string[] {
+  if (!path || path.length <= 1) return [];
+  return path.slice(0, -1);
 }

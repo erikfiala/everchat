@@ -179,3 +179,11 @@ export function hrefFromPage(page: {
   if (stored && HAS_SCHEME.test(stored)) return stored;
   return httpsUrlFromCanonical(page.canonical_url);
 }
+
+/** Same chat room: both sides already canonicalized (`host/path?kept`). */
+export function sameCanonicalRoom(
+  a: string | null | undefined,
+  b: string | null | undefined,
+): boolean {
+  return Boolean(a && b && a === b);
+}

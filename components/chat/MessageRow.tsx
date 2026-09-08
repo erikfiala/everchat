@@ -3,13 +3,14 @@ import {
   ChevronDown,
   ChevronUp,
   Flag,
+  HatGlasses,
   Link,
   MoreHorizontal,
   Trash2,
 } from 'lucide-react';
 import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
-import { DEPTH_COLLAPSE_LEVEL } from '@/lib/constants';
+import { ANONYMOUS_HANDLE } from '@/lib/constants';
 import { bindRelativeTime } from '@/lib/time';
 import { buildShareLink } from '@/lib/canonicalize';
 import { translateMessageBody } from '@/lib/translate';
@@ -27,15 +28,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
 import { toast } from 'sonner';
 
-interface MessageRowProps {
-  node: MessageNode;
-  depth: number;
+export interface MessageRowHandlers {
   pageUrl: string | null;
   currentUserId?: string | null;
   expandedIds: Set<string>;
-  continueThreadIds: Set<string>;
   onToggleExpand: (id: string) => void;
-  onContinueThread: (id: string) => void;
   onReply: (node: MessageNode) => void;
   onVote: (id: string, value: 1 | -1) => void;
   onDelete: (id: string) => void;
@@ -44,15 +41,44 @@ interface MessageRowProps {
   requireAuth: () => boolean;
 }
 
+interface MessageRowProps extends MessageRowHandlers {
+  node: MessageNode;
+  onShowReplies?: (node: MessageNode) => void;
+}
+
+function ShowRepliesControl({
+  node,
+  onShowReplies,
+}: {
+  node: MessageNode;
+  onShowReplies?: (node: MessageNode) => void;
+}) {
+  const { t } = useLocale();
+  const count = node.children.length;
+  if (!onShowReplies || count <= 0) return null;
+  return (
+    <Button
+      type="button"
+      id={`ec-show-replies-${node.id}`}
+      variant="ghost"
+      size="sm"
+      className="mt-0.5 h-7 px-2 text-xs"
+      onClick={() => onShowReplies(node)}
+    >
+      {count === 1
+        ? t('message.showReply')
+        : t('message.showReplies', { n: count })}
+    </Button>
+  );
+}
+
 export function MessageRow({
   node,
-  depth,
   pageUrl,
   currentUserId,
   expandedIds,
-  continueThreadIds,
   onToggleExpand,
-  onContinueThread,
+  onShowReplies,
   onReply,
   onVote,
   onDelete,
@@ -100,8 +126,6 @@ export function MessageRow({
     !deleted && isCommunityCollapsed(node.upvotes, node.downvotes);
   const userExpanded = expandedIds.has(node.id);
   const showBody = !collapsed || userExpanded;
-  const hideDeep =
-    depth >= DEPTH_COLLAPSE_LEVEL && !continueThreadIds.has(node.id);
 
   const shareLink = async () => {
     const link = buildShareLink(node.id);
@@ -142,64 +166,59 @@ export function MessageRow({
     }
   };
 
-  if (hideDeep) {
-    return (
-      <div className="ms-4 border-s border-[var(--color-border)] ps-3 py-1">
-        <button
-          type="button"
-          className="text-sm font-medium text-blue-600 hover:underline"
-          onClick={() => onContinueThread(node.id)}
-        >
-          {t('message.continueThread')}
-        </button>
-      </div>
-    );
-  }
-
   if (deleted) {
     if (node.children.length === 0) return null;
+    const timestamp = safeRelativeTime(node.created_at, formatTime);
+    const timestampTitle = safeRelativeTime(node.created_at, (d) =>
+      d.toLocaleString(locale),
+    );
     return (
-      <div
-        id={`ec-msg-${node.id}`}
-        className={cn(
-          'group scroll-mt-16',
-          depth > 0 && 'ms-3 border-s border-[var(--color-border)] ps-3',
-        )}
-      >
-        <p className="py-2 text-sm italic text-[var(--color-muted-foreground)]">
-          {t('message.deleted')}
-        </p>
-        {node.children.map((child) => (
-          <MessageRow
-            key={child.id}
-            node={child}
-            depth={depth + 1}
-            pageUrl={pageUrl}
-            currentUserId={currentUserId}
-            expandedIds={expandedIds}
-            continueThreadIds={continueThreadIds}
-            onToggleExpand={onToggleExpand}
-            onContinueThread={onContinueThread}
-            onReply={onReply}
-            onVote={onVote}
-            onDelete={onDelete}
-            onReport={onReport}
-            onOpenProfile={onOpenProfile}
-            requireAuth={requireAuth}
-          />
-        ))}
+      <div id={`ec-msg-${node.id}`} className="group scroll-mt-16">
+        <div className="flex items-start gap-2 py-2">
+          <button
+            type="button"
+            onClick={() => onOpenProfile(ANONYMOUS_HANDLE)}
+            className="shrink-0"
+            aria-label={`@${ANONYMOUS_HANDLE}`}
+          >
+            <Avatar className="h-7 w-7">
+              <AvatarFallback>
+                <HatGlasses className="h-3.5 w-3.5" aria-hidden />
+              </AvatarFallback>
+            </Avatar>
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+              <button
+                type="button"
+                className="font-medium hover:underline"
+                onClick={() => onOpenProfile(ANONYMOUS_HANDLE)}
+              >
+                @{ANONYMOUS_HANDLE}
+              </button>
+              {timestamp ? (
+                <span
+                  className="text-[var(--color-muted-foreground)]"
+                  title={timestampTitle || undefined}
+                >
+                  {timestamp}
+                </span>
+              ) : null}
+            </div>
+            <p className="mt-1 text-sm italic text-[var(--color-muted-foreground)]">
+              {t('message.deleted')}
+            </p>
+            <div className="mt-1.5">
+              <ShowRepliesControl node={node} onShowReplies={onShowReplies} />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      id={`ec-msg-${node.id}`}
-      className={cn(
-        'group scroll-mt-16',
-        depth > 0 && 'ms-3 border-s border-[var(--color-border)] ps-3',
-      )}
-    >
+    <div id={`ec-msg-${node.id}`} className="group scroll-mt-16">
       <div className="flex items-start gap-2 py-2">
         <button
           type="button"
@@ -405,31 +424,11 @@ export function MessageRow({
                   )}
                 </div>
               </div>
+              <ShowRepliesControl node={node} onShowReplies={onShowReplies} />
             </>
           )}
         </div>
       </div>
-
-      {showBody &&
-        node.children.map((child) => (
-          <MessageRow
-            key={child.id}
-            node={child}
-            depth={depth + 1}
-            pageUrl={pageUrl}
-            currentUserId={currentUserId}
-            expandedIds={expandedIds}
-            continueThreadIds={continueThreadIds}
-            onToggleExpand={onToggleExpand}
-            onContinueThread={onContinueThread}
-            onReply={onReply}
-            onVote={onVote}
-            onDelete={onDelete}
-            onReport={onReport}
-            onOpenProfile={onOpenProfile}
-            requireAuth={requireAuth}
-          />
-        ))}
 
       <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <DialogContent>

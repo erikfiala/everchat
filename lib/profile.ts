@@ -1,7 +1,30 @@
 import { callEdgeFunction } from './supabase';
-import { AVATAR_MAX_BYTES, LIST_PAGE_SIZE } from './constants';
+import {
+  ANONYMOUS_HANDLE,
+  AVATAR_MAX_BYTES,
+  LIST_PAGE_SIZE,
+} from './constants';
 import { getSupabase } from './supabase';
 import type { ActivityItem, Profile, WebAuthnCredential } from './database.types';
+
+export function isAnonymousHandle(
+  username: string | null | undefined,
+): boolean {
+  return (username ?? '').trim().toLowerCase() === ANONYMOUS_HANDLE;
+}
+
+/** Synthetic reserved identity — never a DB row, never the original author. */
+export function getAnonymousProfile(): Profile {
+  return {
+    id: ANONYMOUS_HANDLE,
+    username: ANONYMOUS_HANDLE,
+    avatar_url: null,
+    about: null,
+    website: null,
+    karma: 0,
+    created_at: new Date(0).toISOString(),
+  };
+}
 
 export async function fetchProfile(userId: string): Promise<Profile | null> {
   const sb = getSupabase();
@@ -17,6 +40,7 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 export async function fetchProfileByUsername(
   username: string,
 ): Promise<Profile | null> {
+  if (isAnonymousHandle(username)) return getAnonymousProfile();
   const sb = getSupabase();
   const { data, error } = await sb
     .from('profiles')

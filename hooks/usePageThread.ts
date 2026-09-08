@@ -322,6 +322,7 @@ export function usePageThread(
                   score: 0,
                   upvotes: 0,
                   downvotes: 0,
+                  author: null,
                 }
               : m,
           );

@@ -29,7 +29,7 @@
   <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="doc-bar sticky top-0 z-2 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+    <header class="doc-bar sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
       <a class="home block shrink-0 leading-none" href="/">
         <img
           class="h-auto w-[8.5rem] shrink-0 pb-1"
@@ -42,7 +42,7 @@
         />
       </a>
       <div class="doc-bar-end min-w-0 shrink">
-        <label class="nav-lang min-w-0 shrink">
+        <div class="nav-lang min-w-0 shrink">
           <svg
             class="nav-lang-icon"
             xmlns="http://www.w3.org/2000/svg"
@@ -63,8 +63,39 @@
             <path d="m22 22-5-10-5 10" />
             <path d="M14 18h6" />
           </svg>
-          <select data-ec-lang aria-label="Language" data-i18n="www.language" data-i18n-attr="aria-label"></select>
-        </label>
+          <div class="ec-select" data-ec-lang>
+            <button
+              type="button"
+              class="ec-select-trigger"
+              data-ec-lang-trigger
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              aria-label="Language"
+              data-i18n="www.language"
+              data-i18n-attr="aria-label"
+            >
+              <span class="ec-select-value" data-ec-lang-label></span>
+              <svg
+                class="ec-select-chevron"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div class="ec-select-menu" data-ec-lang-menu role="listbox" hidden></div>
+          </div>
+        </div>
       </div>
     </header>
 

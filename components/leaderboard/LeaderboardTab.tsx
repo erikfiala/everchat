@@ -180,7 +180,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageTitleBar>{t('leaderboard.title')}</PageTitleBar>
-      <div className="flex min-h-0 flex-1 flex-col gap-0.5 px-3 pt-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-0 px-3 pt-3">
         {me && !error && (
           <LeaderboardRow
             row={me}
@@ -191,7 +191,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
 
         <div
           ref={scrollRef}
-          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto"
+          className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto"
         >
           {loading &&
             top.length === 0 &&

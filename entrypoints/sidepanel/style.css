@@ -117,7 +117,11 @@ button[aria-disabled='true'],
 
 .highlight-pulse {
   animation: highlight-pulse 1.6s ease-out;
-  border-radius: var(--radius-md);
+  /* Square, full-bleed past the list `px-3` (0.75rem) and any thread indent. */
+  margin-inline-start: calc(-1 * var(--ec-highlight-bleed-start));
+  margin-inline-end: calc(-1 * var(--ec-highlight-bleed-end));
+  padding-inline-start: var(--ec-highlight-bleed-start);
+  padding-inline-end: var(--ec-highlight-bleed-end);
 }
 
 /* Reddit-style thread tree: rail under the parent avatar, L into the child. */
@@ -126,10 +130,17 @@ button[aria-disabled='true'],
   --ec-avatar-visual: 1.75rem;
   --ec-thread-gutter: 1.75rem;
   --ec-stroke: 3px;
+  --ec-list-pad-x: 0.75rem;
+  --ec-highlight-bleed-start: var(--ec-list-pad-x);
+  --ec-highlight-bleed-end: var(--ec-list-pad-x);
 }
 
 .ec-thread-reply {
   --ec-avatar-visual: 1.25rem;
+  --ec-highlight-bleed-start: var(
+    --ec-highlight-nested-bleed-start,
+    var(--ec-list-pad-x)
+  );
   display: grid;
   grid-template-columns: var(--ec-thread-gutter) minmax(0, 1fr);
   overflow: visible;
@@ -138,6 +149,9 @@ button[aria-disabled='true'],
 .ec-thread-main {
   min-width: 0;
   overflow: visible;
+  --ec-highlight-nested-bleed-start: calc(
+    var(--ec-highlight-bleed-start) + var(--ec-thread-gutter)
+  );
 }
 
 .ec-thread-self {

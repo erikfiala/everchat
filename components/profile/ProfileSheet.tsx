@@ -56,14 +56,24 @@ export function ProfileSheet({
         {!loading && anonymous && (
           <div className="pt-2">
             <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12 border border-[var(--color-border)] bg-[var(--color-accent)]">
-                <AvatarFallback className="bg-[var(--color-accent)]">
+              <Avatar className="ec-anonymous-avatar h-12 w-12">
+                <AvatarFallback className="bg-transparent text-[var(--color-foreground)]">
                   <HatGlasses className="h-5 w-5" aria-hidden />
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
                 <div className="text-base font-semibold">
                   @{ANONYMOUS_HANDLE}
+                </div>
+                <div
+                  className={cn(
+                    'text-sm font-normal',
+                    scoreColorClass(0),
+                  )}
+                >
+                  {t('profile.karma', {
+                    score: formatScore(0),
+                  })}
                 </div>
               </div>
             </div>

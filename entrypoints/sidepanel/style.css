@@ -13,6 +13,7 @@
   --color-primary: #27272a; /* zinc-800 */
   --color-primary-foreground: #fafafa;
   --color-accent: #f4f4f5; /* zinc-100 */
+  --color-anonymous-avatar: #a1a1aa; /* zinc-400 · deleted/@anonymous fallback */
   --color-destructive: #dc2626;
   --color-success: #0f766e;
   --color-score-pos: #0f766e;
@@ -33,6 +34,7 @@ html[data-theme='dark'] {
   --color-primary: #f4f4f5; /* zinc-100 */
   --color-primary-foreground: #18181b;
   --color-accent: #3f3f46; /* zinc-700 */
+  --color-anonymous-avatar: #71717a; /* zinc-500 · deleted/@anonymous fallback */
   --color-destructive: #f87171;
   --color-success: #2dd4bf;
   --color-score-pos: #2dd4bf;
@@ -62,6 +64,17 @@ body {
 
 html[data-theme='dark'] body {
   color-scheme: dark;
+}
+
+/* Reserved @anonymous / deleted-comment avatar — gray step above page/card. */
+.ec-anonymous-avatar {
+  background-color: #a1a1aa; /* zinc-400 */
+  border: 2px solid #52525b; /* zinc-600 */
+}
+
+html[data-theme='dark'] .ec-anonymous-avatar {
+  background-color: #71717a; /* zinc-500 */
+  border-color: #d4d4d8; /* zinc-300 */
 }
 
 /* Soft keyboard focus ring (hugs control radius; match sort selector) */

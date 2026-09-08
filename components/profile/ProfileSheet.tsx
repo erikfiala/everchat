@@ -56,8 +56,8 @@ export function ProfileSheet({
         {!loading && anonymous && (
           <div className="pt-2">
             <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12">
-                <AvatarFallback>
+              <Avatar className="h-12 w-12 border border-[var(--color-border)] bg-[var(--color-accent)]">
+                <AvatarFallback className="bg-[var(--color-accent)]">
                   <HatGlasses className="h-5 w-5" aria-hidden />
                 </AvatarFallback>
               </Avatar>

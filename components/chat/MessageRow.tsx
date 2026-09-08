@@ -279,8 +279,13 @@ export function MessageRow({
             className="shrink-0"
             aria-label={`@${ANONYMOUS_HANDLE}`}
           >
-            <Avatar className={avatarClass}>
-              <AvatarFallback>
+            <Avatar
+              className={cn(
+                avatarClass,
+                'border border-[var(--color-border)] bg-[var(--color-accent)]',
+              )}
+            >
+              <AvatarFallback className="bg-[var(--color-accent)]">
                 <HatGlasses className={avatarIconClass} aria-hidden />
               </AvatarFallback>
             </Avatar>

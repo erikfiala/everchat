@@ -6,7 +6,7 @@ Everchat is a Chrome side-panel extension for anonymous public comments on any p
 
 No email. No ads. No third-party trackers. Free forever.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-slate.svg)](./LICENSE)
+[![License: source-available](https://img.shields.io/badge/license-source--available-slate.svg)](./LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/everchathq/everchat?include_prereleases&sort=semver)](https://github.com/everchathq/everchat/releases/latest)
 
 **Site:** [everch.at](https://everch.at)  
@@ -30,9 +30,7 @@ Web pages have no portable conversation layer. Discussion ends up on Twitter, Re
 
 **Chrome Web Store** — coming soon. Check [everch.at](https://everch.at) for the official listing when it is live.
 
-### From a GitHub release (recommended)
-
-No Node toolchain. This is the build we publish.
+Until then, install an **official GitHub Release** zip. That is the build we publish.
 
 1. Download `everchat-<version>-chrome.zip` from the [latest release](https://github.com/everchathq/everchat/releases/latest)
 2. Unzip it. The folder must contain `manifest.json`
@@ -42,16 +40,7 @@ No Node toolchain. This is the build we publish.
 
 Chrome will warn that the extension is unpacked. That is expected until the Web Store listing is live.
 
-### From source
-
-```bash
-git clone https://github.com/everchathq/everchat.git
-cd everchat
-pnpm install
-pnpm build             # → dist/everchat
-```
-
-Then **Load unpacked** → `dist/everchat`. Details, tests, and release tagging are in [CONTRIBUTING.md](./CONTRIBUTING.md).
+Do not load a copy you built or modified yourself except to review the source or test a contribution. See [LICENSE](./LICENSE).
 
 ## Support
 
@@ -59,14 +48,18 @@ Everchat stays free. Voluntary donations go through [Open Collective](https://op
 
 ## License
 
-[MIT](./LICENSE). By contributing, you agree that your work is licensed under the same terms. See [CONTRIBUTING.md](./CONTRIBUTING.md), [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md), and [GOVERNANCE.md](./GOVERNANCE.md).
+[Everchat Source-Available License](./LICENSE). Source is public so you can inspect it, verify official builds, follow the [changelog](./CHANGELOG.md), and send contributions. It is not open source: you may not distribute Everchat as your own product, publish modified builds, or run it as a substitute service.
 
-## For developers
+The name, logos, and everch.at are reserved. See [TRADEMARK.md](./TRADEMARK.md).
+
+By contributing, you agree to the inbound grant in the LICENSE. See [CONTRIBUTING.md](./CONTRIBUTING.md), [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md), and [GOVERNANCE.md](./GOVERNANCE.md).
+
+## For contributors
 
 Stack: WXT + React + TypeScript, Supabase, static `www/` on Vercel (passkey RP at [everch.at](https://everch.at)).
 
 The Vercel project `everchat-www` must use **Root Directory `www`**. If that is left at `.`, Git deploys build the Chrome extension instead of the landing site and [everch.at](https://everch.at) returns `NOT_FOUND`.
 
-Official builds use the committed public Supabase URL + anon key (RLS is the access control). Self-hosting overrides go in `.env.local` — see `.env.example`.
+Official builds use the committed public Supabase URL + anon key (RLS is the access control). Local backend overrides for contribution testing go in `.env.local` — see `.env.example`.
 
-Product detail lives in [PRD.md](./PRD.md). Edge secrets (WebAuthn, optional `TRANSLATE_API_KEY` / Giphy) are documented in `.env.example`.
+How to build a working copy, run tests, and send a pull request: [CONTRIBUTING.md](./CONTRIBUTING.md). Product detail lives in [PRD.md](./PRD.md).

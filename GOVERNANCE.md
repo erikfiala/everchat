@@ -1,7 +1,7 @@
 # Governance
 
-Everchat is a small open-source project. This document describes how decisions
-are made so the project can keep working if maintainership changes.
+Everchat is a small source-available project. This document describes how
+decisions are made so the project can keep working if maintainership changes.
 
 ## Maintainers
 
@@ -43,4 +43,5 @@ If the current maintainer becomes unavailable:
 
 ## License
 
-Contributions are accepted under the [MIT License](./LICENSE).
+Contributions are accepted under the [Everchat Source-Available License](./LICENSE).
+The name and logos are reserved; see [TRADEMARK.md](./TRADEMARK.md).

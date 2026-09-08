@@ -569,7 +569,7 @@ Candidates — **not** shipped as live product surface:
 ## 21. Open questions
 
 1. Should `@handle` be immutable after register, or changeable with cooldown?
-2. Exact trademark handling beyond the reserved list?
+2. Trademark policy: see TRADEMARK.md (name, logos, everch.at reserved).
 3. After deep-link open, clear `#ec-msg-…` from the address bar so host SPAs are undisturbed?
 4. Prompt users to add a second passkey after first successful post?
 5. Should Best sort evolve to a Reddit-like confidence/hot score?

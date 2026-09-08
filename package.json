@@ -3,7 +3,7 @@
   "description": "Public comments on any URL. Chrome side panel.",
   "private": true,
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://everch.at",
   "bugs": {
     "url": "https://github.com/everchathq/everchat/issues"

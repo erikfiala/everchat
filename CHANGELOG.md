@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Everchat Source-Available License: inspect, verify, contribute, and
+  install official releases; no redistributing Everchat as your own
+  product. Trademark policy in TRADEMARK.md.
+
 ## [1.0.0] - 2026-09-06
 
 First public release of Everchat: a Chrome side panel for anonymous public
@@ -22,7 +28,7 @@ comments on any URL.
 - Theme preference (system / light / dark)
 - Room history navigation and live typing indicators
 - Composer: text, emoji, GIF insert (proxied)
-- MIT license, contributor docs, and GitHub Release zips for local install
+- Contributor docs and GitHub Release zips for local install
 
 ### Security
 

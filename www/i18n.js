@@ -403,15 +403,24 @@
   }
 
   function loadLocale(code) {
-    return fetch('/locales/' + encodeURIComponent(code) + '.json')
+    return fetch('/locales/en.json')
       .then(function (r) {
-        if (!r.ok) throw new Error('locale');
+        if (!r.ok) throw new Error('en');
         return r.json();
       })
-      .catch(function () {
-        return fetch('/locales/en.json').then(function (r) {
-          return r.json();
-        });
+      .then(function (en) {
+        if (code === 'en') return en;
+        return fetch('/locales/' + encodeURIComponent(code) + '.json')
+          .then(function (r) {
+            if (!r.ok) throw new Error('locale');
+            return r.json();
+          })
+          .then(function (catalog) {
+            return Object.assign({}, en, catalog);
+          })
+          .catch(function () {
+            return en;
+          });
       });
   }
 

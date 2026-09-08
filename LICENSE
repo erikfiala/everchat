@@ -1,21 +1,93 @@
-MIT License
+Everchat Source-Available License 1.0
 
 Copyright (c) 2026 Erik Fiala and Everchat contributors
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This is not an open-source license. The software is published so you can
+inspect it, verify official builds, follow the changelog, and contribute
+changes back to the canonical project.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Canonical project
+-----------------
+
+The only official Everchat software is published by the everchathq
+organization at https://github.com/everchathq/everchat, on
+https://everch.at, and in the Chrome Web Store listing operated by the
+same publisher.
+
+Permissions
+-----------
+
+Subject to these terms, you may:
+
+1. Install and use unmodified official builds obtained from GitHub
+   Releases on github.com/everchathq/everchat, the official Chrome Web
+   Store listing, or everch.at.
+
+2. View, download, and copy the source code for personal review and to
+   verify that an official build matches the published source.
+
+3. Compile unmodified source solely to compare it with an official build.
+
+4. Create a private working copy, including temporary modifications,
+   solely to develop and submit a contribution to the canonical
+   repository, and run that working copy on your own computer while
+   testing the contribution. You may not publish that working copy or
+   offer it to others.
+
+5. Fork the canonical repository on GitHub only as a vehicle for such
+   contributions.
+
+Restrictions
+------------
+
+You may not, without a separate written license from the copyright
+holders:
+
+1. Distribute, publish, sublicense, sell, or otherwise provide the
+   software or any modified version to anyone else (including as a
+   browser extension, app, archive, or hosted service).
+
+2. Operate a public or commercial service that uses this software, or a
+   derivative of it, to provide Everchat-like functionality.
+
+3. Present the software, or a modified version, as your own product, or
+   remove copyright, license, or attribution notices.
+
+4. Use the source except as listed under Permissions.
+
+Trademarks
+----------
+
+This license does not grant any rights to the name Everchat, the Everchat
+logos, or everch.at. See TRADEMARK.md.
+
+Contributions
+-------------
+
+By submitting a contribution (including a pull request, patch, or
+translation) to the canonical repository, you:
+
+- certify that you have the right to submit it;
+- grant the copyright holders a perpetual, worldwide, irrevocable,
+  royalty-free license to use, reproduce, modify, sublicense, and
+  relicense that contribution as part of Everchat, under these terms or
+  any later terms the copyright holders choose for Everchat;
+- agree that your contribution will be licensed to others only under the
+  then-current Everchat license.
+
+Termination
+-----------
+
+If you violate these terms, your license ends immediately. Disclaimers,
+limits of liability, and contribution grants survive.
+
+No warranty
+-----------
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

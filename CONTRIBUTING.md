@@ -3,6 +3,13 @@
 Thanks for helping. Please read the [Code of Conduct](./CODE_OF_CONDUCT.md)
 before opening an issue or pull request.
 
+The source is published so you can review it and send contributions. It is
+**not** a license to ship your own Everchat, publish modified builds, or host
+a substitute service. See [LICENSE](./LICENSE) and [TRADEMARK.md](./TRADEMARK.md).
+
+By opening a pull request you accept the inbound contribution grant in the
+LICENSE.
+
 ## What you need
 
 - [Node.js](https://nodejs.org/) 20 or later (22 is what CI uses)
@@ -10,16 +17,19 @@ before opening an issue or pull request.
 
 The default build talks to the **production** Everchat backend. Public Supabase
 URL + anon key live in `.env.development` and `.env.production` (safe to ship;
-RLS is the access control). Copy `.env.example` to `.env.local` only if you are
-self-hosting.
+RLS is the access control). Copy `.env.example` to `.env.local` only when
+testing a contribution against a non-production backend.
 
-## Install the extension locally
+## Use an official build
 
-**Easiest:** download a zip from
+If you just want Everchat installed, download a zip from
 [GitHub Releases](https://github.com/everchathq/everchat/releases/latest)
 and follow the README. You do not need this repo for that.
 
-**From source:**
+## Working copy (contributions and review)
+
+Build from source only to inspect the code, verify it against an official
+release, or test a change you will submit here. Do not distribute that build.
 
 ```bash
 git clone https://github.com/everchathq/everchat.git
@@ -82,9 +92,10 @@ fall back to English for missing keys.
 Never put the Chrome Web Store upload private key in git. `wxt.config.ts`
 already pins the **public** extension key so unpacked builds keep a stable ID.
 
-## Self-hosting
+## Local backends (contribution testing)
 
-You can point a private build at your own Supabase project with `.env.local`
-(see `.env.example`). Edge Function secrets are set with
+You may point a private working copy at your own Supabase project with
+`.env.local` (see `.env.example`) while testing a contribution. That is not
+permission to publish a hosted Everchat. Edge Function secrets are set with
 `supabase secrets set`, never in the extension. WebAuthn RP ID must be a real
 domain you control, listed in `www/.well-known/webauthn` and `WEBAUTHN_ORIGIN`.

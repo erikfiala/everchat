@@ -22,11 +22,11 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
           autoFocus
         />
       </div>
-      <div className="mt-2 grid max-h-72 min-h-32 grid-cols-8 gap-1 overflow-y-auto">
+      <div className="mt-2 grid max-h-72 min-h-32 grid-cols-[repeat(auto-fill,minmax(2.25rem,1fr))] gap-1 overflow-y-auto">
         {results.length === 0 ? (
           <p
             role="status"
-            className="col-span-8 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+            className="col-span-full flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
           >
             {t('composer.emojiNoResults')}
           </p>

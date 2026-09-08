@@ -13,7 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -643,19 +645,22 @@ function DeviceRow({
           </DialogHeader>
           <div className="mt-4 space-y-4">
             {isLastDevice && (
-              <label
-                htmlFor="remove-last-device-ack"
-                className="flex cursor-pointer items-start gap-2.5 text-sm leading-snug text-[var(--color-foreground)]"
-              >
-                <input
+              <div className="flex items-start gap-2.5">
+                <Checkbox
                   id="remove-last-device-ack"
-                  type="checkbox"
                   checked={lastDeviceAck}
-                  onChange={(e) => setLastDeviceAck(e.target.checked)}
-                  className="mt-0.5 size-4 shrink-0 rounded-sm border border-[var(--color-border)] accent-[var(--color-primary)]"
+                  onCheckedChange={(checked) =>
+                    setLastDeviceAck(checked === true)
+                  }
+                  className="mt-0.5"
                 />
-                <span>{t('profile.removeLastDeviceConfirmAck')}</span>
-              </label>
+                <Label
+                  htmlFor="remove-last-device-ack"
+                  className="cursor-pointer text-sm font-normal leading-snug text-[var(--color-foreground)]"
+                >
+                  {t('profile.removeLastDeviceConfirmAck')}
+                </Label>
+              </div>
             )}
             <div className="flex justify-end gap-2">
               <Button

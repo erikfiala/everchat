@@ -457,11 +457,11 @@ export function Composer({
                 autoFocus
               />
             </div>
-            <div className="mt-2 grid max-h-72 min-h-32 grid-cols-3 gap-1 overflow-y-auto">
+            <div className="mt-2 grid max-h-72 min-h-32 grid-cols-[repeat(auto-fill,minmax(7.5rem,1fr))] gap-1 overflow-y-auto">
               {searching && (
                 <p
                   role="status"
-                  className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+                  className="col-span-full flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
                 >
                   {t('composer.searching')}
                 </p>
@@ -469,7 +469,7 @@ export function Composer({
               {!searching && gifs.length === 0 && (
                 <p
                   role="status"
-                  className="col-span-3 flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
+                  className="col-span-full flex min-h-32 items-center justify-center px-2 text-center text-sm text-[var(--color-muted-foreground)]"
                 >
                   {giphyError
                     ? t('composer.giphyError')
@@ -484,7 +484,7 @@ export function Composer({
                     key={g.id}
                     type="button"
                     className={cn(
-                      'overflow-hidden rounded',
+                      'aspect-square min-w-0 overflow-hidden rounded',
                       gifUrl === g.url && 'ring-2 ring-[var(--color-primary)]',
                     )}
                     onClick={() => {
@@ -495,7 +495,7 @@ export function Composer({
                     <img
                       src={g.preview || g.url}
                       alt={g.title}
-                      className="h-16 w-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </button>
                 ))}

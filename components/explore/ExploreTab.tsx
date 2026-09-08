@@ -293,7 +293,7 @@ export function ExploreTab() {
                         className={
                           live
                             ? 'size-1.5 shrink-0 rounded-full bg-[var(--color-success)]'
-                            : 'size-1.5 shrink-0 rounded-full bg-[var(--color-muted-foreground)]'
+                            : 'size-1.5 shrink-0 rounded-full bg-[var(--color-muted-foreground)] opacity-40'
                         }
                         aria-hidden
                       />

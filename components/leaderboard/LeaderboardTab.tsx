@@ -57,9 +57,11 @@ function LeaderboardRow({
       >
         {row.rank}
       </span>
-      <Avatar className="h-5 w-5 shrink-0">
+      <Avatar className="h-4 w-4 shrink-0">
         {row.avatar_url && <AvatarImage src={row.avatar_url} />}
-        <AvatarFallback>{handleInitials(row.username)}</AvatarFallback>
+        <AvatarFallback className="text-[8px] leading-none">
+          {handleInitials(row.username)}
+        </AvatarFallback>
       </Avatar>
       <span className="min-w-0 truncate text-sm font-medium">
         @{handle}

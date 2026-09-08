@@ -852,6 +852,7 @@
 
 .trending-online-dot.is-offline {
   background: var(--mute);
+  opacity: 0.4;
 }
 
 .trending-meta.is-offline {

@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
+import { PageTitleBar } from '@/components/PageTitleBar';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +12,7 @@ import { DESCRIPTION_TRUNCATE } from '@/lib/constants';
 import { safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
+import { displayUrl } from '@/lib/canonicalize';
 
 export function NotificationsTab() {
   const { t, locale } = useLocale();
@@ -30,8 +32,11 @@ export function NotificationsTab() {
 
   if (authLoading) {
     return (
-      <div className="space-y-2 p-3">
-        <Skeleton className="h-16 w-full" />
+      <div className="flex h-full min-h-0 flex-col">
+        <PageTitleBar>{t('notifications.title')}</PageTitleBar>
+        <div className="space-y-2 p-3 pt-4">
+          <Skeleton className="h-16 w-full" />
+        </div>
       </div>
     );
   }
@@ -40,7 +45,8 @@ export function NotificationsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto pt-1">
+      <PageTitleBar>{t('notifications.title')}</PageTitleBar>
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
         {loading && items.length === 0 && (
           <div className="space-y-2 p-3 pt-3">
             <Skeleton className="h-16 w-full" />
@@ -65,12 +71,14 @@ export function NotificationsTab() {
             <Favicon src={n.page?.favicon_url} className="mt-0.5" />
             <div className="min-w-0 flex-1 overflow-hidden">
               <div className="truncate text-sm font-medium">
-                {n.page?.title || n.page?.canonical_url || t('common.page')}
+                {n.page?.title ||
+                  displayUrl(n.page?.canonical_url) ||
+                  t('common.page')}
               </div>
               <div className="truncate text-xs text-[var(--color-muted-foreground)]">
                 {(
                   n.page?.description ||
-                  n.page?.canonical_url ||
+                  displayUrl(n.page?.canonical_url) ||
                   ''
                 ).slice(0, DESCRIPTION_TRUNCATE)}
               </div>

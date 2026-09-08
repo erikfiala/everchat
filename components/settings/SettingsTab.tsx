@@ -1,4 +1,5 @@
 import { Check, ChevronDown } from 'lucide-react';
+import { PageTitleBar } from '@/components/PageTitleBar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,6 +14,7 @@ import {
   type ThemePreference,
 } from '@/hooks/useTheme';
 import type { LocalePreference } from '@/lib/i18n';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 export function SettingsTab() {
   const theme = useTheme();
@@ -32,12 +34,10 @@ export function SettingsTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
+      <PageTitleBar>{t('settings.title')}</PageTitleBar>
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-3 pt-4">
-        <div className="space-y-1.5">
-          <label
-            htmlFor="settings-mode"
-            className="block text-sm font-medium text-[var(--color-foreground)]"
-          >
+        <div>
+          <label htmlFor="settings-mode" className={FIELD_LABEL_CLASS}>
             {t('settings.mode')}
           </label>
           <DropdownMenu>
@@ -75,11 +75,8 @@ export function SettingsTab() {
           </DropdownMenu>
         </div>
 
-        <div className="space-y-1.5">
-          <label
-            htmlFor="settings-language"
-            className="block text-sm font-medium text-[var(--color-foreground)]"
-          >
+        <div>
+          <label htmlFor="settings-language" className={FIELD_LABEL_CLASS}>
             {t('settings.language')}
           </label>
           <DropdownMenu>

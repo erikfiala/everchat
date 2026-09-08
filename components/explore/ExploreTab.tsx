@@ -4,6 +4,7 @@ import { dateFnsLocaleFor } from '@/lib/dateFnsLocale';
 import { Check, ChevronDown } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
+import { PAGE_NAV_BAR_CLASS, PageTitleBar } from '@/components/PageTitleBar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,7 +15,8 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
-import { canonicalize, hrefFromPage } from '@/lib/canonicalize';
+import { useOnlineCounts } from '@/hooks/useOnlineCounts';
+import { displayUrl, hostFromCanonical, hrefFromPage } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
 import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import {
@@ -30,10 +32,6 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 export type ExploreMode = 'trending' | 'new';
-
-function hostFromCanonical(canonicalUrl: string): string {
-  return canonicalize(`https://${canonicalUrl}`).host || canonicalUrl;
-}
 
 function normalizeTrending(rows: ExplorePageRow[]): ExplorePageRow[] {
   return rows.map((row) => ({
@@ -70,6 +68,7 @@ export function ExploreTab() {
   const loadingMoreRef = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   rowsRef.current = rows;
+  useOnlineCounts(rowsRef, setRows, isSupabaseConfigured);
 
   const fetchPage = useCallback(
     (offsetRows: ExplorePageRow[]) => {
@@ -120,39 +119,6 @@ export function ExploreTab() {
     };
   }, [fetchPage]);
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return;
-    let cancelled = false;
-
-    const tick = async () => {
-      if (document.hidden) return;
-      const current = rowsRef.current;
-      if (!current.length) return;
-      try {
-        const counts = await fetchPageOnlineCounts(
-          current.map((row) => row.canonical_url),
-        );
-        if (cancelled) return;
-        setRows((prev) => applyOnlineCounts(prev, counts));
-      } catch {
-        /* keep last counts */
-      }
-    };
-
-    const id = window.setInterval(() => {
-      void tick();
-    }, 20_000);
-    const onVisibility = () => {
-      if (!document.hidden) void tick();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      cancelled = true;
-      window.clearInterval(id);
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, [mode]);
-
   const loadMore = useCallback(async () => {
     if (!isSupabaseConfigured || loadingMoreRef.current || !hasMore) return;
     loadingMoreRef.current = true;
@@ -194,7 +160,8 @@ export function ExploreTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex min-h-14 items-center gap-2 border-b border-[var(--color-border)] px-3 py-2">
+      <PageTitleBar>{t('explore.title')}</PageTitleBar>
+      <div className={PAGE_NAV_BAR_CLASS}>
         <span className="text-xs text-[var(--color-muted-foreground)]">
           {t('explore.mode')}
         </span>
@@ -300,11 +267,11 @@ export function ExploreTab() {
                 <Favicon src={row.favicon_url} className="mt-0.5" />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="truncate text-sm font-medium">
-                    {row.title || host || row.canonical_url}
+                    {row.title || host || displayUrl(row.canonical_url)}
                   </div>
                   <div className="truncate text-xs text-[var(--color-muted-foreground)]">
                     {host ||
-                      (row.description || row.canonical_url).slice(
+                      (row.description || displayUrl(row.canonical_url)).slice(
                         0,
                         DESCRIPTION_TRUNCATE,
                       )}
@@ -316,9 +283,13 @@ export function ExploreTab() {
                         : 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-muted-foreground)]'
                     }
                   >
-                    {live ? (
+                    {showOnline ? (
                       <span
-                        className="size-1.5 shrink-0 rounded-full bg-[var(--color-success)]"
+                        className={
+                          live
+                            ? 'size-1.5 shrink-0 rounded-full bg-[var(--color-success)]'
+                            : 'size-1.5 shrink-0 rounded-full bg-[var(--color-muted-foreground)]'
+                        }
                         aria-hidden
                       />
                     ) : null}

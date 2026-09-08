@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  applyOnlineCountChange,
   applyOnlineCounts,
   fetchPageOnlineCounts,
   onlineCountsFromRows,
@@ -50,6 +51,44 @@ describe('applyOnlineCounts', () => {
     ).toEqual([
       { id: '1', canonical_url: 'extensions/', message_count: 40, online_count: 4 },
       { id: '2', canonical_url: 'example.com/', message_count: 2, online_count: 0 },
+    ]);
+  });
+});
+
+describe('applyOnlineCountChange', () => {
+  const rows = [
+    { id: '1', canonical_url: 'extensions/', online_count: 1 },
+    { id: '2', canonical_url: 'example.com/', online_count: 0 },
+  ];
+
+  it('patches insert/update onto a listed url and ignores unknown urls', () => {
+    expect(
+      applyOnlineCountChange(rows, {
+        eventType: 'INSERT',
+        new: { canonical_url: 'extensions/', online_count: 4 },
+      }),
+    ).toEqual([
+      { id: '1', canonical_url: 'extensions/', online_count: 4 },
+      { id: '2', canonical_url: 'example.com/', online_count: 0 },
+    ]);
+    expect(
+      applyOnlineCountChange(rows, {
+        eventType: 'UPDATE',
+        new: { canonical_url: 'other.com/', online_count: 9 },
+      }),
+    ).toBe(rows);
+  });
+
+  it('sets 0 on DELETE using payload.old', () => {
+    expect(
+      applyOnlineCountChange(rows, {
+        eventType: 'DELETE',
+        new: {},
+        old: { canonical_url: 'extensions/' },
+      }),
+    ).toEqual([
+      { id: '1', canonical_url: 'extensions/', online_count: 0 },
+      { id: '2', canonical_url: 'example.com/', online_count: 0 },
     ]);
   });
 });

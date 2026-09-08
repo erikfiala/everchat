@@ -14,6 +14,12 @@ export type PostgresChangeFilter = {
   filter?: string;
 };
 
+export type PostgresChangePayload = {
+  eventType?: string;
+  new: Record<string, unknown>;
+  old?: Record<string, unknown>;
+};
+
 /**
  * `supabase.channel(name)` reuses an existing topic. Calling `.on()` after
  * that channel has already `subscribe()`d throws, and a second subscribe
@@ -26,12 +32,12 @@ export function subscribePostgresChanges(
   sb: Client,
   topic: string,
   filter: PostgresChangeFilter,
-  onChange: (payload: { new: Record<string, unknown> }) => void,
+  onChange: (payload: PostgresChangePayload) => void,
 ): RealtimeChannel {
   return sb
     .channel(`${topic}:${crypto.randomUUID()}`)
     .on('postgres_changes', filter, (payload) => {
-      onChange(payload as { new: Record<string, unknown> });
+      onChange(payload as PostgresChangePayload);
     })
     .subscribe();
 }

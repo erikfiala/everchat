@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Camera, LogOut, PenSquare, Trash2 } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
+import { PageTitleBar } from '@/components/PageTitleBar';
 import { AuthLanding } from '@/components/auth/AuthLanding';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -42,10 +43,11 @@ import { displayDeviceLabel, guessDeviceLabel } from '@/lib/deviceLabel';
 import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
-import { hrefFromPage } from '@/lib/canonicalize';
+import { displayUrl, hrefFromPage } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
 import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import { cn } from '@/lib/utils';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { toast } from 'sonner';
 
 export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
@@ -131,8 +133,11 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
 
   if (authLoading) {
     return (
-      <div className="p-3">
-        <Skeleton className="h-20 w-full" />
+      <div className="flex h-full min-h-0 flex-col">
+        <PageTitleBar>{t('profile.title')}</PageTitleBar>
+        <div className="p-3">
+          <Skeleton className="h-20 w-full" />
+        </div>
       </div>
     );
   }
@@ -209,11 +214,13 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
 
   return (
     <TooltipProvider delayDuration={200}>
+      <div className="flex h-full min-h-0 flex-col">
+      <PageTitleBar>{t('profile.title')}</PageTitleBar>
       <div
         ref={scrollRef}
-        className="flex h-full min-h-0 flex-col overflow-y-auto"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto"
       >
-      <div className="border-b border-[var(--color-border)] px-4 py-4">
+      <div className="border-b border-[var(--color-border)] px-3 pb-4 pt-3">
         <div className="flex items-center gap-4">
           <button
             type="button"
@@ -287,7 +294,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
         </div>
       </div>
 
-      <section className="border-b border-[var(--color-border)] px-4 py-3">
+      <section className="border-b border-[var(--color-border)] px-3 py-4">
         <h2 className="mb-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
           {t('profile.devices')}
         </h2>
@@ -354,7 +361,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
               <div className="min-w-0 flex-1 overflow-hidden">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="min-w-0 truncate text-sm font-medium">
-                    {item.page?.title || item.page?.canonical_url}
+                    {item.page?.title || displayUrl(item.page?.canonical_url)}
                   </span>
                   <span className="shrink-0 rounded bg-[var(--color-muted)] px-1.5 py-0.5 text-[10px] font-medium">
                     {item.parent_id
@@ -365,7 +372,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
                 <div className="truncate text-xs text-[var(--color-muted-foreground)]">
                   {(
                     item.page?.description ||
-                    item.page?.canonical_url ||
+                    displayUrl(item.page?.canonical_url) ||
                     ''
                   ).slice(0, DESCRIPTION_TRUNCATE)}
                 </div>
@@ -429,6 +436,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
       </div>
     </TooltipProvider>
   );
@@ -537,7 +545,7 @@ function DeviceRow({
   };
 
   return (
-    <li className="flex items-center gap-1 rounded-md py-1.5 ps-3 pe-2 text-sm hover:bg-[var(--color-accent)]">
+    <li className="flex items-center gap-1 rounded-md py-1.5 text-sm hover:bg-[var(--color-accent)]">
       {editing ? (
         <Input
           ref={inputRef}
@@ -690,7 +698,7 @@ function AboutField({
     <div>
       <label
         htmlFor="profile-about"
-        className="mb-1 block text-xs font-semibold text-[var(--color-muted-foreground)]"
+        className={FIELD_LABEL_CLASS}
       >
         {t('profile.about')}
       </label>
@@ -730,21 +738,22 @@ function WebsiteField({
   onSave: (next: string) => Promise<string>;
 }) {
   const { t, tError } = useLocale();
-  const [draft, setDraft] = useState(value);
+  const [draft, setDraft] = useState(() => displayUrl(value));
   const [saving, setSaving] = useState(false);
   const inFlight = useRef(false);
   const dirty = useRef(false);
 
   useEffect(() => {
     if (dirty.current) return;
-    setDraft(value);
+    setDraft(displayUrl(value));
   }, [value]);
 
   const commit = async () => {
     if (inFlight.current) return;
-    if (draft.trim() === value.trim()) {
+    const shown = displayUrl(draft);
+    if (shown === displayUrl(value)) {
       dirty.current = false;
-      setDraft(value);
+      setDraft(shown);
       return;
     }
     inFlight.current = true;
@@ -752,7 +761,7 @@ function WebsiteField({
     try {
       const saved = await onSave(draft);
       dirty.current = false;
-      setDraft(saved);
+      setDraft(displayUrl(saved));
       toast.success(t('profile.toastWebsiteSaved'));
     } catch (e) {
       toast.error(tError(e));
@@ -766,7 +775,7 @@ function WebsiteField({
     <div>
       <label
         htmlFor="profile-website"
-        className="mb-1 block text-xs font-semibold text-[var(--color-muted-foreground)]"
+        className={FIELD_LABEL_CLASS}
       >
         {t('profile.website')}
       </label>
@@ -794,7 +803,7 @@ function WebsiteField({
           } else if (e.key === 'Escape') {
             e.preventDefault();
             dirty.current = false;
-            setDraft(value);
+            setDraft(displayUrl(value));
           }
         }}
       />

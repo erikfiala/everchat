@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PAGE_TITLE_CLASS } from '@/components/ui/typography';
 
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
@@ -45,7 +46,7 @@ export function DialogTitle({
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-base font-semibold leading-tight', className)}
+      className={cn(PAGE_TITLE_CLASS, className)}
       {...props}
     />
   );

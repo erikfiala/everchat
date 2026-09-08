@@ -1,5 +1,6 @@
 import { Favicon } from '@/components/Favicon';
 import { useLocale } from '@/hooks/useLocale';
+import { displayUrl } from '@/lib/canonicalize';
 import { cn } from '@/lib/utils';
 
 interface PageContextHeaderProps {
@@ -18,6 +19,7 @@ export function PageContextHeader({
   className,
 }: PageContextHeaderProps) {
   const { t } = useLocale();
+  const hostLabel = displayUrl(host);
   return (
     <div
       className={cn(
@@ -28,11 +30,11 @@ export function PageContextHeader({
       <Favicon src={faviconUrl} />
       <div className="min-w-0 flex-1 overflow-hidden">
         <div className="truncate text-sm font-medium">
-          {title || host || t('page.thisPage')}
+          {title || hostLabel || t('page.thisPage')}
         </div>
-        {host && (
+        {hostLabel && (
           <div className="inline-flex min-w-0 max-w-full items-baseline gap-0.5 text-xs text-[var(--color-muted-foreground)]">
-            <span className="truncate mr-px">{host}</span>
+            <span className="truncate mr-px">{hostLabel}</span>
             {isCurrentPage && (
               <>
                 <span aria-hidden className="shrink-0">·</span>

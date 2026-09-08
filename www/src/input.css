@@ -850,6 +850,10 @@
   background: var(--color-success);
 }
 
+.trending-online-dot.is-offline {
+  background: var(--mute);
+}
+
 .trending-meta.is-offline {
   color: var(--mute);
 }

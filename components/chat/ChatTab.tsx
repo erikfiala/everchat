@@ -229,32 +229,8 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 items-center gap-1.5 py-2">
-            <span className="text-xs text-[var(--color-muted-foreground)]">
-              {t('chat.sort')}
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="xs"
-                  variant="outline"
-                  className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
-                >
-                  {sortLabel(thread.sort)}
-                  <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onSelect={() => thread.setSort('best')}>
-                  {t('chat.sortBest')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => thread.setSort('new')}>
-                  {t('chat.sortNew')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <TooltipProvider delayDuration={200}>
-              <div className="ms-auto flex items-center gap-0.5">
+              <div className="flex items-center gap-0.5">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
@@ -295,6 +271,32 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                 </Tooltip>
               </div>
             </TooltipProvider>
+
+            <div className="ms-auto flex min-w-0 items-center gap-1.5">
+              <span className="text-xs text-[var(--color-muted-foreground)]">
+                {t('chat.sort')}
+              </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size="xs"
+                    variant="outline"
+                    className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+                  >
+                    {sortLabel(thread.sort)}
+                    <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onSelect={() => thread.setSort('best')}>
+                    {t('chat.sortBest')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => thread.setSort('new')}>
+                    {t('chat.sortNew')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         )}
       </div>

@@ -150,6 +150,23 @@ export function httpsUrlFromCanonical(canonicalUrl: string): string {
 const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
 /**
+ * Human-facing host/URL text. Drops trailing slashes; stored keys stay unchanged.
+ */
+export function displayUrl(value: string | null | undefined): string {
+  const trimmed = (value ?? '').trim();
+  if (!trimmed || trimmed === '/') return trimmed;
+  return trimmed.replace(/\/+$/, '');
+}
+
+/** Hostname from a stored canonical key (`host/path`), without a trailing slash. */
+export function hostFromCanonical(canonicalUrl: string): string {
+  const trimmed = canonicalUrl.trim();
+  if (!trimmed) return '';
+  const prefixed = HAS_SCHEME.test(trimmed) ? trimmed : `https://${trimmed}`;
+  return displayUrl(canonicalize(prefixed).host || trimmed);
+}
+
+/**
  * Persistable original href from tab.url / location.href.
  * Drops only an Everchat `#ec-msg-` focus hash; other fragments stay.
  */

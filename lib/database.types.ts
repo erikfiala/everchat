@@ -393,6 +393,24 @@ export type Database = {
           },
         ];
       };
+      page_online_counts: {
+        Row: {
+          canonical_url: string;
+          online_count: number;
+          updated_at: string;
+        };
+        Insert: {
+          canonical_url: string;
+          online_count: number;
+          updated_at?: string;
+        };
+        Update: {
+          canonical_url?: string;
+          online_count?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       trending_pages: {

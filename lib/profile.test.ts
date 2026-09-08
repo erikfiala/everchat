@@ -89,5 +89,6 @@ describe('websiteDisplayLabel', () => {
 
   it('falls back to the stored string', () => {
     expect(websiteDisplayLabel('not-a-url')).toBe('not-a-url');
+    expect(websiteDisplayLabel('not-a-url/')).toBe('not-a-url');
   });
 });

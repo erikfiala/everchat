@@ -1,4 +1,5 @@
 import { useLocale } from '@/hooks/useLocale';
+import { displayUrl } from '@/lib/canonicalize';
 import {
   openExternalUrl,
   websiteDisplayLabel,
@@ -29,7 +30,7 @@ export function ProfilePublicMeta({
           onClick={() => void openExternalUrl(href)}
           className="max-w-full truncate text-sm text-[var(--color-muted-foreground)] underline-offset-4 hover:underline"
           aria-label={t('profile.website')}
-          title={href}
+          title={displayUrl(href)}
         >
           {label}
         </button>

@@ -52,6 +52,46 @@ export function applyOnlineCounts<T extends { canonical_url: string }>(
   }));
 }
 
+export type OnlineCountChangePayload = {
+  eventType?: string | null;
+  new?: Record<string, unknown> | null;
+  old?: Record<string, unknown> | null;
+};
+
+function payloadUrl(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function payloadCount(value: unknown): number {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, value);
+  }
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, n) : 0;
+}
+
+/**
+ * Patch an existing room list from a page_online_counts postgres_changes
+ * payload. Never inserts new rooms — unknown URLs are ignored.
+ */
+export function applyOnlineCountChange<T extends { canonical_url: string }>(
+  rows: T[],
+  payload: OnlineCountChangePayload,
+): T[] {
+  const fromNew = payloadUrl(payload.new?.canonical_url);
+  const fromOld = payloadUrl(payload.old?.canonical_url);
+  const isDelete =
+    (payload.eventType ?? '').toUpperCase() === 'DELETE' ||
+    (!fromNew && Boolean(fromOld));
+  const url = isDelete ? fromOld : fromNew;
+  if (!url || !rows.some((row) => row.canonical_url === url)) return rows;
+
+  const count = isDelete ? 0 : payloadCount(payload.new?.online_count);
+  return rows.map((row) =>
+    row.canonical_url === url ? { ...row, online_count: count } : row,
+  );
+}
+
 export async function touchPagePresence(canonicalUrl: string): Promise<void> {
   const url = canonicalUrl.trim();
   if (!url || url.length > PRESENCE_CANONICAL_MAX_LEN) return;

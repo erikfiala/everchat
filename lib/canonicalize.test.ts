@@ -9,6 +9,8 @@ import {
   hrefFromPage,
   parseShareMessageId,
   sameCanonicalRoom,
+  displayUrl,
+  hostFromCanonical,
 } from './canonicalize';
 
 describe('canonicalize', () => {
@@ -149,6 +151,36 @@ describe('hrefFromPage', () => {
   it('falls back to chrome:// for internal keys without a message hash', () => {
     expect(hrefFromPage({ url: null, canonical_url: 'extensions/' })).toBe(
       'chrome://extensions/',
+    );
+  });
+});
+
+describe('displayUrl', () => {
+  it('strips trailing slashes from canonical keys and hrefs', () => {
+    expect(displayUrl('erikfiala.com/')).toBe('erikfiala.com');
+    expect(displayUrl('extensions/')).toBe('extensions');
+    expect(displayUrl('https://erikfiala.com/')).toBe('https://erikfiala.com');
+    expect(displayUrl('https://example.com/about/')).toBe(
+      'https://example.com/about',
+    );
+  });
+
+  it('leaves paths and empty values alone', () => {
+    expect(displayUrl('nytimes.com/2026/01/01/world/foo.html')).toBe(
+      'nytimes.com/2026/01/01/world/foo.html',
+    );
+    expect(displayUrl('')).toBe('');
+    expect(displayUrl(null)).toBe('');
+    expect(displayUrl('/')).toBe('/');
+  });
+});
+
+describe('hostFromCanonical', () => {
+  it('returns the host without a trailing slash', () => {
+    expect(hostFromCanonical('erikfiala.com/')).toBe('erikfiala.com');
+    expect(hostFromCanonical('extensions/')).toBe('extensions');
+    expect(hostFromCanonical('nytimes.com/2026/01/01/world/foo.html')).toBe(
+      'nytimes.com',
     );
   });
 });

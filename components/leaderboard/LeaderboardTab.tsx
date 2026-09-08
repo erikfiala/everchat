@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ListSentinel } from '@/components/ListSentinel';
+import { PageTitleBar } from '@/components/PageTitleBar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -175,45 +176,47 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   ]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-0.5 px-3 pt-3">
-      {me && !error && (
-        <LeaderboardRow
-          row={me}
-          onOpenProfile={onOpenProfile}
-          rankCh={rankCh}
-        />
-      )}
-
-      <div
-        ref={scrollRef}
-        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto"
-      >
-        {loading &&
-          top.length === 0 &&
-          Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-11 w-full" />
-          ))}
-        {error && top.length === 0 ? (
-          <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
-            {tError(error, 'leaderboard.error')}
-            <div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-2"
-                onClick={loadFirst}
-              >
-                {t('chat.retry')}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-        {empty && (
-          <p className="px-4 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
-            {t('leaderboard.empty')}
-          </p>
+    <div className="flex h-full min-h-0 flex-col">
+      <PageTitleBar>{t('leaderboard.title')}</PageTitleBar>
+      <div className="flex min-h-0 flex-1 flex-col gap-0.5 px-3">
+        {me && !error && (
+          <LeaderboardRow
+            row={me}
+            onOpenProfile={onOpenProfile}
+            rankCh={rankCh}
+          />
         )}
-        {top.map((row) => (
+
+        <div
+          ref={scrollRef}
+          className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto"
+        >
+          {loading &&
+            top.length === 0 &&
+            Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-11 w-full" />
+            ))}
+          {error && top.length === 0 ? (
+            <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
+              {tError(error, 'leaderboard.error')}
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={loadFirst}
+                >
+                  {t('chat.retry')}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+          {empty && (
+            <p className="px-4 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
+              {t('leaderboard.empty')}
+            </p>
+          )}
+          {top.map((row) => (
             <LeaderboardRow
               key={`${row.rank}-${row.username}`}
               row={row}
@@ -221,9 +224,10 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
               rankCh={rankCh}
             />
           ))}
-        {hasMore ? (
-          <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
-        ) : null}
+          {hasMore ? (
+            <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+          ) : null}
+        </div>
       </div>
     </div>
   );

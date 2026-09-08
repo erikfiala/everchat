@@ -1,3 +1,4 @@
+import { displayUrl } from './canonicalize';
 import { callEdgeFunction } from './supabase';
 import {
   ANONYMOUS_HANDLE,
@@ -166,9 +167,9 @@ export function normalizeAbout(raw: string): string | null {
 export function websiteDisplayLabel(website: string): string {
   try {
     const host = new URL(website).hostname.replace(/^www\./i, '');
-    return host || website;
+    return host || displayUrl(website);
   } catch {
-    return website;
+    return displayUrl(website);
   }
 }
 

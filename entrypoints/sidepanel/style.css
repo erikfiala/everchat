@@ -169,8 +169,8 @@ button[aria-disabled='true'],
 }
 
 /*
- * Sharp L from the parent rail (under the parent avatar column) to the
- * child avatar center. Ends stay under the circle — no radius, no caps.
+ * Quarter-circle L from the parent rail (under the parent avatar column)
+ * to the child avatar center. Color stays --color-border (no hover tint).
  */
 .ec-thread-elbow {
   position: absolute;
@@ -183,18 +183,8 @@ button[aria-disabled='true'],
   box-sizing: border-box;
   border-inline-start: var(--ec-stroke) solid var(--color-border);
   border-block-end: var(--ec-stroke) solid var(--color-border);
-  border-radius: 0;
+  border-end-start-radius: 12px;
   pointer-events: none;
-}
-
-/* Per-row hover: this comment's incoming L / rail, and its outgoing stem. */
-.ec-thread-reply:has(> .ec-thread-main > .ec-thread-self:hover) > .ec-thread-gutter .ec-thread-elbow {
-  border-color: var(--color-foreground);
-}
-
-.ec-thread-reply:has(> .ec-thread-main > .ec-thread-self:hover) > .ec-thread-gutter .ec-thread-rail,
-.ec-thread-self:hover .ec-thread-stem {
-  background: var(--color-foreground);
 }
 
 /* Conversation overlay — instant, no enter/exit motion. */

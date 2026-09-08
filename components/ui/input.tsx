@@ -8,9 +8,9 @@ export const Input = React.forwardRef<
   <input
     type={type}
     className={cn(
-      // h-9 + no vertical padding + leading-none keeps typed text / placeholder
-      // optically centered (py-* + text-sm line-height often sits text too low).
-      'flex h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-0 text-sm leading-none transition-colors placeholder:text-[var(--color-muted-foreground)] disabled:cursor-not-allowed disabled:opacity-50',
+      // h-9 + py-0 + leading-tight: descenders (g/y/p) stay visible; flex
+      // height still optically centers text (py-* + default leading sits low).
+      'flex h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-card)] px-3 py-0 text-sm leading-tight transition-colors placeholder:text-[var(--color-muted-foreground)] disabled:cursor-not-allowed disabled:opacity-50',
       className,
     )}
     ref={ref}

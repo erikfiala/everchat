@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Camera, LogOut, PenSquare, Trash2 } from 'lucide-react';
+import { Camera, LogOut, PenSquare, Plus, Trash2 } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
 import { PageTitleBar } from '@/components/PageTitleBar';
@@ -215,7 +215,26 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex h-full min-h-0 flex-col">
-      <PageTitleBar>{t('profile.title')}</PageTitleBar>
+      <PageTitleBar
+        action={
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0"
+                onClick={() => setConfirmSignOutOpen(true)}
+                aria-label={t('profile.signOut')}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('profile.signOut')}</TooltipContent>
+          </Tooltip>
+        }
+      >
+        {t('profile.title')}
+      </PageTitleBar>
       <div
         ref={scrollRef}
         className="flex min-h-0 flex-1 flex-col overflow-y-auto"
@@ -245,24 +264,8 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             onChange={(e) => onAvatar(e.target.files?.[0] ?? null)}
           />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <div className="min-w-0 truncate text-lg font-semibold">
-                @{user.username || t('message.unknownAuthor')}
-              </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 shrink-0"
-                    onClick={() => setConfirmSignOutOpen(true)}
-                    aria-label={t('profile.signOut')}
-                  >
-                    <LogOut className="h-3.5 w-3.5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t('profile.signOut')}</TooltipContent>
-              </Tooltip>
+            <div className="min-w-0 truncate text-lg font-semibold">
+              @{user.username || t('message.unknownAuthor')}
             </div>
             <div
               className={cn(
@@ -274,7 +277,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             </div>
           </div>
         </div>
-        <div className="mt-3 space-y-4">
+        <div className="mt-3 space-y-2">
           <AboutField
             value={user.about ?? ''}
             onSave={async (next) => {
@@ -459,6 +462,7 @@ function AddCurrentDeviceRow({
       onClick={disabled ? undefined : onAdd}
       className="h-auto min-h-7 w-full justify-center py-1.5 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
     >
+      <Plus className="h-3.5 w-3.5" />
       {t('profile.addCurrentDevice')}
     </Button>
   );
@@ -545,7 +549,7 @@ function DeviceRow({
   };
 
   return (
-    <li className="flex items-center gap-1 rounded-md py-1.5 text-sm hover:bg-[var(--color-accent)]">
+    <li className="flex items-center gap-1 rounded-md px-3 py-1.5 text-sm hover:bg-[var(--color-accent)]">
       {editing ? (
         <Input
           ref={inputRef}

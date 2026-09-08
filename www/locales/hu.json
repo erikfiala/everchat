@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Webhely frissítve",
   "profile.devices": "Eszközök",
   "profile.addDevice": "Hozzáadás",
-  "profile.addCurrentDevice": "+ Jelenlegi eszköz hozzáadása",
+  "profile.addCurrentDevice": "Jelenlegi eszköz hozzáadása",
   "profile.addCurrentDeviceAlreadyAdded": "Ezen az eszközön már hozzá van adva.",
   "profile.devicesHint": "Feloldási módszerek ehhez a fiókhoz. Tartsd meg legalább egyet. Nincs e-mailes helyreállítás.",
   "profile.activity": "Tevékenység",

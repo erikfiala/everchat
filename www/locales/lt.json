@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Svetainė atnaujinta",
   "profile.devices": "Įrenginiai",
   "profile.addDevice": "Pridėti",
-  "profile.addCurrentDevice": "+ Pridėti dabartinį įrenginį",
+  "profile.addCurrentDevice": "Pridėti dabartinį įrenginį",
   "profile.addCurrentDeviceAlreadyAdded": "Šiame įrenginyje jau pridėta.",
   "profile.devicesHint": "Atrakinimo būdai šiai paskyrai. Palikite bent vieną. El. pašto atkūrimo nėra.",
   "profile.activity": "Veikla",

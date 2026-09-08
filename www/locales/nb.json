@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Nettsted er oppdatert",
   "profile.devices": "Enheter",
   "profile.addDevice": "Legg til",
-  "profile.addCurrentDevice": "+ Legg til denne enheten",
+  "profile.addCurrentDevice": "Legg til denne enheten",
   "profile.addCurrentDeviceAlreadyAdded": "Allerede lagt til på denne enheten.",
   "profile.devicesHint": "Opplåsingsmetoder for denne kontoen. Behold minst én. Ingen e-postgjenoppretting.",
   "profile.activity": "Aktivitet",

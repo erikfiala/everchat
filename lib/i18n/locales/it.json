@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Sito web aggiornato",
   "profile.devices": "Dispositivi",
   "profile.addDevice": "Aggiungi",
-  "profile.addCurrentDevice": "+ Aggiungi dispositivo attuale",
+  "profile.addCurrentDevice": "Aggiungi dispositivo attuale",
   "profile.addCurrentDeviceAlreadyAdded": "Già aggiunto su questo dispositivo.",
   "profile.devicesHint": "Metodi di sblocco per questo account. Conservane almeno uno. Niente recupero via email.",
   "profile.activity": "Attività",

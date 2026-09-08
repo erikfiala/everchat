@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "వెబ్‌సైట్ నవీకరించబడింది",
   "profile.devices": "పరికరాలు",
   "profile.addDevice": "జోడించు",
-  "profile.addCurrentDevice": "+ ప్రస్తుత పరికరాన్ని జోడించు",
+  "profile.addCurrentDevice": "ప్రస్తుత పరికరాన్ని జోడించు",
   "profile.addCurrentDeviceAlreadyAdded": "ఈ పరికరంలో ఇప్పటికే జోడించబడింది.",
   "profile.devicesHint": "ఈ ఖాతా కోసం అన్‌లాక్ పద్ధతులు. కనీసం ఒకటి ఉంచండి. ఇమెయిల్ రికవరీ లేదు.",
   "profile.activity": "కార్యకలాపం",

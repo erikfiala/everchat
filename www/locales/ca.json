@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "S’ha actualitzat el lloc web",
   "profile.devices": "Dispositius",
   "profile.addDevice": "Afegeix",
-  "profile.addCurrentDevice": "+ Afegeix el dispositiu actual",
+  "profile.addCurrentDevice": "Afegeix el dispositiu actual",
   "profile.addCurrentDeviceAlreadyAdded": "Ja està afegit en aquest dispositiu.",
   "profile.devicesHint": "Mètodes de desbloqueig d’aquest compte. En conserva almenys un. Sense recuperació per correu.",
   "profile.activity": "Activitat",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "웹사이트가 업데이트되었습니다",
   "profile.devices": "기기",
   "profile.addDevice": "추가",
-  "profile.addCurrentDevice": "+ 현재 기기 추가",
+  "profile.addCurrentDevice": "현재 기기 추가",
   "profile.addCurrentDeviceAlreadyAdded": "이 기기에 이미 추가되어 있습니다.",
   "profile.devicesHint": "이 계정의 잠금 해제 방법. 최소 하나는 유지하세요. 이메일 복구 없음.",
   "profile.activity": "활동",

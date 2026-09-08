@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "وب‌سایت به‌روز شد",
   "profile.devices": "دستگاه‌ها",
   "profile.addDevice": "افزودن",
-  "profile.addCurrentDevice": "+ افزودن دستگاه فعلی",
+  "profile.addCurrentDevice": "افزودن دستگاه فعلی",
   "profile.addCurrentDeviceAlreadyAdded": "از قبل روی این دستگاه اضافه شده.",
   "profile.devicesHint": "روش‌های باز کردن این حساب. حداقل یکی را نگه دارید. بازیابی با ایمیل نیست.",
   "profile.activity": "فعالیت",

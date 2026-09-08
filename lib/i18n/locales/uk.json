@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Сайт оновлено",
   "profile.devices": "Пристрої",
   "profile.addDevice": "Додати",
-  "profile.addCurrentDevice": "+ Додати поточний пристрій",
+  "profile.addCurrentDevice": "Додати поточний пристрій",
   "profile.addCurrentDeviceAlreadyAdded": "Уже додано на цьому пристрої.",
   "profile.devicesHint": "Способи розблокування цього облікового запису. Залиште хоча б один. Без відновлення через email.",
   "profile.activity": "Активність",

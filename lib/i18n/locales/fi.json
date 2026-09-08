@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Sivusto päivitetty",
   "profile.devices": "Laitteet",
   "profile.addDevice": "Lisää",
-  "profile.addCurrentDevice": "+ Lisää nykyinen laite",
+  "profile.addCurrentDevice": "Lisää nykyinen laite",
   "profile.addCurrentDeviceAlreadyAdded": "Jo lisätty tälle laitteelle.",
   "profile.devicesHint": "Tämän tilin avausmenetelmät. Pidä vähintään yksi. Ei sähköpostipalautusta.",
   "profile.activity": "Toiminta",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "網站已更新",
   "profile.devices": "裝置",
   "profile.addDevice": "新增",
-  "profile.addCurrentDevice": "+ 新增目前裝置",
+  "profile.addCurrentDevice": "新增目前裝置",
   "profile.addCurrentDeviceAlreadyAdded": "此裝置上已新增。",
   "profile.devicesHint": "此帳號的解鎖方式。至少保留一個。無法透過電子郵件復原。",
   "profile.activity": "動態",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Situs web diperbarui",
   "profile.devices": "Perangkat",
   "profile.addDevice": "Tambah",
-  "profile.addCurrentDevice": "+ Tambah perangkat saat ini",
+  "profile.addCurrentDevice": "Tambah perangkat saat ini",
   "profile.addCurrentDeviceAlreadyAdded": "Sudah ditambahkan di perangkat ini.",
   "profile.devicesHint": "Metode buka kunci untuk akun ini. Simpan setidaknya satu. Tidak ada pemulihan email.",
   "profile.activity": "Aktivitas",

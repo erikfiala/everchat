@@ -4,7 +4,7 @@ import { dateFnsLocaleFor } from '@/lib/dateFnsLocale';
 import { Check, ChevronDown } from 'lucide-react';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
-import { PAGE_NAV_BAR_CLASS, PageTitleBar } from '@/components/PageTitleBar';
+import { PageTitleBar } from '@/components/PageTitleBar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -160,48 +160,53 @@ export function ExploreTab() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <PageTitleBar>{t('explore.title')}</PageTitleBar>
-      <div className={PAGE_NAV_BAR_CLASS}>
-        <span className="text-xs text-[var(--color-muted-foreground)]">
-          {t('explore.mode')}
-        </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="xs"
-              variant="outline"
-              className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
-            >
-              {modeLabel}
-              <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem
-              onSelect={() => setMode('trending')}
-              className="gap-2 pe-2"
-            >
-              <span className="flex size-3.5 items-center justify-center">
-                {mode === 'trending' ? (
-                  <Check className="size-3.5" aria-hidden />
-                ) : null}
-              </span>
-              {t('explore.trending')}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() => setMode('new')}
-              className="gap-2 pe-2"
-            >
-              <span className="flex size-3.5 items-center justify-center">
-                {mode === 'new' ? (
-                  <Check className="size-3.5" aria-hidden />
-                ) : null}
-              </span>
-              {t('explore.new')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <PageTitleBar
+        action={
+          <>
+            <span className="text-xs text-[var(--color-muted-foreground)]">
+              {t('explore.mode')}
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="xs"
+                  variant="outline"
+                  className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+                >
+                  {modeLabel}
+                  <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onSelect={() => setMode('trending')}
+                  className="gap-2 pe-2"
+                >
+                  <span className="flex size-3.5 items-center justify-center">
+                    {mode === 'trending' ? (
+                      <Check className="size-3.5" aria-hidden />
+                    ) : null}
+                  </span>
+                  {t('explore.trending')}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => setMode('new')}
+                  className="gap-2 pe-2"
+                >
+                  <span className="flex size-3.5 items-center justify-center">
+                    {mode === 'new' ? (
+                      <Check className="size-3.5" aria-hidden />
+                    ) : null}
+                  </span>
+                  {t('explore.new')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
+        }
+      >
+        {t('explore.title')}
+      </PageTitleBar>
 
       <div
         ref={scrollRef}

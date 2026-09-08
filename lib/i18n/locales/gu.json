@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "વેબસાઇટ અપડેટ થઈ",
   "profile.devices": "ડિવાઇસ",
   "profile.addDevice": "ઉમેરો",
-  "profile.addCurrentDevice": "+ વર્તમાન ડિવાઇસ ઉમેરો",
+  "profile.addCurrentDevice": "વર્તમાન ડિવાઇસ ઉમેરો",
   "profile.addCurrentDeviceAlreadyAdded": "આ ડિવાઇસ પર પહેલેથી ઉમેરેલું છે.",
   "profile.devicesHint": "આ એકાઉન્ટ માટે અનલૉક પદ્ધતિઓ. ઓછામાં ઓછું એક રાખો. ઇમેઇલ પુનઃપ્રાપ્તિ નથી.",
   "profile.activity": "પ્રવૃત્તિ",

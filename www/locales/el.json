@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Ο ιστότοπος ενημερώθηκε",
   "profile.devices": "Συσκευές",
   "profile.addDevice": "Προσθήκη",
-  "profile.addCurrentDevice": "+ Προσθήκη τρέχουσας συσκευής",
+  "profile.addCurrentDevice": "Προσθήκη τρέχουσας συσκευής",
   "profile.addCurrentDeviceAlreadyAdded": "Έχει ήδη προστεθεί σε αυτή τη συσκευή.",
   "profile.devicesHint": "Μέθοδοι ξεκλειδώματος για αυτόν τον λογαριασμό. Κρατήστε τουλάχιστον μία. Χωρίς ανάκτηση μέσω email.",
   "profile.activity": "Δραστηριότητα",

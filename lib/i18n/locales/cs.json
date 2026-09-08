@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Web byl aktualizován",
   "profile.devices": "Zařízení",
   "profile.addDevice": "Přidat",
-  "profile.addCurrentDevice": "+ Přidat aktuální zařízení",
+  "profile.addCurrentDevice": "Přidat aktuální zařízení",
   "profile.addCurrentDeviceAlreadyAdded": "Na tomto zařízení už je přidané.",
   "profile.devicesHint": "Způsoby odemčení tohoto účtu. Ponechte alespoň jeden. Bez obnovení e-mailem.",
   "profile.activity": "Aktivita",

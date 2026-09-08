@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Veebisait on uuendatud",
   "profile.devices": "Seadmed",
   "profile.addDevice": "Lisa",
-  "profile.addCurrentDevice": "+ Lisa praegune seade",
+  "profile.addCurrentDevice": "Lisa praegune seade",
   "profile.addCurrentDeviceAlreadyAdded": "Sellele seadmele on juba lisatud.",
   "profile.devicesHint": "Selle konto avamismeetodid. Hoia vähemalt üks. E-posti taastamist pole.",
   "profile.activity": "Tegevus",

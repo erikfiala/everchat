@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Spletno mesto je posodobljeno",
   "profile.devices": "Naprave",
   "profile.addDevice": "Dodaj",
-  "profile.addCurrentDevice": "+ Dodaj trenutno napravo",
+  "profile.addCurrentDevice": "Dodaj trenutno napravo",
   "profile.addCurrentDeviceAlreadyAdded": "Na tej napravi je že dodano.",
   "profile.devicesHint": "Načini odklepanja za ta račun. Obdržite vsaj enega. Brez obnovitve prek e-pošte.",
   "profile.activity": "Aktivnost",

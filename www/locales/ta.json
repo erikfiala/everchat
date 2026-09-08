@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "இணையதளம் புதுப்பிக்கப்பட்டது",
   "profile.devices": "சாதனங்கள்",
   "profile.addDevice": "சேர்",
-  "profile.addCurrentDevice": "+ தற்போதைய சாதனத்தைச் சேர்",
+  "profile.addCurrentDevice": "தற்போதைய சாதனத்தைச் சேர்",
   "profile.addCurrentDeviceAlreadyAdded": "இந்தச் சாதனத்தில் ஏற்கனவே சேர்க்கப்பட்டுள்ளது.",
   "profile.devicesHint": "இந்தக் கணக்கிற்கான திறப்பு முறைகள். குறைந்தது ஒன்றை வைத்திருங்கள். மின்னஞ்சல் மீட்பு இல்லை.",
   "profile.activity": "செயல்பாடு",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Web-stranica je ažurirana",
   "profile.devices": "Uređaji",
   "profile.addDevice": "Dodaj",
-  "profile.addCurrentDevice": "+ Dodaj trenutačni uređaj",
+  "profile.addCurrentDevice": "Dodaj trenutačni uređaj",
   "profile.addCurrentDeviceAlreadyAdded": "Već je dodano na ovom uređaju.",
   "profile.devicesHint": "Načini otključavanja za ovaj račun. Zadržite barem jedan. Bez oporavka putem e-pošte.",
   "profile.activity": "Aktivnost",

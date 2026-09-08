@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Đã cập nhật trang web",
   "profile.devices": "Thiết bị",
   "profile.addDevice": "Thêm",
-  "profile.addCurrentDevice": "+ Thêm thiết bị hiện tại",
+  "profile.addCurrentDevice": "Thêm thiết bị hiện tại",
   "profile.addCurrentDeviceAlreadyAdded": "Đã thêm trên thiết bị này.",
   "profile.devicesHint": "Cách mở khóa tài khoản này. Giữ ít nhất một. Không khôi phục bằng email.",
   "profile.activity": "Hoạt động",

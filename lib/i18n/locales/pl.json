@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Zaktualizowano stronę",
   "profile.devices": "Urządzenia",
   "profile.addDevice": "Dodaj",
-  "profile.addCurrentDevice": "+ Dodaj bieżące urządzenie",
+  "profile.addCurrentDevice": "Dodaj bieżące urządzenie",
   "profile.addCurrentDeviceAlreadyAdded": "Już dodane na tym urządzeniu.",
   "profile.devicesHint": "Metody odblokowania tego konta. Zachowaj co najmniej jedną. Bez odzyskiwania przez e-mail.",
   "profile.activity": "Aktywność",

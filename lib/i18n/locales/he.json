@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "האתר עודכן",
   "profile.devices": "מכשירים",
   "profile.addDevice": "הוסף",
-  "profile.addCurrentDevice": "+ הוסף את המכשיר הנוכחי",
+  "profile.addCurrentDevice": "הוסף את המכשיר הנוכחי",
   "profile.addCurrentDeviceAlreadyAdded": "כבר נוסף במכשיר הזה.",
   "profile.devicesHint": "שיטות פתיחה לחשבון הזה. השאירו לפחות אחת. בלי שחזור באימייל.",
   "profile.activity": "פעילות",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Site web mis à jour",
   "profile.devices": "Appareils",
   "profile.addDevice": "Ajouter",
-  "profile.addCurrentDevice": "+ Ajouter l’appareil actuel",
+  "profile.addCurrentDevice": "Ajouter l’appareil actuel",
   "profile.addCurrentDeviceAlreadyAdded": "Déjà ajouté sur cet appareil.",
   "profile.devicesHint": "Moyens de déverrouiller ce compte. Gardez-en au moins un. Pas de récupération par e-mail.",
   "profile.activity": "Activité",

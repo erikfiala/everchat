@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Vietne ir atjaunināta",
   "profile.devices": "Ierīces",
   "profile.addDevice": "Pievienot",
-  "profile.addCurrentDevice": "+ Pievienot pašreizējo ierīci",
+  "profile.addCurrentDevice": "Pievienot pašreizējo ierīci",
   "profile.addCurrentDeviceAlreadyAdded": "Šajā ierīcē jau ir pievienots.",
   "profile.devicesHint": "Atslēgšanas metodes šim kontam. Saglabā vismaz vienu. E-pasta atjaunošanas nav.",
   "profile.activity": "Aktivitāte",

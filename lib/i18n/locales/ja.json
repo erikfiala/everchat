@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "ウェブサイトを更新しました",
   "profile.devices": "デバイス",
   "profile.addDevice": "追加",
-  "profile.addCurrentDevice": "+ 現在のデバイスを追加",
+  "profile.addCurrentDevice": "現在のデバイスを追加",
   "profile.addCurrentDeviceAlreadyAdded": "このデバイスにはすでに追加されています。",
   "profile.devicesHint": "このアカウントの解除方法。少なくとも1つは残してください。メールでの復元はありません。",
   "profile.activity": "アクティビティ",

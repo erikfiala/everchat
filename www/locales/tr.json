@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Web sitesi güncellendi",
   "profile.devices": "Cihazlar",
   "profile.addDevice": "Ekle",
-  "profile.addCurrentDevice": "+ Mevcut cihazı ekle",
+  "profile.addCurrentDevice": "Mevcut cihazı ekle",
   "profile.addCurrentDeviceAlreadyAdded": "Bu cihazda zaten ekli.",
   "profile.devicesHint": "Bu hesap için kilit açma yöntemleri. En az birini saklayın. E-posta ile kurtarma yok.",
   "profile.activity": "Etkinlik",

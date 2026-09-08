@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Webbplatsen har uppdaterats",
   "profile.devices": "Enheter",
   "profile.addDevice": "Lägg till",
-  "profile.addCurrentDevice": "+ Lägg till den här enheten",
+  "profile.addCurrentDevice": "Lägg till den här enheten",
   "profile.addCurrentDeviceAlreadyAdded": "Redan tillagd på den här enheten.",
   "profile.devicesHint": "Upplåsningsmetoder för det här kontot. Behåll minst en. Ingen e-poståterställning.",
   "profile.activity": "Aktivitet",

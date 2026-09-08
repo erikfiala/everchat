@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Websted er opdateret",
   "profile.devices": "Enheder",
   "profile.addDevice": "Tilføj",
-  "profile.addCurrentDevice": "+ Tilføj denne enhed",
+  "profile.addCurrentDevice": "Tilføj denne enhed",
   "profile.addCurrentDeviceAlreadyAdded": "Allerede tilføjet på denne enhed.",
   "profile.devicesHint": "Oplåsningsmetoder til denne konto. Behold mindst én. Ingen e-mailgendannelse.",
   "profile.activity": "Aktivitet",

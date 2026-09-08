@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Laman web dikemas kini",
   "profile.devices": "Peranti",
   "profile.addDevice": "Tambah",
-  "profile.addCurrentDevice": "+ Tambah peranti semasa",
+  "profile.addCurrentDevice": "Tambah peranti semasa",
   "profile.addCurrentDeviceAlreadyAdded": "Sudah ditambah pada peranti ini.",
   "profile.devicesHint": "Kaedah buka kunci untuk akaun ini. Simpan sekurang-kurangnya satu. Tiada pemulihan e-mel.",
   "profile.activity": "Aktiviti",

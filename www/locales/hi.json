@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "वेबसाइट अपडेट हुई",
   "profile.devices": "डिवाइस",
   "profile.addDevice": "जोड़ें",
-  "profile.addCurrentDevice": "+ वर्तमान डिवाइस जोड़ें",
+  "profile.addCurrentDevice": "वर्तमान डिवाइस जोड़ें",
   "profile.addCurrentDeviceAlreadyAdded": "इस डिवाइस पर पहले से जोड़ा गया है।",
   "profile.devicesHint": "इस खाते के अनलॉक तरीके। कम से कम एक रखें। ईमेल रिकवरी नहीं।",
   "profile.activity": "गतिविधि",

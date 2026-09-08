@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Уебсайтът е обновен",
   "profile.devices": "Устройства",
   "profile.addDevice": "Добави",
-  "profile.addCurrentDevice": "+ Добави текущото устройство",
+  "profile.addCurrentDevice": "Добави текущото устройство",
   "profile.addCurrentDeviceAlreadyAdded": "Вече е добавено на това устройство.",
   "profile.devicesHint": "Методи за отключване на този акаунт. Запазете поне един. Без възстановяване по имейл.",
   "profile.activity": "Активност",

@@ -178,7 +178,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageTitleBar>{t('leaderboard.title')}</PageTitleBar>
-      <div className="flex min-h-0 flex-1 flex-col gap-0.5 px-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-0.5 px-3 pt-3">
         {me && !error && (
           <LeaderboardRow
             row={me}

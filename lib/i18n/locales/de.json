@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Website aktualisiert",
   "profile.devices": "Geräte",
   "profile.addDevice": "Hinzufügen",
-  "profile.addCurrentDevice": "+ Aktuelles Gerät hinzufügen",
+  "profile.addCurrentDevice": "Aktuelles Gerät hinzufügen",
   "profile.addCurrentDeviceAlreadyAdded": "Bereits auf diesem Gerät hinzugefügt.",
   "profile.devicesHint": "Entsperrmethoden für dieses Konto. Mindestens eine behalten. Keine E-Mail-Wiederherstellung.",
   "profile.activity": "Aktivität",

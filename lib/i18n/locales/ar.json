@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "تم تحديث الموقع",
   "profile.devices": "الأجهزة",
   "profile.addDevice": "إضافة",
-  "profile.addCurrentDevice": "+ إضافة الجهاز الحالي",
+  "profile.addCurrentDevice": "إضافة الجهاز الحالي",
   "profile.addCurrentDeviceAlreadyAdded": "مضاف مسبقاً على هذا الجهاز.",
   "profile.devicesHint": "طرق فتح هذا الحساب. احتفظ بواحدة على الأقل. بلا استعادة عبر البريد.",
   "profile.activity": "النشاط",

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Website bijgewerkt",
   "profile.devices": "Apparaten",
   "profile.addDevice": "Toevoegen",
-  "profile.addCurrentDevice": "+ Huidig apparaat toevoegen",
+  "profile.addCurrentDevice": "Huidig apparaat toevoegen",
   "profile.addCurrentDeviceAlreadyAdded": "Al toegevoegd op dit apparaat.",
   "profile.devicesHint": "Ontgrendelmethoden voor dit account. Bewaar er minstens één. Geen herstel via e-mail.",
   "profile.activity": "Activiteit",

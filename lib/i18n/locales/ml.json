@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "വെബ്‌സൈറ്റ് അപ്‌ഡേറ്റ് ചെയ്തു",
   "profile.devices": "ഉപകരണങ്ങൾ",
   "profile.addDevice": "ചേർക്കുക",
-  "profile.addCurrentDevice": "+ നിലവിലെ ഉപകരണം ചേർക്കുക",
+  "profile.addCurrentDevice": "നിലവിലെ ഉപകരണം ചേർക്കുക",
   "profile.addCurrentDeviceAlreadyAdded": "ഈ ഉപകരണത്തിൽ ഇതിനകം ചേർത്തിട്ടുണ്ട്.",
   "profile.devicesHint": "ഈ അക്കൗണ്ടിനുള്ള അൺലോക്ക് രീതികൾ. കുറഞ്ഞത് ഒന്ന് സൂക്ഷിക്കുക. ഇമെയിൽ വീണ്ടെടുക്കൽ ഇല്ല.",
   "profile.activity": "പ്രവർത്തനം",

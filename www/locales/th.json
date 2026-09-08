@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "อัปเดตเว็บไซต์แล้ว",
   "profile.devices": "อุปกรณ์",
   "profile.addDevice": "เพิ่ม",
-  "profile.addCurrentDevice": "+ เพิ่มอุปกรณ์ปัจจุบัน",
+  "profile.addCurrentDevice": "เพิ่มอุปกรณ์ปัจจุบัน",
   "profile.addCurrentDeviceAlreadyAdded": "เพิ่มในอุปกรณ์นี้แล้ว",
   "profile.devicesHint": "วิธีปลดล็อกสำหรับบัญชีนี้ เก็บไว้อย่างน้อยหนึ่งวิธี ไม่มีการกู้คืนทางอีเมล",
   "profile.activity": "กิจกรรม",

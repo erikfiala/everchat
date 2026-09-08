@@ -35,7 +35,7 @@ export function SettingsTab() {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageTitleBar>{t('settings.title')}</PageTitleBar>
-      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-3 pt-4">
+      <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-3 pt-4">
         <div>
           <label htmlFor="settings-mode" className={FIELD_LABEL_CLASS}>
             {t('settings.mode')}

@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "ওয়েবসাইট আপডেট হয়েছে",
   "profile.devices": "ডিভাইস",
   "profile.addDevice": "যোগ করুন",
-  "profile.addCurrentDevice": "+ বর্তমান ডিভাইস যোগ করুন",
+  "profile.addCurrentDevice": "বর্তমান ডিভাইস যোগ করুন",
   "profile.addCurrentDeviceAlreadyAdded": "এই ডিভাইসে ইতিমধ্যে যোগ করা আছে।",
   "profile.devicesHint": "এই অ্যাকাউন্টের আনলক পদ্ধতি। অন্তত একটি রাখুন। ইমেইল পুনরুদ্ধার নেই।",
   "profile.activity": "কার্যকলাপ",

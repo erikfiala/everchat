@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Tovuti imesasishwa",
   "profile.devices": "Vifaa",
   "profile.addDevice": "Ongeza",
-  "profile.addCurrentDevice": "+ Ongeza kifaa cha sasa",
+  "profile.addCurrentDevice": "Ongeza kifaa cha sasa",
   "profile.addCurrentDeviceAlreadyAdded": "Tayari imeongezwa kwenye kifaa hiki.",
   "profile.devicesHint": "Njia za kufungua akaunti hii. Weka angalau moja. Hakuna urejesho wa barua pepe.",
   "profile.activity": "Shughuli",

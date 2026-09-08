@@ -120,7 +120,7 @@
   "profile.toastWebsiteSaved": "Site-ul a fost actualizat",
   "profile.devices": "Dispozitive",
   "profile.addDevice": "Adaugă",
-  "profile.addCurrentDevice": "+ Adaugă dispozitivul curent",
+  "profile.addCurrentDevice": "Adaugă dispozitivul curent",
   "profile.addCurrentDeviceAlreadyAdded": "Deja adăugat pe acest dispozitiv.",
   "profile.devicesHint": "Metode de deblocare pentru acest cont. Păstrează cel puțin una. Fără recuperare prin e-mail.",
   "profile.activity": "Activitate",

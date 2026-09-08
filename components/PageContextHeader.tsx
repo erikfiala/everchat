@@ -35,7 +35,7 @@ export function PageContextHeader({
             <span className="truncate mr-px">{host}</span>
             {isCurrentPage && (
               <>
-                <span aria-hidden className="shrink-0 opacity-50">•</span>
+                <span aria-hidden className="shrink-0">·</span>
                 <span className="shrink-0" data-current-page="">{t('page.thisPage')}</span>
               </>
             )}

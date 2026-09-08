@@ -107,6 +107,96 @@ button[aria-disabled='true'],
   animation: highlight-pulse 1.6s ease-out;
 }
 
+/* Reddit-style thread tree: rail under the parent avatar, L into the child. */
+.ec-thread-node {
+  --ec-avatar-col: 1.75rem;
+  --ec-avatar-visual: 1.75rem;
+  --ec-thread-gutter: 1.75rem;
+  --ec-stroke: 3px;
+}
+
+.ec-thread-reply {
+  --ec-avatar-visual: 1.25rem;
+  display: grid;
+  grid-template-columns: var(--ec-thread-gutter) minmax(0, 1fr);
+  overflow: visible;
+}
+
+.ec-thread-main {
+  min-width: 0;
+  overflow: visible;
+}
+
+.ec-thread-self {
+  display: grid;
+  grid-template-columns: var(--ec-avatar-col) minmax(0, 1fr);
+  column-gap: 0.5rem;
+}
+
+.ec-thread-avatar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ec-thread-avatar-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.ec-thread-stem {
+  flex: 1 1 auto;
+  width: var(--ec-stroke);
+  /* Tuck under the parent circle so the line originates from the avatar. */
+  margin-block-start: calc(var(--ec-avatar-visual) / -2);
+  background: var(--color-border);
+  pointer-events: none;
+}
+
+.ec-thread-gutter {
+  position: relative;
+  overflow: visible;
+}
+
+/* Non-last siblings: trunk continues through this child's subtree. */
+.ec-thread-rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(50% - var(--ec-stroke) / 2);
+  width: var(--ec-stroke);
+  background: var(--color-border);
+  pointer-events: none;
+}
+
+/*
+ * Sharp L from the parent rail (under the parent avatar column) to the
+ * child avatar center. Ends stay under the circle — no radius, no caps.
+ */
+.ec-thread-elbow {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  inset-inline-start: calc(50% - var(--ec-stroke) / 2);
+  width: calc(var(--ec-thread-gutter) + var(--ec-stroke) / 2);
+  /* py-2 + half nested avatar + half stroke → arm at avatar center */
+  height: calc(0.5rem + 0.625rem + var(--ec-stroke) / 2);
+  box-sizing: border-box;
+  border-inline-start: var(--ec-stroke) solid var(--color-border);
+  border-block-end: var(--ec-stroke) solid var(--color-border);
+  border-radius: 0;
+  pointer-events: none;
+}
+
+/* Per-row hover: this comment's incoming L / rail, and its outgoing stem. */
+.ec-thread-reply:has(> .ec-thread-main > .ec-thread-self:hover) > .ec-thread-gutter .ec-thread-elbow {
+  border-color: var(--color-foreground);
+}
+
+.ec-thread-reply:has(> .ec-thread-main > .ec-thread-self:hover) > .ec-thread-gutter .ec-thread-rail,
+.ec-thread-self:hover .ec-thread-stem {
+  background: var(--color-foreground);
+}
+
 /* Conversation overlay — instant, no enter/exit motion. */
 .ec-thread-pane {
   transform: none;

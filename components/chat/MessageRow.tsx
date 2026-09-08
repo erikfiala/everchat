@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   ChevronDown,
   ChevronUp,
@@ -45,9 +45,65 @@ interface MessageRowProps extends MessageRowHandlers {
   node: MessageNode;
   /** 0 = conversation/feed root. Nested replies use a smaller avatar + thread line. */
   depth?: number;
+  /** Last visible sibling at this depth — rail stops and becomes an L-curve. */
+  isLast?: boolean;
   /** Render children as a Reddit-style tree (conversation pane only). */
   nestChildren?: boolean;
   onShowReplies?: (node: MessageNode) => void;
+}
+
+function willRenderRow(node: MessageNode): boolean {
+  return !(node.deleted_at && node.children.length === 0);
+}
+
+function ThreadBranch({ isLast }: { isLast: boolean }) {
+  return (
+    <div className="ec-thread-gutter" aria-hidden>
+      {!isLast ? <span className="ec-thread-rail" /> : null}
+      <span className="ec-thread-elbow" />
+    </div>
+  );
+}
+
+function MessageChrome({
+  id,
+  nested,
+  isLast,
+  hasStem,
+  avatar,
+  children,
+  after,
+}: {
+  id: string;
+  nested: boolean;
+  isLast: boolean;
+  hasStem: boolean;
+  avatar: ReactNode;
+  children: ReactNode;
+  after?: ReactNode;
+}) {
+  return (
+    <div
+      id={`ec-msg-${id}`}
+      className={cn(
+        'ec-thread-node scroll-mt-16',
+        nested && 'ec-thread-reply',
+        nested && isLast && 'ec-thread-last',
+      )}
+    >
+      {nested ? <ThreadBranch isLast={isLast} /> : null}
+      <div className="ec-thread-main">
+        <div className="group/row ec-thread-self">
+          <div className="ec-thread-avatar-col">
+            <div className="ec-thread-avatar-wrap pt-2">{avatar}</div>
+            {hasStem ? <span className="ec-thread-stem" aria-hidden /> : null}
+          </div>
+          <div className="min-w-0 py-2">{children}</div>
+        </div>
+        {after}
+      </div>
+    </div>
+  );
 }
 
 function ShowRepliesControl({
@@ -79,6 +135,7 @@ function ShowRepliesControl({
 export function MessageRow({
   node,
   depth = 0,
+  isLast = true,
   nestChildren = false,
   pageUrl,
   currentUserId,
@@ -135,19 +192,19 @@ export function MessageRow({
   const nested = depth > 0;
   const avatarClass = nested ? 'h-5 w-5' : 'h-7 w-7';
   const avatarIconClass = nested ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5';
-  const rowClass = cn(
-    'group scroll-mt-16',
-    nested &&
-      'ec-thread-reply ms-2 border-s border-[var(--color-border)] ps-2',
-  );
   const feedReplies = nestChildren ? undefined : onShowReplies;
-  const nestedRows =
+  const visibleChildren =
     nestChildren && (deleted || showBody)
-      ? node.children.map((child) => (
+      ? node.children.filter(willRenderRow)
+      : [];
+  const nestedRows =
+    visibleChildren.length > 0
+      ? visibleChildren.map((child, index) => (
           <MessageRow
             key={child.id}
             node={child}
             depth={depth + 1}
+            isLast={index === visibleChildren.length - 1}
             nestChildren
             pageUrl={pageUrl}
             currentUserId={currentUserId}
@@ -209,8 +266,13 @@ export function MessageRow({
       d.toLocaleString(locale),
     );
     return (
-      <div id={`ec-msg-${node.id}`} className={rowClass}>
-        <div className="flex items-start gap-2 py-2">
+      <MessageChrome
+        id={node.id}
+        nested={nested}
+        isLast={isLast}
+        hasStem={Boolean(nestedRows)}
+        after={nestedRows}
+        avatar={
           <button
             type="button"
             onClick={() => onOpenProfile(ANONYMOUS_HANDLE)}
@@ -223,42 +285,44 @@ export function MessageRow({
               </AvatarFallback>
             </Avatar>
           </button>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
-              <button
-                type="button"
-                className="font-medium hover:underline"
-                onClick={() => onOpenProfile(ANONYMOUS_HANDLE)}
-              >
-                @{ANONYMOUS_HANDLE}
-              </button>
-              {timestamp ? (
-                <span
-                  className="text-[var(--color-muted-foreground)]"
-                  title={timestampTitle || undefined}
-                >
-                  {timestamp}
-                </span>
-              ) : null}
-            </div>
-            <p className="mt-1 text-sm italic text-[var(--color-muted-foreground)]">
-              {t('message.deleted')}
-            </p>
-            {feedReplies && (
-              <div className="mt-1.5">
-                <ShowRepliesControl node={node} onShowReplies={feedReplies} />
-              </div>
-            )}
-          </div>
+        }
+      >
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
+          <button
+            type="button"
+            className="font-medium hover:underline"
+            onClick={() => onOpenProfile(ANONYMOUS_HANDLE)}
+          >
+            @{ANONYMOUS_HANDLE}
+          </button>
+          {timestamp ? (
+            <span
+              className="text-[var(--color-muted-foreground)]"
+              title={timestampTitle || undefined}
+            >
+              {timestamp}
+            </span>
+          ) : null}
         </div>
-        {nestedRows}
-      </div>
+        <p className="mt-1 text-sm italic text-[var(--color-muted-foreground)]">
+          {t('message.deleted')}
+        </p>
+        {feedReplies && (
+          <div className="mt-1.5">
+            <ShowRepliesControl node={node} onShowReplies={feedReplies} />
+          </div>
+        )}
+      </MessageChrome>
     );
   }
 
   return (
-    <div id={`ec-msg-${node.id}`} className={rowClass}>
-      <div className="flex items-start gap-2 py-2">
+    <MessageChrome
+      id={node.id}
+      nested={nested}
+      isLast={isLast}
+      hasStem={Boolean(nestedRows)}
+      avatar={
         <button
           type="button"
           onClick={() =>
@@ -275,7 +339,44 @@ export function MessageRow({
             </AvatarFallback>
           </Avatar>
         </button>
-        <div className="min-w-0 flex-1">
+      }
+      after={
+        <>
+          {nestedRows}
+          <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('message.deleteConfirmTitle')}</DialogTitle>
+                <DialogDescription>
+                  {t('message.deleteConfirmBody')}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="mt-4 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setConfirmDeleteOpen(false)}
+                >
+                  {t('common.cancel')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    setConfirmDeleteOpen(false);
+                    onDelete(node.id);
+                  }}
+                >
+                  {t('message.delete')}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
+      }
+    >
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
             <button
               type="button"
@@ -402,7 +503,7 @@ export function MessageRow({
                       'h-7 px-2 text-xs text-[var(--color-muted-foreground)]',
                       !showTranslation &&
                         !translating &&
-                        'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+                        'opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100',
                     )}
                     disabled={translating}
                     onClick={() => void toggleTranslation()}
@@ -418,7 +519,7 @@ export function MessageRow({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 opacity-0 group-hover:opacity-100"
+                    className="h-7 w-7 opacity-0 group-hover/row:opacity-100"
                     onClick={() => setMenuOpen((v) => !v)}
                   >
                     <MoreHorizontal className="h-4 w-4" />
@@ -466,41 +567,6 @@ export function MessageRow({
               <ShowRepliesControl node={node} onShowReplies={feedReplies} />
             </>
           )}
-        </div>
-      </div>
-      {nestedRows}
-
-      <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('message.deleteConfirmTitle')}</DialogTitle>
-            <DialogDescription>
-              {t('message.deleteConfirmBody')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-4 flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setConfirmDeleteOpen(false)}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                setConfirmDeleteOpen(false);
-                onDelete(node.id);
-              }}
-            >
-              {t('message.delete')}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+    </MessageChrome>
   );
 }

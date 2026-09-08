@@ -209,89 +209,99 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         faviconUrl={viewing.favIconUrl}
         isCurrentPage={isCurrentPage}
       />
-      <div className="flex min-h-14 items-center gap-1.5 border-b border-[var(--color-border)] px-3 py-2">
+      <div className="flex min-h-14 items-stretch border-b border-[var(--color-border)] px-3">
         {inThread && (
-          <Button
-            ref={backToMainRef}
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 max-w-[min(100%,10.5rem)] shrink-0 gap-1 overflow-hidden px-1.5 text-xs"
-            onClick={backToMainThread}
-            aria-label={t('message.backToMainThread')}
-          >
-            <ArrowLeft className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden />
-            <span className="truncate">{t('message.backToMainThread')}</span>
-          </Button>
-        )}
-        <span className="text-xs text-[var(--color-muted-foreground)]">
-          {t('chat.sort')}
-        </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="xs"
-              variant="outline"
-              className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
-            >
-              {sortLabel(thread.sort)}
-              <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuItem onSelect={() => thread.setSort('best')}>
-              {t('chat.sortBest')}
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => thread.setSort('new')}>
-              {t('chat.sortNew')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {!inThread && (
-          <TooltipProvider delayDuration={200}>
-            <div className="ms-auto flex items-center gap-0.5">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={goBack}
-                    disabled={!canGoBack}
-                    className={cn(
-                      'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
-                      canGoBack
-                        ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
-                        : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
-                    )}
-                    aria-label={t('chat.goBack')}
-                  >
-                    <ArrowLeft className="size-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>{t('chat.goBack')}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={goForward}
-                    disabled={!canGoForward}
-                    className={cn(
-                      'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
-                      canGoForward
-                        ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
-                        : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
-                    )}
-                    aria-label={t('chat.goForward')}
-                  >
-                    <ArrowRight className="size-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>{t('chat.goForward')}</TooltipContent>
-              </Tooltip>
+          <>
+            <div className="flex items-center py-2">
+              <Button
+                ref={backToMainRef}
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 max-w-[min(100%,10.5rem)] shrink-0 gap-1 overflow-hidden px-1.5 text-xs"
+                onClick={backToMainThread}
+                aria-label={t('message.backToMainThread')}
+              >
+                <ArrowLeft className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden />
+                <span className="truncate">{t('message.backToMainThread')}</span>
+              </Button>
             </div>
-          </TooltipProvider>
+            <div
+              aria-hidden
+              className="mx-3 w-px shrink-0 self-stretch bg-[var(--color-border)]"
+            />
+          </>
         )}
+        <div className="flex min-w-0 flex-1 items-center gap-1.5 py-2">
+          <span className="text-xs text-[var(--color-muted-foreground)]">
+            {t('chat.sort')}
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                size="xs"
+                variant="outline"
+                className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+              >
+                {sortLabel(thread.sort)}
+                <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onSelect={() => thread.setSort('best')}>
+                {t('chat.sortBest')}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => thread.setSort('new')}>
+                {t('chat.sortNew')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {!inThread && (
+            <TooltipProvider delayDuration={200}>
+              <div className="ms-auto flex items-center gap-0.5">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={goBack}
+                      disabled={!canGoBack}
+                      className={cn(
+                        'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
+                        canGoBack
+                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                          : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
+                      )}
+                      aria-label={t('chat.goBack')}
+                    >
+                      <ArrowLeft className="size-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t('chat.goBack')}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={goForward}
+                      disabled={!canGoForward}
+                      className={cn(
+                        'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
+                        canGoForward
+                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                          : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
+                      )}
+                      aria-label={t('chat.goForward')}
+                    >
+                      <ArrowRight className="size-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t('chat.goForward')}</TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
+          )}
+        </div>
       </div>
 
       <div className="relative min-h-0 flex-1 overflow-hidden">

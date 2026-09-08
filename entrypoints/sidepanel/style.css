@@ -13,7 +13,7 @@
   --color-primary: #27272a; /* zinc-800 */
   --color-primary-foreground: #fafafa;
   --color-accent: #f4f4f5; /* zinc-100 */
-  --color-anonymous-avatar: #a1a1aa; /* zinc-400 · deleted/@anonymous fallback */
+  --color-anonymous-avatar: #e4e4e7; /* zinc-200 · deleted/@anonymous fallback */
   --color-destructive: #dc2626;
   --color-success: #0f766e;
   --color-score-pos: #0f766e;
@@ -68,7 +68,7 @@ html[data-theme='dark'] body {
 
 /* Reserved @anonymous / deleted-comment avatar — gray step above page/card. */
 .ec-anonymous-avatar {
-  background-color: #a1a1aa; /* zinc-400 */
+  background-color: #e4e4e7; /* zinc-200 */
   border: none;
 }
 
@@ -117,6 +117,7 @@ button[aria-disabled='true'],
 
 .highlight-pulse {
   animation: highlight-pulse 1.6s ease-out;
+  border-radius: var(--radius-md);
 }
 
 /* Reddit-style thread tree: rail under the parent avatar, L into the child. */
@@ -153,7 +154,14 @@ button[aria-disabled='true'],
 
 .ec-thread-avatar-wrap {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+/* Page-colored halo so the rail/elbow stops short of the photo. */
+.ec-thread-avatar-ring {
+  display: inline-flex;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 3px var(--color-background);
 }
 
 .ec-thread-stem {

@@ -95,8 +95,10 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
       const el = document.getElementById(`ec-msg-${focusId}`);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        el.classList.add('highlight-pulse');
-        setTimeout(() => el.classList.remove('highlight-pulse'), 1600);
+        const target =
+          el.querySelector<HTMLElement>('.ec-thread-self') ?? el;
+        target.classList.add('highlight-pulse');
+        setTimeout(() => target.classList.remove('highlight-pulse'), 1600);
       }
       clearFocus();
     };

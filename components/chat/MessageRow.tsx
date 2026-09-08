@@ -95,7 +95,9 @@ function MessageChrome({
       <div className="ec-thread-main">
         <div className="group/row ec-thread-self">
           <div className="ec-thread-avatar-col">
-            <div className="ec-thread-avatar-wrap pt-2">{avatar}</div>
+            <div className="ec-thread-avatar-wrap pt-2">
+              <span className="ec-thread-avatar-ring">{avatar}</span>
+            </div>
             {hasStem ? <span className="ec-thread-stem" aria-hidden /> : null}
           </div>
           <div className="min-w-0 py-2">{children}</div>
@@ -129,6 +131,63 @@ function ShowRepliesControl({
         ? t('message.showReply')
         : t('message.showReplies', { n: count })}
     </Button>
+  );
+}
+
+function VoteControls({
+  node,
+  disabled = false,
+  onVote,
+  requireAuth,
+}: {
+  node: MessageNode;
+  disabled?: boolean;
+  onVote: (id: string, value: 1 | -1) => void;
+  requireAuth: () => boolean;
+}) {
+  return (
+    <div className="me-2 flex items-center gap-0.5">
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={disabled}
+        className={cn(
+          'h-7 w-6 px-0',
+          disabled && 'text-[var(--color-muted-foreground)]',
+          !disabled && node.myVote === 1 && 'text-[var(--color-score-pos)]',
+        )}
+        onClick={() => {
+          if (!requireAuth()) return;
+          onVote(node.id, 1);
+        }}
+      >
+        <ChevronUp className="h-4 w-4" />
+      </Button>
+      <span
+        className={cn(
+          'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
+          scoreColorClass(node.score),
+        )}
+      >
+        {formatScore(node.score)}
+      </span>
+      <Button
+        variant="ghost"
+        size="icon"
+        disabled={disabled}
+        className={cn(
+          'h-7 w-6 px-0',
+          disabled && 'text-[var(--color-muted-foreground)]',
+          !disabled && node.myVote === -1 && 'text-[var(--color-score-neg)]',
+        )}
+        onClick={() => {
+          if (!requireAuth()) return;
+          onVote(node.id, -1);
+        }}
+      >
+        <ChevronDown className="h-4 w-4" />
+      </Button>
+    </div>
   );
 }
 
@@ -307,11 +366,15 @@ export function MessageRow({
         <p className="mt-1 text-sm italic text-[var(--color-muted-foreground)]">
           {t('message.deleted')}
         </p>
-        {feedReplies && (
-          <div className="mt-1.5">
-            <ShowRepliesControl node={node} onShowReplies={feedReplies} />
-          </div>
-        )}
+        <div className="mt-1.5 flex flex-wrap items-center gap-0.5">
+          <VoteControls
+            node={node}
+            disabled
+            onVote={onVote}
+            requireAuth={requireAuth}
+          />
+        </div>
+        <ShowRepliesControl node={node} onShowReplies={feedReplies} />
       </MessageChrome>
     );
   }
@@ -436,44 +499,11 @@ export function MessageRow({
               )}
 
               <div className="mt-1.5 flex flex-wrap items-center gap-0.5">
-                <div className="me-2 flex items-center gap-0.5">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={cn(
-                      'h-7 w-6 px-0',
-                      node.myVote === 1 && 'text-[var(--color-score-pos)]',
-                    )}
-                    onClick={() => {
-                      if (!requireAuth()) return;
-                      onVote(node.id, 1);
-                    }}
-                  >
-                    <ChevronUp className="h-4 w-4" />
-                  </Button>
-                  <span
-                    className={cn(
-                      'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
-                      scoreColorClass(node.score),
-                    )}
-                  >
-                    {formatScore(node.score)}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className={cn(
-                      'h-7 w-6 px-0',
-                      node.myVote === -1 && 'text-[var(--color-score-neg)]',
-                    )}
-                    onClick={() => {
-                      if (!requireAuth()) return;
-                      onVote(node.id, -1);
-                    }}
-                  >
-                    <ChevronDown className="h-4 w-4" />
-                  </Button>
-                </div>
+                <VoteControls
+                  node={node}
+                  onVote={onVote}
+                  requireAuth={requireAuth}
+                />
                 <Button
                   variant="ghost"
                   size="sm"

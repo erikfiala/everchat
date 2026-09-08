@@ -8,6 +8,7 @@ No email. No ads. No third-party trackers. Free forever.
 
 [![License: source-available](https://img.shields.io/badge/license-source--available-slate.svg)](./LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/everchathq/everchat?include_prereleases&sort=semver)](https://github.com/everchathq/everchat/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/everchathq/everchat)](https://github.com/everchathq/everchat/stargazers)
 
 **Site:** [everch.at](https://everch.at)  
 **Donate:** [opencollective.com/everchat](https://opencollective.com/everchat)  

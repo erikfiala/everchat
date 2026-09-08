@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ChevronDown,
   ChevronUp,
-  Flag,
+  CircleAlert,
   HatGlasses,
   Link,
   MoreHorizontal,
@@ -409,14 +409,14 @@ export function MessageRow({
                       ) : (
                         <button
                           type="button"
-                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm hover:bg-[var(--color-accent)]"
+                          className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"
                           onClick={() => {
                             if (!requireAuth()) return;
                             onReport(node.id);
                             setMenuOpen(false);
                           }}
                         >
-                          <Flag className="h-3.5 w-3.5" />
+                          <CircleAlert className="h-3.5 w-3.5" />
                           {t('message.report')}
                         </button>
                       )}

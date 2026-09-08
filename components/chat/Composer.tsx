@@ -484,7 +484,7 @@ export function Composer({
                     key={g.id}
                     type="button"
                     className={cn(
-                      'aspect-square min-w-0 overflow-hidden rounded',
+                      'aspect-[4/3] min-w-0 overflow-hidden rounded',
                       gifUrl === g.url && 'ring-2 ring-[var(--color-primary)]',
                     )}
                     onClick={() => {

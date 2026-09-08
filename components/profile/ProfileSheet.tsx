@@ -55,7 +55,7 @@ export function ProfileSheet({
         {loading && <Skeleton className="h-20 w-full" />}
         {!loading && anonymous && (
           <div className="pt-2">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-4">
               <Avatar className="ec-anonymous-avatar h-12 w-12">
                 <AvatarFallback className="bg-transparent text-[var(--color-foreground)]">
                   <HatGlasses className="h-5 w-5" aria-hidden />
@@ -84,7 +84,7 @@ export function ProfileSheet({
         )}
         {!loading && !anonymous && profile && (
           <div className="pt-2">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-4">
               <Avatar className="h-12 w-12">
                 {profile.avatar_url && <AvatarImage src={profile.avatar_url} />}
                 <AvatarFallback>

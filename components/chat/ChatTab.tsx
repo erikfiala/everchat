@@ -218,7 +218,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-7 max-w-[min(100%,10.5rem)] shrink-0 gap-1 overflow-hidden px-1.5 text-xs"
+                className="h-7 max-w-[min(100%,10.5rem)] shrink-0 gap-1 overflow-hidden px-2 text-xs"
                 onClick={backToMainThread}
                 aria-label={t('message.backToMainThread')}
               >

@@ -69,12 +69,11 @@ html[data-theme='dark'] body {
 /* Reserved @anonymous / deleted-comment avatar — gray step above page/card. */
 .ec-anonymous-avatar {
   background-color: #a1a1aa; /* zinc-400 */
-  border: 2px solid #52525b; /* zinc-600 */
+  border: none;
 }
 
 html[data-theme='dark'] .ec-anonymous-avatar {
   background-color: #71717a; /* zinc-500 */
-  border-color: #d4d4d8; /* zinc-300 */
 }
 
 /* Soft keyboard focus ring (hugs control radius; match sort selector) */

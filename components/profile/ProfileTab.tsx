@@ -214,7 +214,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
         className="flex h-full min-h-0 flex-col overflow-y-auto"
       >
       <div className="border-b border-[var(--color-border)] px-4 py-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             type="button"
             className="relative"

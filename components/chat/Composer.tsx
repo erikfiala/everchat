@@ -427,7 +427,7 @@ export function Composer({
           </div>
           {showCounter && (
             <span
-              className="ms-auto me-2 tabular-nums text-[11px] font-medium text-red-600"
+              className="ms-auto me-2 tabular-nums text-[11px] font-medium text-[var(--color-destructive)]"
               aria-live="polite"
             >
               {remaining}

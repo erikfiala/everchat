@@ -54,9 +54,9 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   );
   const [replyTo, setReplyTo] = useState<MessageNode | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const [threadStack, setThreadStack] = useState<string[]>([]);
-  const [exiting, setExiting] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const backToMainRef = useRef<HTMLButtonElement>(null);
   const sentinelRef = useListSentinel(
     thread.hasMore && !thread.loading && !thread.error,
     thread.loadMore,
@@ -67,15 +67,13 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   useEffect(() => {
     setReplyTo(null);
     setExpandedIds(new Set());
-    setThreadStack([]);
-    setExiting(false);
+    setConversationId(null);
   }, [viewing.canonicalUrl]);
 
   useEffect(() => {
-    setThreadStack((prev) => {
-      const next = prev.filter((id) => findMessageNode(thread.roots, id));
-      return next.length === prev.length ? prev : next;
-    });
+    setConversationId((prev) =>
+      prev && findMessageNode(thread.roots, prev) ? prev : null,
+    );
   }, [thread.roots]);
 
   useEffect(() => {
@@ -90,9 +88,8 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
       path.forEach((id) => next.add(id));
       return next;
     });
-    setExiting(false);
     const stack = conversationStackForFocus(path);
-    setThreadStack(stack);
+    setConversationId(stack[0] ?? null);
     const focusId = viewing.focusMessageId;
     const scrollToFocus = () => {
       const el = document.getElementById(`ec-msg-${focusId}`);
@@ -109,51 +106,44 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
     });
   }, [viewing.focusMessageId, thread.loading, thread.roots, clearFocus]);
 
-  const inThread = threadStack.length > 0;
+  const conversationNode = conversationId
+    ? findMessageNode(thread.roots, conversationId)
+    : null;
+  const inThread = Boolean(conversationNode);
 
-  const pushConversation = useCallback((node: MessageNode) => {
+  const openConversation = useCallback((node: MessageNode) => {
     if (node.children.length === 0) return;
-    setExiting(false);
-    setThreadStack((prev) => (prev.includes(node.id) ? prev : [...prev, node.id]));
+    setConversationId(node.id);
   }, []);
 
-  const popConversation = useCallback(() => {
-    if (exiting || threadStack.length === 0) return;
-    setExiting(true);
-  }, [exiting, threadStack.length]);
-
   const backToMainThread = useCallback(() => {
-    if (exiting || threadStack.length === 0) return;
-    setThreadStack((prev) =>
-      prev.length <= 1 ? prev : [prev[prev.length - 1]!],
-    );
-    setExiting(true);
-  }, [exiting, threadStack.length]);
-
-  const onPaneExited = useCallback(() => {
-    const topId = threadStack[threadStack.length - 1];
-    setThreadStack((prev) => prev.slice(0, -1));
-    setExiting(false);
+    const openedId = conversationId;
+    setConversationId(null);
     requestAnimationFrame(() => {
-      if (!topId) return;
-      document.getElementById(`ec-show-replies-${topId}`)?.focus();
+      if (!openedId) return;
+      document.getElementById(`ec-show-replies-${openedId}`)?.focus();
     });
-  }, [threadStack]);
+  }, [conversationId]);
 
   useEffect(() => {
     if (!inThread) return;
+    backToMainRef.current?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
       if (document.querySelector('[role="dialog"][data-state="open"]')) return;
       event.preventDefault();
-      popConversation();
+      backToMainThread();
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [inThread, popConversation]);
+  }, [inThread, backToMainThread]);
 
   const onSubmit = async (body: string, gifUrl?: string | null) => {
-    await thread.post(body, replyTo?.id ?? null, gifUrl);
+    await thread.post(
+      body,
+      replyTo?.id ?? conversationNode?.id ?? null,
+      gifUrl,
+    );
     setReplyTo(null);
   };
 
@@ -219,7 +209,21 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         faviconUrl={viewing.favIconUrl}
         isCurrentPage={isCurrentPage}
       />
-      <div className="flex min-h-14 items-center gap-2 border-b border-[var(--color-border)] px-3 py-2">
+      <div className="flex min-h-14 items-center gap-1.5 border-b border-[var(--color-border)] px-3 py-2">
+        {inThread && (
+          <Button
+            ref={backToMainRef}
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 max-w-[min(100%,10.5rem)] shrink-0 gap-1 overflow-hidden px-1.5 text-xs"
+            onClick={backToMainThread}
+            aria-label={t('message.backToMainThread')}
+          >
+            <ArrowLeft className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden />
+            <span className="truncate">{t('message.backToMainThread')}</span>
+          </Button>
+        )}
         <span className="text-xs text-[var(--color-muted-foreground)]">
           {t('chat.sort')}
         </span>
@@ -328,7 +332,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               key={node.id}
               node={node}
               {...rowHandlers}
-              onShowReplies={pushConversation}
+              onShowReplies={openConversation}
             />
           ))}
           {thread.hasMore ? (
@@ -339,24 +343,13 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
           ) : null}
         </div>
 
-        {threadStack.map((id, index) => {
-          const node = findMessageNode(thread.roots, id);
-          if (!node) return null;
-          const isTop = index === threadStack.length - 1;
-          return (
-            <ThreadPane
-              key={id}
-              node={node}
-              depth={index}
-              open={!exiting || !isTop}
-              onBack={popConversation}
-              onBackToMain={backToMainThread}
-              onExited={onPaneExited}
-              onShowReplies={pushConversation}
-              {...rowHandlers}
-            />
-          );
-        })}
+        {conversationNode && (
+          <ThreadPane
+            key={conversationNode.id}
+            node={conversationNode}
+            {...rowHandlers}
+          />
+        )}
       </div>
 
       <div

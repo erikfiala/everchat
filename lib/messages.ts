@@ -346,10 +346,11 @@ export function findMessageNode(
 }
 
 /**
- * Stack of conversation parents to open so the focused message is visible
- * as a reply in its parent pane. Roots stay on the main feed.
+ * Open the root conversation so a focused nested reply is visible in the
+ * Reddit-style tree. Roots stay on the main feed.
  */
 export function conversationStackForFocus(path: string[] | null): string[] {
   if (!path || path.length <= 1) return [];
-  return path.slice(0, -1);
+  const rootId = path[0];
+  return rootId ? [rootId] : [];
 }

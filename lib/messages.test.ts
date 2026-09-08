@@ -165,10 +165,9 @@ describe('thread navigation helpers', () => {
     expect(findPathToMessage(tree, 'missing')).toBeNull();
   });
 
-  it('opens ancestor conversations so the focused reply is visible', () => {
+  it('opens the root conversation so the focused reply is visible', () => {
     expect(conversationStackForFocus(['root', 'child', 'grand'])).toEqual([
       'root',
-      'child',
     ]);
     expect(conversationStackForFocus(['root'])).toEqual([]);
     expect(conversationStackForFocus(null)).toEqual([]);

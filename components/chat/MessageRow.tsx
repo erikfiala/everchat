@@ -43,6 +43,10 @@ export interface MessageRowHandlers {
 
 interface MessageRowProps extends MessageRowHandlers {
   node: MessageNode;
+  /** 0 = conversation/feed root. Nested replies use a smaller avatar + thread line. */
+  depth?: number;
+  /** Render children as a Reddit-style tree (conversation pane only). */
+  nestChildren?: boolean;
   onShowReplies?: (node: MessageNode) => void;
 }
 
@@ -74,6 +78,8 @@ function ShowRepliesControl({
 
 export function MessageRow({
   node,
+  depth = 0,
+  nestChildren = false,
   pageUrl,
   currentUserId,
   expandedIds,
@@ -126,6 +132,36 @@ export function MessageRow({
     !deleted && isCommunityCollapsed(node.upvotes, node.downvotes);
   const userExpanded = expandedIds.has(node.id);
   const showBody = !collapsed || userExpanded;
+  const nested = depth > 0;
+  const avatarClass = nested ? 'h-5 w-5' : 'h-7 w-7';
+  const avatarIconClass = nested ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5';
+  const rowClass = cn(
+    'group scroll-mt-16',
+    nested &&
+      'ec-thread-reply ms-2 border-s border-[var(--color-border)] ps-2',
+  );
+  const feedReplies = nestChildren ? undefined : onShowReplies;
+  const nestedRows =
+    nestChildren && (deleted || showBody)
+      ? node.children.map((child) => (
+          <MessageRow
+            key={child.id}
+            node={child}
+            depth={depth + 1}
+            nestChildren
+            pageUrl={pageUrl}
+            currentUserId={currentUserId}
+            expandedIds={expandedIds}
+            onToggleExpand={onToggleExpand}
+            onReply={onReply}
+            onVote={onVote}
+            onDelete={onDelete}
+            onReport={onReport}
+            onOpenProfile={onOpenProfile}
+            requireAuth={requireAuth}
+          />
+        ))
+      : null;
 
   const shareLink = async () => {
     const link = buildShareLink(node.id);
@@ -173,7 +209,7 @@ export function MessageRow({
       d.toLocaleString(locale),
     );
     return (
-      <div id={`ec-msg-${node.id}`} className="group scroll-mt-16">
+      <div id={`ec-msg-${node.id}`} className={rowClass}>
         <div className="flex items-start gap-2 py-2">
           <button
             type="button"
@@ -181,9 +217,9 @@ export function MessageRow({
             className="shrink-0"
             aria-label={`@${ANONYMOUS_HANDLE}`}
           >
-            <Avatar className="h-7 w-7">
+            <Avatar className={avatarClass}>
               <AvatarFallback>
-                <HatGlasses className="h-3.5 w-3.5" aria-hidden />
+                <HatGlasses className={avatarIconClass} aria-hidden />
               </AvatarFallback>
             </Avatar>
           </button>
@@ -208,17 +244,20 @@ export function MessageRow({
             <p className="mt-1 text-sm italic text-[var(--color-muted-foreground)]">
               {t('message.deleted')}
             </p>
-            <div className="mt-1.5">
-              <ShowRepliesControl node={node} onShowReplies={onShowReplies} />
-            </div>
+            {feedReplies && (
+              <div className="mt-1.5">
+                <ShowRepliesControl node={node} onShowReplies={feedReplies} />
+              </div>
+            )}
           </div>
         </div>
+        {nestedRows}
       </div>
     );
   }
 
   return (
-    <div id={`ec-msg-${node.id}`} className="group scroll-mt-16">
+    <div id={`ec-msg-${node.id}`} className={rowClass}>
       <div className="flex items-start gap-2 py-2">
         <button
           type="button"
@@ -227,7 +266,7 @@ export function MessageRow({
           }
           className="shrink-0"
         >
-          <Avatar className="h-7 w-7">
+          <Avatar className={avatarClass}>
             {node.author?.avatar_url && (
               <AvatarImage src={node.author.avatar_url} />
             )}
@@ -424,11 +463,12 @@ export function MessageRow({
                   )}
                 </div>
               </div>
-              <ShowRepliesControl node={node} onShowReplies={onShowReplies} />
+              <ShowRepliesControl node={node} onShowReplies={feedReplies} />
             </>
           )}
         </div>
       </div>
+      {nestedRows}
 
       <Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
         <DialogContent>

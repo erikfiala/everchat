@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Això elimina aquest mètode de desbloqueig. Encara podràs iniciar sessió amb els altres dispositius.",
   "profile.removeLastDeviceConfirmTitle": "Vols eliminar l’últim mètode de desbloqueig?",
   "profile.removeLastDeviceConfirmBody": "Aquest és l’últim mètode de desbloqueig d’aquest compte. No hi ha recuperació per correu. Si l’elimines, perdràs l’accés a aquest compte de forma permanent.",
+  "profile.removeLastDeviceConfirmAck": "Reconec que perdré l’accés a aquest compte i, per tant, també aquest nom d’usuari reclamat.",
   "profile.signOutConfirmTitle": "Vols tancar la sessió?",
   "profile.signOutConfirmBody": "Pots tornar a iniciar sessió amb un dispositiu registrat.",
   "notifications.title": "Notificacions",

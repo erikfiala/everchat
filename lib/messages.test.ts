@@ -143,6 +143,90 @@ describe('buildMessageTree deleted nodes', () => {
   });
 });
 
+describe('buildMessageTree sort', () => {
+  it('Best ranks higher score first, then oldest first among equal scores', () => {
+    const roots = buildMessageTree(
+      [
+        msg({
+          id: 'new-zero',
+          score: 0,
+          created_at: '2026-01-03T00:00:00.000Z',
+        }),
+        msg({
+          id: 'old-zero',
+          score: 0,
+          created_at: '2026-01-01T00:00:00.000Z',
+        }),
+        msg({
+          id: 'mid-high',
+          score: 5,
+          created_at: '2026-01-02T00:00:00.000Z',
+        }),
+      ],
+      [],
+      'best',
+    );
+    expect(roots.map((n) => n.id)).toEqual([
+      'mid-high',
+      'old-zero',
+      'new-zero',
+    ]);
+  });
+
+  it('Best applies the same order among sibling replies', () => {
+    const roots = buildMessageTree(
+      [
+        msg({ id: 'root', body: 'root' }),
+        msg({
+          id: 'new-reply',
+          parent_id: 'root',
+          score: 0,
+          created_at: '2026-01-03T00:00:00.000Z',
+        }),
+        msg({
+          id: 'old-reply',
+          parent_id: 'root',
+          score: 0,
+          created_at: '2026-01-01T00:00:00.000Z',
+        }),
+        msg({
+          id: 'hot-reply',
+          parent_id: 'root',
+          score: 4,
+          created_at: '2026-01-04T00:00:00.000Z',
+        }),
+      ],
+      [],
+      'best',
+    );
+    expect(roots[0]?.children.map((n) => n.id)).toEqual([
+      'hot-reply',
+      'old-reply',
+      'new-reply',
+    ]);
+  });
+
+  it('Newest ranks newest first regardless of score', () => {
+    const roots = buildMessageTree(
+      [
+        msg({
+          id: 'old-high',
+          score: 10,
+          created_at: '2026-01-01T00:00:00.000Z',
+        }),
+        msg({
+          id: 'new-zero',
+          score: 0,
+          created_at: '2026-01-03T00:00:00.000Z',
+        }),
+      ],
+      [],
+      'new',
+    );
+    expect(roots.map((n) => n.id)).toEqual(['new-zero', 'old-high']);
+  });
+});
+
 describe('thread navigation helpers', () => {
   const tree = buildMessageTree(
     [

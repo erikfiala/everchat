@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "この解除方法が削除されます。他のデバイスで引き続きサインインできます。",
   "profile.removeLastDeviceConfirmTitle": "最後の解除方法を削除しますか？",
   "profile.removeLastDeviceConfirmBody": "これはこのアカウント最後の解除方法です。メールでの復元はありません。削除すると、このアカウントに二度とアクセスできなくなります。",
+  "profile.removeLastDeviceConfirmAck": "このアカウントへのアクセスを失い、取得したユーザー名も失うことを承諾します。",
   "profile.signOutConfirmTitle": "サインアウトしますか？",
   "profile.signOutConfirmBody": "登録済みのデバイスで再度サインインできます。",
   "notifications.title": "通知",

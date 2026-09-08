@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "See eemaldab selle avamismeetodi. Saad endiselt teiste seadmetega sisse logida.",
   "profile.removeLastDeviceConfirmTitle": "Kustutada viimane avamismeetod?",
   "profile.removeLastDeviceConfirmBody": "See on selle konto viimane avamismeetod. E-posti teel taastamist ei ole. Selle eemaldamine tähendab, et kaotad sellele kontole jäädavalt juurdepääsu.",
+  "profile.removeLastDeviceConfirmAck": "Kinnitan, et kaotan juurdepääsu sellele kontole ja seega ka sellele taotletud kasutajanimele.",
   "profile.signOutConfirmTitle": "Logi välja?",
   "profile.signOutConfirmBody": "Saad uuesti sisse logida registreeritud seadmega.",
   "notifications.title": "Teavitused",

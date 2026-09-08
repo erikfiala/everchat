@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Ini menghapus metode buka kunci itu. Anda masih bisa masuk dengan perangkat lainnya.",
   "profile.removeLastDeviceConfirmTitle": "Hapus metode buka kunci terakhir?",
   "profile.removeLastDeviceConfirmBody": "Ini metode buka kunci terakhir di akun ini. Tidak ada pemulihan email. Menghapusnya berarti Anda akan kehilangan akses ke akun ini secara permanen.",
+  "profile.removeLastDeviceConfirmAck": "Saya mengakui bahwa saya akan kehilangan akses ke akun ini dan karenanya juga kehilangan nama pengguna yang sudah diklaim ini.",
   "profile.signOutConfirmTitle": "Keluar?",
   "profile.signOutConfirmBody": "Anda dapat masuk lagi dengan perangkat terdaftar.",
   "notifications.title": "Notifikasi",

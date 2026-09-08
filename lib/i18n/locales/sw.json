@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Hii inaondoa njia hiyo ya kufungua. Bado unaweza kuingia kwa vifaa vyako vingine.",
   "profile.removeLastDeviceConfirmTitle": "Futa njia ya mwisho ya kufungua?",
   "profile.removeLastDeviceConfirmBody": "Hii ndiyo njia ya mwisho ya kufungua akaunti hii. Hakuna urejeshaji wa barua pepe. Kuiondoa kunamaanisha utapoteza ufikiaji wa akaunti hii kabisa.",
+  "profile.removeLastDeviceConfirmAck": "Ninakubali kwamba nitapoteza ufikiaji wa akaunti hii na kwa hivyo nitapoteza pia jina hili la mtumiaji nililodai.",
   "profile.signOutConfirmTitle": "Toka?",
   "profile.signOutConfirmBody": "Unaweza kuingia tena kwa kifaa kilichosajiliwa.",
   "notifications.title": "Arifa",

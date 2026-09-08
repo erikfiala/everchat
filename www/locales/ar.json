@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "سيؤدي هذا إلى إزالة طريقة إلغاء القفل هذه. سيظل بإمكانك تسجيل الدخول بأجهزتك الأخرى.",
   "profile.removeLastDeviceConfirmTitle": "حذف آخر طريقة لإلغاء القفل؟",
   "profile.removeLastDeviceConfirmBody": "هذه آخر طريقة لإلغاء قفل هذا الحساب. لا توجد استعادة عبر البريد الإلكتروني. إزالتها تعني أنك ستفقد الوصول إلى هذا الحساب نهائياً.",
+  "profile.removeLastDeviceConfirmAck": "أقر بأنني سأفقد الوصول إلى هذا الحساب وبالتالي سأفقد أيضاً اسم المستخدم الذي حجزته.",
   "profile.signOutConfirmTitle": "تسجيل الخروج؟",
   "profile.signOutConfirmBody": "يمكنك تسجيل الدخول مجددًا بجهاز مسجّل.",
   "notifications.title": "الإشعارات",

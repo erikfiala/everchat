@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Tai pašalina šį atrakinimo būdą. Vis tiek galėsite prisijungti kitais įrenginiais.",
   "profile.removeLastDeviceConfirmTitle": "Ištrinti paskutinį atrakinimo būdą?",
   "profile.removeLastDeviceConfirmBody": "Tai paskutinis šios paskyros atrakinimo būdas. Atkūrimo el. paštu nėra. Jį pašalinus visam laikui prarasite prieigą prie šios paskyros.",
+  "profile.removeLastDeviceConfirmAck": "Patvirtinu, kad prarasiu prieigą prie šios paskyros ir todėl neteksiu ir šio užimto vartotojo vardo.",
   "profile.signOutConfirmTitle": "Atsijungti?",
   "profile.signOutConfirmBody": "Galite vėl prisijungti registruotu įrenginiu.",
   "notifications.title": "Pranešimai",

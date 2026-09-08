@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "इससे वह अनलॉक विधि हट जाएगी। आप अपने अन्य डिवाइस से अभी भी साइन इन कर सकते हैं।",
   "profile.removeLastDeviceConfirmTitle": "आखिरी अनलॉक विधि हटाएँ?",
   "profile.removeLastDeviceConfirmBody": "यह इस खाते की आखिरी अनलॉक विधि है। ईमेल से रिकवरी नहीं है। इसे हटाने का मतलब है कि आप इस खाते की पहुँच हमेशा के लिए खो देंगे।",
+  "profile.removeLastDeviceConfirmAck": "मैं स्वीकार करता हूँ कि मैं इस खाते की पहुँच खो दूँगा और इसलिए यह क्लेम किया गया उपयोगकर्ता नाम भी खो दूँगा।",
   "profile.signOutConfirmTitle": "साइन आउट करें?",
   "profile.signOutConfirmBody": "पंजीकृत डिवाइस से फिर साइन इन कर सकते हैं।",
   "notifications.title": "सूचनाएँ",

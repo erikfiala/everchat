@@ -103,7 +103,7 @@ export async function fetchMessagesForPage(
   if (sort === 'best') {
     rootQuery = rootQuery
       .order('score', { ascending: false })
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true });
   } else {
     rootQuery = rootQuery.order('created_at', { ascending: false });
   }
@@ -218,7 +218,7 @@ export function buildMessageTree(
     if (sort === 'best') {
       if (b.score !== a.score) return b.score - a.score;
       return (
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
     }
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();

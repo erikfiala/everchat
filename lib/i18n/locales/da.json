@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Dette fjerner den oplåsningsmetode. Du kan stadig logge ind med dine andre enheder.",
   "profile.removeLastDeviceConfirmTitle": "Slet den sidste oplåsningsmetode?",
   "profile.removeLastDeviceConfirmBody": "Dette er den sidste oplåsningsmetode på denne konto. Der er ingen e-mailgendannelse. Fjerner du den, mister du permanent adgangen til kontoen.",
+  "profile.removeLastDeviceConfirmAck": "Jeg bekræfter, at jeg mister adgangen til denne konto og derfor også dette krævede brugernavn.",
   "profile.signOutConfirmTitle": "Log ud?",
   "profile.signOutConfirmBody": "Du kan logge ind igen med en registreret enhed.",
   "notifications.title": "Notifikationer",

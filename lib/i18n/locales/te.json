@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "ఇది ఆ అన్‌లాక్ పద్ధతిని తొలగిస్తుంది. మీరు ఇతర పరికరాలతో ఇంకా సైన్ ఇన్ చేయవచ్చు.",
   "profile.removeLastDeviceConfirmTitle": "చివరి అన్‌లాక్ పద్ధతిని తొలగించాలా?",
   "profile.removeLastDeviceConfirmBody": "ఇది ఈ ఖాతా చివరి అన్‌లాక్ పద్ధతి. ఇమెయిల్ రికవరీ లేదు. దీన్ని తొలగిస్తే ఈ ఖాతా యాక్సెస్‌ను మీరు శాశ్వతంగా కోల్పోతారు.",
+  "profile.removeLastDeviceConfirmAck": "నేను ఈ ఖాతా యాక్సెస్‌ను కోల్పోతానని, అందువల్ల ఈ క్లెయిమ్ చేసిన వినియోగదారు పేరును కూడా కోల్పోతానని అంగీకరిస్తున్నాను.",
   "profile.signOutConfirmTitle": "సైన్ అవుట్ చేయాలా?",
   "profile.signOutConfirmBody": "నమోదైన పరికరంతో మళ్లీ సైన్ ఇన్ చేయవచ్చు.",
   "notifications.title": "నోటిఫికేషన్లు",

@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Tím se odebere tato metoda odemčení. Stále se můžete přihlásit pomocí ostatních zařízení.",
   "profile.removeLastDeviceConfirmTitle": "Smazat poslední metodu odemčení?",
   "profile.removeLastDeviceConfirmBody": "Toto je poslední metoda odemčení tohoto účtu. Obnova e-mailem neexistuje. Jejím odebráním trvale ztratíte přístup k tomuto účtu.",
+  "profile.removeLastDeviceConfirmAck": "Beru na vědomí, že ztratím přístup k tomuto účtu, a proto přijdu i o toto rezervované uživatelské jméno.",
   "profile.signOutConfirmTitle": "Odhlásit se?",
   "profile.signOutConfirmBody": "Zpět se můžete přihlásit registrovaným zařízením.",
   "notifications.title": "Oznámení",

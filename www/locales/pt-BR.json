@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Isso remove esse método de desbloqueio. Você ainda pode entrar com seus outros dispositivos.",
   "profile.removeLastDeviceConfirmTitle": "Excluir o último método de desbloqueio?",
   "profile.removeLastDeviceConfirmBody": "Este é o último método de desbloqueio desta conta. Não há recuperação por e-mail. Removê-lo significa que você perderá o acesso a esta conta para sempre.",
+  "profile.removeLastDeviceConfirmAck": "Reconheço que vou perder o acesso a esta conta e, portanto, também este nome de usuário reivindicado.",
   "profile.signOutConfirmTitle": "Sair?",
   "profile.signOutConfirmBody": "Você pode entrar de novo com um dispositivo registrado.",
   "notifications.title": "Notificações",

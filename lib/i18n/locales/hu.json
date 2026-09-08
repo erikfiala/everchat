@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Ezzel eltávolítod ezt a feloldási módot. A többi eszközöddel továbbra is be tudsz jelentkezni.",
   "profile.removeLastDeviceConfirmTitle": "Törlöd az utolsó feloldási módot?",
   "profile.removeLastDeviceConfirmBody": "Ez a fiók utolsó feloldási módja. Nincs e-mailes helyreállítás. Az eltávolításával végleg elveszíted a hozzáférést ehhez a fiókhoz.",
+  "profile.removeLastDeviceConfirmAck": "Tudomásul veszem, hogy elveszítem a hozzáférést ehhez a fiókhoz, és ezzel együtt ezt a lefoglalt felhasználónevet is.",
   "profile.signOutConfirmTitle": "Kijelentkezel?",
   "profile.signOutConfirmBody": "Regisztrált eszközzel újra bejelentkezhetsz.",
   "notifications.title": "Értesítések",

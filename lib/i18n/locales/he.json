@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "פעולה זו מסירה את שיטת הביטול הזו. עדיין אפשר להיכנס עם המכשירים האחרים.",
   "profile.removeLastDeviceConfirmTitle": "למחוק את שיטת הביטול האחרונה?",
   "profile.removeLastDeviceConfirmBody": "זו שיטת הביטול האחרונה בחשבון הזה. אין שחזור באימייל. הסרה שלה פירושה שתאבדו לצמיתות את הגישה לחשבון.",
+  "profile.removeLastDeviceConfirmAck": "אני מאשר/ת שאאבד את הגישה לחשבון הזה ולכן גם את שם המשתמש שתבעתי.",
   "profile.signOutConfirmTitle": "להתנתק?",
   "profile.signOutConfirmBody": "אפשר להתחבר שוב עם מכשיר רשום.",
   "notifications.title": "התראות",

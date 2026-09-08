@@ -148,6 +148,7 @@
   "profile.removeDeviceConfirmBody": "This removes that unlock method. You can still sign in with your other devices.",
   "profile.removeLastDeviceConfirmTitle": "Delete the last unlock method?",
   "profile.removeLastDeviceConfirmBody": "This is the last unlock method on this account. There is no email recovery. Removing it means you will permanently lose access to this account.",
+  "profile.removeLastDeviceConfirmAck": "I acknowledge that I will lose access to this account and therefore also lose this claimed username.",
   "profile.signOutConfirmTitle": "Sign out?",
   "profile.signOutConfirmBody": "You can sign back in with a registered device.",
   "notifications.title": "Notifications",

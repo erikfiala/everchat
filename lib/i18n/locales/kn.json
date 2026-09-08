@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "ಇದು ಆ ಅನ್‌ಲಾಕ್ ವಿಧಾನವನ್ನು ತೆಗೆಯುತ್ತದೆ. ನಿಮ್ಮ ಇತರ ಸಾಧನಗಳಿಂದ ಇನ್ನೂ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು.",
   "profile.removeLastDeviceConfirmTitle": "ಕೊನೆಯ ಅನ್‌ಲಾಕ್ ವಿಧಾನವನ್ನು ಅಳಿಸುವುದೇ?",
   "profile.removeLastDeviceConfirmBody": "ಇದು ಈ ಖಾತೆಯ ಕೊನೆಯ ಅನ್‌ಲಾಕ್ ವಿಧಾನ. ಇಮೇಲ್ ಮರುಪಡೆಯುವಿಕೆ ಇಲ್ಲ. ಇದನ್ನು ತೆಗೆದರೆ ಈ ಖಾತೆಯ ಪ್ರವೇಶವನ್ನು ಶಾಶ್ವತವಾಗಿ ಕಳೆದುಕೊಳ್ಳುತ್ತೀರಿ.",
+  "profile.removeLastDeviceConfirmAck": "ನಾನು ಈ ಖಾತೆಯ ಪ್ರವೇಶವನ್ನು ಕಳೆದುಕೊಳ್ಳುತ್ತೇನೆ ಮತ್ತು ಆದ್ದರಿಂದ ಈ ಕ್ಲೈಮ್ ಮಾಡಿದ ಬಳಕೆದಾರಹೆಸರನ್ನೂ ಕಳೆದುಕೊಳ್ಳುತ್ತೇನೆ ಎಂದು ಒಪ್ಪುತ್ತೇನೆ.",
   "profile.signOutConfirmTitle": "ಸೈನ್ ಔಟ್ ಮಾಡುವುದೇ?",
   "profile.signOutConfirmBody": "ನೋಂದಾಯಿತ ಸಾಧನದೊಂದಿಗೆ ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಬಹುದು.",
   "notifications.title": "ಅಧಿಸೂಚನೆಗಳು",

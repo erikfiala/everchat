@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Ini mengalih keluar kaedah buka kunci itu. Anda masih boleh log masuk dengan peranti lain.",
   "profile.removeLastDeviceConfirmTitle": "Padam kaedah buka kunci terakhir?",
   "profile.removeLastDeviceConfirmBody": "Ini kaedah buka kunci terakhir pada akaun ini. Tiada pemulihan e-mel. Mengalihnya bermaksud anda akan kehilangan akses ke akaun ini secara kekal.",
+  "profile.removeLastDeviceConfirmAck": "Saya mengakui bahawa saya akan kehilangan akses ke akaun ini dan oleh itu juga kehilangan nama pengguna yang telah dituntut ini.",
   "profile.signOutConfirmTitle": "Log keluar?",
   "profile.signOutConfirmBody": "Anda boleh log masuk semula dengan peranti berdaftar.",
   "notifications.title": "Pemberitahuan",

@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "این روش قفل‌گشایی حذف می‌شود. همچنان می‌توانید با دستگاه‌های دیگر وارد شوید.",
   "profile.removeLastDeviceConfirmTitle": "آخرین روش قفل‌گشایی حذف شود؟",
   "profile.removeLastDeviceConfirmBody": "این آخرین روش قفل‌گشایی این حساب است. بازیابی ایمیلی وجود ندارد. حذف آن یعنی برای همیشه دسترسی به این حساب را از دست می‌دهید.",
+  "profile.removeLastDeviceConfirmAck": "می‌پذیرم که دسترسی به این حساب را از دست می‌دهم و در نتیجه این نام کاربری ثبت‌شده را هم از دست می‌دهم.",
   "profile.signOutConfirmTitle": "خارج شوید؟",
   "profile.signOutConfirmBody": "می‌توانید با دستگاه ثبت‌شده دوباره وارد شوید.",
   "notifications.title": "اعلان‌ها",

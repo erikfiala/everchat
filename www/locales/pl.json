@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "To usuwa tę metodę odblokowania. Nadal możesz logować się na pozostałych urządzeniach.",
   "profile.removeLastDeviceConfirmTitle": "Usunąć ostatnią metodę odblokowania?",
   "profile.removeLastDeviceConfirmBody": "To ostatnia metoda odblokowania tego konta. Nie ma odzyskiwania przez e-mail. Usunięcie jej oznacza trwałą utratę dostępu do tego konta.",
+  "profile.removeLastDeviceConfirmAck": "Potwierdzam, że utracę dostęp do tego konta, a tym samym także tę zarezerwowaną nazwę użytkownika.",
   "profile.signOutConfirmTitle": "Wylogować się?",
   "profile.signOutConfirmBody": "Możesz zalogować się ponownie zarejestrowanym urządzeniem.",
   "notifications.title": "Powiadomienia",

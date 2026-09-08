@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Dadurch wird diese Entsperrmethode entfernt. Du kannst dich weiter mit deinen anderen Geräten anmelden.",
   "profile.removeLastDeviceConfirmTitle": "Die letzte Entsperrmethode löschen?",
   "profile.removeLastDeviceConfirmBody": "Das ist die letzte Entsperrmethode für dieses Konto. Es gibt keine E-Mail-Wiederherstellung. Wenn du sie entfernst, verlierst du dauerhaft den Zugang zu diesem Konto.",
+  "profile.removeLastDeviceConfirmAck": "Ich bestätige, dass ich den Zugang zu diesem Konto verliere und damit auch diesen beanspruchten Nutzernamen.",
   "profile.signOutConfirmTitle": "Abmelden?",
   "profile.signOutConfirmBody": "Du kannst dich mit einem registrierten Gerät wieder anmelden.",
   "notifications.title": "Benachrichtigungen",

@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Thao tác này gỡ phương thức mở khóa đó. Bạn vẫn có thể đăng nhập bằng các thiết bị còn lại.",
   "profile.removeLastDeviceConfirmTitle": "Xóa phương thức mở khóa cuối cùng?",
   "profile.removeLastDeviceConfirmBody": "Đây là phương thức mở khóa cuối cùng của tài khoản này. Không có khôi phục email. Gỡ nó nghĩa là bạn sẽ mất quyền truy cập tài khoản này vĩnh viễn.",
+  "profile.removeLastDeviceConfirmAck": "Tôi xác nhận rằng tôi sẽ mất quyền truy cập tài khoản này và do đó cũng mất tên người dùng đã đăng ký này.",
   "profile.signOutConfirmTitle": "Đăng xuất?",
   "profile.signOutConfirmBody": "Bạn có thể đăng nhập lại bằng thiết bị đã đăng ký.",
   "notifications.title": "Thông báo",

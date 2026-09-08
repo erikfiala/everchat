@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "આ તે અનલૉક પદ્ધતિ દૂર કરે છે. તમે હજુ તમારા અન્ય ડિવાઇસથી સાઇન ઇન કરી શકો છો.",
   "profile.removeLastDeviceConfirmTitle": "છેલ્લી અનલૉક પદ્ધતિ કાઢી નાખીએ?",
   "profile.removeLastDeviceConfirmBody": "આ આ એકાઉન્ટની છેલ્લી અનલૉક પદ્ધતિ છે. ઈમેઇલથી પુનઃપ્રાપ્તિ નથી. તે દૂર કરવાથી તમે આ એકાઉન્ટની પહોંચ કાયમ માટે ગુમાવશો.",
+  "profile.removeLastDeviceConfirmAck": "હું સ્વીકારું છું કે હું આ એકાઉન્ટની પહોંચ ગુમાવીશ અને તેથી આ દાવો કરેલું વપરાશકર્તા નામ પણ ગુમાવીશ.",
   "profile.signOutConfirmTitle": "સાઇન આઉટ કરીએ?",
   "profile.signOutConfirmBody": "નોંધાયેલા ડિવાઇસથી ફરી સાઇન ઇન કરી શકો છો.",
   "notifications.title": "સૂચનાઓ",

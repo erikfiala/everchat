@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "การดำเนินการนี้จะลบวิธีปลดล็อกนั้น คุณยังเข้าสู่ระบบด้วยอุปกรณ์อื่นได้",
   "profile.removeLastDeviceConfirmTitle": "ลบวิธีปลดล็อกสุดท้าย?",
   "profile.removeLastDeviceConfirmBody": "นี่คือวิธีปลดล็อกสุดท้ายของบัญชีนี้ ไม่มีการกู้คืนทางอีเมล การลบหมายความว่าคุณจะเสียสิทธิ์เข้าถึงบัญชีนี้ถาวร",
+  "profile.removeLastDeviceConfirmAck": "ข้าพเจ้าขอรับทราบว่าจะเสียสิทธิ์เข้าถึงบัญชีนี้ และจะเสียชื่อผู้ใช้นี้ที่จองไว้ด้วย",
   "profile.signOutConfirmTitle": "ออกจากระบบ?",
   "profile.signOutConfirmBody": "คุณสามารถเข้าสู่ระบบอีกครั้งด้วยอุปกรณ์ที่ลงทะเบียนไว้",
   "notifications.title": "การแจ้งเตือน",

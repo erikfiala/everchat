@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "اس سے وہ انلاک طریقہ ہٹ جاتا ہے۔ آپ اب بھی اپنی دوسری ڈیوائسز سے سائن ان کر سکتے ہیں۔",
   "profile.removeLastDeviceConfirmTitle": "آخری انلاک طریقہ حذف کریں؟",
   "profile.removeLastDeviceConfirmBody": "یہ اس اکاؤنٹ کا آخری انلاک طریقہ ہے۔ ای میل سے بازیافت نہیں ہے۔ اسے ہٹانے کا مطلب ہے کہ آپ اس اکاؤنٹ تک رسائی مستقل طور پر کھو دیں گے۔",
+  "profile.removeLastDeviceConfirmAck": "میں تسلیم کرتا ہوں کہ میں اس اکاؤنٹ تک رسائی کھو دوں گا اور اس لیے یہ کلیم کیا گیا صارف نام بھی کھو دوں گا۔",
   "profile.signOutConfirmTitle": "سائن آؤٹ کریں؟",
   "profile.signOutConfirmBody": "رجسٹرڈ ڈیوائس سے دوبارہ سائن ان کر سکتے ہیں۔",
   "notifications.title": "اطلاعات",

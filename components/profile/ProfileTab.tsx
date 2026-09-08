@@ -277,7 +277,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             </div>
           </div>
         </div>
-        <div className="mt-3 space-y-4">
+        <div className="mt-4 space-y-4">
           <AboutField
             value={user.about ?? ''}
             onSave={async (next) => {
@@ -503,6 +503,7 @@ function DeviceRow({
   const [draft, setDraft] = useState(label);
   const [saving, setSaving] = useState(false);
   const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [lastDeviceAck, setLastDeviceAck] = useState(false);
   const skipBlur = useRef(false);
   const inFlight = useRef(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -604,7 +605,10 @@ function DeviceRow({
               variant="ghost"
               size="icon"
               className="h-7 w-7 shrink-0 text-[var(--color-destructive)]"
-              onClick={() => setConfirmRemoveOpen(true)}
+              onClick={() => {
+                setLastDeviceAck(false);
+                setConfirmRemoveOpen(true);
+              }}
               aria-label={t('profile.delete')}
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -613,7 +617,13 @@ function DeviceRow({
           <TooltipContent>{t('profile.delete')}</TooltipContent>
         </Tooltip>
       </div>
-      <Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
+      <Dialog
+        open={confirmRemoveOpen}
+        onOpenChange={(open) => {
+          setConfirmRemoveOpen(open);
+          if (!open) setLastDeviceAck(false);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -631,26 +641,49 @@ function DeviceRow({
               )}
             </DialogDescription>
           </DialogHeader>
-          <div className="mt-4 flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setConfirmRemoveOpen(false)}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                setConfirmRemoveOpen(false);
-                onRemove();
-              }}
-            >
-              {t('profile.removeDevice')}
-            </Button>
+          <div className="mt-4 space-y-4">
+            {isLastDevice && (
+              <label
+                htmlFor="remove-last-device-ack"
+                className="flex cursor-pointer items-start gap-2.5 text-sm leading-snug text-[var(--color-foreground)]"
+              >
+                <input
+                  id="remove-last-device-ack"
+                  type="checkbox"
+                  checked={lastDeviceAck}
+                  onChange={(e) => setLastDeviceAck(e.target.checked)}
+                  className="mt-0.5 size-4 shrink-0 rounded-sm border border-[var(--color-border)] accent-[var(--color-primary)]"
+                />
+                <span>{t('profile.removeLastDeviceConfirmAck')}</span>
+              </label>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setConfirmRemoveOpen(false);
+                  setLastDeviceAck(false);
+                }}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                disabled={isLastDevice && !lastDeviceAck}
+                onClick={() => {
+                  if (isLastDevice && !lastDeviceAck) return;
+                  setConfirmRemoveOpen(false);
+                  setLastDeviceAck(false);
+                  onRemove();
+                }}
+              >
+                {t('profile.removeDevice')}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

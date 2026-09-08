@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Time se uklanja ta metoda otključavanja. I dalje se možete prijaviti s ostalim uređajima.",
   "profile.removeLastDeviceConfirmTitle": "Izbrisati posljednju metodu otključavanja?",
   "profile.removeLastDeviceConfirmBody": "Ovo je posljednja metoda otključavanja ovog računa. Nema oporavka e-poštom. Uklanjanjem gubite trajni pristup ovom računu.",
+  "profile.removeLastDeviceConfirmAck": "Potvrđujem da ću izgubiti pristup ovom računu i stoga i ovo zauzeto korisničko ime.",
   "profile.signOutConfirmTitle": "Odjaviti se?",
   "profile.signOutConfirmBody": "Možete se ponovno prijaviti registriranim uređajem.",
   "notifications.title": "Obavijesti",

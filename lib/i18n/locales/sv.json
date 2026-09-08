@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Detta tar bort den upplåsningsmetoden. Du kan fortfarande logga in med dina andra enheter.",
   "profile.removeLastDeviceConfirmTitle": "Ta bort den sista upplåsningsmetoden?",
   "profile.removeLastDeviceConfirmBody": "Detta är kontots sista upplåsningsmetod. Det finns ingen e-poståterställning. Tar du bort den förlorar du permanent åtkomsten till kontot.",
+  "profile.removeLastDeviceConfirmAck": "Jag bekräftar att jag förlorar åtkomsten till det här kontot och därmed också det här begärda användarnamnet.",
   "profile.signOutConfirmTitle": "Logga ut?",
   "profile.signOutConfirmBody": "Du kan logga in igen med en registrerad enhet.",
   "notifications.title": "Aviseringar",

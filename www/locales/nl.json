@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Dit verwijdert die ontgrendelmethode. Je kunt nog steeds inloggen met je andere apparaten.",
   "profile.removeLastDeviceConfirmTitle": "De laatste ontgrendelmethode verwijderen?",
   "profile.removeLastDeviceConfirmBody": "Dit is de laatste ontgrendelmethode van dit account. Er is geen e-mailherstel. Verwijderen betekent dat je permanent de toegang tot dit account verliest.",
+  "profile.removeLastDeviceConfirmAck": "Ik bevestig dat ik de toegang tot dit account verlies en daarmee ook deze geclaimde gebruikersnaam.",
   "profile.signOutConfirmTitle": "Uitloggen?",
   "profile.signOutConfirmBody": "Je kunt weer inloggen met een geregistreerd apparaat.",
   "notifications.title": "Meldingen",

@@ -143,6 +143,7 @@
   "profile.removeDeviceConfirmBody": "Cela retire ce moyen de déverrouillage. Vous pourrez toujours vous connecter avec vos autres appareils.",
   "profile.removeLastDeviceConfirmTitle": "Supprimer le dernier moyen de déverrouillage ?",
   "profile.removeLastDeviceConfirmBody": "C’est le dernier moyen de déverrouillage de ce compte. Il n’y a pas de récupération par e-mail. Le retirer signifie que vous perdrez définitivement l’accès à ce compte.",
+  "profile.removeLastDeviceConfirmAck": "Je reconnais que je perdrai l’accès à ce compte et donc également ce nom d’utilisateur réclamé.",
   "profile.signOutConfirmTitle": "Se déconnecter ?",
   "profile.signOutConfirmBody": "Vous pourrez vous reconnecter avec un appareil enregistré.",
   "notifications.title": "Notifications",

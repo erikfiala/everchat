@@ -151,11 +151,8 @@
         el.textContent = text;
       }
     });
-    if (catalog['www.title']) document.title = catalog['www.title'];
-    var meta = document.querySelector('meta[name="description"]');
-    if (meta && catalog['www.metaDescription']) {
-      meta.setAttribute('content', catalog['www.metaDescription']);
-    }
+    // Title/description only when the page opts in via data-i18n
+    // (legal pages stay English).
   }
 
   /** Allow plain text plus optional <code>…</code> wrappers (no other tags). */

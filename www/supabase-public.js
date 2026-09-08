@@ -1,6 +1,6 @@
 /**
  * Public Supabase client config for everch.at (anon key is safe to ship).
- * Used by trending.js to read public.trending_pages.
+ * Used by rooms.js to read public.trending_pages and public.pages.
  */
 window.EC_SUPABASE = {
   url: "https://ndiyygzwrwrcfutybuqo.supabase.co",

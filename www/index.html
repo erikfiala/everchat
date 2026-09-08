@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Everchat - Public comments on any URL</title>
+    <title data-i18n="www.title">Everchat - Public comments on any URL</title>
     <meta
       name="description"
       content="Every URL deserves a conversation. Anonymous Chrome side-panel comments. No email. No ads. No third-party trackers."
+      data-i18n="www.metaDescription"
+      data-i18n-attr="content"
     />
     <meta property="og:title" content="Everchat - Public comments on any URL" />
     <meta
@@ -385,6 +387,13 @@
           data-ec-trending-status
           hidden
         ></p>
+        <p class="trending-browse">
+          <a
+            class="browse-all-link"
+            href="/browse"
+            data-i18n="www.browseAll"
+          >Browse all chats</a>
+        </p>
       </section>
 
       <section
@@ -452,6 +461,7 @@
     </footer>
     <script src="/supabase-public.js"></script>
     <script src="/i18n.js"></script>
+    <script src="/rooms.js"></script>
     <script src="/trending.js"></script>
     <script src="/github-stars.js"></script>
   </body>

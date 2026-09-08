@@ -4,7 +4,8 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/m", "destination": "/share" },
-    { "source": "/m/:id", "destination": "/share" }
+    { "source": "/m/:id", "destination": "/share" },
+    { "source": "/browse", "destination": "/browse.html" }
   ],
   "headers": [
     {

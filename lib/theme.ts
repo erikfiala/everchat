@@ -393,6 +393,67 @@ export function exportTheme(theme: ThemeDocument): ThemeDocument {
 }
 
 const FONT_LINK_ID = 'ec-skin-font';
+const SKIN_STYLE_ID = 'ec-skin-vars';
+const SKIN_SHEET_KEY = '__ecSkinSheet';
+
+type DocumentWithSkinSheet = Document & {
+  [SKIN_SHEET_KEY]?: CSSStyleSheet;
+};
+
+/** `:root{…}` rule for a skin. Used instead of `element.style` (CSP style-src). */
+export function themeVarsCss(
+  theme: ThemeDocument,
+  appearance: ThemeAppearance,
+): string {
+  const colors = theme.tokens[appearance] ?? theme.tokens.light;
+  const decls: string[] = [];
+  for (const name of COLOR_TOKENS) {
+    decls.push(`${name}:${colors[name]}`);
+  }
+  for (const spec of SIZE_TOKENS) {
+    decls.push(`${spec.name}:${theme.tokens[spec.name]}px`);
+  }
+  const family = sanitizeFontFamily(theme.fontFamily);
+  if (family) {
+    decls.push(`--font-sans:"${family}", ui-sans-serif, system-ui, sans-serif`);
+  }
+  return `:root{${decls.join(';')}}`;
+}
+
+function applyThemeSheet(doc: Document | null, css: string): void {
+  if (!doc) return;
+  try {
+    const view = doc.defaultView;
+    const host = doc as DocumentWithSkinSheet;
+    if (
+      view &&
+      typeof view.CSSStyleSheet === 'function' &&
+      'adoptedStyleSheets' in doc
+    ) {
+      let sheet = host[SKIN_SHEET_KEY];
+      if (!sheet) {
+        sheet = new view.CSSStyleSheet();
+        host[SKIN_SHEET_KEY] = sheet;
+        doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
+      }
+      sheet.replaceSync(css);
+      return;
+    }
+  } catch {
+    /* fall through to a <style> tag */
+  }
+  let style = doc.getElementById(SKIN_STYLE_ID);
+  if (!css) {
+    style?.remove();
+    return;
+  }
+  if (!(style instanceof HTMLStyleElement)) {
+    style = doc.createElement('style');
+    style.id = SKIN_STYLE_ID;
+    doc.head.appendChild(style);
+  }
+  style.textContent = css;
+}
 
 export function loadGoogleFont(doc: Document, family: string): void {
   const href = googleFontsHref(family);
@@ -422,34 +483,22 @@ export function applyThemeVars(
   theme: ThemeDocument | null,
   appearance?: ThemeAppearance,
 ): void {
-  for (const name of TOKEN_NAMES) {
-    el.style.removeProperty(name);
-  }
-  el.style.removeProperty('--font-sans');
+  const doc =
+    el.ownerDocument ??
+    (typeof document !== 'undefined' ? document : null);
   el.removeAttribute('data-ec-skin');
   el.removeAttribute('data-ec-icon-pack');
-  if (!theme) return;
+  // Drop leftover inline token mutations from older builds (CSP style-src).
+  el.removeAttribute('style');
+  if (!theme) {
+    applyThemeSheet(doc, '');
+    return;
+  }
 
-  const mode =
-    appearance ??
-    resolveThemeAppearance(el.ownerDocument ?? document);
-  const colors = theme.tokens[mode] ?? theme.tokens.light;
-
+  const mode = appearance ?? resolveThemeAppearance(doc ?? document);
   el.setAttribute('data-ec-skin', theme.name);
   el.setAttribute('data-ec-icon-pack', sanitizeIconPack(theme.iconPack));
-  for (const name of COLOR_TOKENS) {
-    el.style.setProperty(name, colors[name]);
-  }
-  for (const spec of SIZE_TOKENS) {
-    el.style.setProperty(spec.name, `${theme.tokens[spec.name]}px`);
-  }
-  const family = sanitizeFontFamily(theme.fontFamily);
-  if (family) {
-    el.style.setProperty(
-      '--font-sans',
-      `"${family}", ui-sans-serif, system-ui, sans-serif`,
-    );
-  }
+  applyThemeSheet(doc, themeVarsCss(theme, mode));
 }
 
 export function applyThemeToDocument(

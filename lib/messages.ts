@@ -354,3 +354,37 @@ export function conversationStackForFocus(path: string[] | null): string[] {
   const rootId = path[0];
   return rootId ? [rootId] : [];
 }
+
+export type MessageAuthorIdentity = {
+  author_id?: string | null;
+  author?: { id?: string | null; username?: string | null } | null;
+};
+
+export type CurrentUserIdentity = {
+  id?: string | null;
+  username?: string | null;
+} | null | undefined;
+
+function normId(value: string | null | undefined): string {
+  return (value ?? '').trim();
+}
+
+function normHandle(value: string | null | undefined): string {
+  return (value ?? '').trim().toLowerCase();
+}
+
+/** True when `me` authored this row — uuid, nested author.id, or handle. */
+export function isOwnMessage(
+  node: MessageAuthorIdentity,
+  me: CurrentUserIdentity,
+): boolean {
+  if (!me) return false;
+  const myId = normId(me.id);
+  if (myId) {
+    if (normId(node.author_id) === myId) return true;
+    if (normId(node.author?.id) === myId) return true;
+  }
+  const mine = normHandle(me.username);
+  const theirs = normHandle(node.author?.username);
+  return Boolean(mine && theirs && mine === theirs);
+}

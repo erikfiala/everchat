@@ -5,6 +5,7 @@ import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } 
 import { ANONYMOUS_HANDLE } from '@/lib/constants';
 import { bindRelativeTime } from '@/lib/time';
 import { buildShareLink } from '@/lib/canonicalize';
+import { isOwnMessage } from '@/lib/messages';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -137,28 +138,35 @@ function VoteControls({
   onVote: (id: string, value: 1 | -1) => void;
   requireAuth: () => boolean;
 }) {
+  const vote = (value: 1 | -1) => {
+    if (disabled) return;
+    if (!requireAuth()) return;
+    onVote(node.id, value);
+  };
+
   return (
-    <div className="me-2 flex items-center gap-0.5">
+    <div
+      className={cn('me-2 flex items-center gap-0.5', disabled && 'pointer-events-none')}
+    >
       <Button
         variant="ghost"
         size="icon"
         disabled={disabled}
         className={cn(
           'h-7 w-6 px-0',
-          disabled && 'text-[var(--color-muted-foreground)]',
+          disabled && 'pointer-events-none text-[var(--color-muted-foreground)]',
           !disabled && node.myVote === 1 && 'text-[var(--color-score-pos)]',
         )}
-        onClick={() => {
-          if (!requireAuth()) return;
-          onVote(node.id, 1);
-        }}
+        onClick={() => vote(1)}
       >
         <Icon name="chevronUp" className="h-4 w-4" />
       </Button>
       <span
         className={cn(
           'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
-          scoreColorClass(node.score),
+          disabled
+            ? 'text-[var(--color-muted-foreground)]'
+            : scoreColorClass(node.score),
         )}
       >
         {formatScore(node.score)}
@@ -169,13 +177,10 @@ function VoteControls({
         disabled={disabled}
         className={cn(
           'h-7 w-6 px-0',
-          disabled && 'text-[var(--color-muted-foreground)]',
+          disabled && 'pointer-events-none text-[var(--color-muted-foreground)]',
           !disabled && node.myVote === -1 && 'text-[var(--color-score-neg)]',
         )}
-        onClick={() => {
-          if (!requireAuth()) return;
-          onVote(node.id, -1);
-        }}
+        onClick={() => vote(-1)}
       >
         <Icon name="chevronDown" className="h-4 w-4" />
       </Button>
@@ -236,7 +241,10 @@ export function MessageRow({
   }, [menuOpen]);
 
   const deleted = Boolean(node.deleted_at);
-  const isOwn = Boolean(currentUserId && currentUserId === node.author_id);
+  const isOwn = isOwnMessage(node, {
+    id: user?.id ?? currentUserId,
+    username: user?.username,
+  });
   const collapsed =
     !deleted && isCommunityCollapsed(node.upvotes, node.downvotes);
   const userExpanded = expandedIds.has(node.id);
@@ -558,7 +566,7 @@ export function MessageRow({
                         <Icon name="link" className="h-3.5 w-3.5" />
                         {t('message.shareLink')}
                       </button>
-                      {currentUserId === node.author_id ? (
+                      {isOwn ? (
                         <button
                           type="button"
                           className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"

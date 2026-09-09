@@ -47,7 +47,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const { t, tError } = useLocale();
   const { viewing, isCurrentPage, canGoBack, canGoForward, goBack, goForward } =
     useRoomHistory(tab);
-  const thread = usePageThread(viewing, user?.id);
+  const thread = usePageThread(viewing, user?.id, user?.username);
   const { typers, setLocalTyping } = useTypingIndicators(
     thread.pageId,
     user ? { id: user.id, username: user.username } : null,

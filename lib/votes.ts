@@ -10,6 +10,15 @@ export async function setVote(input: {
 }): Promise<'cleared' | 'set'> {
   const sb = getSupabase();
 
+  const { data: target } = await sb
+    .from('messages')
+    .select('author_id')
+    .eq('id', input.messageId)
+    .maybeSingle();
+  if (target?.author_id && target.author_id === input.userId) {
+    return 'set';
+  }
+
   const { data: allowed, error: rlError } = await sb.rpc('check_rate_limit', {
     p_action: 'vote',
   });

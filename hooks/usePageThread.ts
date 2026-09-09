@@ -10,6 +10,7 @@ import {
   fetchMessagesForPage,
   fetchThreadContainingMessage,
   fetchVotesForMessages,
+  isOwnMessage,
 } from '@/lib/messages';
 import { appendUniqueById } from '@/lib/listPage';
 import { LIST_PAGE_SIZE } from '@/lib/constants';
@@ -40,6 +41,7 @@ function mergeVotes(existing: Vote[], incoming: Vote[]): Vote[] {
 export function usePageThread(
   tab: TabInfo,
   userId: string | null | undefined,
+  username?: string | null,
 ) {
   const [pageId, setPageId] = useState<string | null>(null);
   const [roots, setRoots] = useState<MessageNode[]>([]);
@@ -54,9 +56,11 @@ export function usePageThread(
   const rootOffsetRef = useRef(0);
   const loadingMoreRef = useRef(false);
   const userIdRef = useRef(userId);
+  const usernameRef = useRef(username);
   const sortRef = useRef(sort);
   const roomKeyRef = useRef(tab.canonicalUrl);
   userIdRef.current = userId;
+  usernameRef.current = username;
   sortRef.current = sort;
 
   const rebuild = useCallback(
@@ -293,6 +297,13 @@ export function usePageThread(
   const vote = useCallback(
     async (messageId: string, value: 1 | -1) => {
       if (!userId) return;
+      const target = flatRef.current.find((m) => m.id === messageId);
+      if (
+        target &&
+        isOwnMessage(target, { id: userId, username: usernameRef.current })
+      ) {
+        return;
+      }
       try {
         await setVote({ messageId, userId, value });
         const existing = votesRef.current.find((v) => v.message_id === messageId);

@@ -7,6 +7,7 @@ import {
   DEFAULT_TOKENS,
   applyThemeVars,
   defaultTheme,
+  themeVarsCss,
   exportTheme,
   googleFontsHref,
   googleFontsPreviewHref,
@@ -137,17 +138,8 @@ describe('theme schema', () => {
   });
 
   it('applies the palette that matches appearance', () => {
-    const props: Record<string, string> = {};
     const attrs: Record<string, string> = {};
     const el = {
-      style: {
-        setProperty(name: string, value: string) {
-          props[name] = value;
-        },
-        removeProperty(name: string) {
-          delete props[name];
-        },
-      },
       setAttribute(name: string, value: string) {
         attrs[name] = value;
       },
@@ -159,10 +151,15 @@ describe('theme schema', () => {
       },
     } as unknown as HTMLElement;
     const theme = defaultTheme();
+    expect(themeVarsCss(theme, 'light')).toContain(
+      '--color-background:#fafafa',
+    );
+    expect(themeVarsCss(theme, 'dark')).toContain(
+      '--color-background:#18181b',
+    );
+    expect(themeVarsCss(theme, 'light')).toContain('--radius-md:8px');
     applyThemeVars(el, theme, 'light');
-    expect(props['--color-background']).toBe('#fafafa');
     applyThemeVars(el, theme, 'dark');
-    expect(props['--color-background']).toBe('#18181b');
     expect(el.getAttribute('data-ec-icon-pack')).toBe('lu');
   });
 

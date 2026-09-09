@@ -202,7 +202,7 @@ export function AuthLanding() {
         <Button
           type="button"
           variant="ghost"
-          className="mt-4 w-full text-[var(--color-foreground)]"
+          className="mt-2 w-full text-[var(--color-foreground)]"
           onClick={() => setStep('landing')}
         >
           {t('common.back')}

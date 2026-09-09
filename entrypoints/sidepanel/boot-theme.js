@@ -50,17 +50,46 @@
     return tokens;
   }
 
+  function applySkinCss(css) {
+    try {
+      if (typeof CSSStyleSheet === 'function' && document.adoptedStyleSheets) {
+        var sheet = document.__ecSkinSheet;
+        if (!sheet) {
+          sheet = new CSSStyleSheet();
+          document.__ecSkinSheet = sheet;
+          document.adoptedStyleSheets = document.adoptedStyleSheets.concat(
+            sheet,
+          );
+        }
+        sheet.replaceSync(css);
+        return;
+      }
+    } catch (_) {}
+    var style = document.getElementById('ec-skin-vars');
+    if (!css) {
+      if (style) style.parentNode.removeChild(style);
+      return;
+    }
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'ec-skin-vars';
+      document.head.appendChild(style);
+    }
+    style.textContent = css;
+  }
+
   function applySkin(raw, appearance) {
     var root = document.documentElement;
     if (!raw || typeof raw !== 'object' || !raw.tokens) return;
     var tokens = raw.tokens;
     var colors = paletteFor(tokens, appearance);
     var name;
+    var decls = [];
     for (name in COLOR) {
       if (!Object.prototype.hasOwnProperty.call(colors, name)) continue;
       var hex = colors[name];
       if (typeof hex === 'string' && HEX.test(hex) && !BAD.test(hex)) {
-        root.style.setProperty(name, hex.toLowerCase());
+        decls.push(name + ':' + hex.toLowerCase());
       }
     }
     for (name in SIZE) {
@@ -68,13 +97,12 @@
       var n = tokens[name];
       if (typeof n !== 'number' || !isFinite(n)) continue;
       if (n < SIZE[name][0] || n > SIZE[name][1]) continue;
-      root.style.setProperty(name, Math.round(n) + 'px');
+      decls.push(name + ':' + Math.round(n) + 'px');
     }
     var family = typeof raw.fontFamily === 'string' ? raw.fontFamily.trim() : '';
     if (family && FONT.test(family) && !BAD.test(family)) {
-      root.style.setProperty(
-        '--font-sans',
-        '"' + family + '", ui-sans-serif, system-ui, sans-serif',
+      decls.push(
+        '--font-sans:"' + family + '", ui-sans-serif, system-ui, sans-serif',
       );
       var href =
         'https://fonts.googleapis.com/css2?family=' +
@@ -90,6 +118,8 @@
       }
       link.href = href;
     }
+    root.removeAttribute('style');
+    applySkinCss(decls.length ? ':root{' + decls.join(';') + '}' : '');
     root.setAttribute('data-ec-skin', '1');
     if (typeof raw.iconPack === 'string' && raw.iconPack.length <= 8) {
       root.setAttribute('data-ec-icon-pack', raw.iconPack);

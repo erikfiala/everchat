@@ -4,6 +4,7 @@ import {
   conversationStackForFocus,
   findMessageNode,
   findPathToMessage,
+  isOwnMessage,
 } from './messages';
 import type { MessageWithAuthor } from './database.types';
 
@@ -224,6 +225,50 @@ describe('buildMessageTree sort', () => {
       'new',
     );
     expect(roots.map((n) => n.id)).toEqual(['new-zero', 'old-high']);
+  });
+});
+
+describe('isOwnMessage', () => {
+  const alice = {
+    author_id: 'uuid-alice',
+    author: { id: 'uuid-alice', username: 'alice' },
+  };
+
+  it('matches author_id to the current user uuid', () => {
+    expect(isOwnMessage(alice, { id: 'uuid-alice' })).toBe(true);
+    expect(isOwnMessage(alice, { id: 'uuid-other' })).toBe(false);
+  });
+
+  it('matches nested author.id when author_id is missing', () => {
+    expect(
+      isOwnMessage(
+        { author: { id: 'uuid-alice', username: 'alice' } },
+        { id: 'uuid-alice' },
+      ),
+    ).toBe(true);
+  });
+
+  it('matches handle when ids are absent or differ', () => {
+    expect(
+      isOwnMessage(
+        { author: { id: 'other-id', username: 'ErikFiala' } },
+        { id: 'session-id', username: 'erikfiala' },
+      ),
+    ).toBe(true);
+    expect(
+      isOwnMessage(
+        { author: { username: 'erikfiala' } },
+        { username: 'erikfiala' },
+      ),
+    ).toBe(true);
+  });
+
+  it('is false for guests and empty identities', () => {
+    expect(isOwnMessage(alice, null)).toBe(false);
+    expect(isOwnMessage(alice, { id: '', username: '' })).toBe(false);
+    expect(isOwnMessage({ author_id: '', author: null }, { id: 'uuid-alice' })).toBe(
+      false,
+    );
   });
 });
 

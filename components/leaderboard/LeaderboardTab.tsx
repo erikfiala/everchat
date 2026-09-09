@@ -28,9 +28,23 @@ function handleInitials(username: string): string {
   return (username || '?').slice(0, 2).toUpperCase();
 }
 
+const RANK_WIDTH_CLASS = [
+  'w-[1ch]',
+  'w-[2ch]',
+  'w-[3ch]',
+  'w-[4ch]',
+  'w-[5ch]',
+  'w-[6ch]',
+] as const;
+
 function rankColumnCh(ranks: number[]): number {
   const maxRank = ranks.reduce((max, rank) => Math.max(max, rank), 1);
   return String(maxRank).length;
+}
+
+function rankWidthClass(rankCh: number): string {
+  const n = Math.min(Math.max(rankCh, 1), RANK_WIDTH_CLASS.length);
+  return RANK_WIDTH_CLASS[n - 1] ?? RANK_WIDTH_CLASS[0];
 }
 
 function LeaderboardRow({
@@ -52,8 +66,10 @@ function LeaderboardRow({
       className="group flex w-full items-center gap-2 rounded-md bg-transparent px-3 py-2 text-start hover:bg-[var(--color-accent)] active:bg-[var(--color-accent)] focus-visible:bg-[var(--color-accent)]"
     >
       <span
-        className="shrink-0 text-end text-sm font-normal tabular-nums text-[var(--color-muted-foreground)]"
-        style={{ width: `${rankCh}ch` }}
+        className={cn(
+          'shrink-0 text-end text-sm font-normal tabular-nums text-[var(--color-muted-foreground)]',
+          rankWidthClass(rankCh),
+        )}
       >
         {row.rank}
       </span>

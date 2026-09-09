@@ -8,7 +8,7 @@ body:
       value: |
         Thanks for the report. Do **not** include secrets, session tokens, or
         private keys. Security issues go to
-        [private vulnerability reporting](https://github.com/everchathq/everchat/security/advisories/new).
+        [private vulnerability reporting](https://github.com/erikfiala/everchat/security/advisories/new).
   - type: textarea
     id: what
     attributes:

@@ -23,7 +23,7 @@ testing a contribution against a non-production backend.
 ## Use an official build
 
 If you just want Everchat installed, download a zip from
-[GitHub Releases](https://github.com/everchathq/everchat/releases/latest)
+[GitHub Releases](https://github.com/erikfiala/everchat/releases/latest)
 and follow the README. You do not need this repo for that.
 
 ## Working copy (contributions and review)
@@ -32,7 +32,7 @@ Build from source only to inspect the code, verify it against an official
 release, or test a change you will submit here. Do not distribute that build.
 
 ```bash
-git clone https://github.com/everchathq/everchat.git
+git clone https://github.com/erikfiala/everchat.git
 cd everchat
 pnpm install
 pnpm build          # → dist/everchat
@@ -86,7 +86,7 @@ fall back to English for missing keys.
    ```
 
 4. The **Release** GitHub Action zips the Chrome extension and publishes
-   [GitHub Releases](https://github.com/everchathq/everchat/releases) with the
+   [GitHub Releases](https://github.com/erikfiala/everchat/releases) with the
    changelog section plus generated commit notes.
 
 Never put the Chrome Web Store upload private key in git. `wxt.config.ts`

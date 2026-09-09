@@ -9,10 +9,9 @@ changes back to the canonical project.
 Canonical project
 -----------------
 
-The only official Everchat software is published by the everchathq
-organization at https://github.com/everchathq/everchat, on
-https://everch.at, and in the Chrome Web Store listing operated by the
-same publisher.
+The only official Everchat software is published at
+https://github.com/erikfiala/everchat, on https://everch.at, and in the
+Chrome Web Store listing operated by the same publisher.
 
 Permissions
 -----------
@@ -20,7 +19,7 @@ Permissions
 Subject to these terms, you may:
 
 1. Install and use unmodified official builds obtained from GitHub
-   Releases on github.com/everchathq/everchat, the official Chrome Web
+   Releases on github.com/erikfiala/everchat, the official Chrome Web
    Store listing, or everch.at.
 
 2. View, download, and copy the source code for personal review and to

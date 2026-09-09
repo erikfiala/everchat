@@ -3,7 +3,7 @@
  * Prefer the public repo API; fall back to shields.io and last known count.
  */
 (function () {
-  var REPO = 'everchathq/everchat';
+  var REPO = 'erikfiala/everchat';
   var STORAGE_KEY = 'ec-github-stars';
   var el = document.querySelector('[data-github-stars]');
   if (!el) return;

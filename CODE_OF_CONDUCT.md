@@ -20,5 +20,5 @@ There is no correction, warning, or temporary-ban ladder.
 
 To report illegal conduct, contact [@erikfiala](https://github.com/erikfiala)
 on GitHub, or use
-[GitHub Security Advisories](https://github.com/everchathq/everchat/security/advisories/new)
+[GitHub Security Advisories](https://github.com/erikfiala/everchat/security/advisories/new)
 if the report should stay private.

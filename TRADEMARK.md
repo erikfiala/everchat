@@ -1,7 +1,7 @@
 # Everchat trademarks
 
 The Everchat name, logos, and the everch.at domain identify the official
-product published from [everchathq/everchat](https://github.com/everchathq/everchat).
+product published from [erikfiala/everchat](https://github.com/erikfiala/everchat).
 The [LICENSE](./LICENSE) covers copyright in the source. It does **not**
 grant trademark permission.
 

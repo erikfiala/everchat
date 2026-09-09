@@ -4,7 +4,7 @@
 
 Everchat is a Chrome side-panel extension for anonymous public comments on any page. Open it on a news article, a government doc, a product page: same URL, same room. You never leave the tab.
 
-No email. No ads. No third-party trackers. Free forever.
+No email. No ads. No trackers. Free forever.
 
 [![License: source-available](https://img.shields.io/badge/license-source--available-slate.svg)](./LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/erikfiala/everchat?include_prereleases&sort=semver)](https://github.com/erikfiala/everchat/releases/latest)

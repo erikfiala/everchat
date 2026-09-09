@@ -26,10 +26,9 @@ enough to need one, maintainers will publish an update here.
 
 ## Funding
 
-Voluntary donations go through [Open Collective](https://opencollective.com/everchat).
-Donations do not buy ranking, visibility, or special treatment. Expenses from
-the collective (hosting, domains, contractor work) are approved by collective
-admins under the fiscal host’s rules.
+Voluntary donations go through [Buy Me a Coffee](https://buymeacoffee.com/everchat).
+Donations do not buy ranking, visibility, or special treatment. Hosting, domains,
+and other project costs are paid from those donations at the maintainer’s discretion.
 
 ## Succession
 
@@ -37,8 +36,8 @@ If the current maintainer becomes unavailable:
 
 1. Active contributors with merge history are the first candidates for
    maintainership.
-2. Open Collective admins for Everchat may appoint a successor so the
-   collective and domain can keep operating.
+2. The outgoing maintainer (or a designated contact) should transfer Buy Me a Coffee,
+   domain, and hosting access so the project can keep operating.
 3. The successor is recorded in this file and in GitHub org/repo settings.
 
 ## License

@@ -50,7 +50,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - Per-message **See translation** (Edge Function → Google Translate when configured)
 - **Reply notifications** (in-panel + Chrome OS) that open the page with the side panel focused on the reply (`#ec-msg-{id}`)
 - Auth landing (value-led) with CTA **Sign up anonymously** (no email)
-- Marketing site **everch.at**: hero, trending, install copy, legal, Open Collective donate
+- Marketing site **everch.at**: hero, trending, install copy, legal, Buy Me a Coffee donate
 - Performant MV3 side panel (no host-page CSS leakage)
 - Supabase backend with RLS, realtime messages + typing presence, Storage for avatars, custom WebAuthn Edge Functions
 
@@ -69,7 +69,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 
 ### Funding / donations
 
-The product is free to use; no ads and no paid features that buy visibility or speech rights. Voluntary donations go through **Open Collective** at [opencollective.com/everchat](https://opencollective.com/everchat) (wired in `.github/FUNDING.yml` and linked from everch.at). Payment details are processed by Open Collective and its partners under their own policies; Everchat does not receive card numbers. Donations do not buy preferential ranking, viewpoint protection, or special treatment.
+The product is free to use; no ads and no paid features that buy visibility or speech rights. Voluntary donations go through **Buy Me a Coffee** at [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat) (wired in `.github/FUNDING.yml` and linked from everch.at). Payment details are processed by Buy Me a Coffee and its partners under their own policies; Everchat does not receive card numbers. Donations do not buy preferential ranking, viewpoint protection, or special treatment.
 
 ---
 
@@ -376,7 +376,7 @@ Static site under `www/` (Vercel). Not a comment client.
 | Surface | Behavior |
 |---|---|
 | Nav | Logo → home; language select |
-| Hero | “Every URL deserves a conversation”; Chrome Web Store badge (**currently** `#get-extension` stub) + Donate (Open Collective) |
+| Hero | “Every URL deserves a conversation”; Chrome Web Store badge (**currently** `#get-extension` stub) + Donate (Buy Me a Coffee) |
 | `#trending` | Anon REST → `trending_pages` (limit 8); empty: “Nothing trending yet.” |
 | `#how` | Four benefit beats (any page, no mods, privacy, free forever) |
 | `#get-extension` | “Install from a local build” — `pnpm install && pnpm build`, load unpacked `dist/everchat` |

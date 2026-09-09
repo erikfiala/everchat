@@ -5,6 +5,10 @@
   "version": "1.0.0",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://everch.at",
+  "funding": {
+    "type": "buy_me_a_coffee",
+    "url": "https://buymeacoffee.com/everchat"
+  },
   "bugs": {
     "url": "https://github.com/erikfiala/everchat/issues"
   },

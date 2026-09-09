@@ -11,7 +11,7 @@ No email. No ads. No third-party trackers. Free forever.
 [![GitHub stars](https://img.shields.io/github/stars/erikfiala/everchat)](https://github.com/erikfiala/everchat/stargazers)
 
 **Site:** [everch.at](https://everch.at)  
-**Donate:** [opencollective.com/everchat](https://opencollective.com/everchat)  
+**Donate:** [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat)  
 **Releases:** [github.com/erikfiala/everchat/releases](https://github.com/erikfiala/everchat/releases)
 
 ## Why
@@ -45,7 +45,7 @@ Do not load a copy you built or modified yourself except to review the source or
 
 ## Support
 
-Everchat stays free. Voluntary donations go through [Open Collective](https://opencollective.com/everchat). Donations do not buy ranking, visibility, or special treatment.
+Everchat stays free. Voluntary donations go through [Buy Me a Coffee](https://buymeacoffee.com/everchat). Donations do not buy ranking, visibility, or special treatment.
 
 ## License
 

@@ -44,4 +44,4 @@ comments on any URL.
 ### Security
 
 - Supabase RLS, invoker-safe RPCs, and WebAuthn edge functions
-- No third-party analytics pixels; donations via Open Collective
+- No third-party analytics pixels; donations via Buy Me a Coffee

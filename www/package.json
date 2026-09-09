@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tailwindcss -i ./src/input.css -o ./styles.css --watch",
-    "build": "tailwindcss -i ./src/input.css -o ./styles.css --minify && node ./build-panel.mjs"
+    "build": "tailwindcss -i ./src/input.css -o ./styles.css --minify && node ./build-panel.mjs && node ./build-sitemap.mjs"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /panel
+Disallow: /m
+Disallow: /share
+
+Sitemap: https://everch.at/sitemap-index.xml

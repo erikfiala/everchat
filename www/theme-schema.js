@@ -418,8 +418,14 @@
 
   function sortThemes(rows, mode) {
     var list = (rows || []).slice();
+    var def = [];
+    var rest = [];
+    list.forEach(function (row) {
+      if (row && isDefaultThemeSlug(row.slug)) def.push(row);
+      else rest.push(row);
+    });
     if (mode === 'best') {
-      list.sort(function (a, b) {
+      rest.sort(function (a, b) {
         var la = typeof a.like_count === 'number' ? a.like_count : 0;
         var lb = typeof b.like_count === 'number' ? b.like_count : 0;
         if (lb !== la) return lb - la;
@@ -427,19 +433,13 @@
         var tb = Date.parse(b.created_at || '') || 0;
         return tb - ta;
       });
-      return list;
+    } else {
+      rest.sort(function (a, b) {
+        var ta = Date.parse(a.created_at || '') || 0;
+        var tb = Date.parse(b.created_at || '') || 0;
+        return tb - ta;
+      });
     }
-    var def = [];
-    var rest = [];
-    list.forEach(function (row) {
-      if (row && row.slug === DEFAULT_THEME_SLUG) def.push(row);
-      else rest.push(row);
-    });
-    rest.sort(function (a, b) {
-      var ta = Date.parse(a.created_at || '') || 0;
-      var tb = Date.parse(b.created_at || '') || 0;
-      return tb - ta;
-    });
     return def.concat(rest);
   }
 
@@ -523,13 +523,21 @@
     ].filter(isValidHex);
   }
 
-  function supabaseHeaders(cfg) {
+  function supabaseHeaders(cfg, token) {
     return {
       apikey: cfg.anonKey,
-      Authorization: 'Bearer ' + cfg.anonKey,
+      Authorization: 'Bearer ' + (token || cfg.anonKey),
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
+  }
+
+  function formatThemeAuthor(name) {
+    var raw = typeof name === 'string' ? name.trim() : '';
+    if (!raw) return '';
+    if (/^everchat$/i.test(raw)) return raw;
+    if (raw.charAt(0) === '@') return raw;
+    return '@' + raw;
   }
 
   function normalizeThemeRow(row) {
@@ -646,13 +654,18 @@
     });
   }
 
-  function publishTheme(cfg, theme) {
+  function publishTheme(cfg, theme, token) {
     var valid = validateTheme(theme);
     if (!valid) return Promise.reject(new Error('invalid'));
+    if (!token) {
+      var authErr = new Error('auth');
+      authErr.code = 'auth';
+      return Promise.reject(authErr);
+    }
     var url = cfg.url.replace(/\/$/, '') + '/functions/v1/publish-theme';
     return fetch(url, {
       method: 'POST',
-      headers: supabaseHeaders(cfg),
+      headers: supabaseHeaders(cfg, token),
       body: JSON.stringify(valid),
     }).then(function (res) {
       return res.json().then(function (data) {
@@ -672,12 +685,8 @@
     'mnncloenhbfhdiaffjmmgljfjcagigaj',
   ];
 
-  function importToExtension(slug) {
+  function pingExtension(message) {
     return new Promise(function (resolve) {
-      if (!isValidSlug(slug)) {
-        resolve({ ok: false, reason: 'slug' });
-        return;
-      }
       var send = global.chrome && chrome.runtime && chrome.runtime.sendMessage;
       if (typeof send !== 'function') {
         resolve({ ok: false, reason: 'missing' });
@@ -703,22 +712,45 @@
 
       EXTENSION_IDS.forEach(function (id) {
         try {
-          chrome.runtime.sendMessage(
-            id,
-            { type: 'IMPORT_THEME', slug: slug },
-            function (res) {
-              if (chrome.runtime.lastError) {
-                oneFailed();
-                return;
-              }
-              if (res && res.ok) finish({ ok: true });
-              else oneFailed();
-            },
-          );
+          chrome.runtime.sendMessage(id, message, function (res) {
+            if (chrome.runtime.lastError) {
+              oneFailed();
+              return;
+            }
+            if (res && res.ok) finish(res);
+            else oneFailed();
+          });
         } catch (e) {
           oneFailed();
         }
       });
+    });
+  }
+
+  function importToExtension(slug) {
+    if (!isValidSlug(slug)) {
+      return Promise.resolve({ ok: false, reason: 'slug' });
+    }
+    return pingExtension({ type: 'IMPORT_THEME', slug: slug }).then(function (res) {
+      if (res && res.ok) return { ok: true };
+      return { ok: false, reason: (res && res.reason) || 'missing' };
+    });
+  }
+
+  function requestSession() {
+    return pingExtension({ type: 'GET_SESSION' }).then(function (res) {
+      if (res && res.ok && res.signedIn && res.token) {
+        return {
+          ok: true,
+          signedIn: true,
+          token: res.token,
+          username: typeof res.username === 'string' ? res.username : '',
+        };
+      }
+      if (res && res.ok) {
+        return { ok: true, signedIn: false, reason: 'unsigned' };
+      }
+      return { ok: false, reason: 'missing' };
     });
   }
 
@@ -827,6 +859,8 @@
     toggleThemeLike: toggleThemeLike,
     rowToTheme: rowToTheme,
     publishTheme: publishTheme,
+    formatThemeAuthor: formatThemeAuthor,
+    requestSession: requestSession,
     importToExtension: importToExtension,
     t: t,
     waitForCatalog: waitForCatalog,

@@ -8,6 +8,8 @@ import {
   upsertStoredSkinLibrary,
 } from '@/lib/theme';
 
+const THEME_STORAGE_KEY = 'ec-theme';
+
 type ChangeFn = (
   changes: Record<string, { newValue?: unknown; oldValue?: unknown }>,
   area: string,
@@ -141,6 +143,11 @@ export function installPreviewChrome(): void {
     const appearance = data.appearance === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = appearance;
     applyThemeToDocument(theme, document, appearance);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, appearance);
+    } catch {
+      /* ignore */
+    }
     const library = upsertStoredSkinLibrary(
       parseStoredSkinLibrary(local[SKIN_LIBRARY_KEY]),
       theme,
@@ -148,6 +155,7 @@ export function installPreviewChrome(): void {
     void storage.local.set({
       [SKIN_STORAGE_KEY]: theme,
       [SKIN_LIBRARY_KEY]: library,
+      [THEME_STORAGE_KEY]: appearance,
     });
   });
 }

@@ -434,6 +434,27 @@ export default defineBackground(() => {
           sendResponse(await importThemeFromWww(slug, sender.tab?.id));
           return;
         }
+        if (message?.type === 'GET_SESSION') {
+          const session = await loadSession();
+          if (session?.token && session.username) {
+            sendResponse({
+              ok: true,
+              signedIn: true,
+              token: session.token,
+              username: session.username,
+            });
+            return;
+          }
+          if (sender.tab?.id != null) {
+            try {
+              await browser.sidePanel.open({ tabId: sender.tab.id });
+            } catch {
+              /* older chrome */
+            }
+          }
+          sendResponse({ ok: true, signedIn: false });
+          return;
+        }
         if (message?.type !== 'OPEN_SHARED_MESSAGE') {
           sendResponse({ ok: false });
           return;

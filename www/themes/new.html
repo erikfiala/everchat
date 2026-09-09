@@ -150,7 +150,7 @@
           New theme
         </h1>
         <p class="theme-lede m-0 text-mute" data-i18n="www.themeBuilderLede">
-          Play with a theme. Tokens only, no custom CSS.
+          Build your own theme and let others rate it and import it.
         </p>
       </div>
 
@@ -171,20 +171,6 @@
                 placeholder="My theme"
               />
             </label>
-            <label class="theme-field">
-              <span data-i18n="www.themeAuthor">Your name</span>
-              <input
-                type="text"
-                name="author"
-                maxlength="40"
-                spellcheck="false"
-                data-ec-theme-author
-                data-i18n="www.themeAuthorPlaceholder"
-                data-i18n-attr="placeholder"
-                placeholder="Display name"
-              />
-            </label>
-            <p class="theme-hint" data-i18n="www.themeAuthorHint">Shown on the gallery. No account required.</p>
             <div class="theme-field">
               <div class="theme-field-head">
                 <span id="ec-font-field-label" data-i18n="www.themeFont">Google Font</span>
@@ -279,9 +265,6 @@
                 </button>
               </div>
               <div class="theme-icon-packs" data-ec-icon-packs></div>
-              <p class="theme-hint" data-i18n="www.themeIconPackHint">
-                Remaps the app’s icon set. Not a full icon explorer.
-              </p>
             </div>
           </fieldset>
 
@@ -334,17 +317,20 @@
             <button type="button" class="theme-btn theme-btn-primary" data-ec-theme-publish data-i18n="www.themePublish">
               Publish
             </button>
-            <button type="button" class="theme-btn" data-ec-theme-export data-i18n="www.themeExport">
-              Download JSON
-            </button>
-            <button type="button" class="theme-btn" data-ec-theme-copy data-i18n="www.themeCopyJson">
-              Copy JSON
-            </button>
             <button type="button" class="theme-btn" data-ec-theme-reset data-i18n="www.themeReset">
               Reset
             </button>
           </div>
           <p class="theme-status" data-ec-theme-status hidden></p>
+          <a
+            class="theme-btn theme-btn-link"
+            href="/#get-extension"
+            data-ec-theme-install
+            hidden
+            data-i18n="www.themeInstall"
+          >
+            Install Everchat
+          </a>
         </form>
 
         <div class="theme-confirm" data-ec-theme-confirm hidden>

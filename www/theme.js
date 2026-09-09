@@ -38,33 +38,6 @@
     el.classList.toggle('is-ok', kind === 'ok');
   }
 
-  function downloadJson() {
-    if (!current) return;
-    var blob = new Blob([JSON.stringify(window.ECTheme.exportTheme(current), null, 2)], {
-      type: 'application/json',
-    });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = (slug || 'theme') + '.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function copyJson() {
-    if (!current) return;
-    var text = JSON.stringify(window.ECTheme.exportTheme(current), null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
-        function () {
-          setStatus(t('www.themeCopied'), 'ok');
-        },
-        function () {
-          setStatus(t('www.themeImportFail'), 'error');
-        },
-      );
-    }
-  }
-
   function showInstall(show) {
     var el = $('[data-ec-theme-install]');
     if (el) el.hidden = !show;
@@ -73,6 +46,10 @@
   function paintLike() {
     var btn = $('[data-ec-theme-like]');
     if (!btn || !currentRow) return;
+    if (window.ECTheme.isDefaultThemeSlug(currentRow.slug)) {
+      btn.hidden = true;
+      return;
+    }
     var count =
       typeof currentRow.like_count === 'number' ? currentRow.like_count : 0;
     btn.hidden = false;
@@ -92,6 +69,7 @@
     var cfg = window.EC_SUPABASE;
     var btn = $('[data-ec-theme-like]');
     if (!slug || !currentRow) return;
+    if (window.ECTheme.isDefaultThemeSlug(slug)) return;
     if (btn) btn.disabled = true;
     var prev = liked;
     var prevCount =
@@ -144,9 +122,14 @@
     var preview = $('[data-ec-preview]');
     var importBtn = $('[data-ec-theme-import]');
     if (title) title.textContent = theme.name;
-    if (by) by.textContent = t('www.themeBy', { name: theme.author });
-    if (importBtn && window.ECTheme.isDefaultThemeSlug(row.slug)) {
-      importBtn.textContent = t('www.themeResetImport');
+    if (by) {
+      by.textContent = t('www.themeBy', {
+        name: window.ECTheme.formatThemeAuthor(theme.author),
+      });
+    }
+    if (importBtn) {
+      importBtn.hidden = false;
+      importBtn.textContent = t('www.themeImport');
     }
     document.title = theme.name + ' - Everchat';
     var canonical = document.querySelector('link[rel="canonical"]');
@@ -177,12 +160,8 @@
   function boot() {
     slug = parseSlug();
     var root = $('[data-ec-theme-detail]');
-    var exportBtn = $('[data-ec-theme-export]');
-    var copyBtn = $('[data-ec-theme-copy]');
     var importBtn = $('[data-ec-theme-import]');
     var likeBtn = $('[data-ec-theme-like]');
-    if (exportBtn) exportBtn.addEventListener('click', downloadJson);
-    if (copyBtn) copyBtn.addEventListener('click', copyJson);
     if (importBtn) importBtn.addEventListener('click', importTheme);
     if (likeBtn) likeBtn.addEventListener('click', onLike);
 

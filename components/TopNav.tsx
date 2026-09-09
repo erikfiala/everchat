@@ -1,14 +1,20 @@
+import { useEffect, useState } from 'react';
 import { Icon, type IconName } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import type { PanelTab } from '@/lib/database.types';
 import { useLocale } from '@/hooks/useLocale';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme, type ResolvedTheme } from '@/hooks/useTheme';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+
+function appearanceFromDocument(fallback: ResolvedTheme): ResolvedTheme {
+  const theme = document.documentElement.dataset.theme;
+  return theme === 'dark' || theme === 'light' ? theme : fallback;
+}
 
 interface TopNavProps {
   active: PanelTab;
@@ -19,6 +25,20 @@ interface TopNavProps {
 export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
   const { resolved } = useTheme();
   const { t } = useLocale();
+  const [appearance, setAppearance] = useState<ResolvedTheme>(() =>
+    typeof document === 'undefined'
+      ? resolved
+      : appearanceFromDocument(resolved),
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const sync = () => setAppearance(appearanceFromDocument(resolved));
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, [resolved]);
 
   const tabs: { id: PanelTab; label: string; icon: IconName }[] = [
     { id: 'chat', label: t('nav.chat'), icon: 'chat' },
@@ -40,7 +60,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
         >
           <img
             src={
-              resolved === 'dark'
+              appearance === 'dark'
                 ? `${import.meta.env.BASE_URL}ec-logo-horizontal-white.svg`
                 : `${import.meta.env.BASE_URL}ec-logo-horizontal-black.svg`
             }

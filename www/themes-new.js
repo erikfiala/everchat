@@ -51,7 +51,8 @@
 
   var state = window.ECTheme.defaultTheme();
   state.name = '';
-  state.author = '';
+  state.author = 'draft';
+  var publishSession = null;
   var appearance = 'light';
 
   function $(sel, root) {
@@ -62,9 +63,15 @@
     return window.ECTheme.t(key, vars);
   }
 
-  function tOr(key, fallback) {
-    var value = t(key);
-    return !value || value === key ? fallback : value;
+  function tOr(key, fallback, vars) {
+    var value = t(key, vars);
+    if (!value || value === key) {
+      if (!vars) return fallback;
+      return String(fallback).replace(/\{\{(\w+)\}\}/g, function (_, k) {
+        return vars[k] == null ? '' : String(vars[k]);
+      });
+    }
+    return value;
   }
 
   var RESET_SVG =
@@ -239,10 +246,6 @@
     }
   }
 
-  function currentExport() {
-    return window.ECTheme.exportTheme(state);
-  }
-
   function setStatus(text, kind) {
     var el = $('[data-ec-theme-status]');
     if (!el) return;
@@ -250,6 +253,18 @@
     el.textContent = text || '';
     el.classList.toggle('is-error', kind === 'error');
     el.classList.toggle('is-ok', kind === 'ok');
+  }
+
+  function showInstall(show) {
+    var el = $('[data-ec-theme-install]');
+    if (el) el.hidden = !show;
+  }
+
+  function draftForPublish(handle) {
+    var next = Object.assign({}, state, {
+      author: handle || 'draft',
+    });
+    return window.ECTheme.validateTheme(next);
   }
 
   var pushPreview = null;
@@ -303,10 +318,9 @@
 
   function collectState() {
     var nameEl = $('[data-ec-theme-name]');
-    var authorEl = $('[data-ec-theme-author]');
     var fontEl = $('[data-ec-theme-font]');
     state.name = nameEl ? nameEl.value.trim() : '';
-    state.author = authorEl ? authorEl.value.trim() : '';
+    if (!state.author) state.author = 'draft';
     var typed = fontEl ? fontEl.value.trim() : '';
     state.fontFamily = window.ECTheme.isValidFontFamily(typed)
       ? window.ECTheme.sanitizeFontFamily(typed)
@@ -335,10 +349,8 @@
 
   function applyStateToInputs() {
     var nameEl = $('[data-ec-theme-name]');
-    var authorEl = $('[data-ec-theme-author]');
     var fontEl = $('[data-ec-theme-font]');
     if (nameEl) nameEl.value = state.name;
-    if (authorEl) authorEl.value = state.author;
     if (fontEl) fontEl.value = state.fontFamily;
     syncFontPicker();
     document.querySelectorAll('[data-ec-token]').forEach(function (el) {
@@ -478,42 +490,10 @@
     });
   }
 
-  function downloadJson() {
-    var blob = new Blob([JSON.stringify(currentExport(), null, 2)], {
-      type: 'application/json',
-    });
-    var a = document.createElement('a');
-    var slug = (state.name || 'theme')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
-      .slice(0, 40) || 'theme';
-    a.href = URL.createObjectURL(blob);
-    a.download = slug + '.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  }
-
-  function copyJson() {
-    var text = JSON.stringify(currentExport(), null, 2);
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
-        function () {
-          setStatus(t('www.themeCopied'), 'ok');
-        },
-        function () {
-          setStatus(t('www.themePublishError'), 'error');
-        },
-      );
-      return;
-    }
-    setStatus(t('www.themePublishError'), 'error');
-  }
-
   function resetDraft() {
     state = window.ECTheme.defaultTheme();
     state.name = '';
-    state.author = '';
+    state.author = 'draft';
     appearance = 'light';
     applyStateToInputs();
     syncFontStatus();
@@ -528,9 +508,16 @@
 
   function publish() {
     collectState();
-    var valid = window.ECTheme.validateTheme(state);
+    var session = publishSession;
+    publishSession = null;
+    var handle = session && session.username ? session.username : '';
+    var valid = draftForPublish(handle);
     if (!valid) {
       setStatus(t('www.themePublishNeedName'), 'error');
+      return;
+    }
+    if (!session || !session.token) {
+      setStatus(tOr('www.themePublishNeedSignIn', 'Sign in with Everchat to publish.'), 'error');
       return;
     }
     var cfg = window.EC_SUPABASE;
@@ -540,8 +527,9 @@
     }
     var btn = $('[data-ec-theme-publish]');
     if (btn) btn.disabled = true;
+    showInstall(false);
     setStatus(t('www.themePublishing'), '');
-    window.ECTheme.publishTheme(cfg, valid)
+    window.ECTheme.publishTheme(cfg, valid, session.token)
       .then(function (data) {
         try {
           localStorage.removeItem(DRAFT_KEY);
@@ -552,6 +540,13 @@
       })
       .catch(function (err) {
         if (btn) btn.disabled = false;
+        if (err && err.code === 'auth') {
+          setStatus(
+            tOr('www.themePublishNeedSignIn', 'Sign in with Everchat to publish.'),
+            'error',
+          );
+          return;
+        }
         setStatus(
           err && err.code === 'rate_limit'
             ? t('www.themePublishRateLimit')
@@ -979,7 +974,7 @@
       state = draft;
     } else {
       state.name = '';
-      state.author = '';
+      state.author = 'draft';
       state.fontFamily = '';
     }
 
@@ -1008,36 +1003,54 @@
     );
     paintPreview();
 
-    ['data-ec-theme-name', 'data-ec-theme-author'].forEach(function (attr) {
-      var el = $('[' + attr + ']');
-      if (el) el.addEventListener('input', onChange);
-    });
+    var nameEl = $('[data-ec-theme-name]');
+    if (nameEl) nameEl.addEventListener('input', onChange);
     var publishBtn = $('[data-ec-theme-publish]');
-    var exportBtn = $('[data-ec-theme-export]');
-    var copyBtn = $('[data-ec-theme-copy]');
     var resetBtn = $('[data-ec-theme-reset]');
     if (publishBtn) {
       publishBtn.addEventListener('click', function () {
         collectState();
-        if (!window.ECTheme.validateTheme(state)) {
+        if (!window.ECTheme.validateLabel(state.name, 'name')) {
           setStatus(t('www.themePublishNeedName'), 'error');
           return;
         }
-        openConfirm(
-          {
-            title: tOr('www.themeConfirmPublishTitle', 'Publish this theme?'),
-            body: tOr(
-              'www.themeConfirmPublishBody',
-              'It will appear in the public gallery with the name and author you entered.',
-            ),
-            ok: tOr('www.themePublish', 'Publish'),
-          },
-          publish,
-        );
+        showInstall(false);
+        window.ECTheme.requestSession().then(function (session) {
+          if (!session || session.reason === 'missing') {
+            showInstall(true);
+            setStatus(
+              tOr('www.themePublishNeedExt', t('www.themeImportNeedExt')),
+              'error',
+            );
+            return;
+          }
+          if (!session.signedIn || !session.token) {
+            setStatus(
+              tOr(
+                'www.themePublishNeedSignIn',
+                'Sign in with Everchat to publish.',
+              ),
+              'error',
+            );
+            return;
+          }
+          publishSession = session;
+          var handle = window.ECTheme.formatThemeAuthor(session.username);
+          openConfirm(
+            {
+              title: tOr('www.themeConfirmPublishTitle', 'Publish this theme?'),
+              body: tOr(
+                'www.themeConfirmPublishBody',
+                'It will appear in the public gallery as {{handle}}.',
+                { handle: handle },
+              ),
+              ok: tOr('www.themePublish', 'Publish'),
+            },
+            publish,
+          );
+        });
       });
     }
-    if (exportBtn) exportBtn.addEventListener('click', downloadJson);
-    if (copyBtn) copyBtn.addEventListener('click', copyJson);
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
         openConfirm(

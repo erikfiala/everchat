@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Icon } from '@/components/ui/icon';
 import type { MessageNode } from '@/lib/database.types';
-import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
+import { isCommunityCollapsed, formatScore, safeRelativeTime } from '@/lib/collapse';
 import { ANONYMOUS_HANDLE } from '@/lib/constants';
 import { bindRelativeTime } from '@/lib/time';
 import { buildShareLink } from '@/lib/canonicalize';
@@ -131,6 +131,14 @@ function ShowRepliesControl({
 const voteDisabledClassName =
   'pointer-events-auto cursor-not-allowed text-[var(--color-muted-foreground)]';
 
+/** Viewer vote first; only then 0 vs 1+. Never teal just because score is positive. */
+function voteScoreClass(score: number, myVote: number | null): string {
+  if (myVote === 1) return 'text-[var(--color-success)]';
+  if (myVote === -1) return 'text-[var(--color-destructive)]';
+  if (score >= 1) return 'text-[var(--color-foreground)]';
+  return 'text-[var(--color-muted-foreground)]';
+}
+
 function VoteControls({
   node,
   disabled = false,
@@ -162,7 +170,7 @@ function VoteControls({
         className={cn(
           'h-7 w-6 px-0',
           disabled && voteDisabledClassName,
-          !disabled && node.myVote === 1 && 'text-[var(--color-score-pos)]',
+          !disabled && node.myVote === 1 && 'text-[var(--color-success)]',
         )}
         onClick={() => vote(1)}
       >
@@ -171,7 +179,7 @@ function VoteControls({
       <span
         className={cn(
           'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
-          disabled ? voteDisabledClassName : scoreColorClass(node.score),
+          voteScoreClass(node.score, node.myVote),
         )}
       >
         {formatScore(node.score)}
@@ -183,7 +191,7 @@ function VoteControls({
         className={cn(
           'h-7 w-6 px-0',
           disabled && voteDisabledClassName,
-          !disabled && node.myVote === -1 && 'text-[var(--color-score-neg)]',
+          !disabled && node.myVote === -1 && 'text-[var(--color-destructive)]',
         )}
         onClick={() => vote(-1)}
       >

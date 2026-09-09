@@ -1,4 +1,9 @@
-import { adminClient, corsHeaders, json } from '../_shared/auth.ts';
+import {
+  adminClient,
+  corsHeaders,
+  json,
+  verifySessionToken,
+} from '../_shared/auth.ts';
 import { slugify, validateTheme } from '../_shared/theme.ts';
 
 const HOURLY_LIMIT = 5;
@@ -25,13 +30,33 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const userId = await verifySessionToken(req.headers.get('authorization'));
+    if (!userId) {
+      return json({ error: 'Unauthorized', code: 'auth' }, 401);
+    }
+
     const raw = await req.json();
-    const theme = validateTheme(raw);
+    const incoming =
+      raw && typeof raw === 'object' && !Array.isArray(raw)
+        ? { ...raw, author: 'pending' }
+        : raw;
+    const theme = validateTheme(incoming);
     if (!theme) {
       return json({ error: 'Invalid theme', code: 'invalid' }, 400);
     }
 
     const sb = adminClient();
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('username')
+      .eq('id', userId)
+      .maybeSingle();
+    const handle =
+      typeof profile?.username === 'string' ? profile.username.trim() : '';
+    if (!handle) {
+      return json({ error: 'Unauthorized', code: 'auth' }, 401);
+    }
+
     const hash = clientHash(req);
     const windowStart = new Date();
     windowStart.setMinutes(0, 0, 0);
@@ -70,7 +95,7 @@ Deno.serve(async (req) => {
         .insert({
           slug,
           name: theme.name,
-          author_name: theme.author,
+          author_name: handle,
           font_family: theme.fontFamily,
           icon_pack: theme.iconPack,
           tokens: theme.tokens,

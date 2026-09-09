@@ -2016,20 +2016,24 @@ body.doc {
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .theme-color-row input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .theme-color-row input[type="color"]::-webkit-color-swatch {
   border: none;
-  border-radius: 2px;
+  border-radius: 50%;
 }
 
 .theme-color-row input[type="color"]::-moz-color-swatch {
   border: none;
-  border-radius: 2px;
+  border-radius: 50%;
 }
 
 .theme-field-head {
@@ -2180,28 +2184,38 @@ body.doc {
 
 .theme-mode-tabs {
   display: flex;
-  gap: 0.35rem;
+  align-items: stretch;
+  gap: 0;
+  width: fit-content;
+  max-width: 100%;
+  height: 2.25rem;
   margin: 0.65rem 0 0.85rem;
+  padding: 0.15rem;
+  box-sizing: border-box;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
 }
 
 .theme-mode-tab {
   flex: 1;
+  min-width: 4.5rem;
   margin: 0;
-  padding: 0.4rem 0.65rem;
+  padding: 0 0.85rem;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1;
   color: var(--mute);
-  background: var(--paper);
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius);
+  background: none;
+  border: none;
+  border-radius: 999px;
   cursor: pointer;
 }
 
 .theme-mode-tab.is-active {
   color: var(--ink);
   background: var(--accent-soft);
-  border-color: var(--stone-deep);
 }
 
 .theme-icon-packs {
@@ -2219,15 +2233,14 @@ body.doc {
   padding: 0.5rem 0.65rem;
   font-family: var(--font-sans);
   color: var(--ink);
-  background: var(--paper);
-  border: 1.5px solid var(--line);
+  background: none;
+  border: none;
   border-radius: var(--radius);
   cursor: pointer;
   text-align: start;
 }
 
 .theme-icon-pack.is-active {
-  border-color: var(--stone-deep);
   background: var(--accent-soft);
 }
 
@@ -2478,11 +2491,24 @@ body.doc {
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 500;
+  line-height: 1;
   color: var(--mute);
   background: transparent;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
+}
+
+.theme-like svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.theme-like-count,
+.theme-like [data-ec-theme-like-count] {
+  display: block;
+  line-height: 1;
+  transform: translateY(0.08em);
 }
 
 .theme-like:hover {
@@ -2534,8 +2560,6 @@ body.doc {
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  min-height: 12rem;
-  aspect-ratio: 1;
   text-decoration: none;
   box-shadow: none;
 }
@@ -2647,7 +2671,7 @@ body.doc {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
     center / contain no-repeat;
   transform-origin: center;
-  transform: translate(-50%, -50%) rotate(-5deg);
+  transform: translate(-50%, -50%) rotate(-10deg);
 }
 
 #bmc-wbtn:not(:has(img))::before {

@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 export type ThemePreference = 'system' | 'light' | 'dark';
 export type ResolvedTheme = 'light' | 'dark';
@@ -30,6 +31,11 @@ function resolvePreference(pref: ThemePreference): ResolvedTheme {
 
 function applyResolved(resolved: ResolvedTheme) {
   document.documentElement.dataset.theme = resolved;
+}
+
+function readDocumentTheme(): ResolvedTheme | null {
+  const theme = document.documentElement.dataset.theme;
+  return theme === 'dark' || theme === 'light' ? theme : null;
 }
 
 function isThemePreference(value: unknown): value is ThemePreference {
@@ -88,16 +94,58 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         /* ignore */
       }
     })();
+
+    const onChanged = (
+      changes: Record<string, { newValue?: unknown }>,
+      area: string,
+    ) => {
+      if (area !== 'local') return;
+      const raw = changes[STORAGE_KEY]?.newValue;
+      if (isThemePreference(raw)) {
+        writeLocalPreference(raw);
+        setPreferenceState(raw);
+      }
+    };
+    try {
+      browser.storage.onChanged.addListener(onChanged);
+    } catch {
+      /* ignore */
+    }
     return () => {
       cancelled = true;
+      try {
+        browser.storage.onChanged.removeListener(onChanged);
+      } catch {
+        /* ignore */
+      }
     };
+  }, []);
+
+  // Theme preview sets data-theme on the panel iframe; don't clobber it.
+  useEffect(() => {
+    if (!isPreviewMode()) return;
+    const root = document.documentElement;
+    const sync = () => {
+      const theme = readDocumentTheme();
+      if (theme) setResolved(theme);
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
     const next = resolvePreference(preference);
+    writeLocalPreference(preference);
+
+    if (isPreviewMode()) {
+      setResolved(readDocumentTheme() ?? next);
+      return;
+    }
+
     setResolved(next);
     applyResolved(next);
-    writeLocalPreference(preference);
 
     if (preference !== 'system') return;
 

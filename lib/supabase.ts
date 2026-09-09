@@ -70,6 +70,9 @@ export async function callEdgeFunction<T>(
   body: unknown,
   token?: string | null,
 ): Promise<T> {
+  if (isPreviewMode()) {
+    throw new Error('errors.previewNoBackend');
+  }
   const base = getFunctionsBaseUrl();
   if (!base || !supabaseAnonKey) {
     throw new Error('Supabase functions URL not configured');

@@ -7,6 +7,8 @@ import {
 } from './constants';
 import { getSupabase } from './supabase';
 import type { ActivityItem, Profile, WebAuthnCredential } from './database.types';
+import { PREVIEW_DEVICES } from '@/lib/preview/fixtures';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 export function isAnonymousHandle(
   username: string | null | undefined,
@@ -92,6 +94,7 @@ export async function listDevices(
     'id' | 'credential_id' | 'device_label' | 'created_at' | 'last_used_at'
   >[]
 > {
+  if (isPreviewMode()) return PREVIEW_DEVICES;
   const sb = getSupabase();
   const { data, error } = await sb
     .from('webauthn_credentials')

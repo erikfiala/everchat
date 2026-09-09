@@ -51,6 +51,10 @@ import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import { cn } from '@/lib/utils';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { toast } from 'sonner';
+import {
+  PREVIEW_CREDENTIAL_ID,
+  PREVIEW_DEVICES,
+} from '@/lib/preview/fixtures';
 import { isPreviewMode } from '@/lib/preview/mode';
 
 export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
@@ -88,6 +92,8 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   useEffect(() => {
     if (!user) return;
     if (isPreviewMode()) {
+      setDevices(PREVIEW_DEVICES);
+      setLocalCredentialIds([PREVIEW_CREDENTIAL_ID]);
       setLoading(false);
       return;
     }
@@ -177,6 +183,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   };
 
   const addDevice = async () => {
+    if (isPreviewMode()) return;
     try {
       await addPasskeyDevice(user.token);
       const [devs, ids] = await Promise.all([
@@ -328,7 +335,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
             />
           )}
           <AddCurrentDeviceRow
-            disabled={loading || currentDeviceRegistered}
+            disabled={isPreviewMode() || loading || currentDeviceRegistered}
             onAdd={addDevice}
           />
           {devices.slice(1).map((d) => (

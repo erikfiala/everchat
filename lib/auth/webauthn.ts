@@ -15,6 +15,7 @@ import {
 import { allowCredentialsForLogin } from './allowCredentials';
 import { guessDeviceLabel } from '../deviceLabel';
 import { DEVICE_LABEL_MAX_LEN } from '../profile';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 /** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
 const RP_ID =
@@ -403,6 +404,7 @@ export async function addPasskeyDevice(
   token: string,
   deviceLabel?: string,
 ): Promise<void> {
+  if (isPreviewMode()) return;
   await ensureRpHostPermission();
 
   const labelPromise = deviceLabel?.trim()

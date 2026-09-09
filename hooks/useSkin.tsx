@@ -10,6 +10,7 @@ import {
 import {
   applyThemeToDocument,
   isDefaultThemeSlug,
+  resolveThemeAppearance,
   parseStoredSkin,
   parseStoredSkinLibrary,
   SKIN_LIBRARY_KEY,
@@ -89,7 +90,11 @@ export function SkinProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isPreviewMode() && !skin) return;
-    applyThemeToDocument(skin, document, resolved);
+    applyThemeToDocument(
+      skin,
+      document,
+      isPreviewMode() ? resolveThemeAppearance() : resolved,
+    );
     writeLocalSkin(skin);
   }, [skin, resolved]);
 

@@ -11,6 +11,7 @@ No email. No ads. No third-party trackers. Free forever.
 [![GitHub stars](https://img.shields.io/github/stars/erikfiala/everchat)](https://github.com/erikfiala/everchat/stargazers)
 
 **Site:** [everch.at](https://everch.at)  
+**Themes:** [everch.at/themes](https://everch.at/themes)  
 **Donate:** [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat)  
 **Releases:** [github.com/erikfiala/everchat/releases](https://github.com/erikfiala/everchat/releases)
 
@@ -26,6 +27,10 @@ Web pages have no portable conversation layer. Discussion ends up on Twitter, Re
 - **Nested replies**, votes, and community collapse (no staff moderators)
 - **Explore** trending and new chats across the web
 - **Notifications** that deep-link back to the message on that page
+
+## Themes
+
+Browse, build, and import Themes at [https://everch.at/themes](https://everch.at/themes).
 
 ## Install
 

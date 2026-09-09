@@ -2,6 +2,7 @@ import type {
   MessageWithAuthor,
   SessionUser,
   TabInfo,
+  WebAuthnCredential,
 } from '@/lib/database.types';
 import type { ExplorePageRow } from '@/lib/pages';
 
@@ -97,6 +98,21 @@ export const PREVIEW_MESSAGES: MessageWithAuthor[] = [
     null,
     9,
   ),
+];
+
+export const PREVIEW_CREDENTIAL_ID = 'preview-credential';
+
+export const PREVIEW_DEVICES: Pick<
+  WebAuthnCredential,
+  'id' | 'credential_id' | 'device_label' | 'created_at' | 'last_used_at'
+>[] = [
+  {
+    id: 'preview-device-1',
+    credential_id: PREVIEW_CREDENTIAL_ID,
+    device_label: 'Chrome on macOS',
+    created_at: new Date(NOW - 7 * 86_400_000).toISOString(),
+    last_used_at: new Date(NOW).toISOString(),
+  },
 ];
 
 export const PREVIEW_EXPLORE: ExplorePageRow[] = [

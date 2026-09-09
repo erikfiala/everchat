@@ -297,7 +297,7 @@ export function ExploreTab({ onOpenChat }: { onOpenChat?: () => void }) {
                         DESCRIPTION_TRUNCATE,
                       )}
                   </div>
-                  <div className="mt-0.5 flex items-center text-[11px] text-[var(--color-muted-foreground)]">
+                  <div className="mt-0.5 text-[11px] text-[var(--color-muted-foreground)]">
                     {showOnline ? (
                       <span
                         className={
@@ -319,10 +319,8 @@ export function ExploreTab({ onOpenChat }: { onOpenChat?: () => void }) {
                     ) : (
                       <span>{statusLabel}</span>
                     )}
-                    <span>
-                      {' · '}
-                      {postsLabel}
-                    </span>
+                    {' · '}
+                    {postsLabel}
                   </div>
                 </div>
               </button>

@@ -217,8 +217,8 @@ export function SettingsTab() {
             </Button>
           )}
           <Button
-            variant="outline"
-            className="mt-2 h-9 w-full justify-center bg-[var(--color-card)] px-3 font-normal"
+            variant="ghost"
+            className="mt-2 w-full text-[var(--color-foreground)]"
             asChild
           >
             <a

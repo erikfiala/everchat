@@ -2668,16 +2668,20 @@ body.doc {
 
 /* BMC floating widget: leave their yellow cup <img> and close chevron in the DOM
    (no display:none). #bmc-wbtn is a 64px circle they inject (no shadow DOM). Paint
-   on top: black circle + tilted red heart while the cup img is present; black
-   circle + white chevron-down when they swap the img out. pointer-events:none so
+   on top: white circle + BMC cup logo while the cup img is present; white
+   circle + black chevron-down when they swap the img out. pointer-events:none so
    clicks still hit #bmc-wbtn. */
+#bmc-wbtn {
+  background: #fff !important;
+}
+
 #bmc-wbtn:has(img)::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   border-radius: inherit;
-  background: #000;
+  background: #fff;
   pointer-events: none;
 }
 
@@ -2687,16 +2691,11 @@ body.doc {
   top: 50%;
   left: 50%;
   z-index: 2;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   pointer-events: none;
-  background-color: #e11d48;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-  transform-origin: center;
-  transform: translate(-50%, -50%) rotate(-10deg);
+  background: url("/assets/bmc-cup.png") center / contain no-repeat;
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
 #bmc-wbtn:not(:has(img))::before {
@@ -2705,7 +2704,7 @@ body.doc {
   inset: 0;
   z-index: 1;
   border-radius: inherit;
-  background: #000;
+  background: #fff;
   pointer-events: none;
 }
 
@@ -2718,7 +2717,7 @@ body.doc {
   width: 28px;
   height: 28px;
   pointer-events: none;
-  background-color: #fff;
+  background-color: #000;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E")
     center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E")
@@ -2731,5 +2730,14 @@ body.doc {
 #bmc-iframe {
   min-height: 0 !important;
   max-height: min(520px, calc(100vh - 110px)) !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+#bmc-iframe::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 

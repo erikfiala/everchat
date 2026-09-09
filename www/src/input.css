@@ -118,8 +118,8 @@
     margin: 0;
     min-height: 100vh;
     font-family: var(--font-sans);
-    font-size: 1.0625rem;
-    line-height: 1.55;
+    font-size: 16px;
+    line-height: 1.5;
     color: var(--color-ink);
     background: var(--color-stone);
     -webkit-font-smoothing: antialiased;
@@ -766,6 +766,16 @@
 .trending-section {
   width: 100%;
   max-width: none;
+  margin-bottom: clamp(3.5rem, 9vw, 5.5rem);
+}
+
+.trending-section h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 1.25rem;
 }
 
 .trending-list {
@@ -1106,6 +1116,7 @@
   max-width: 42rem; /* ~672px - centered reading column */
   margin-inline: auto;
   width: 100%;
+  padding-top: 2.5rem;
 }
 
 .install h2 {
@@ -1753,10 +1764,53 @@ body.doc {
   min-width: 8.5rem;
 }
 
+.theme-detail-main,
+.themes-main,
+.browse-main,
+.theme-builder-main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 3.5rem) var(--space) clamp(4rem, 10vw, 6rem);
+}
+
 .themes-head h1,
 .theme-builder-intro h1,
-.theme-detail-main h1 {
+.theme-detail-main h1,
+.browse-main h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
   margin-bottom: 0.35rem;
+}
+
+.browse-main h1 {
+  margin-bottom: 1.25rem;
+}
+
+.share-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space);
+}
+
+.share-main img {
+  width: 8.5rem;
+  height: auto;
+}
+
+.share-main p {
+  padding-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--mute);
 }
 
 .theme-kicker {
@@ -2140,6 +2194,18 @@ body.doc {
 .theme-detail-actions .theme-status {
   width: 100%;
   text-align: right;
+}
+
+@media (max-width: 800px) {
+  .theme-detail-actions {
+    align-items: flex-start;
+    text-align: left;
+    justify-self: start;
+  }
+
+  .theme-detail-actions .theme-status {
+    text-align: left;
+  }
 }
 
 .theme-btn {

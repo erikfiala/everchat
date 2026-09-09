@@ -28,13 +28,13 @@
     <meta name="referrer" content="no-referrer" />
     <script src="/boot-locale.js"></script>
   </head>
-  <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
+  <body class="m-0 min-h-screen bg-stone font-sans text-base leading-normal text-ink antialiased">
     <div class="atmosphere" aria-hidden="true"></div>
 
-    <header class="doc-bar sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+    <header class="doc-bar">
       <a class="home block shrink-0 leading-none" href="/">
         <img
-          class="h-auto w-[8.5rem] shrink-0 pb-1"
+          class="shrink-0"
           src="/assets/ec-logo-horizontal-black.svg"
           width="560"
           height="130"
@@ -46,7 +46,7 @@
       <nav class="doc-bar-mid" aria-label="Site">
         <a href="/chats" data-i18n="www.navChats">Chats</a>
         <a href="/themes" data-i18n="www.navThemes" aria-current="page">Themes</a>
-        <a href="https://buymeacoffee.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <a href="https://buymeacoffee.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Support</a>
         <a href="https://github.com/erikfiala/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
       </nav>
       <div class="doc-bar-end min-w-0 shrink">
@@ -139,15 +139,12 @@
     </header>
 
     <main
-      class="themes-main relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]"
+      class="themes-main"
       data-ec-themes
       aria-busy="false"
     >
       <div class="themes-head">
-        <h1
-          class="mb-5 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
-          data-i18n="www.themesTitle"
-        >
+        <h1 data-i18n="www.themesTitle">
           Themes
         </h1>
         <div class="themes-toolbar">
@@ -223,19 +220,19 @@
     </main>
 
     <footer
-      class="site-footer grid justify-items-center gap-3 border-t border-line/70 px-[clamp(1.5rem,4vw,3rem)] pt-8 pb-10 text-center text-[0.8rem] text-mute"
+      class="site-footer"
     >
       <img
-        class="footer-mark h-8 w-8 rounded-[0.45rem] opacity-90"
+        class="footer-mark"
         src="/assets/ec-logo-avatar-rounded.png"
         width="128"
         height="128"
         alt=""
       />
-      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
+      <nav class="footer-links" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://buymeacoffee.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://buymeacoffee.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Support</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://github.com/erikfiala/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>

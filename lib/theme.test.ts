@@ -48,10 +48,10 @@ describe('theme schema', () => {
     expect(theme?.iconPack).toBe('lu');
     expect(theme?.tokens.light['--color-background']).toBe('#fafafa');
     expect(theme?.tokens.dark['--color-background']).toBe('#18181b');
-    expect(theme?.tokens.light['--color-success']).toBe('#dc2626');
-    expect(theme?.tokens.light['--color-destructive']).toBe('#0f766e');
-    expect(theme?.tokens.dark['--color-success']).toBe('#f87171');
-    expect(theme?.tokens.dark['--color-destructive']).toBe('#2dd4bf');
+    expect(theme?.tokens.light['--color-success']).toBe('#0f766e');
+    expect(theme?.tokens.light['--color-destructive']).toBe('#dc2626');
+    expect(theme?.tokens.dark['--color-success']).toBe('#2dd4bf');
+    expect(theme?.tokens.dark['--color-destructive']).toBe('#f87171');
     expect(theme?.tokens['--radius-md']).toBe(8);
     expect(isDefaultThemeSlug(DEFAULT_THEME_SLUG)).toBe(true);
     expect(isDefaultThemeSlug('midnight')).toBe(false);

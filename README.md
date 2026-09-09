@@ -12,7 +12,7 @@ No email. No ads. No third-party trackers. Free forever.
 
 **Site:** [everch.at](https://everch.at)  
 **Themes:** [everch.at/themes](https://everch.at/themes)  
-**Donate:** [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat)  
+**Support:** [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat)  
 **Releases:** [github.com/erikfiala/everchat/releases](https://github.com/erikfiala/everchat/releases)
 
 ## Why
@@ -50,7 +50,7 @@ Do not load a copy you built or modified yourself except to review the source or
 
 ## Support
 
-Everchat stays free. Voluntary donations go through [Buy Me a Coffee](https://buymeacoffee.com/everchat). Donations do not buy ranking, visibility, or special treatment.
+Everchat stays free. Voluntary support goes through [Buy Me a Coffee](https://buymeacoffee.com/everchat). Support does not buy ranking, visibility, or special treatment.
 
 ## License
 

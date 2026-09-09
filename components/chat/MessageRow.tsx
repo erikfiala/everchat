@@ -236,6 +236,7 @@ export function MessageRow({
   }, [menuOpen]);
 
   const deleted = Boolean(node.deleted_at);
+  const isOwn = Boolean(currentUserId && currentUserId === node.author_id);
   const collapsed =
     !deleted && isCommunityCollapsed(node.upvotes, node.downvotes);
   const userExpanded = expandedIds.has(node.id);
@@ -493,6 +494,7 @@ export function MessageRow({
               <div className="mt-1.5 flex flex-wrap items-center gap-0.5">
                 <VoteControls
                   node={node}
+                  disabled={isOwn}
                   onVote={onVote}
                   requireAuth={requireAuth}
                 />

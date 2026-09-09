@@ -2481,10 +2481,11 @@ body.doc {
 
 } /* end @layer components */
 
-/* BMC floating widget: leave their yellow cup <img> in the DOM and visible to their
-   script. #bmc-wbtn is a 64px circle they inject (no shadow DOM). Cover it with a
-   black circle + tilted red heart. :has(img) drops the overlay when they swap the
-   cup for the close chevron <svg>. pointer-events:none so clicks still hit #bmc-wbtn. */
+/* BMC floating widget: leave their yellow cup <img> and close chevron in the DOM
+   (no display:none). #bmc-wbtn is a 64px circle they inject (no shadow DOM). Paint
+   on top: black circle + tilted red heart while the cup img is present; black
+   circle + white chevron-down when they swap the img out. pointer-events:none so
+   clicks still hit #bmc-wbtn. */
 #bmc-wbtn:has(img)::before {
   content: "";
   position: absolute;
@@ -2511,5 +2512,32 @@ body.doc {
     center / contain no-repeat;
   transform-origin: center;
   transform: translate(-50%, -50%) rotate(-5deg);
+}
+
+#bmc-wbtn:not(:has(img))::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: #000;
+  pointer-events: none;
+}
+
+#bmc-wbtn:not(:has(img))::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  background-color: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+  transform: translate(-50%, -50%);
 }
 

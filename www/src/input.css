@@ -1605,8 +1605,8 @@ body.doc {
   padding: clamp(2rem, 6vw, 3.5rem) var(--space) clamp(4rem, 10vw, 6rem);
 }
 
-.doc-lang-note {
-  margin: 0 0 2.75rem; /* breathe before kicker / title */
+.doc-main p.doc-lang-note {
+  margin: 0 0 40px;
   font-size: 0.875rem;
   color: var(--mute);
 }
@@ -2766,7 +2766,7 @@ body.doc {
 
 /* BMC floating widget: leave their yellow cup <img> and close chevron in the DOM
    (no display:none). #bmc-wbtn is a 64px circle they inject (no shadow DOM). Paint
-   on top: white circle + BMC cup logo while the cup img is present; white
+   on top: white circle + BMC cup SVG while the cup img is present; white
    circle + black chevron-down when they swap the img out. pointer-events:none so
    clicks still hit #bmc-wbtn. */
 #bmc-wbtn {
@@ -2789,11 +2789,13 @@ body.doc {
   top: 50%;
   left: 50%;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  max-width: 70%;
+  max-height: 70%;
   pointer-events: none;
-  background: url("/assets/bmc-cup.png") center / contain no-repeat;
-  transform: translate(-50%, -50%) rotate(0deg);
+  background: url("/assets/bmc-cup.svg") center / contain no-repeat;
+  transform: translate(-50%, -50%);
 }
 
 #bmc-wbtn:not(:has(img))::before {

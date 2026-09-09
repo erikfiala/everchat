@@ -2789,10 +2789,10 @@ body.doc {
   top: 50%;
   left: 50%;
   z-index: 2;
-  width: 40px;
-  height: 40px;
-  max-width: 70%;
-  max-height: 70%;
+  width: 36px;
+  height: 36px;
+  max-width: 56%;
+  max-height: 56%;
   pointer-events: none;
   background: url("/assets/bmc-cup.svg") center / contain no-repeat;
   transform: translate(-50%, -50%);

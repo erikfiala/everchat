@@ -127,6 +127,10 @@ function ShowRepliesControl({
   );
 }
 
+/** Own + deleted votes share this so hover still hits the cluster (not-allowed cursor). */
+const voteDisabledClassName =
+  'pointer-events-auto cursor-not-allowed text-[var(--color-muted-foreground)]';
+
 function VoteControls({
   node,
   disabled = false,
@@ -146,7 +150,10 @@ function VoteControls({
 
   return (
     <div
-      className={cn('me-2 flex items-center gap-0.5', disabled && 'pointer-events-none')}
+      className={cn(
+        'me-2 flex items-center gap-0.5',
+        disabled && voteDisabledClassName,
+      )}
     >
       <Button
         variant="ghost"
@@ -154,7 +161,7 @@ function VoteControls({
         disabled={disabled}
         className={cn(
           'h-7 w-6 px-0',
-          disabled && 'pointer-events-none text-[var(--color-muted-foreground)]',
+          disabled && voteDisabledClassName,
           !disabled && node.myVote === 1 && 'text-[var(--color-score-pos)]',
         )}
         onClick={() => vote(1)}
@@ -164,9 +171,7 @@ function VoteControls({
       <span
         className={cn(
           'min-w-[1.25rem] px-0.5 text-center text-xs font-medium tabular-nums',
-          disabled
-            ? 'text-[var(--color-muted-foreground)]'
-            : scoreColorClass(node.score),
+          disabled ? voteDisabledClassName : scoreColorClass(node.score),
         )}
       >
         {formatScore(node.score)}
@@ -177,7 +182,7 @@ function VoteControls({
         disabled={disabled}
         className={cn(
           'h-7 w-6 px-0',
-          disabled && 'pointer-events-none text-[var(--color-muted-foreground)]',
+          disabled && voteDisabledClassName,
           !disabled && node.myVote === -1 && 'text-[var(--color-score-neg)]',
         )}
         onClick={() => vote(-1)}

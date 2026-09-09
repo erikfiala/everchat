@@ -1,5 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as
@@ -26,6 +27,9 @@ export function setSupabaseAccessToken(token: string | null) {
 
 export function getSupabase(): SupabaseClient<Database> {
   if (!isSupabaseConfigured) {
+    if (isPreviewMode()) {
+      throw new Error('errors.previewNoBackend');
+    }
     throw new Error(
       'Supabase is not configured. Official builds use .env.production; for a private backend copy .env.example to .env.local.',
     );

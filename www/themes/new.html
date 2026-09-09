@@ -6,14 +6,14 @@
     <title data-i18n="www.themeBuilderPageTitle">New theme - Everchat</title>
     <meta
       name="description"
-      content="Design an Everchat skin. Colors, Google Fonts, and spacing tokens with a live preview."
+      content="Design an Everchat theme. Colors, Google Fonts, and spacing tokens with a live preview."
       data-i18n="www.themeBuilderMetaDescription"
       data-i18n-attr="content"
     />
     <meta property="og:title" content="New theme - Everchat" />
     <meta
       property="og:description"
-      content="Design an Everchat skin. Colors, Google Fonts, and spacing tokens with a live preview."
+      content="Design an Everchat theme. Colors, Google Fonts, and spacing tokens with a live preview."
     />
     <meta property="og:url" content="https://everch.at/themes/new" />
     <meta property="og:image" content="https://everch.at/assets/ec-og-image.png" />
@@ -150,14 +150,14 @@
           New theme
         </h1>
         <p class="theme-lede m-0 text-mute" data-i18n="www.themeBuilderLede">
-          Play with a skin. Tokens only — no custom CSS.
+          Play with a theme. Tokens only, no custom CSS.
         </p>
       </div>
 
       <div class="theme-builder" data-ec-theme-builder>
         <form class="theme-controls" data-ec-theme-form autocomplete="off">
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeIdentity">Identity</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-identity">
+            <h2 class="theme-fieldset-title" id="ec-theme-identity" data-i18n="www.themeIdentity">Identity</h2>
             <label class="theme-field">
               <span data-i18n="www.themeName">Theme name</span>
               <input
@@ -168,7 +168,7 @@
                 data-ec-theme-name
                 data-i18n="www.themeNamePlaceholder"
                 data-i18n-attr="placeholder"
-                placeholder="My skin"
+                placeholder="My theme"
               />
             </label>
             <label class="theme-field">
@@ -186,7 +186,23 @@
             </label>
             <p class="theme-hint" data-i18n="www.themeAuthorHint">Shown on the gallery. No account required.</p>
             <div class="theme-field">
-              <span id="ec-font-field-label" data-i18n="www.themeFont">Google Font</span>
+              <div class="theme-field-head">
+                <span id="ec-font-field-label" data-i18n="www.themeFont">Google Font</span>
+                <button
+                  type="button"
+                  class="theme-field-reset"
+                  data-ec-reset="font"
+                  disabled
+                  data-i18n="www.themeResetImport"
+                  data-i18n-attr="aria-label"
+                  aria-label="Reset to default"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                </button>
+              </div>
               <div class="theme-font-picker" data-ec-font-picker>
                 <input type="hidden" name="fontFamily" value="" data-ec-theme-font />
                 <button
@@ -245,7 +261,23 @@
             </div>
             <p class="theme-hint theme-font-status" data-ec-font-status hidden></p>
             <div class="theme-field">
-              <span data-i18n="www.themeIconPack">Icon pack</span>
+              <div class="theme-field-head">
+                <span data-i18n="www.themeIconPack">Icon pack</span>
+                <button
+                  type="button"
+                  class="theme-field-reset"
+                  data-ec-reset="icon"
+                  disabled
+                  data-i18n="www.themeResetImport"
+                  data-i18n-attr="aria-label"
+                  aria-label="Reset to default"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                </button>
+              </div>
               <div class="theme-icon-packs" data-ec-icon-packs></div>
               <p class="theme-hint" data-i18n="www.themeIconPackHint">
                 Remaps the app’s icon set. Not a full icon explorer.
@@ -253,8 +285,8 @@
             </div>
           </fieldset>
 
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeColors">Colors</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-colors">
+            <h2 class="theme-fieldset-title" id="ec-theme-colors" data-i18n="www.themeColors">Colors</h2>
             <div class="theme-mode-tabs" role="group" aria-label="Appearance">
               <button
                 type="button"
@@ -278,23 +310,23 @@
             <div class="theme-color-grid" data-ec-color-fields></div>
           </fieldset>
 
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeHover">Hover</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-hover">
+            <h2 class="theme-fieldset-title" id="ec-theme-hover" data-i18n="www.themeHover">Hover</h2>
             <div class="theme-color-grid" data-ec-hover-fields></div>
           </fieldset>
 
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeType">Type</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-type">
+            <h2 class="theme-fieldset-title" id="ec-theme-type" data-i18n="www.themeType">Type</h2>
             <div class="theme-size-grid" data-ec-type-fields></div>
           </fieldset>
 
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeRadius">Corners</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-radius">
+            <h2 class="theme-fieldset-title" id="ec-theme-radius" data-i18n="www.themeRadius">Corners</h2>
             <div class="theme-size-grid" data-ec-radius-fields></div>
           </fieldset>
 
-          <fieldset class="theme-fieldset">
-            <legend data-i18n="www.themeSpacing">Spacing</legend>
+          <fieldset class="theme-fieldset" aria-labelledby="ec-theme-spacing">
+            <h2 class="theme-fieldset-title" id="ec-theme-spacing" data-i18n="www.themeSpacing">Spacing</h2>
             <div class="theme-size-grid" data-ec-space-fields></div>
           </fieldset>
 
@@ -315,11 +347,34 @@
           <p class="theme-status" data-ec-theme-status hidden></p>
         </form>
 
+        <div class="theme-confirm" data-ec-theme-confirm hidden>
+          <button
+            type="button"
+            class="theme-confirm-backdrop"
+            data-ec-theme-confirm-cancel
+            tabindex="-1"
+            aria-label="Cancel"
+          ></button>
+          <div
+            class="theme-confirm-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ec-theme-confirm-title"
+            aria-describedby="ec-theme-confirm-body"
+          >
+            <h2 class="theme-confirm-title" id="ec-theme-confirm-title" data-ec-theme-confirm-title></h2>
+            <p class="theme-confirm-body" id="ec-theme-confirm-body" data-ec-theme-confirm-body></p>
+            <div class="theme-confirm-actions">
+              <button type="button" class="theme-btn" data-ec-theme-confirm-cancel data-i18n="common.cancel">
+                Cancel
+              </button>
+              <button type="button" class="theme-btn theme-btn-primary" data-ec-theme-confirm-ok></button>
+            </div>
+          </div>
+        </div>
+
         <section class="theme-preview-col" aria-label="Preview">
-          <h2 class="theme-preview-label">
-            <span data-i18n="www.themePreview">Preview</span>
-            <span class="theme-preview-mode" data-ec-preview-mode>Light</span>
-          </h2>
+          <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
           <div class="ec-preview-frame">
             <iframe
               class="ec-preview-iframe"
@@ -361,5 +416,6 @@
     <script src="/theme-schema.js"></script>
     <script src="/icon-packs.js"></script>
     <script src="/themes-new.js"></script>
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="everchat" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FFDD00" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
   </body>
 </html>

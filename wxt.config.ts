@@ -52,8 +52,10 @@ export default defineConfig({
       matches: ['https://everch.at/*', 'https://www.everch.at/*'],
     },
     content_security_policy: {
+      // Sonner/Radix set toast and overlay geometry via inline style.
+      // Chrome MV3 allows style-src unsafe-inline on extension pages.
       extension_pages:
-        "script-src 'self'; object-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com",
+        "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com",
     },
     action: {
       default_title: 'Everchat',

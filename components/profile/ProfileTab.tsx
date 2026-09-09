@@ -51,6 +51,7 @@ import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import { cn } from '@/lib/utils';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { toast } from 'sonner';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { t, tError, locale } = useLocale();
@@ -86,6 +87,10 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
 
   useEffect(() => {
     if (!user) return;
+    if (isPreviewMode()) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     Promise.all([
       fetchActivity(user.id, { limit: LIST_PAGE_SIZE }),

@@ -62,6 +62,153 @@
     return window.ECTheme.t(key, vars);
   }
 
+  function tOr(key, fallback) {
+    var value = t(key);
+    return !value || value === key ? fallback : value;
+  }
+
+  var RESET_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
+
+  function defaultTheme() {
+    return window.ECTheme.defaultTheme();
+  }
+
+  function hexEq(a, b) {
+    return String(a || '').toLowerCase() === String(b || '').toLowerCase();
+  }
+
+  function fieldIsDefault(kind, name) {
+    var def = defaultTheme();
+    if (kind === 'color') {
+      return hexEq(
+        state.tokens[appearance][name],
+        def.tokens[appearance][name],
+      );
+    }
+    if (kind === 'size') {
+      return Number(state.tokens[name]) === Number(def.tokens[name]);
+    }
+    if (kind === 'font') {
+      return !state.fontFamily;
+    }
+    if (kind === 'icon') {
+      return (
+        window.ECTheme.sanitizeIconPack(state.iconPack) ===
+        window.ECTheme.DEFAULT_ICON_PACK
+      );
+    }
+    return true;
+  }
+
+  function resetField(kind, name) {
+    var def = defaultTheme();
+    if (kind === 'color') {
+      state.tokens[appearance][name] = def.tokens[appearance][name];
+    } else if (kind === 'size') {
+      state.tokens[name] = def.tokens[name];
+    } else if (kind === 'font') {
+      state.fontFamily = '';
+    } else if (kind === 'icon') {
+      state.iconPack = window.ECTheme.DEFAULT_ICON_PACK;
+    }
+    applyStateToInputs();
+    syncFontStatus();
+    paintPreview();
+    writeDraft();
+  }
+
+  function makeResetBtn(kind, name) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'theme-field-reset';
+    btn.setAttribute('data-ec-reset', kind);
+    if (name) btn.setAttribute('data-ec-reset-name', name);
+    btn.setAttribute(
+      'aria-label',
+      tOr('www.themeResetImport', 'Reset to default'),
+    );
+    btn.innerHTML = RESET_SVG;
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (btn.disabled) return;
+      resetField(kind, name);
+    });
+    return btn;
+  }
+
+  function syncFieldResets() {
+    document.querySelectorAll('[data-ec-reset]').forEach(function (btn) {
+      var kind = btn.getAttribute('data-ec-reset');
+      var name = btn.getAttribute('data-ec-reset-name');
+      var atDefault = fieldIsDefault(kind, name);
+      btn.disabled = atDefault;
+      btn.setAttribute('aria-disabled', atDefault ? 'true' : 'false');
+    });
+  }
+
+  function bindStaticResets() {
+    document.querySelectorAll('[data-ec-reset]').forEach(function (btn) {
+      if (btn.getAttribute('data-ec-reset-bound')) return;
+      btn.setAttribute('data-ec-reset-bound', '1');
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (btn.disabled) return;
+        resetField(
+          btn.getAttribute('data-ec-reset'),
+          btn.getAttribute('data-ec-reset-name'),
+        );
+      });
+    });
+  }
+
+  var confirmOnOk = null;
+
+  function closeConfirm() {
+    var root = $('[data-ec-theme-confirm]');
+    if (root) root.hidden = true;
+    confirmOnOk = null;
+  }
+
+  function openConfirm(opts, onOk) {
+    var root = $('[data-ec-theme-confirm]');
+    if (!root) {
+      onOk();
+      return;
+    }
+    var title = $('[data-ec-theme-confirm-title]', root);
+    var body = $('[data-ec-theme-confirm-body]', root);
+    var ok = $('[data-ec-theme-confirm-ok]', root);
+    if (title) title.textContent = opts.title;
+    if (body) body.textContent = opts.body;
+    if (ok) ok.textContent = opts.ok;
+    confirmOnOk = onOk;
+    root.hidden = false;
+    if (ok) ok.focus();
+  }
+
+  function bindConfirm() {
+    var root = $('[data-ec-theme-confirm]');
+    if (!root || root.getAttribute('data-ec-bound')) return;
+    root.setAttribute('data-ec-bound', '1');
+    root.addEventListener('click', function (e) {
+      if (e.target.closest('[data-ec-theme-confirm-cancel]')) {
+        closeConfirm();
+        return;
+      }
+      if (e.target.closest('[data-ec-theme-confirm-ok]')) {
+        var fn = confirmOnOk;
+        closeConfirm();
+        if (fn) fn();
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root && !root.hidden) closeConfirm();
+    });
+  }
+
   function readDraft() {
     try {
       var raw = localStorage.getItem(DRAFT_KEY);
@@ -210,6 +357,7 @@
     });
     syncAppearanceTabs();
     syncIconPack();
+    syncFieldResets();
   }
 
   function onChange() {
@@ -218,6 +366,7 @@
     syncFontStatus();
     paintPreview();
     writeDraft();
+    syncFieldResets();
   }
 
   function syncPaired() {
@@ -233,8 +382,12 @@
   function colorField(name) {
     var wrap = document.createElement('label');
     wrap.className = 'theme-color-field';
+    var head = document.createElement('span');
+    head.className = 'theme-field-head';
     var title = document.createElement('span');
     title.textContent = t(COLOR_LABELS[name] || name);
+    head.appendChild(title);
+    head.appendChild(makeResetBtn('color', name));
     var row = document.createElement('div');
     row.className = 'theme-color-row';
     var color = document.createElement('input');
@@ -258,7 +411,7 @@
     color.addEventListener('input', onChange);
     row.appendChild(color);
     row.appendChild(hex);
-    wrap.appendChild(title);
+    wrap.appendChild(head);
     wrap.appendChild(row);
     return wrap;
   }
@@ -266,8 +419,12 @@
   function sizeField(spec) {
     var wrap = document.createElement('label');
     wrap.className = 'theme-size-field';
+    var head = document.createElement('span');
+    head.className = 'theme-field-head';
     var title = document.createElement('span');
     title.textContent = t(SIZE_LABELS[spec.name] || spec.name);
+    head.appendChild(title);
+    head.appendChild(makeResetBtn('size', spec.name));
     var row = document.createElement('div');
     row.className = 'theme-size-row';
     var range = document.createElement('input');
@@ -297,7 +454,7 @@
     });
     row.appendChild(range);
     row.appendChild(num);
-    wrap.appendChild(title);
+    wrap.appendChild(head);
     wrap.appendChild(row);
     return wrap;
   }
@@ -744,11 +901,6 @@
       btn.classList.toggle('is-active', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-    var label = $('[data-ec-preview-mode]');
-    if (label) {
-      label.textContent =
-        appearance === 'dark' ? t('www.themeDark') : t('www.themeLight');
-    }
   }
 
   function setAppearance(mode) {
@@ -785,6 +937,7 @@
     syncIconPack();
     paintPreview();
     writeDraft();
+    syncFieldResets();
   }
 
   function bindIconPacks() {
@@ -833,6 +986,8 @@
     bindFontPicker();
     bindAppearanceTabs();
     bindIconPacks();
+    bindStaticResets();
+    bindConfirm();
 
     fillColors(
       $('[data-ec-color-fields]'),
@@ -861,10 +1016,43 @@
     var exportBtn = $('[data-ec-theme-export]');
     var copyBtn = $('[data-ec-theme-copy]');
     var resetBtn = $('[data-ec-theme-reset]');
-    if (publishBtn) publishBtn.addEventListener('click', publish);
+    if (publishBtn) {
+      publishBtn.addEventListener('click', function () {
+        collectState();
+        if (!window.ECTheme.validateTheme(state)) {
+          setStatus(t('www.themePublishNeedName'), 'error');
+          return;
+        }
+        openConfirm(
+          {
+            title: tOr('www.themeConfirmPublishTitle', 'Publish this theme?'),
+            body: tOr(
+              'www.themeConfirmPublishBody',
+              'It will appear in the public gallery with the name and author you entered.',
+            ),
+            ok: tOr('www.themePublish', 'Publish'),
+          },
+          publish,
+        );
+      });
+    }
     if (exportBtn) exportBtn.addEventListener('click', downloadJson);
     if (copyBtn) copyBtn.addEventListener('click', copyJson);
-    if (resetBtn) resetBtn.addEventListener('click', resetDraft);
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        openConfirm(
+          {
+            title: tOr('www.themeConfirmResetTitle', 'Reset this theme?'),
+            body: tOr(
+              'www.themeConfirmResetBody',
+              'Every field goes back to the default theme. You will lose unsaved edits.',
+            ),
+            ok: tOr('www.themeReset', 'Reset'),
+          },
+          resetDraft,
+        );
+      });
+    }
   }
 
   window.ECTheme.waitForCatalog(boot);

@@ -249,6 +249,24 @@
     return btn;
   }
 
+  function createTile() {
+    var a = document.createElement('a');
+    a.className = 'theme-card theme-card-new';
+    a.href = '/themes/new';
+    a.setAttribute('aria-label', t('www.themesNew'));
+    var icon = document.createElement('span');
+    icon.className = 'theme-card-new-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
+    var label = document.createElement('span');
+    label.className = 'theme-card-new-label';
+    label.textContent = t('www.themesNew');
+    a.appendChild(icon);
+    a.appendChild(label);
+    return a;
+  }
+
   function card(row) {
     var theme = window.ECTheme.rowToTheme(row);
     var article = document.createElement('article');
@@ -275,6 +293,7 @@
     var status = $('[data-ec-themes-status]');
     if (!list) return;
     list.replaceChildren();
+    list.appendChild(createTile());
     var rows = window.ECTheme.sortThemes(
       window.ECTheme.withDefaultTheme(allRows),
       sort,

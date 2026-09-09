@@ -1775,6 +1775,10 @@ body.doc {
 
 .theme-preview-col {
   min-width: 0;
+  position: sticky;
+  top: 5.25rem;
+  z-index: 1;
+  align-self: start;
 }
 
 @media (max-width: 800px) {
@@ -1783,6 +1787,8 @@ body.doc {
   }
 
   .theme-preview-col {
+    position: static;
+    top: auto;
     order: -1;
   }
 }
@@ -1801,12 +1807,13 @@ body.doc {
   background: var(--panel);
 }
 
-.theme-fieldset legend {
-  padding: 0 0.35rem;
+.theme-fieldset-title {
+  margin: 0;
   font-family: var(--font-display);
   font-size: 0.92rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 .theme-field,
@@ -2001,13 +2008,77 @@ body.doc {
 }
 
 .theme-color-row input[type="color"] {
-  width: 2.4rem;
-  height: 2rem;
+  width: 1.85rem;
+  height: 1.85rem;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: calc(var(--radius) * 0.85);
-  background: var(--paper);
+  border: none;
+  background: none;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.theme-color-row input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.theme-color-row input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.theme-color-row input[type="color"]::-moz-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.theme-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.theme-field-head > span {
+  min-width: 0;
+}
+
+.theme-field-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--radius) * 0.7);
+  cursor: pointer;
+}
+
+.theme-field-reset:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.theme-field-reset:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.theme-field-reset:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  outline-offset: 1px;
+}
+
+.theme-field-reset svg {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .theme-hex,
@@ -2101,21 +2172,10 @@ body.doc {
 }
 
 .theme-preview-label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
   margin: 0 0 0.65rem;
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 600;
-}
-
-.theme-preview-mode {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--mute);
 }
 
 .theme-mode-tabs {
@@ -2468,15 +2528,91 @@ body.doc {
   border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
-.themes-new-link {
-  flex-shrink: 0;
-  gap: 0.4rem;
+.theme-card-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 12rem;
+  aspect-ratio: 1;
+  text-decoration: none;
+  box-shadow: none;
 }
 
-.themes-new-link svg {
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
+.theme-card-new:hover {
+  border-color: color-mix(in srgb, var(--line) 40%, var(--mute));
+}
+
+.theme-card-new:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-card-new-icon {
+  display: flex;
+  color: var(--ink-soft);
+}
+
+.theme-card-new-label {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.theme-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+
+.theme-confirm[hidden] {
+  display: none;
+}
+
+.theme-confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--ink) 35%, transparent);
+  cursor: pointer;
+}
+
+.theme-confirm-card {
+  position: relative;
+  z-index: 1;
+  width: min(22rem, 100%);
+  padding: 1.15rem 1.2rem 1.2rem;
+  background: var(--panel);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.theme-confirm-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.theme-confirm-body {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--mute);
+}
+
+.theme-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 } /* end @layer components */

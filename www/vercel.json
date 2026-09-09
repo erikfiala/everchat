@@ -9,7 +9,8 @@
     { "source": "/themes/new", "destination": "/themes/new.html" },
     { "source": "/themes", "destination": "/themes.html" },
     { "source": "/themes/:id", "destination": "/theme.html" },
-    { "source": "/panel", "destination": "/panel/index.html" }
+    { "source": "/panel", "destination": "/panel/index.html" },
+    { "source": "/panel/", "destination": "/panel/index.html" }
   ],
   "headers": [
     {
@@ -24,7 +25,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdn.buymeacoffee.com; script-src 'self' https://cdnjs.buymeacoffee.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io https://cdn.buymeacoffee.com https://www.buymeacoffee.com https://buymeacoffee.com https://cdnjs.buymeacoffee.com; frame-src 'self' https://www.buymeacoffee.com https://buymeacoffee.com; base-uri 'self'; form-action 'none'; frame-ancestors 'self'"
+          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdn.buymeacoffee.com; script-src 'self' https://cdnjs.buymeacoffee.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io https://cdn.buymeacoffee.com https://www.buymeacoffee.com https://buymeacoffee.com https://cdnjs.buymeacoffee.com; frame-src 'self' https://www.buymeacoffee.com https://buymeacoffee.com; base-uri 'self'; form-action 'none'; frame-ancestors 'self' https://everch.at https://www.everch.at"
         }
       ]
     },
@@ -34,7 +35,17 @@
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'"
+          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self' https://everch.at https://www.everch.at; base-uri 'self'; form-action 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/panel/",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self' https://everch.at https://www.everch.at; base-uri 'self'; form-action 'none'"
         }
       ]
     },
@@ -44,7 +55,7 @@
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'"
+          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self' https://everch.at https://www.everch.at; base-uri 'self'; form-action 'none'"
         }
       ]
     },

@@ -1,0 +1,101 @@
+diff --git a/util/utils.js b/util/utils.js
+index 8b8efaed31d64a4aa456d4b0905fac2599805ffe..25b2f363f3cb1184150e77e86f29bc7c15b7741f 100644
+--- a/util/utils.js
++++ b/util/utils.js
+@@ -39,6 +39,10 @@ module.exports = Utils;
+ Utils.prototype.makeDir = function (/*String*/ folder) {
+     const self = this;
+ 
++    function lstatSync(path) {
++        return typeof self.fs.lstatSync === "function" ? self.fs.lstatSync(path) : self.fs.statSync(path);
++    }
++
+     // Sync - make directories tree
+     function mkdirSync(/*String*/ fpath) {
+         let resolvedPath = fpath.split(self.sep)[0];
+@@ -47,14 +51,15 @@ Utils.prototype.makeDir = function (/*String*/ folder) {
+             resolvedPath += self.sep + name;
+             var stat;
+             try {
+-                stat = self.fs.statSync(resolvedPath);
++                stat = lstatSync(resolvedPath);
+             } catch (e) {
+-                if (e.message && e.message.startsWith('ENOENT')) {
++                if (e.message && e.message.startsWith("ENOENT")) {
+                     self.fs.mkdirSync(resolvedPath);
+                 } else {
+                     throw e;
+                 }
+             }
++            if (stat && stat.isSymbolicLink && stat.isSymbolicLink()) throw Errors.FILE_IN_THE_WAY(`"${resolvedPath}"`);
+             if (stat && stat.isFile()) throw Errors.FILE_IN_THE_WAY(`"${resolvedPath}"`);
+         });
+     }
+@@ -64,10 +69,27 @@ Utils.prototype.makeDir = function (/*String*/ folder) {
+ 
+ Utils.prototype.writeFileTo = function (/*String*/ path, /*Buffer*/ content, /*Boolean*/ overwrite, /*Number*/ attr) {
+     const self = this;
++    const lstatSync = typeof self.fs.lstatSync === "function" ? self.fs.lstatSync.bind(self.fs) : self.fs.statSync.bind(self.fs);
++    let resolvedPath = pth.parse(path).root;
++    const pathParts = path.slice(resolvedPath.length).split(self.sep);
++
++    for (const part of pathParts) {
++        if (!part) continue;
++        resolvedPath = pth.join(resolvedPath, part);
++        try {
++            const stat = lstatSync(resolvedPath);
++            if (stat.isSymbolicLink && stat.isSymbolicLink()) throw Errors.FILE_IN_THE_WAY(`"${resolvedPath}"`);
++        } catch (e) {
++            if (e.code === "ENOENT" || (e.message && e.message.startsWith("ENOENT"))) break;
++            throw e;
++        }
++    }
++
+     if (self.fs.existsSync(path)) {
+         if (!overwrite) return false; // cannot overwrite
+ 
+-        var stat = self.fs.statSync(path);
++        var stat = lstatSync(path);
++        if (stat.isSymbolicLink && stat.isSymbolicLink()) return false;
+         if (stat.isDirectory()) {
+             return false;
+         }
+@@ -102,7 +124,30 @@ Utils.prototype.writeFileToAsync = function (/*String*/ path, /*Buffer*/ content
+     }
+ 
+     const self = this;
++    const checkSymlink = function (done) {
++        if (typeof self.fs.lstat !== "function") return done(true);
++
++        let resolvedPath = pth.parse(path).root;
++        const pathParts = path.slice(resolvedPath.length).split(self.sep);
++        const checkNext = function (index) {
++            if (index === pathParts.length) return done(true);
++            const part = pathParts[index];
++            if (!part) return checkNext(index + 1);
++            resolvedPath = pth.join(resolvedPath, part);
++            self.fs.lstat(resolvedPath, function (err, stat) {
++                if (err) {
++                    if (err.code === "ENOENT" || (err.message && err.message.startsWith("ENOENT"))) return done(true);
++                    return done(false);
++                }
++                if (stat.isSymbolicLink && stat.isSymbolicLink()) return done(false);
++                checkNext(index + 1);
++            });
++        };
++        checkNext(0);
++    };
+ 
++    checkSymlink(function (safe) {
++    if (!safe) return callback(false);
+     self.fs.exists(path, function (exist) {
+         if (exist && !overwrite) return callback(false);
+ 
+@@ -157,6 +202,7 @@ Utils.prototype.writeFileToAsync = function (/*String*/ path, /*Buffer*/ content
+             });
+         });
+     });
++    });
+ };
+ 
+ Utils.prototype.findFiles = function (/*String*/ path) {

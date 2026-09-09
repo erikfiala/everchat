@@ -68,5 +68,10 @@
     "vitest": "^5.0.0",
     "web-ext": "^10.5.0",
     "wxt": "^0.21.3"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "adm-zip@0.6.0": "patches/adm-zip@0.6.0.patch"
+    }
   }
 }

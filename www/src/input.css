@@ -2726,3 +2726,10 @@ body.doc {
   transform: translate(-50%, -50%);
 }
 
+/* BMC sizes the donate iframe to viewport-120px (inline min/max/height). Cap it
+   so the panel sits above the 64px button instead of a full-height column. */
+#bmc-iframe {
+  min-height: 0 !important;
+  max-height: min(520px, calc(100vh - 110px)) !important;
+}
+

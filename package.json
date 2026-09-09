@@ -21,7 +21,7 @@
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
-    "preview:build": "vite build --config vite.preview.config.ts",
+    "preview:build": "wxt prepare && vite build --config vite.preview.config.ts",
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",

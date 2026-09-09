@@ -15,6 +15,7 @@ function run(args) {
 }
 
 // Vercel Root Directory is www/, so the extension package is not installed.
+// --ignore-scripts skips postinstall (`wxt prepare`); preview:build runs it.
 if (!existsSync(resolve(root, 'node_modules/vite'))) {
   run(['install', '--frozen-lockfile', '--ignore-scripts', '--prod=false']);
 }

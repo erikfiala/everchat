@@ -51,26 +51,6 @@
       </nav>
       <div class="doc-bar-end min-w-0 shrink">
         <div class="nav-lang min-w-0 shrink">
-          <svg
-            class="nav-lang-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m5 8 6 6" />
-            <path d="m4 14 6-6 2-3" />
-            <path d="M2 5h12" />
-            <path d="M7 2h1" />
-            <path d="m22 22-5-10-5 10" />
-            <path d="M14 18h6" />
-          </svg>
           <div class="ec-select" data-ec-lang>
             <button
               type="button"
@@ -84,6 +64,26 @@
               data-i18n="www.language"
               data-i18n-attr="aria-label"
             >
+              <svg
+                class="ec-select-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m5 8 6 6" />
+                <path d="m4 14 6-6 2-3" />
+                <path d="M2 5h12" />
+                <path d="M7 2h1" />
+                <path d="m22 22-5-10-5 10" />
+                <path d="M14 18h6" />
+              </svg>
               <span class="ec-select-value" data-ec-lang-label></span>
               <svg
                 class="ec-select-chevron"
@@ -151,34 +151,81 @@
           Themes
         </h1>
         <div class="themes-toolbar">
-          <div class="themes-sort" role="group" aria-label="Sort themes" data-i18n="www.themesSort" data-i18n-attr="aria-label">
+          <div class="ec-select themes-sort" data-ec-themes-sort>
             <button
               type="button"
-              class="theme-sort-btn is-active"
-              data-ec-themes-sort="best"
-              aria-pressed="true"
-              data-i18n="chat.sortBest"
+              class="ec-select-trigger"
+              data-ec-themes-sort-trigger
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              aria-label="Sort themes"
+              data-i18n="www.themesSort"
+              data-i18n-attr="aria-label"
             >
-              Best
+              <svg
+                class="ec-select-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m21 16-4 4-4-4" />
+                <path d="M17 20V4" />
+                <path d="m3 8 4-4 4 4" />
+                <path d="M7 4v16" />
+              </svg>
+              <span class="ec-select-value" data-ec-themes-sort-label>Best</span>
+              <svg
+                class="ec-select-chevron"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
             </button>
-            <button
-              type="button"
-              class="theme-sort-btn"
-              data-ec-themes-sort="new"
-              aria-pressed="false"
-              data-i18n="chat.sortNew"
-            >
-              New
-            </button>
+            <div class="ec-select-menu" data-ec-themes-sort-menu role="listbox" hidden></div>
           </div>
-          <a class="browse-all-link themes-new-link" href="/themes/new" data-i18n="www.themesNew">New theme</a>
+          <a class="browse-all-link themes-new-link" href="/themes/new">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            <span data-i18n="www.themesNew">New theme</span>
+          </a>
         </div>
       </div>
 
       <p class="trending-status browse-status m-0 text-mute" data-ec-themes-status hidden></p>
 
       <div
-        class="theme-list grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        class="theme-list grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         data-ec-themes-list
         aria-label="Published themes"
         data-i18n="www.themesAria"

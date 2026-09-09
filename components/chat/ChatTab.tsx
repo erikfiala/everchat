@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpDown, Check, ChevronDown } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContextHeader } from '@/components/PageContextHeader';
 import { ListSentinel } from '@/components/ListSentinel';
@@ -272,26 +272,44 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               </div>
             </TooltipProvider>
 
-            <div className="ms-auto flex min-w-0 items-center gap-1.5">
-              <span className="text-xs text-[var(--color-muted-foreground)]">
-                {t('chat.sort')}
-              </span>
+            <div className="ms-auto min-w-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     size="xs"
                     variant="outline"
-                    className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
+                    className="h-7 shrink-0 gap-1 py-0 ps-2 pe-2 font-normal"
+                    aria-label={`${t('chat.sort')} ${sortLabel(thread.sort)}`}
                   >
+                    <ArrowUpDown
+                      className="size-3.5 shrink-0 opacity-60"
+                      aria-hidden
+                    />
                     {sortLabel(thread.sort)}
                     <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onSelect={() => thread.setSort('best')}>
+                  <DropdownMenuItem
+                    onSelect={() => thread.setSort('best')}
+                    className="gap-2 pe-2"
+                  >
+                    <span className="flex size-3.5 items-center justify-center">
+                      {thread.sort === 'best' ? (
+                        <Check className="size-3.5" aria-hidden />
+                      ) : null}
+                    </span>
                     {t('chat.sortBest')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => thread.setSort('new')}>
+                  <DropdownMenuItem
+                    onSelect={() => thread.setSort('new')}
+                    className="gap-2 pe-2"
+                  >
+                    <span className="flex size-3.5 items-center justify-center">
+                      {thread.sort === 'new' ? (
+                        <Check className="size-3.5" aria-hidden />
+                      ) : null}
+                    </span>
                     {t('chat.sortNew')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>

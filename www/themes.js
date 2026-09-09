@@ -36,6 +36,199 @@
     return row;
   }
 
+  var CHECK_SVG =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+  var sortRoot = null;
+  var sortOpen = false;
+  var sortActive = -1;
+
+  function sortLabel(mode) {
+    return mode === 'new' ? t('chat.sortNew') : t('chat.sortBest');
+  }
+
+  function sortOptions() {
+    if (!sortRoot) return [];
+    return $$('[role="option"]', sortRoot);
+  }
+
+  function closeSort(restoreFocus) {
+    if (!sortRoot || !sortOpen) {
+      sortOpen = false;
+      return;
+    }
+    var trigger = $('[data-ec-themes-sort-trigger]', sortRoot);
+    var menu = $('[data-ec-themes-sort-menu]', sortRoot);
+    if (menu) menu.hidden = true;
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.removeAttribute('aria-activedescendant');
+      if (restoreFocus) trigger.focus();
+    }
+    sortRoot.classList.remove('is-open');
+    sortOpen = false;
+    sortActive = -1;
+  }
+
+  function highlightSort(index) {
+    var opts = sortOptions();
+    if (!opts.length) return;
+    if (index < 0) index = opts.length - 1;
+    if (index >= opts.length) index = 0;
+    sortActive = index;
+    opts.forEach(function (opt, i) {
+      opt.classList.toggle('is-active', i === index);
+    });
+    var trigger = $('[data-ec-themes-sort-trigger]', sortRoot);
+    if (trigger && opts[index].id) {
+      trigger.setAttribute('aria-activedescendant', opts[index].id);
+    }
+    if (opts[index].scrollIntoView) {
+      opts[index].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  function openSort() {
+    if (!sortRoot) return;
+    var trigger = $('[data-ec-themes-sort-trigger]', sortRoot);
+    var menu = $('[data-ec-themes-sort-menu]', sortRoot);
+    if (!trigger || !menu) return;
+    menu.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    sortRoot.classList.add('is-open');
+    sortOpen = true;
+    var opts = sortOptions();
+    var selected = -1;
+    for (var i = 0; i < opts.length; i++) {
+      if (opts[i].getAttribute('aria-selected') === 'true') {
+        selected = i;
+        break;
+      }
+    }
+    highlightSort(selected >= 0 ? selected : 0);
+  }
+
+  function toggleSort() {
+    if (sortOpen) closeSort(false);
+    else openSort();
+  }
+
+  function commitSort(next) {
+    if (next !== 'best' && next !== 'new') return;
+    sort = next;
+    closeSort(true);
+    render();
+  }
+
+  function syncSortSelect() {
+    if (!sortRoot) return;
+    var label = $('[data-ec-themes-sort-label]', sortRoot);
+    var menu = $('[data-ec-themes-sort-menu]', sortRoot);
+    var trigger = $('[data-ec-themes-sort-trigger]', sortRoot);
+    if (label) label.textContent = sortLabel(sort);
+    if (!menu) return;
+    var wasOpen = sortOpen;
+    if (wasOpen) closeSort(false);
+    var uid = menu.id || (trigger && trigger.id) || 'ec-themes-sort';
+    menu.innerHTML = '';
+    [
+      { value: 'best', label: t('chat.sortBest') },
+      { value: 'new', label: t('chat.sortNew') },
+    ].forEach(function (item) {
+      var opt = document.createElement('div');
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('data-value', item.value);
+      opt.id = uid + '-opt-' + item.value;
+      opt.className = 'ec-select-item';
+      if (item.value === sort) opt.setAttribute('aria-selected', 'true');
+      var check = document.createElement('span');
+      check.className = 'ec-select-check';
+      check.setAttribute('aria-hidden', 'true');
+      if (item.value === sort) check.innerHTML = CHECK_SVG;
+      var text = document.createElement('span');
+      text.className = 'ec-select-item-label';
+      text.textContent = item.label;
+      opt.appendChild(check);
+      opt.appendChild(text);
+      menu.appendChild(opt);
+    });
+    if (wasOpen) openSort();
+  }
+
+  function handleSortKey(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!sortOpen) {
+        openSort();
+        if (e.key === 'ArrowUp') highlightSort(sortOptions().length - 1);
+        return;
+      }
+      highlightSort(sortActive + (e.key === 'ArrowDown' ? 1 : -1));
+      return;
+    }
+    if (e.key === 'Home' && sortOpen) {
+      e.preventDefault();
+      highlightSort(0);
+      return;
+    }
+    if (e.key === 'End' && sortOpen) {
+      e.preventDefault();
+      highlightSort(sortOptions().length - 1);
+      return;
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && sortOpen) {
+      e.preventDefault();
+      var opts = sortOptions();
+      if (opts[sortActive]) commitSort(opts[sortActive].getAttribute('data-value'));
+      return;
+    }
+    if (e.key === 'Escape' && sortOpen) {
+      e.preventDefault();
+      closeSort(true);
+      return;
+    }
+    if (e.key === 'Tab' && sortOpen) closeSort(false);
+  }
+
+  function enhanceSortSelect() {
+    sortRoot = $('[data-ec-themes-sort]');
+    if (!sortRoot || sortRoot.getAttribute('data-ec-enhanced') === '1') {
+      syncSortSelect();
+      return;
+    }
+    sortRoot.setAttribute('data-ec-enhanced', '1');
+    var trigger = $('[data-ec-themes-sort-trigger]', sortRoot);
+    var menu = $('[data-ec-themes-sort-menu]', sortRoot);
+    if (!trigger || !menu) return;
+    trigger.id = trigger.id || 'ec-themes-sort-trigger';
+    menu.id = menu.id || 'ec-themes-sort-menu';
+    trigger.setAttribute('aria-controls', menu.id);
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      toggleSort();
+    });
+    trigger.addEventListener('keydown', handleSortKey);
+    menu.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+    });
+    menu.addEventListener('click', function (e) {
+      var opt = e.target.closest('[role="option"]');
+      if (opt && menu.contains(opt)) commitSort(opt.getAttribute('data-value'));
+    });
+    menu.addEventListener('mousemove', function (e) {
+      var opt = e.target.closest('[role="option"]');
+      if (!opt) return;
+      var i = sortOptions().indexOf(opt);
+      if (i >= 0) highlightSort(i);
+    });
+    document.addEventListener('mousedown', function (e) {
+      if (sortOpen && sortRoot && !sortRoot.contains(e.target)) closeSort(false);
+    });
+    document.querySelectorAll('[data-ec-lang]').forEach(function (sel) {
+      sel.addEventListener('change', syncSortSelect);
+    });
+    syncSortSelect();
+  }
+
   function likeButton(row) {
     var on = !!liked[row.slug];
     var count = typeof row.like_count === 'number' ? row.like_count : 0;
@@ -77,14 +270,6 @@
     return article;
   }
 
-  function syncSortButtons() {
-    $$('[data-ec-themes-sort]').forEach(function (btn) {
-      var on = btn.getAttribute('data-ec-themes-sort') === sort;
-      btn.classList.toggle('is-active', on);
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-  }
-
   function render() {
     var list = $('[data-ec-themes-list]');
     var status = $('[data-ec-themes-status]');
@@ -100,7 +285,7 @@
       if (!window.ECTheme.rowToTheme(row)) return;
       list.appendChild(card(row));
     });
-    syncSortButtons();
+    syncSortSelect();
   }
 
   function applyLikeResult(slug, data) {
@@ -203,20 +388,14 @@
   function boot() {
     var retry = $('[data-ec-themes-retry]');
     if (retry) retry.addEventListener('click', load);
-    $$('[data-ec-themes-sort]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var next = btn.getAttribute('data-ec-themes-sort');
-        if (next !== 'best' && next !== 'new') return;
-        sort = next;
-        render();
-      });
-    });
+    enhanceSortSelect();
     var list = $('[data-ec-themes-list]');
     if (list) {
       list.addEventListener('click', function (event) {
         var btn = event.target.closest('[data-ec-theme-like]');
         if (!btn) return;
         event.preventDefault();
+        event.stopPropagation();
         onLike(btn.getAttribute('data-ec-theme-like'));
       });
     }

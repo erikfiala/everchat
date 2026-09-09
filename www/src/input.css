@@ -1300,20 +1300,10 @@ body.doc {
 .nav-lang {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
   margin: 0;
-  color: var(--mute);
   min-width: 0;
   flex-shrink: 1;
   max-width: 100%;
-}
-
-.nav-lang-icon {
-  display: block;
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-  color: var(--mute);
 }
 
 /* shadcn-style field + listbox (mirrors extension Settings DropdownMenu + outline Button) */
@@ -1327,7 +1317,7 @@ body.doc {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.35rem;
   width: 100%;
   height: 2.25rem;
@@ -1345,11 +1335,21 @@ body.doc {
   appearance: none;
 }
 
+.ec-select-icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--mute);
+}
+
 .ec-select-value {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: start;
 }
 
 .ec-select-chevron {
@@ -1429,12 +1429,12 @@ body.doc {
 
 /* Header lang field: compact width; truncate with ellipsis (home + doc) */
 .doc-bar .nav-lang {
-  max-width: 8.25rem;
+  max-width: 9.5rem;
 }
 
 .doc-bar .ec-select {
-  width: 7.25rem;
-  max-width: 7.25rem;
+  width: 8.5rem;
+  max-width: 8.5rem;
 }
 
 .doc-bar-end {
@@ -1546,12 +1546,11 @@ body.doc {
   }
 
   .nav-lang {
-    gap: 0.3rem;
-    max-width: min(9.5rem, 42vw);
+    max-width: min(10.5rem, 48vw);
   }
 
   .doc-bar .nav-lang {
-    max-width: min(7.25rem, 40vw);
+    max-width: min(8.5rem, 46vw);
   }
 
   .ec-select-trigger {
@@ -1732,41 +1731,14 @@ body.doc {
   gap: 0.75rem;
 }
 
-.themes-sort {
-  display: inline-flex;
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
+.themes-toolbar .ec-select {
+  width: auto;
+  max-width: 11rem;
 }
 
-.theme-sort-btn {
-  margin: 0;
-  padding: 0.4rem 0.85rem;
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--ink-soft);
-  background: var(--panel);
-  border: 0;
-  cursor: pointer;
-}
-
-.theme-sort-btn + .theme-sort-btn {
-  border-left: 1.5px solid var(--line);
-}
-
-.theme-sort-btn:hover {
-  color: var(--ink);
-}
-
-.theme-sort-btn.is-active {
-  color: var(--paper);
-  background: var(--ink);
-}
-
-.theme-sort-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
+.themes-toolbar .ec-select-trigger {
+  width: auto;
+  min-width: 8.5rem;
 }
 
 .themes-head h1,
@@ -2274,9 +2246,12 @@ body.doc {
 }
 
 .theme-card {
-  display: grid;
-  gap: 0.55rem;
-  padding: 0.95rem 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 11.5rem;
+  padding: 1.25rem 1.35rem;
   color: var(--ink);
   background: var(--panel);
   border: 1.5px solid var(--line);
@@ -2285,20 +2260,31 @@ body.doc {
 
 .theme-card:hover {
   border-color: color-mix(in srgb, var(--line) 40%, var(--mute));
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.theme-card:has(.theme-card-link:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .theme-card-link {
-  display: grid;
-  gap: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.75rem;
   min-width: 0;
   text-decoration: none;
   color: inherit;
 }
 
+.theme-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
 .theme-card-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: none;
 }
 
 .theme-card-name {
@@ -2316,6 +2302,8 @@ body.doc {
 }
 
 .theme-like {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2366,17 +2354,24 @@ body.doc {
 
 .theme-swatches {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.45rem;
 }
 
 .theme-swatch {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
 .themes-new-link {
+  flex-shrink: 0;
+  gap: 0.4rem;
+}
+
+.themes-new-link svg {
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
 }
 

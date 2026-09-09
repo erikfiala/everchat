@@ -10,12 +10,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Theme builder at everch.at/themes/new, public gallery at /themes, and Import to Everchat via the extension
 - Theme preview iframes the real side panel UI (fixture thread) and updates live from tokens
-- Site header links: Chats, Themes, Donate, GitHub
+- Site header links: Chats, Themes, Support, GitHub
 
 ### Changed
 
 - All-chats page lives at /chats
-- Footer order is Donate, then GitHub
+- Footer order is Support, then GitHub
 
 ## [1.0.0] - 2026-09-08
 
@@ -44,4 +44,4 @@ comments on any URL.
 ### Security
 
 - Supabase RLS, invoker-safe RPCs, and WebAuthn edge functions
-- No third-party analytics pixels; donations via Buy Me a Coffee
+- No third-party analytics pixels; support via Buy Me a Coffee

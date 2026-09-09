@@ -26,9 +26,9 @@ enough to need one, maintainers will publish an update here.
 
 ## Funding
 
-Voluntary donations go through [Buy Me a Coffee](https://buymeacoffee.com/everchat).
-Donations do not buy ranking, visibility, or special treatment. Hosting, domains,
-and other project costs are paid from those donations at the maintainer’s discretion.
+Voluntary support goes through [Buy Me a Coffee](https://buymeacoffee.com/everchat).
+Support does not buy ranking, visibility, or special treatment. Hosting, domains,
+and other project costs are paid from that support at the maintainer’s discretion.
 
 ## Succession
 

@@ -30,7 +30,7 @@ Web pages have no portable conversation layer. Discussion ends up on Twitter, Re
 
 ## Themes
 
-Browse, build, and import Themes at [https://everch.at/themes](https://everch.at/themes).
+Browse, import, build, and publish themes at [https://everch.at/themes](https://everch.at/themes).
 
 ## Install
 

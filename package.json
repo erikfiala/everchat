@@ -28,6 +28,7 @@
     "preview:build": "wxt prepare && vite build --config vite.preview.config.ts",
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
+    "zip:cws": "CWS_UPLOAD=1 wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
     "postinstall": "wxt prepare",

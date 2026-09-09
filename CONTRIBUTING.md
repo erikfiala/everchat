@@ -90,7 +90,10 @@ fall back to English for missing keys.
    changelog section plus generated commit notes.
 
 Never put the Chrome Web Store upload private key in git. `wxt.config.ts`
-already pins the **public** extension key so unpacked builds keep a stable ID.
+pins the **public** extension key so unpacked / GitHub Release zips keep a
+stable ID. Chrome Web Store rejects `key` on first upload — use `pnpm zip:cws`
+for that package, then add the store-assigned ID to `www/.well-known/webauthn`
+and `WEBAUTHN_ORIGIN`.
 
 ## Local backends (contribution testing)
 

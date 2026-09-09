@@ -27,10 +27,15 @@ export default defineConfig({
     },
   },
   manifest: {
-    // Stable extension ID for WebAuthn (ID: hnafijpegchmgpmkefjihhfpegonnjdb).
+    // Stable unpacked ID for WebAuthn (hnafijpegchmgpmkefjihhfpegonnjdb).
+    // Chrome Web Store rejects `key` on upload — omit it with `pnpm zip:cws`.
     // Chrome/Firefox only allow claiming RP ID everch.at when that host is in
     // host_permissions (not via related-origins alone). See MDN WebAuthn extensions.
-    key: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyna26i/m1MBkUrM8+Ty9KAbWLVDwABPuCEdPp3pbzJz9FzpseX5PBdamKIzvbmLWg0h/2YE6+bfDrabgLtZJ54xGYq8W91XdPhJ9Cq6utVqFm90RnyGbBJmcBf2HW4v/RxtsnA+J0L9vUpKbhuBKnOV6ep5319PKZe60sRZ1fORQtxhix3m/SbFta5S0DxCdAuz/zJmQlhrlzB2ZVb1EwlJESOgChvIV49TF/PTqMnskQZH/Z/6tBlePAc7nhg0cEeLvrd37E0UWpvbyK9qhFKWvDUyMHGvimEouwrUIptVyNp1Sv6bG9dEflrYypCaBdwKRodqVkGlUM+Aff+MggwIDAQAB',
+    ...(process.env.CWS_UPLOAD
+      ? {}
+      : {
+          key: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyna26i/m1MBkUrM8+Ty9KAbWLVDwABPuCEdPp3pbzJz9FzpseX5PBdamKIzvbmLWg0h/2YE6+bfDrabgLtZJ54xGYq8W91XdPhJ9Cq6utVqFm90RnyGbBJmcBf2HW4v/RxtsnA+J0L9vUpKbhuBKnOV6ep5319PKZe60sRZ1fORQtxhix3m/SbFta5S0DxCdAuz/zJmQlhrlzB2ZVb1EwlJESOgChvIV49TF/PTqMnskQZH/Z/6tBlePAc7nhg0cEeLvrd37E0UWpvbyK9qhFKWvDUyMHGvimEouwrUIptVyNp1Sv6bG9dEflrYypCaBdwKRodqVkGlUM+Aff+MggwIDAQAB',
+        }),
     name: 'Everchat',
     description:
       'Public comments on any URL. Sign up anonymously with a passkey. No email.',

@@ -153,6 +153,27 @@ export function googleFontsHref(family: string): string | null {
   return `https://fonts.googleapis.com/css2?family=${encoded}:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap`;
 }
 
+/** 400-only CSS for picker previews. Pass the families currently on screen. */
+export function googleFontsPreviewHref(
+  families: string | readonly string[],
+): string | null {
+  const list = typeof families === 'string' ? [families] : families;
+  const safe: string[] = [];
+  const seen = new Set<string>();
+  for (const family of list) {
+    const name = sanitizeFontFamily(family);
+    if (!name || seen.has(name)) continue;
+    seen.add(name);
+    safe.push(name);
+  }
+  if (!safe.length) return null;
+  return (
+    'https://fonts.googleapis.com/css2?' +
+    safe.map((name) => `family=${name.replace(/ /g, '+')}:wght@400`).join('&') +
+    '&display=swap'
+  );
+}
+
 function hasForbidden(value: unknown): boolean {
   if (typeof value === 'string') return FORBIDDEN.test(value);
   return false;

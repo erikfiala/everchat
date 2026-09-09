@@ -185,21 +185,64 @@
               />
             </label>
             <p class="theme-hint" data-i18n="www.themeAuthorHint">Shown on the gallery. No account required.</p>
-            <label class="theme-field">
-              <span data-i18n="www.themeFont">Google Font</span>
-              <input
-                type="text"
-                name="fontFamily"
-                maxlength="60"
-                spellcheck="false"
-                list="ec-font-suggestions"
-                data-ec-theme-font
-                data-i18n="www.themeFontPlaceholder"
-                data-i18n-attr="placeholder"
-                placeholder="Inter"
-              />
-            </label>
-            <datalist id="ec-font-suggestions" data-ec-font-list></datalist>
+            <div class="theme-field">
+              <span id="ec-font-field-label" data-i18n="www.themeFont">Google Font</span>
+              <div class="theme-font-picker" data-ec-font-picker>
+                <input type="hidden" name="fontFamily" value="" data-ec-theme-font />
+                <button
+                  type="button"
+                  class="theme-font-trigger"
+                  data-ec-font-trigger
+                  role="combobox"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="ec-font-list"
+                  aria-labelledby="ec-font-field-label"
+                >
+                  <span class="theme-font-value" data-ec-font-label>Default</span>
+                  <svg
+                    class="theme-font-chevron"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <div class="theme-font-menu" data-ec-font-menu hidden>
+                  <input
+                    type="search"
+                    class="theme-font-search"
+                    data-ec-font-search
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-autocomplete="list"
+                    aria-controls="ec-font-list"
+                    data-i18n="www.themeFontSearch"
+                    data-i18n-attr="placeholder"
+                    placeholder="Search fonts"
+                  />
+                  <div
+                    class="theme-font-viewport"
+                    data-ec-font-viewport
+                    role="listbox"
+                    id="ec-font-list"
+                  >
+                    <div class="theme-font-spacer" data-ec-font-spacer></div>
+                  </div>
+                  <p class="theme-font-empty" data-ec-font-empty hidden data-i18n="www.themeFontEmpty">
+                    No matching fonts
+                  </p>
+                </div>
+              </div>
+            </div>
             <p class="theme-hint theme-font-status" data-ec-font-status hidden></p>
           </fieldset>
 

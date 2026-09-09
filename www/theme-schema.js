@@ -144,6 +144,45 @@
     );
   }
 
+  function googleFontsPreviewHref(families) {
+    var list = typeof families === 'string' ? [families] : families || [];
+    var safe = [];
+    var seen = {};
+    var i;
+    for (i = 0; i < list.length; i++) {
+      var name = sanitizeFontFamily(list[i]);
+      if (!name || seen[name]) continue;
+      seen[name] = true;
+      safe.push(name);
+    }
+    if (!safe.length) return null;
+    return (
+      'https://fonts.googleapis.com/css2?' +
+      safe
+        .map(function (name) {
+          return 'family=' + name.replace(/ /g, '+') + ':wght@400';
+        })
+        .join('&') +
+      '&display=swap'
+    );
+  }
+
+  function loadGoogleFontPreviews(doc, families) {
+    var href = googleFontsPreviewHref(families);
+    if (!href || !doc || !doc.head) return;
+    var existing = doc.querySelectorAll('link[data-ec-font-preview]');
+    var i;
+    for (i = 0; i < existing.length; i++) {
+      if (existing[i].href === href) return;
+    }
+    var link = doc.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.referrerPolicy = 'no-referrer';
+    link.setAttribute('data-ec-font-preview', '1');
+    doc.head.appendChild(link);
+  }
+
   function validateLabel(value, kind) {
     if (typeof value !== 'string') return null;
     var text = value.trim();
@@ -479,6 +518,8 @@
     isValidFontFamily: isValidFontFamily,
     sanitizeFontFamily: sanitizeFontFamily,
     googleFontsHref: googleFontsHref,
+    googleFontsPreviewHref: googleFontsPreviewHref,
+    loadGoogleFontPreviews: loadGoogleFontPreviews,
     validateLabel: validateLabel,
     isValidSlug: isValidSlug,
     validateTokens: validateTokens,

@@ -4,6 +4,7 @@ import {
   defaultTheme,
   exportTheme,
   googleFontsHref,
+  googleFontsPreviewHref,
   isValidFontFamily,
   sanitizeFontFamily,
   validateTheme,
@@ -82,5 +83,12 @@ describe('theme schema', () => {
       'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap',
     );
     expect(googleFontsHref('bad/name')).toBeNull();
+  });
+
+  it('builds a 400-only preview href for visible families', () => {
+    expect(googleFontsPreviewHref(['Inter', 'Source Serif 4', 'bad/name'])).toBe(
+      'https://fonts.googleapis.com/css2?family=Inter:wght@400&family=Source+Serif+4:wght@400&display=swap',
+    );
+    expect(googleFontsPreviewHref('')).toBeNull();
   });
 });

@@ -18,6 +18,8 @@ import {
 import { setSupabaseAccessToken, isSupabaseConfigured } from '@/lib/supabase';
 import { fetchProfile } from '@/lib/profile';
 import { useLocale } from '@/hooks/useLocale';
+import { PREVIEW_USER } from '@/lib/preview/fixtures';
+import { isPreviewMode } from '@/lib/preview/mode';
 import { toast } from 'sonner';
 
 interface AuthContextValue {
@@ -87,6 +89,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [showAuthLanding, setShowAuthLanding] = useState(false);
 
   useEffect(() => {
+    if (isPreviewMode()) {
+      setUser(PREVIEW_USER);
+      setLoading(false);
+      return;
+    }
     (async () => {
       const session = await loadSession();
       if (session) {

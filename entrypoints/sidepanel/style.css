@@ -66,6 +66,16 @@ html[data-theme='dark'] body {
   color-scheme: dark;
 }
 
+html[data-ec-skin] body {
+  font-size: var(--font-size, 14px);
+}
+
+html[data-ec-skin] [data-slot='button']:hover:not(:disabled) {
+  background-color: var(--color-hover-background);
+  border-color: var(--color-hover-border);
+  color: var(--color-hover-foreground);
+}
+
 /* Reserved @anonymous / deleted-comment avatar — gray step above page/card. */
 .ec-anonymous-avatar {
   background-color: #e4e4e7; /* zinc-200 */

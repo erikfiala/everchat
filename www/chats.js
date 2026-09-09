@@ -1,6 +1,6 @@
 /**
- * Browse every public room (pages table, anon SELECT) with server-side search
- * and 90-at-a-time lazy load. Cards reuse ECRooms helpers from rooms.js.
+ * Browse public rooms that have 1+ comments (active_pages), with server-side
+ * search and 90-at-a-time lazy load. Cards reuse ECRooms helpers from rooms.js.
  */
 (function () {
   var PAGE_SIZE = 90;

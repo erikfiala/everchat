@@ -41,8 +41,8 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
           <img
             src={
               resolved === 'dark'
-                ? '/ec-logo-horizontal-white.svg'
-                : '/ec-logo-horizontal-black.svg'
+                ? `${import.meta.env.BASE_URL}ec-logo-horizontal-white.svg`
+                : `${import.meta.env.BASE_URL}ec-logo-horizontal-black.svg`
             }
             alt={t('nav.brandAlt')}
             width="120"

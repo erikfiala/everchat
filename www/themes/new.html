@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="www.themeBuilderPageTitle">New theme - Everchat</title>
+    <meta
+      name="description"
+      content="Design an Everchat skin. Colors, Google Fonts, and spacing tokens with a live preview."
+      data-i18n="www.themeBuilderMetaDescription"
+      data-i18n-attr="content"
+    />
+    <meta property="og:title" content="New theme - Everchat" />
+    <meta
+      property="og:description"
+      content="Design an Everchat skin. Colors, Google Fonts, and spacing tokens with a live preview."
+    />
+    <meta property="og:url" content="https://everch.at/themes/new" />
+    <meta property="og:image" content="https://everch.at/assets/ec-og-image.png" />
+    <meta property="og:image:width" content="2284" />
+    <meta property="og:image:height" content="1200" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://everch.at/assets/ec-og-image.png" />
+    <link rel="canonical" href="https://everch.at/themes/new" />
+    <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+    <meta name="referrer" content="no-referrer" />
+    <script src="/boot-locale.js"></script>
+  </head>
+  <body class="m-0 min-h-screen bg-stone font-sans text-[1.0625rem] leading-[1.55] text-ink antialiased">
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="doc-bar sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line/70 bg-paper/86 px-[clamp(1.5rem,4vw,3rem)] py-4 backdrop-blur-[10px]">
+      <a class="home block shrink-0 leading-none" href="/">
+        <img
+          class="h-auto w-[8.5rem] shrink-0 pb-1"
+          src="/assets/ec-logo-horizontal-black.svg"
+          width="560"
+          height="130"
+          alt="Everchat"
+          data-i18n="www.brandAlt"
+          data-i18n-attr="alt"
+        />
+      </a>
+      <nav class="doc-bar-mid" aria-label="Site">
+        <a href="/chats" data-i18n="www.navChats">Chats</a>
+        <a href="/themes" data-i18n="www.navThemes">Themes</a>
+        <a href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <a href="https://github.com/everchathq/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
+      </nav>
+      <div class="doc-bar-end min-w-0 shrink">
+        <div class="nav-lang min-w-0 shrink">
+          <svg
+            class="nav-lang-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m5 8 6 6" />
+            <path d="m4 14 6-6 2-3" />
+            <path d="M2 5h12" />
+            <path d="M7 2h1" />
+            <path d="m22 22-5-10-5 10" />
+            <path d="M14 18h6" />
+          </svg>
+          <div class="ec-select" data-ec-lang>
+            <button
+              type="button"
+              class="ec-select-trigger"
+              data-ec-lang-trigger
+              role="combobox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              aria-label="Language"
+              data-i18n="www.language"
+              data-i18n-attr="aria-label"
+            >
+              <span class="ec-select-value" data-ec-lang-label></span>
+              <svg
+                class="ec-select-chevron"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div class="ec-select-menu" data-ec-lang-menu role="listbox" hidden></div>
+          </div>
+        </div>
+        <div class="doc-bar-menu" data-ec-nav>
+          <button
+            type="button"
+            class="doc-bar-burger"
+            data-ec-nav-trigger
+            aria-expanded="false"
+            aria-controls="ec-site-nav"
+            aria-haspopup="true"
+            aria-label="Menu"
+            data-i18n="www.navMenu"
+            data-i18n-attr="aria-label"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 5h16" />
+              <path d="M4 12h16" />
+              <path d="M4 19h16" />
+            </svg>
+          </button>
+          <div class="doc-bar-panel" id="ec-site-nav" data-ec-nav-panel hidden></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="theme-builder-main relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]">
+      <div class="theme-builder-intro">
+        <p class="theme-kicker">
+          <a href="/themes" data-i18n="www.themesTitle">Themes</a>
+        </p>
+        <h1
+          class="mb-2 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
+          data-i18n="www.themeBuilderTitle"
+        >
+          New theme
+        </h1>
+        <p class="theme-lede m-0 text-mute" data-i18n="www.themeBuilderLede">
+          Play with a skin. Tokens only — no custom CSS.
+        </p>
+      </div>
+
+      <div class="theme-builder" data-ec-theme-builder>
+        <form class="theme-controls" data-ec-theme-form autocomplete="off">
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeIdentity">Identity</legend>
+            <label class="theme-field">
+              <span data-i18n="www.themeName">Theme name</span>
+              <input
+                type="text"
+                name="name"
+                maxlength="80"
+                spellcheck="false"
+                data-ec-theme-name
+                data-i18n="www.themeNamePlaceholder"
+                data-i18n-attr="placeholder"
+                placeholder="My skin"
+              />
+            </label>
+            <label class="theme-field">
+              <span data-i18n="www.themeAuthor">Your name</span>
+              <input
+                type="text"
+                name="author"
+                maxlength="40"
+                spellcheck="false"
+                data-ec-theme-author
+                data-i18n="www.themeAuthorPlaceholder"
+                data-i18n-attr="placeholder"
+                placeholder="Display name"
+              />
+            </label>
+            <p class="theme-hint" data-i18n="www.themeAuthorHint">Shown on the gallery. No account required.</p>
+            <label class="theme-field">
+              <span data-i18n="www.themeFont">Google Font</span>
+              <input
+                type="text"
+                name="fontFamily"
+                maxlength="60"
+                spellcheck="false"
+                list="ec-font-suggestions"
+                data-ec-theme-font
+                data-i18n="www.themeFontPlaceholder"
+                data-i18n-attr="placeholder"
+                placeholder="Inter"
+              />
+            </label>
+            <datalist id="ec-font-suggestions" data-ec-font-list></datalist>
+            <p class="theme-hint theme-font-status" data-ec-font-status hidden></p>
+          </fieldset>
+
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeColors">Colors</legend>
+            <div class="theme-color-grid" data-ec-color-fields></div>
+          </fieldset>
+
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeHover">Hover</legend>
+            <div class="theme-color-grid" data-ec-hover-fields></div>
+          </fieldset>
+
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeType">Type</legend>
+            <div class="theme-size-grid" data-ec-type-fields></div>
+          </fieldset>
+
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeRadius">Corners</legend>
+            <div class="theme-size-grid" data-ec-radius-fields></div>
+          </fieldset>
+
+          <fieldset class="theme-fieldset">
+            <legend data-i18n="www.themeSpacing">Spacing</legend>
+            <div class="theme-size-grid" data-ec-space-fields></div>
+          </fieldset>
+
+          <div class="theme-actions">
+            <button type="button" class="theme-btn theme-btn-primary" data-ec-theme-publish data-i18n="www.themePublish">
+              Publish
+            </button>
+            <button type="button" class="theme-btn" data-ec-theme-export data-i18n="www.themeExport">
+              Download JSON
+            </button>
+            <button type="button" class="theme-btn" data-ec-theme-copy data-i18n="www.themeCopyJson">
+              Copy JSON
+            </button>
+            <button type="button" class="theme-btn" data-ec-theme-reset data-i18n="www.themeReset">
+              Reset
+            </button>
+          </div>
+          <p class="theme-status" data-ec-theme-status hidden></p>
+        </form>
+
+        <section class="theme-preview-col" aria-label="Preview">
+          <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+          <div class="ec-preview-frame">
+            <iframe
+              class="ec-preview-iframe"
+              data-ec-preview-frame
+              title="Everchat preview"
+              src="/panel/"
+              sandbox="allow-scripts allow-same-origin"
+            ></iframe>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer
+      class="site-footer grid justify-items-center gap-3 border-t border-line/70 px-[clamp(1.5rem,4vw,3rem)] pt-8 pb-10 text-center text-[0.8rem] text-mute"
+    >
+      <img
+        class="footer-mark h-8 w-8 rounded-[0.45rem] opacity-90"
+        src="/assets/ec-logo-avatar-rounded.png"
+        width="128"
+        height="128"
+        alt=""
+      />
+      <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://github.com/everchathq/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/terms" data-i18n="www.footerTerms">Terms</a>
+      </nav>
+      <p class="m-0 normal-case" data-i18n="www.footerTagline">© 2026 Everchat. Public comments on any URL.</p>
+    </footer>
+    <script src="/supabase-public.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/theme-schema.js"></script>
+    <script src="/themes-new.js"></script>
+  </body>
+</html>

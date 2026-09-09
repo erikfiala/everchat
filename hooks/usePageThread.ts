@@ -23,6 +23,8 @@ import type {
 } from '@/lib/database.types';
 import { toast } from 'sonner';
 import { getT, tError } from '@/lib/i18n/runtime';
+import { PREVIEW_MESSAGES } from '@/lib/preview/fixtures';
+import { isPreviewMode } from '@/lib/preview/mode';
 
 function mergeVotes(existing: Vote[], incoming: Vote[]): Vote[] {
   if (!incoming.length) return existing;
@@ -71,6 +73,14 @@ export function usePageThread(
   );
 
   const load = useCallback(async () => {
+    if (isPreviewMode()) {
+      setPageId('preview-page');
+      setHasMore(false);
+      setError(null);
+      setLoading(false);
+      rebuild(PREVIEW_MESSAGES, [], sortRef.current);
+      return;
+    }
     if (!tab.canonicalUrl || !isSupabaseConfigured) {
       setPageId(null);
       setRoots([]);

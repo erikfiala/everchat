@@ -9,3 +9,6 @@ verify_jwt = false
 
 [functions.giphy-proxy]
 verify_jwt = false
+
+[functions.publish-theme]
+verify_jwt = false

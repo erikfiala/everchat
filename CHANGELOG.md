@@ -6,6 +6,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Theme builder at everch.at/themes/new, public gallery at /themes, and Import to Everchat via the extension
+- Theme preview iframes the real side panel UI (fixture thread) and updates live from tokens
+- Site header links: Chats, Themes, Donate, GitHub
+
+### Changed
+
+- All-chats page lives at /chats
+- Footer order is Donate, then GitHub
+
 ## [1.0.0] - 2026-09-08
 
 First public release of Everchat: a Chrome side panel for anonymous public

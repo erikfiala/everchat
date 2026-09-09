@@ -3,25 +3,25 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-i18n="www.browsePageTitle">Browse chats - Everchat</title>
+    <title data-i18n="www.themesPageTitle">Themes - Everchat</title>
     <meta
       name="description"
-      content="Browse every public Everchat room. Search by title or URL."
-      data-i18n="www.browseMetaDescription"
+      content="Browse published Everchat skins. Colors, fonts, and spacing as JSON tokens."
+      data-i18n="www.themesMetaDescription"
       data-i18n-attr="content"
     />
-    <meta property="og:title" content="Browse chats - Everchat" />
+    <meta property="og:title" content="Themes - Everchat" />
     <meta
       property="og:description"
-      content="Browse every public Everchat room. Search by title or URL."
+      content="Browse published Everchat skins. Colors, fonts, and spacing as JSON tokens."
     />
-    <meta property="og:url" content="https://everch.at/browse" />
+    <meta property="og:url" content="https://everch.at/themes" />
     <meta property="og:image" content="https://everch.at/assets/ec-og-image.png" />
     <meta property="og:image:width" content="2284" />
     <meta property="og:image:height" content="1200" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://everch.at/assets/ec-og-image.png" />
-    <link rel="canonical" href="https://everch.at/browse" />
+    <link rel="canonical" href="https://everch.at/themes" />
     <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
     <link rel="stylesheet" href="/styles.css" />
@@ -43,6 +43,12 @@
           data-i18n-attr="alt"
         />
       </a>
+      <nav class="doc-bar-mid" aria-label="Site">
+        <a href="/chats" data-i18n="www.navChats">Chats</a>
+        <a href="/themes" data-i18n="www.navThemes" aria-current="page">Themes</a>
+        <a href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <a href="https://github.com/everchathq/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
+      </nav>
       <div class="doc-bar-end min-w-0 shrink">
         <div class="nav-lang min-w-0 shrink">
           <svg
@@ -98,61 +104,71 @@
             <div class="ec-select-menu" data-ec-lang-menu role="listbox" hidden></div>
           </div>
         </div>
+        <div class="doc-bar-menu" data-ec-nav>
+          <button
+            type="button"
+            class="doc-bar-burger"
+            data-ec-nav-trigger
+            aria-expanded="false"
+            aria-controls="ec-site-nav"
+            aria-haspopup="true"
+            aria-label="Menu"
+            data-i18n="www.navMenu"
+            data-i18n-attr="aria-label"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 5h16" />
+              <path d="M4 12h16" />
+              <path d="M4 19h16" />
+            </svg>
+          </button>
+          <div class="doc-bar-panel" id="ec-site-nav" data-ec-nav-panel hidden></div>
+        </div>
       </div>
     </header>
 
     <main
-      class="browse-main relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]"
-      data-ec-browse
+      class="themes-main relative z-1 mx-auto max-w-[72rem] px-[clamp(1.5rem,4vw,3rem)] pt-[clamp(2rem,6vw,3.5rem)] pb-[clamp(4rem,10vw,6rem)]"
+      data-ec-themes
       aria-busy="false"
     >
-      <h1
-        class="mb-5 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
-        data-i18n="www.browseTitle"
-      >
-        All chats
-      </h1>
+      <div class="themes-head">
+        <h1
+          class="mb-5 font-display text-[clamp(1.35rem,3vw,1.75rem)] font-semibold leading-[1.2] tracking-[-0.03em]"
+          data-i18n="www.themesTitle"
+        >
+          Themes
+        </h1>
+        <a class="browse-all-link themes-new-link" href="/themes/new" data-i18n="www.themesNew">New theme</a>
+      </div>
 
-      <label class="browse-search-label">
-        <span class="sr-only" data-i18n="www.browseSearchAria">Search chats</span>
-        <input
-          class="browse-search"
-          type="search"
-          name="q"
-          autocomplete="off"
-          spellcheck="false"
-          enterkeyhint="search"
-          placeholder="Search by title or URL"
-          data-ec-browse-search
-          data-i18n="www.browseSearchPlaceholder"
-          data-i18n-attr="placeholder"
-        />
-      </label>
-
-      <p
-        class="trending-status browse-status m-0 text-mute"
-        data-ec-browse-status
-        hidden
-      ></p>
+      <p class="trending-status browse-status m-0 text-mute" data-ec-themes-status hidden></p>
 
       <div
-        class="trending-list browse-list grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
-        data-ec-browse-list
-        aria-label="All chats"
-        data-i18n="www.browseAria"
+        class="theme-list grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        data-ec-themes-list
+        aria-label="Published themes"
+        data-i18n="www.themesAria"
         data-i18n-attr="aria-label"
       ></div>
 
-      <div class="browse-error" data-ec-browse-error hidden>
-        <p class="m-0" data-ec-browse-error-text></p>
-        <button type="button" class="browse-retry" data-ec-browse-retry data-i18n="chat.retry">
+      <div class="browse-error" data-ec-themes-error hidden>
+        <p class="m-0" data-ec-themes-error-text></p>
+        <button type="button" class="browse-retry" data-ec-themes-retry data-i18n="chat.retry">
           Retry
         </button>
       </div>
-
-      <p class="browse-more trending-status m-0 text-mute" data-ec-browse-more hidden></p>
-      <p class="browse-end" data-ec-browse-end hidden></p>
-      <div class="browse-sentinel" data-ec-browse-sentinel aria-hidden="true"></div>
     </main>
 
     <footer
@@ -168,9 +184,9 @@
       <nav class="footer-links flex flex-wrap justify-center gap-x-[0.55rem] gap-y-[0.35rem] text-[0.8rem]" aria-label="Footer" data-i18n="www.footerAria" data-i18n-attr="aria-label">
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/">Home</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
-        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://github.com/everchathq/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
-        <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://opencollective.com/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.donate">Donate</a>
+        <span class="footer-sep text-mute" aria-hidden="true">·</span>
+        <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="https://github.com/everchathq/everchat" target="_blank" rel="noopener noreferrer" data-i18n="www.footerSource">GitHub</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
         <a class="text-ink-soft no-underline hover:text-accent hover:underline" href="/privacy" data-i18n="www.footerPrivacy">Privacy</a>
         <span class="footer-sep text-mute" aria-hidden="true">·</span>
@@ -180,7 +196,7 @@
     </footer>
     <script src="/supabase-public.js"></script>
     <script src="/i18n.js"></script>
-    <script src="/rooms.js"></script>
-    <script src="/browse.js"></script>
+    <script src="/theme-schema.js"></script>
+    <script src="/themes.js"></script>
   </body>
 </html>

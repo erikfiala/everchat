@@ -204,6 +204,7 @@ export async function getTrendingPages(
       description: string | null;
       favicon_url: string | null;
       message_count: number;
+      post_count: number;
     }
   >();
 
@@ -220,8 +221,9 @@ export async function getTrendingPages(
     const prev = counts.get(page.id);
     if (prev) {
       prev.message_count += 1;
+      prev.post_count += 1;
     } else {
-      counts.set(page.id, { ...page, message_count: 1 });
+      counts.set(page.id, { ...page, message_count: 1, post_count: 1 });
     }
   }
 
@@ -238,9 +240,38 @@ export type ExplorePageRow = {
   description: string | null;
   favicon_url: string | null;
   message_count: number;
+  post_count: number;
   last_active_at: string | null;
   online_count: number;
 };
+
+function asExploreRow(
+  row: {
+    id: string;
+    canonical_url: string;
+    url?: string | null;
+    title: string | null;
+    description: string | null;
+    favicon_url: string | null;
+    message_count?: number;
+    post_count?: number;
+    last_active_at?: string | null;
+  },
+): ExplorePageRow {
+  const posts = row.post_count ?? row.message_count ?? 0;
+  return {
+    id: row.id,
+    canonical_url: row.canonical_url,
+    url: row.url ?? null,
+    title: row.title,
+    description: row.description,
+    favicon_url: row.favicon_url,
+    message_count: row.message_count ?? posts,
+    post_count: posts,
+    last_active_at: row.last_active_at ?? null,
+    online_count: 0,
+  };
+}
 
 /**
  * Recently active rooms: pages ordered by latest non-deleted message time.
@@ -248,17 +279,28 @@ export type ExplorePageRow = {
  */
 export async function getRecentlyActivePages(
   limit = LIST_PAGE_SIZE,
-  opts?: { before?: string | null; excludeIds?: Iterable<string> },
+  offset = 0,
 ): Promise<ExplorePageRow[]> {
   const sb = getSupabase();
-  const excluded = new Set(opts?.excludeIds ?? []);
+  const { data, error } = await sb
+    .from('active_pages')
+    .select('*')
+    .order('last_active_at', { ascending: false })
+    .order('id', { ascending: true })
+    .range(offset, offset + limit - 1);
+
+  if (!error) {
+    return (data ?? []).map(asExploreRow);
+  }
+
+  // View missing: scan live messages like the pre-view Explore "New" path.
   const ordered: ExplorePageRow[] = [];
   const indexById = new Map<string, number>();
-  let cursor = opts?.before ?? null;
+  let cursor: string | null = null;
   let exhausted = false;
   const batchSize = Math.max(limit * 25, 50);
 
-  while (ordered.length < limit && !exhausted) {
+  while (ordered.length < limit + offset && !exhausted) {
     let query = sb
       .from('messages')
       .select('page_id, created_at, pages!inner(*)')
@@ -267,8 +309,8 @@ export async function getRecentlyActivePages(
       .limit(batchSize);
     if (cursor) query = query.lt('created_at', cursor);
 
-    const { data: messages, error } = await query;
-    if (error) throw error;
+    const { data: messages, error: scanError } = await query;
+    if (scanError) throw scanError;
     if (!messages?.length) break;
 
     exhausted = messages.length < batchSize;
@@ -284,26 +326,29 @@ export async function getRecentlyActivePages(
         description: string | null;
         favicon_url: string | null;
       };
-      if (!page || excluded.has(page.id)) continue;
+      if (!page) continue;
 
       const existing = indexById.get(page.id);
       if (existing != null) {
         const seen = ordered[existing];
-        if (seen) seen.message_count += 1;
+        if (seen) {
+          seen.message_count += 1;
+          seen.post_count += 1;
+        }
         continue;
       }
-      if (ordered.length >= limit) continue;
 
       indexById.set(page.id, ordered.length);
       ordered.push({
         ...page,
         url: page.url ?? null,
         message_count: 1,
+        post_count: 1,
         last_active_at: row.created_at as string,
         online_count: 0,
       });
     }
   }
 
-  return ordered;
+  return ordered.slice(offset, offset + limit);
 }

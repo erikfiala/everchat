@@ -1,5 +1,5 @@
 /**
- * Shared room-card helpers for everch.at trending + browse.
+ * Shared room-card helpers for everch.at trending + chats.
  * Config: window.EC_SUPABASE from supabase-public.js
  */
 (function (global) {
@@ -117,6 +117,7 @@
       displayUrl(row.canonical_url) || hostFromCanonical(row.canonical_url);
 
     var online = row.online_count || 0;
+    var posts = row.post_count || row.message_count || 0;
     var live = online > 0;
 
     var meta = document.createElement('span');
@@ -130,8 +131,13 @@
     meta.appendChild(dot);
 
     var talking = document.createElement('span');
-    talking.textContent =
+    var onlineLabel =
       t('www.trendingTalking', { count: online }) || online + ' online';
+    var postsKey = posts === 1 ? 'www.trendingPost' : 'www.trendingPosts';
+    var postsLabel =
+      t(postsKey, { count: posts }) ||
+      posts + (posts === 1 ? ' post' : ' posts');
+    talking.textContent = onlineLabel + ' · ' + postsLabel;
     meta.appendChild(talking);
 
     body.appendChild(title);
@@ -459,19 +465,19 @@
   }
 
   /**
-   * Public `pages` list (RLS: anon SELECT). Server-side search on
-   * title, canonical_url (includes host), and original url.
+   * Public rooms with 1+ live comments (`active_pages`). Empty `pages`
+   * rows from opening the side panel are excluded. Search title / URL.
    */
   function fetchPages(cfg, opts) {
     var limit = (opts && opts.limit) || 90;
     var offset = (opts && opts.offset) || 0;
     var q = opts && opts.q ? String(opts.q).trim() : '';
-    var url = new URL(cfg.url.replace(/\/$/, '') + '/rest/v1/pages');
+    var url = new URL(cfg.url.replace(/\/$/, '') + '/rest/v1/active_pages');
     url.searchParams.set(
       'select',
-      'id,canonical_url,url,title,favicon_url',
+      'id,canonical_url,url,title,favicon_url,message_count,post_count,last_active_at',
     );
-    url.searchParams.set('order', 'updated_at.desc,id.asc');
+    url.searchParams.set('order', 'last_active_at.desc,id.asc');
     url.searchParams.set('limit', String(limit));
     url.searchParams.set('offset', String(offset));
     if (q) {
@@ -489,7 +495,7 @@
     }
     return fetch(url.toString(), { headers: supabaseHeaders(cfg) }).then(
       function (res) {
-        if (!res.ok) throw new Error('pages ' + res.status);
+        if (!res.ok) throw new Error('active_pages ' + res.status);
         return res.json();
       },
     );

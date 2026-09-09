@@ -5,7 +5,11 @@
   "rewrites": [
     { "source": "/m", "destination": "/share" },
     { "source": "/m/:id", "destination": "/share" },
-    { "source": "/browse", "destination": "/browse.html" }
+    { "source": "/chats", "destination": "/chats.html" },
+    { "source": "/themes/new", "destination": "/themes/new.html" },
+    { "source": "/themes", "destination": "/themes.html" },
+    { "source": "/themes/:id", "destination": "/theme.html" },
+    { "source": "/panel", "destination": "/panel/index.html" }
   ],
   "headers": [
     {
@@ -13,14 +17,34 @@
       "headers": [
         { "key": "Referrer-Policy", "value": "no-referrer" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         {
           "key": "Permissions-Policy",
           "value": "camera=(), microphone=(), geolocation=(), interest-cohort=()"
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io; base-uri 'self'; form-action 'none'; frame-ancestors 'self'"
+        }
+      ]
+    },
+    {
+      "source": "/panel",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/panel/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; connect-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'"
         }
       ]
     },

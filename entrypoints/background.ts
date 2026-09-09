@@ -14,6 +14,7 @@ import {
   setPanelAttention,
 } from '@/lib/os-notifications';
 import type { Notification, PanelTab } from '@/lib/database.types';
+import { isValidSlug, parseStoredSkin, SKIN_STORAGE_KEY } from '@/lib/theme';
 import { getPageForMessage } from '@/lib/pages';
 import {
   clearPagePresence,
@@ -356,11 +357,53 @@ export default defineBackground(() => {
     return true;
   });
 
+  async function importThemeFromWww(
+    slug: string,
+    tabId?: number,
+  ): Promise<{ ok: boolean }> {
+    if (!isValidSlug(slug) || !isSupabaseConfigured) return { ok: false };
+    try {
+      const sb = getSupabase();
+      const { data, error } = await sb
+        .from('themes')
+        .select('id, slug, name, author_name, font_family, tokens')
+        .eq('slug', slug)
+        .maybeSingle();
+      if (error || !data) return { ok: false };
+      const skin = parseStoredSkin({
+        schemaVersion: 1,
+        name: data.name,
+        author: data.author_name,
+        fontFamily: data.font_family,
+        tokens: data.tokens,
+        id: data.id,
+        slug: data.slug,
+      });
+      if (!skin) return { ok: false };
+      await browser.storage.local.set({ [SKIN_STORAGE_KEY]: skin });
+      if (tabId != null) {
+        try {
+          await browser.sidePanel.open({ tabId });
+        } catch {
+          /* older chrome */
+        }
+      }
+      return { ok: true };
+    } catch {
+      return { ok: false };
+    }
+  }
+
   browser.runtime.onMessageExternal.addListener(
     (message, sender, sendResponse) => {
       (async () => {
         if (!isEverchatWww(sender.url)) {
           sendResponse({ ok: false });
+          return;
+        }
+        if (message?.type === 'IMPORT_THEME') {
+          const slug = typeof message.slug === 'string' ? message.slug : '';
+          sendResponse(await importThemeFromWww(slug, sender.tab?.id));
           return;
         }
         if (message?.type !== 'OPEN_SHARED_MESSAGE') {

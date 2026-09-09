@@ -13,6 +13,7 @@ import { AuthLanding } from '@/components/auth/AuthLanding';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
+import { SkinProvider } from '@/hooks/useSkin';
 import { useActiveTab } from '@/hooks/useActiveTab';
 import {
   NotificationsProvider,
@@ -146,13 +147,15 @@ function Shell() {
 export default function App() {
   return (
     <ThemeProvider>
-      <LocaleProvider>
-        <AuthProvider>
-          <NotificationsProvider>
-            <Shell />
-          </NotificationsProvider>
-        </AuthProvider>
-      </LocaleProvider>
+      <SkinProvider>
+        <LocaleProvider>
+          <AuthProvider>
+            <NotificationsProvider>
+              <Shell />
+            </NotificationsProvider>
+          </AuthProvider>
+        </LocaleProvider>
+      </SkinProvider>
     </ThemeProvider>
   );
 }

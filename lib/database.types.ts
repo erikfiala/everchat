@@ -411,6 +411,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      themes: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          author_name: string;
+          font_family: string;
+          tokens: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          author_name: string;
+          font_family?: string;
+          tokens: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          name?: string;
+          author_name?: string;
+          font_family?: string;
+          tokens?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       trending_pages: {
@@ -422,6 +452,21 @@ export type Database = {
           description: string | null;
           favicon_url: string | null;
           message_count: number;
+          post_count: number;
+        };
+        Relationships: [];
+      };
+      active_pages: {
+        Row: {
+          id: string;
+          canonical_url: string;
+          url: string | null;
+          title: string | null;
+          description: string | null;
+          favicon_url: string | null;
+          message_count: number;
+          post_count: number;
+          last_active_at: string;
         };
         Relationships: [];
       };

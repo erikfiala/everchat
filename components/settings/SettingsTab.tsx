@@ -13,11 +13,13 @@ import {
   useTheme,
   type ThemePreference,
 } from '@/hooks/useTheme';
+import { useSkin } from '@/hooks/useSkin';
 import type { LocalePreference } from '@/lib/i18n';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 export function SettingsTab() {
   const theme = useTheme();
+  const { skin, resetSkin } = useSkin();
   const { t, preference, setPreference, languages } = useLocale();
 
   const themeLabel = (pref: ThemePreference) =>
@@ -73,6 +75,33 @@ export function SettingsTab() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+
+        <div>
+          <p className={FIELD_LABEL_CLASS}>{t('settings.skin')}</p>
+          <p className="mb-2 text-sm text-[var(--color-muted-foreground)]">
+            {skin
+              ? t('settings.skinUsing', { name: skin.name })
+              : t('settings.skinDefault')}
+          </p>
+          {skin ? (
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 w-full justify-center bg-[var(--color-card)] px-3 font-normal"
+              onClick={() => resetSkin()}
+            >
+              {t('settings.skinReset')}
+            </Button>
+          ) : null}
+          <a
+            className="mt-2 inline-flex text-sm text-[var(--color-foreground)] underline underline-offset-2"
+            href="https://everch.at/themes"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('settings.skinBrowse')}
+          </a>
         </div>
 
         <div>

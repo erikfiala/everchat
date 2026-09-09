@@ -28,19 +28,25 @@ import {
   applyOnlineCounts,
   fetchPageOnlineCounts,
 } from '@/lib/presence';
+import { PREVIEW_EXPLORE } from '@/lib/preview/fixtures';
+import { isPreviewMode } from '@/lib/preview/mode';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from 'sonner';
 
 export type ExploreMode = 'trending' | 'new';
 
 function normalizeTrending(rows: ExplorePageRow[]): ExplorePageRow[] {
-  return rows.map((row) => ({
-    ...row,
-    url: row.url ?? null,
-    last_active_at: row.last_active_at ?? null,
-    message_count: row.message_count ?? 0,
-    online_count: row.online_count ?? 0,
-  }));
+  return rows.map((row) => {
+    const posts = row.post_count ?? row.message_count ?? 0;
+    return {
+      ...row,
+      url: row.url ?? null,
+      last_active_at: row.last_active_at ?? null,
+      message_count: row.message_count ?? 0,
+      post_count: posts,
+      online_count: row.online_count ?? 0,
+    };
+  });
 }
 
 async function withOnlineCounts(
@@ -77,17 +83,20 @@ export function ExploreTab() {
           (data) => normalizeTrending(data as ExplorePageRow[]),
         );
       }
-      const last = offsetRows[offsetRows.length - 1];
-      return getRecentlyActivePages(LIST_PAGE_SIZE, {
-        before: last?.last_active_at,
-        excludeIds: offsetRows.map((row) => row.id),
-      });
+      return getRecentlyActivePages(LIST_PAGE_SIZE, offsetRows.length);
     },
     [mode],
   );
 
   useEffect(() => {
     let cancelled = false;
+    if (isPreviewMode()) {
+      setRows(PREVIEW_EXPLORE);
+      setHasMore(false);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     if (!isSupabaseConfigured) {
       setRows([]);
       setHasMore(false);
@@ -256,12 +265,17 @@ export function ExploreTab() {
             const urlLabel = displayUrl(row.canonical_url);
             const showOnline = !(mode === 'new' && row.last_active_at);
             const live = showOnline && (row.online_count ?? 0) > 0;
+            const posts = row.post_count ?? row.message_count ?? 0;
+            const postsLabel = t(
+              posts === 1 ? 'auth.trendingPost' : 'auth.trendingPosts',
+              { count: posts },
+            );
             const activity = showOnline
-              ? t('auth.trendingTalking', { count: row.online_count ?? 0 })
-              : formatDistanceToNow(new Date(row.last_active_at!), {
+              ? `${t('auth.trendingTalking', { count: row.online_count ?? 0 })} · ${postsLabel}`
+              : `${formatDistanceToNow(new Date(row.last_active_at!), {
                   addSuffix: true,
                   locale: dateFnsLocaleFor(locale),
-                });
+                })} · ${postsLabel}`;
 
             return (
               <button

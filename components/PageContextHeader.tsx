@@ -26,6 +26,8 @@ export function PageContextHeader({
         'flex min-h-14 w-full min-w-0 items-start gap-2 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
         className,
       )}
+      data-ec-pad-x
+      data-ec-gap
     >
       <Favicon src={faviconUrl} className="mt-0.5" />
       <div className="min-w-0 flex-1 overflow-hidden">

@@ -235,7 +235,10 @@ export function Composer({
 
   if (gated) {
     return (
-      <div className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
+      <div
+        data-ec-composer
+        className="border-t border-[var(--color-border)] bg-[var(--color-card)] p-3"
+      >
         <Button className="w-full" onClick={onGate}>
           {t('composer.signInAnonymously')}
         </Button>
@@ -277,7 +280,10 @@ export function Composer({
   };
 
   return (
-    <div className="relative border-t border-[var(--color-border)] bg-[var(--color-card)] p-3">
+    <div
+      data-ec-composer
+      className="relative border-t border-[var(--color-border)] bg-[var(--color-card)] p-3"
+    >
       {replyToHandle && (
         <div className="mb-3 flex items-center justify-between text-xs text-[var(--color-muted-foreground)]">
           <span>

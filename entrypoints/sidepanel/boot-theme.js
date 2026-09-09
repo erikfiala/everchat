@@ -14,8 +14,8 @@
     '--color-primary-foreground': 1,
     '--color-accent': 1,
     '--color-anonymous-avatar': 1,
-    '--color-destructive': 1,
     '--color-success': 1,
+    '--color-destructive': 1,
     '--color-score-pos': 1,
     '--color-score-neg': 1,
     '--color-ring': 1,
@@ -98,6 +98,19 @@
       if (typeof n !== 'number' || !isFinite(n)) continue;
       if (n < SIZE[name][0] || n > SIZE[name][1]) continue;
       decls.push(name + ':' + Math.round(n) + 'px');
+    }
+    var font = tokens['--font-size'];
+    var fontSm = tokens['--font-size-sm'];
+    var fontLg = tokens['--font-size-lg'];
+    if (typeof font === 'number' && isFinite(font)) {
+      decls.push('--text-base:' + Math.round(font) + 'px');
+      decls.push('--text-sm:' + Math.round(font) + 'px');
+    }
+    if (typeof fontSm === 'number' && isFinite(fontSm)) {
+      decls.push('--text-xs:' + Math.round(fontSm) + 'px');
+    }
+    if (typeof fontLg === 'number' && isFinite(fontLg)) {
+      decls.push('--text-lg:' + Math.round(fontLg) + 'px');
     }
     var family = typeof raw.fontFamily === 'string' ? raw.fontFamily.trim() : '';
     if (family && FONT.test(family) && !BAD.test(family)) {

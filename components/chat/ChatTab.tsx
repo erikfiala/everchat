@@ -211,7 +211,10 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
         faviconUrl={viewing.favIconUrl}
         isCurrentPage={isCurrentPage}
       />
-      <div className="flex min-h-14 items-stretch border-b border-[var(--color-border)] px-3">
+      <div
+        data-ec-pad-x
+        className="flex min-h-14 items-stretch border-b border-[var(--color-border)] px-3"
+      >
         {inThread ? (
           <div className="flex items-center py-2">
             <Button
@@ -304,6 +307,9 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <div
           ref={scrollRef}
+          data-ec-pad-x
+          data-ec-pad-t
+          data-ec-stack
           className="h-full overflow-y-auto px-3 pt-3"
           inert={inThread || undefined}
         >
@@ -360,6 +366,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
       </div>
 
       <div
+        data-ec-pad-x
         className="min-h-5 shrink-0 px-3 py-1"
         aria-live="polite"
         aria-atomic="true"

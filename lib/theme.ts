@@ -29,8 +29,8 @@ export const COLOR_TOKENS = [
   '--color-primary-foreground',
   '--color-accent',
   '--color-anonymous-avatar',
-  '--color-destructive',
   '--color-success',
+  '--color-destructive',
   '--color-score-pos',
   '--color-score-neg',
   '--color-ring',
@@ -114,8 +114,8 @@ export const DEFAULT_LIGHT_COLORS: ColorPalette = {
   '--color-primary-foreground': '#fafafa',
   '--color-accent': '#f4f4f5',
   '--color-anonymous-avatar': '#e4e4e7',
-  '--color-destructive': '#dc2626',
-  '--color-success': '#0f766e',
+  '--color-success': '#dc2626',
+  '--color-destructive': '#0f766e',
   '--color-score-pos': '#0f766e',
   '--color-score-neg': '#dc2626',
   '--color-ring': '#a1a1aa',
@@ -135,8 +135,8 @@ export const DEFAULT_DARK_COLORS: ColorPalette = {
   '--color-primary-foreground': '#18181b',
   '--color-accent': '#3f3f46',
   '--color-anonymous-avatar': '#71717a',
-  '--color-destructive': '#f87171',
-  '--color-success': '#2dd4bf',
+  '--color-success': '#f87171',
+  '--color-destructive': '#2dd4bf',
   '--color-score-pos': '#2dd4bf',
   '--color-score-neg': '#f87171',
   '--color-ring': '#71717a',
@@ -400,6 +400,36 @@ type DocumentWithSkinSheet = Document & {
   [SKIN_SHEET_KEY]?: CSSStyleSheet;
 };
 
+/** Tailwind utilities the panel actually paints (`text-sm`, `text-xs`, …). */
+function sizeAliasDecls(tokens: ThemeTokens): string[] {
+  const decls: string[] = [];
+  const font = tokens['--font-size'];
+  const fontSm = tokens['--font-size-sm'];
+  const fontLg = tokens['--font-size-lg'];
+  if (typeof font === 'number' && Number.isFinite(font)) {
+    // Chat chrome is `text-sm`; Font size must move that, not only `body`.
+    decls.push(`--text-base:${font}px`);
+    decls.push(`--text-sm:${font}px`);
+  }
+  if (typeof fontSm === 'number' && Number.isFinite(fontSm)) {
+    decls.push(`--text-xs:${fontSm}px`);
+  }
+  if (typeof fontLg === 'number' && Number.isFinite(fontLg)) {
+    decls.push(`--text-lg:${fontLg}px`);
+  }
+  return decls;
+}
+
+function sizeTokenDecls(tokens: ThemeTokens): string[] {
+  const decls: string[] = [];
+  for (const spec of SIZE_TOKENS) {
+    const value = tokens[spec.name];
+    if (typeof value !== 'number' || !Number.isFinite(value)) continue;
+    decls.push(`${spec.name}:${value}px`);
+  }
+  return decls.concat(sizeAliasDecls(tokens));
+}
+
 /** `:root{…}` rule for a skin. Used instead of `element.style` (CSP style-src). */
 export function themeVarsCss(
   theme: ThemeDocument,
@@ -408,11 +438,9 @@ export function themeVarsCss(
   const colors = theme.tokens[appearance] ?? theme.tokens.light;
   const decls: string[] = [];
   for (const name of COLOR_TOKENS) {
-    decls.push(`${name}:${colors[name]}`);
+    if (colors[name]) decls.push(`${name}:${colors[name]}`);
   }
-  for (const spec of SIZE_TOKENS) {
-    decls.push(`${spec.name}:${theme.tokens[spec.name]}px`);
-  }
+  decls.push(...sizeTokenDecls(theme.tokens));
   const family = sanitizeFontFamily(theme.fontFamily);
   if (family) {
     decls.push(`--font-sans:"${family}", ui-sans-serif, system-ui, sans-serif`);

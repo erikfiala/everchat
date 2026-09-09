@@ -14,7 +14,7 @@
 
 @theme {
   /* Align with extension slate tokens where practical */
-  --font-display: "Bricolage Grotesque", "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque", "Segoe UI", sans-serif; /* h1 / h2 only */
   --font-sans: "Geist Sans", "Segoe UI", sans-serif;
   --color-ink: #0f172a; /* slate-900 */
   --color-ink-soft: #1e293b; /* slate-800 */
@@ -100,6 +100,18 @@
 
   html {
     scroll-behavior: smooth;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
   }
 
   body {
@@ -560,7 +572,7 @@
 }
 
 .page-title {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: clamp(0.95rem, 2vw, 1.35rem);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -1102,7 +1114,7 @@
 
 .install-sub {
   margin: 1.75rem 0 0.5rem;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.03em;
@@ -1139,7 +1151,7 @@
 .install-steps li::before {
   content: counter(step);
   flex: 0 0 1.6rem;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: 700;
   font-size: 0.85rem;
   width: 1.6rem;
@@ -2109,12 +2121,25 @@ body.doc {
   accent-color: var(--accent);
 }
 
-.theme-actions,
-.theme-detail-actions {
+.theme-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
   align-items: center;
+}
+
+.theme-detail-actions {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.theme-detail-actions .theme-status {
+  width: 100%;
+  text-align: right;
 }
 
 .theme-btn {
@@ -2464,7 +2489,7 @@ body.doc {
 
 .theme-card-name {
   margin: 0.5rem 0 0;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -2579,7 +2604,7 @@ body.doc {
 }
 
 .theme-card-new-label {
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.02em;

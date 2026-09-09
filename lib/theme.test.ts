@@ -48,6 +48,10 @@ describe('theme schema', () => {
     expect(theme?.iconPack).toBe('lu');
     expect(theme?.tokens.light['--color-background']).toBe('#fafafa');
     expect(theme?.tokens.dark['--color-background']).toBe('#18181b');
+    expect(theme?.tokens.light['--color-success']).toBe('#dc2626');
+    expect(theme?.tokens.light['--color-destructive']).toBe('#0f766e');
+    expect(theme?.tokens.dark['--color-success']).toBe('#f87171');
+    expect(theme?.tokens.dark['--color-destructive']).toBe('#2dd4bf');
     expect(theme?.tokens['--radius-md']).toBe(8);
     expect(isDefaultThemeSlug(DEFAULT_THEME_SLUG)).toBe(true);
     expect(isDefaultThemeSlug('midnight')).toBe(false);
@@ -158,9 +162,38 @@ describe('theme schema', () => {
       '--color-background:#18181b',
     );
     expect(themeVarsCss(theme, 'light')).toContain('--radius-md:8px');
+    expect(themeVarsCss(theme, 'light')).toContain('--font-size:14px');
+    expect(themeVarsCss(theme, 'light')).toContain('--font-size-sm:12px');
+    expect(themeVarsCss(theme, 'light')).toContain('--space-pad:12px');
+    expect(themeVarsCss(theme, 'light')).toContain('--space-margin:8px');
+    expect(themeVarsCss(theme, 'light')).toContain('--space-composer-pad:12px');
+    expect(themeVarsCss(theme, 'light')).toContain('--border-width:1px');
+    expect(themeVarsCss(theme, 'light')).toContain('--text-sm:14px');
+    expect(themeVarsCss(theme, 'light')).toContain('--text-xs:12px');
     applyThemeVars(el, theme, 'light');
     applyThemeVars(el, theme, 'dark');
     expect(el.getAttribute('data-ec-icon-pack')).toBe('lu');
+  });
+
+  it('writes root size tokens and type aliases, not only the color palette', () => {
+    const theme = defaultTheme();
+    theme.tokens['--font-size'] = 13;
+    theme.tokens['--font-size-sm'] = 11;
+    theme.tokens['--space-pad'] = 37;
+    theme.tokens['--space-margin'] = 20;
+    theme.tokens['--space-composer-pad'] = 28;
+    theme.tokens['--radius-md'] = 18;
+    theme.tokens['--border-width'] = 3;
+    const css = themeVarsCss(theme, 'dark');
+    expect(css).toContain('--color-background:#18181b');
+    expect(css).toContain('--font-size:13px');
+    expect(css).toContain('--text-sm:13px');
+    expect(css).toContain('--text-xs:11px');
+    expect(css).toContain('--space-pad:37px');
+    expect(css).toContain('--space-margin:20px');
+    expect(css).toContain('--space-composer-pad:28px');
+    expect(css).toContain('--radius-md:18px');
+    expect(css).toContain('--border-width:3px');
   });
 
   it('rejects url(), @import, and extra keys', () => {

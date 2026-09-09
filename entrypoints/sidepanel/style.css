@@ -20,8 +20,8 @@
   --color-primary-foreground: #fafafa;
   --color-accent: #f4f4f5; /* zinc-100 */
   --color-anonymous-avatar: #e4e4e7; /* zinc-200 · deleted/@anonymous fallback */
-  --color-destructive: #dc2626;
-  --color-success: #0f766e;
+  --color-success: #dc2626;
+  --color-destructive: #0f766e;
   --color-score-pos: #0f766e;
   --color-score-neg: #dc2626;
   --color-ring: #a1a1aa; /* zinc-400 · soft focus */
@@ -41,8 +41,8 @@ html[data-theme='dark'] {
   --color-primary-foreground: #18181b;
   --color-accent: #3f3f46; /* zinc-700 */
   --color-anonymous-avatar: #71717a; /* zinc-500 · deleted/@anonymous fallback */
-  --color-destructive: #f87171;
-  --color-success: #2dd4bf;
+  --color-success: #f87171;
+  --color-destructive: #2dd4bf;
   --color-score-pos: #2dd4bf;
   --color-score-neg: #f87171;
   --color-ring: #71717a; /* zinc-500 */
@@ -74,6 +74,50 @@ html[data-theme='dark'] body {
 
 html[data-ec-skin] body {
   font-size: var(--font-size, 14px);
+}
+
+/* Size sliders live on tokens root; Tailwind utilities read these aliases. */
+html[data-ec-skin] {
+  --text-base: var(--font-size, 14px);
+  --text-sm: var(--font-size, 14px);
+  --text-xs: var(--font-size-sm, 12px);
+  --text-lg: var(--font-size-lg, 16px);
+}
+
+html[data-ec-skin] [data-ec-pad] {
+  padding: var(--space-pad, 12px);
+}
+
+html[data-ec-skin] [data-ec-pad-x] {
+  padding-inline: var(--space-pad, 12px);
+}
+
+html[data-ec-skin] [data-ec-pad-t] {
+  padding-top: var(--space-pad, 12px);
+}
+
+html[data-ec-skin] [data-ec-composer] {
+  padding: var(--space-composer-pad, 12px);
+}
+
+html[data-ec-skin] [data-ec-gap] {
+  gap: var(--space-margin, 8px);
+}
+
+html[data-ec-skin] [data-ec-stack] > * + * {
+  margin-top: var(--space-margin, 8px);
+}
+
+html[data-ec-skin] .border {
+  border-width: var(--border-width, 1px);
+}
+
+html[data-ec-skin] .border-t {
+  border-top-width: var(--border-width, 1px);
+}
+
+html[data-ec-skin] .border-b {
+  border-bottom-width: var(--border-width, 1px);
 }
 
 html[data-ec-skin] [data-slot='button']:hover:not(:disabled) {

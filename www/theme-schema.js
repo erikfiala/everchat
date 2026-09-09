@@ -17,8 +17,8 @@
     '--color-primary-foreground',
     '--color-accent',
     '--color-anonymous-avatar',
-    '--color-destructive',
     '--color-success',
+    '--color-destructive',
     '--color-score-pos',
     '--color-score-neg',
     '--color-ring',
@@ -81,8 +81,8 @@
     '--color-primary-foreground': '#fafafa',
     '--color-anonymous-avatar': '#e4e4e7',
     '--color-accent': '#f4f4f5',
-    '--color-destructive': '#dc2626',
-    '--color-success': '#0f766e',
+    '--color-success': '#dc2626',
+    '--color-destructive': '#0f766e',
     '--color-score-pos': '#0f766e',
     '--color-score-neg': '#dc2626',
     '--color-ring': '#a1a1aa',
@@ -102,8 +102,8 @@
     '--color-primary-foreground': '#18181b',
     '--color-accent': '#3f3f46',
     '--color-anonymous-avatar': '#71717a',
-    '--color-destructive': '#f87171',
-    '--color-success': '#2dd4bf',
+    '--color-success': '#f87171',
+    '--color-destructive': '#2dd4bf',
     '--color-score-pos': '#2dd4bf',
     '--color-score-neg': '#f87171',
     '--color-ring': '#71717a',
@@ -478,8 +478,34 @@
     return root && root.dataset && root.dataset.theme === 'dark' ? 'dark' : 'light';
   }
 
+  var SIZE_CSS_ALIASES = ['--text-xs', '--text-sm', '--text-base', '--text-lg'];
+
+  function applySizeVars(el, tokens) {
+    SIZE_TOKENS.forEach(function (spec) {
+      var value = tokens[spec.name];
+      if (typeof value !== 'number' || !isFinite(value)) return;
+      el.style.setProperty(spec.name, value + 'px');
+    });
+    var font = tokens['--font-size'];
+    var fontSm = tokens['--font-size-sm'];
+    var fontLg = tokens['--font-size-lg'];
+    if (typeof font === 'number' && isFinite(font)) {
+      el.style.setProperty('--text-base', font + 'px');
+      el.style.setProperty('--text-sm', font + 'px');
+    }
+    if (typeof fontSm === 'number' && isFinite(fontSm)) {
+      el.style.setProperty('--text-xs', fontSm + 'px');
+    }
+    if (typeof fontLg === 'number' && isFinite(fontLg)) {
+      el.style.setProperty('--text-lg', fontLg + 'px');
+    }
+  }
+
   function applyThemeVars(el, theme, appearance) {
     TOKEN_NAMES.forEach(function (name) {
+      el.style.removeProperty(name);
+    });
+    SIZE_CSS_ALIASES.forEach(function (name) {
       el.style.removeProperty(name);
     });
     el.style.removeProperty('--font-sans');
@@ -494,9 +520,7 @@
     COLOR_TOKENS.forEach(function (name) {
       if (colors[name]) el.style.setProperty(name, colors[name]);
     });
-    SIZE_TOKENS.forEach(function (spec) {
-      el.style.setProperty(spec.name, theme.tokens[spec.name] + 'px');
-    });
+    applySizeVars(el, theme.tokens);
     var family = sanitizeFontFamily(theme.fontFamily);
     if (family) {
       el.style.setProperty(

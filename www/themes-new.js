@@ -14,8 +14,8 @@
     '--color-primary-foreground': 'www.themeTokenPrimaryFg',
     '--color-accent': 'www.themeTokenAccent',
     '--color-anonymous-avatar': 'www.themeTokenAvatar',
-    '--color-destructive': 'www.themeTokenDestructive',
     '--color-success': 'www.themeTokenSuccess',
+    '--color-destructive': 'www.themeTokenDestructive',
     '--color-score-pos': 'www.themeTokenScorePos',
     '--color-score-neg': 'www.themeTokenScoreNeg',
     '--color-ring': 'www.themeTokenRing',
@@ -85,6 +85,21 @@
     return String(a || '').toLowerCase() === String(b || '').toLowerCase();
   }
 
+  function defaultFontFamily() {
+    var suggestions = window.ECTheme.FONT_SUGGESTIONS || [];
+    return suggestions.indexOf('Inter') !== -1 ? 'Inter' : '';
+  }
+
+  function isDefaultFont(family) {
+    var safe = window.ECTheme.sanitizeFontFamily(family);
+    var def = defaultFontFamily();
+    return !safe || (def && safe === def);
+  }
+
+  function selectedFontFamily() {
+    return window.ECTheme.sanitizeFontFamily(state.fontFamily) || defaultFontFamily();
+  }
+
   function fieldIsDefault(kind, name) {
     var def = defaultTheme();
     if (kind === 'color') {
@@ -97,7 +112,7 @@
       return Number(state.tokens[name]) === Number(def.tokens[name]);
     }
     if (kind === 'font') {
-      return !state.fontFamily;
+      return isDefaultFont(state.fontFamily);
     }
     if (kind === 'icon') {
       return (
@@ -269,6 +284,21 @@
 
   var pushPreview = null;
 
+  function previewTokens() {
+    var tokens = {
+      light: state.tokens.light,
+      dark: state.tokens.dark,
+    };
+    window.ECTheme.SIZE_TOKENS.forEach(function (spec) {
+      var value = state.tokens[spec.name];
+      tokens[spec.name] =
+        typeof value === 'number' && isFinite(value)
+          ? value
+          : window.ECTheme.DEFAULT_SIZE_VALUES[spec.name];
+    });
+    return tokens;
+  }
+
   function previewTheme() {
     return {
       theme: {
@@ -279,7 +309,7 @@
           ? window.ECTheme.sanitizeFontFamily(state.fontFamily)
           : '',
         iconPack: window.ECTheme.sanitizeIconPack(state.iconPack),
-        tokens: state.tokens,
+        tokens: previewTokens(),
       },
       appearance: appearance,
     };
@@ -322,9 +352,10 @@
     state.name = nameEl ? nameEl.value.trim() : '';
     if (!state.author) state.author = 'draft';
     var typed = fontEl ? fontEl.value.trim() : '';
-    state.fontFamily = window.ECTheme.isValidFontFamily(typed)
+    var safe = window.ECTheme.isValidFontFamily(typed)
       ? window.ECTheme.sanitizeFontFamily(typed)
       : '';
+    state.fontFamily = isDefaultFont(safe) ? '' : safe;
     if (!state.iconPack) state.iconPack = window.ECTheme.DEFAULT_ICON_PACK;
     document.querySelectorAll('[data-ec-token]').forEach(function (el) {
       var name = el.getAttribute('data-ec-token');
@@ -603,7 +634,7 @@
       popular.push(family);
     });
     var current = window.ECTheme.sanitizeFontFamily(state.fontFamily);
-    if (current && !known[current] && !seen[current]) {
+    if (current && !known[current] && !seen[current] && !isDefaultFont(current)) {
       popular.unshift(current);
       seen[current] = true;
     }
@@ -617,7 +648,7 @@
       });
     }
     var items = [];
-    if (!q || defaultFontLabel().toLowerCase().indexOf(q) !== -1) {
+    if (!defaultFontFamily() && (!q || defaultFontLabel().toLowerCase().indexOf(q) !== -1)) {
       items.push({ family: '', label: defaultFontLabel() });
     }
     families.forEach(function (family) {
@@ -628,7 +659,7 @@
 
   function paintFontTrigger() {
     var label = $('[data-ec-font-label]');
-    var family = window.ECTheme.sanitizeFontFamily(state.fontFamily);
+    var family = selectedFontFamily();
     if (!label) return;
     if (family) {
       label.textContent = family;
@@ -653,6 +684,7 @@
     var safe = window.ECTheme.isValidFontFamily(typed)
       ? window.ECTheme.sanitizeFontFamily(typed)
       : '';
+    if (isDefaultFont(safe)) safe = '';
     if (fontEl) fontEl.value = safe;
     state.fontFamily = safe;
     closeFontMenu();
@@ -660,6 +692,7 @@
     syncFontStatus();
     paintPreview();
     writeDraft();
+    syncFieldResets();
   }
 
   function renderFontList() {
@@ -681,7 +714,7 @@
       Math.ceil((scrollTop + viewport.clientHeight) / FONT_ROW) + FONT_OVERSCAN,
     );
     var visible = items.slice(start, end);
-    var selected = window.ECTheme.sanitizeFontFamily(state.fontFamily);
+    var selected = selectedFontFamily();
     spacer.replaceChildren();
     visible.forEach(function (item, offset) {
       var index = start + offset;
@@ -743,7 +776,7 @@
     menu.hidden = false;
     trigger.setAttribute('aria-expanded', 'true');
     var items = fontItems();
-    var selected = window.ECTheme.sanitizeFontFamily(state.fontFamily);
+    var selected = selectedFontFamily();
     fontActive = 0;
     items.forEach(function (item, i) {
       if (item.family === selected) fontActive = i;
@@ -972,6 +1005,7 @@
     var draft = readDraft();
     if (draft) {
       state = draft;
+      if (isDefaultFont(state.fontFamily)) state.fontFamily = '';
     } else {
       state.name = '';
       state.author = 'draft';

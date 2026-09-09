@@ -72,21 +72,21 @@
 
   function setFavicon(fav, url) {
     fav.replaceChildren();
-    if (!url) {
-      fav.appendChild(globeIcon());
-      return;
-    }
+    fav.appendChild(globeIcon());
+    if (!url) return;
     var img = document.createElement('img');
-    img.src = url;
     img.alt = '';
     img.width = 16;
     img.height = 16;
     img.loading = 'lazy';
     img.referrerPolicy = 'no-referrer';
-    img.onerror = function () {
-      fav.replaceChildren(globeIcon());
+    img.onload = function () {
+      fav.replaceChildren(img);
     };
-    fav.appendChild(img);
+    img.onerror = function () {
+      img.removeAttribute('src');
+    };
+    img.src = url;
   }
 
   function renderRow(row) {

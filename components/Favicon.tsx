@@ -9,33 +9,45 @@ interface FaviconProps {
 
 /** Page/room favicon with a themed globe fallback when missing or broken. */
 export function Favicon({ src, className }: FaviconProps) {
-  const [failed, setFailed] = useState(false);
+  const [status, setStatus] = useState<'pending' | 'ok' | 'err'>('pending');
 
   useEffect(() => {
-    setFailed(false);
+    setStatus('pending');
   }, [src]);
 
-  if (!src || failed) {
-    return (
-      <Icon
-        name="globe"
-        width={16}
-        height={16}
-        className={cn(
-          'size-4 shrink-0 text-[var(--color-muted-foreground)]',
-          className,
-        )}
-        aria-hidden
-      />
-    );
+  const fallback = (
+    <Icon
+      name="globe"
+      width={16}
+      height={16}
+      className={cn(
+        'size-4 shrink-0 text-[var(--color-muted-foreground)]',
+        className,
+      )}
+      aria-hidden
+    />
+  );
+
+  if (!src || status === 'err') {
+    return fallback;
   }
 
   return (
-    <img
-      src={src}
-      alt=""
-      className={cn('h-4 w-4 shrink-0', className)}
-      onError={() => setFailed(true)}
-    />
+    <>
+      {status !== 'ok' && fallback}
+      <img
+        src={src}
+        alt=""
+        referrerPolicy="no-referrer"
+        decoding="async"
+        className={cn(
+          'h-4 w-4 shrink-0',
+          className,
+          status !== 'ok' && 'hidden',
+        )}
+        onLoad={() => setStatus('ok')}
+        onError={() => setStatus('err')}
+      />
+    </>
   );
 }

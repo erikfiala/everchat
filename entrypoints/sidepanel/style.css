@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* Preview Vite root is entrypoints/preview — scan the real UI or /panel/ ships preflight without utilities. */
+@source "../../components/**/*.{ts,tsx}";
+@source "../../hooks/**/*.{ts,tsx}";
+@source "../../entrypoints/**/*.{ts,tsx}";
+@source "../../lib/**/*.{ts,tsx}";
+
 @theme {
   /* Tailwind zinc-aligned neutrals */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;

@@ -33,12 +33,16 @@ export function PageContextHeader({
           {title || hostLabel || t('page.thisPage')}
         </div>
         {hostLabel && (
-          <div className="inline-flex min-w-0 max-w-full items-baseline gap-0.5 text-xs text-[var(--color-muted-foreground)]">
-            <span className="truncate mr-px">{hostLabel}</span>
+          <div className="inline-flex min-w-0 max-w-full items-baseline gap-1 text-xs text-[var(--color-muted-foreground)]">
+            <span className="truncate">{hostLabel}</span>
             {isCurrentPage && (
               <>
-                <span aria-hidden className="shrink-0">·</span>
-                <span className="shrink-0" data-current-page="">{t('page.thisPage')}</span>
+                <span aria-hidden className="shrink-0">
+                  ·
+                </span>
+                <span className="shrink-0" data-current-page="">
+                  {t('page.thisPage')}
+                </span>
               </>
             )}
           </div>

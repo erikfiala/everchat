@@ -538,37 +538,37 @@
     return row;
   }
 
-  function fetchThemes(cfg) {
-    var root = cfg.url.replace(/\/$/, '') + '/rest/v1/themes?';
-    var headers = supabaseHeaders(cfg);
-    var full =
-      root +
-      'select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count&order=created_at.desc';
-    var lite =
-      root +
-      'select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at&order=created_at.desc';
-    return fetch(full, { headers: headers }).then(function (res) {
-      if (res.ok) {
-        return res.json().then(function (rows) {
-          return (rows || []).map(normalizeThemeRow);
-        });
-      }
-      return fetch(lite, { headers: headers }).then(function (retry) {
-        if (retry.ok) {
-          return retry.json().then(function (rows) {
-            return (rows || []).map(normalizeThemeRow);
-          });
-        }
-        var legacy =
-          root +
-          'select=id,slug,name,author_name,font_family,tokens,created_at&order=created_at.desc';
-        return fetch(legacy, { headers: headers }).then(function (last) {
-          if (!last.ok) throw new Error('themes ' + last.status);
-          return last.json().then(function (rows) {
-            return (rows || []).map(normalizeThemeRow);
-          });
-        });
+  function fetchThemeSelects(orderSuffix) {
+    return [
+      'id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count' +
+        orderSuffix,
+      'id,slug,name,author_name,font_family,tokens,created_at,like_count' +
+        orderSuffix,
+      'id,slug,name,author_name,font_family,icon_pack,tokens,created_at' +
+        orderSuffix,
+      'id,slug,name,author_name,font_family,tokens,created_at' + orderSuffix,
+    ];
+  }
+
+  function fetchFirstOk(urls, headers) {
+    function next(i) {
+      if (i >= urls.length) return Promise.reject(new Error('themes'));
+      return fetch(urls[i], { headers: headers }).then(function (res) {
+        if (res.ok) return res.json();
+        return next(i + 1);
       });
+    }
+    return next(0);
+  }
+
+  function fetchThemes(cfg) {
+    var root = cfg.url.replace(/\/$/, '') + '/rest/v1/themes?select=';
+    var headers = supabaseHeaders(cfg);
+    var urls = fetchThemeSelects('&order=created_at.desc').map(function (sel) {
+      return root + sel;
+    });
+    return fetchFirstOk(urls, headers).then(function (rows) {
+      return (rows || []).map(normalizeThemeRow);
     });
   }
 
@@ -577,41 +577,21 @@
     if (isDefaultThemeSlug(slug) && (!cfg || !cfg.url)) {
       return Promise.resolve(defaultThemeRow());
     }
-    var root = cfg.url.replace(/\/$/, '') + '/rest/v1/themes?slug=eq.';
+    var root =
+      cfg.url.replace(/\/$/, '') +
+      '/rest/v1/themes?slug=eq.' +
+      encodeURIComponent(slug) +
+      '&select=';
     var headers = supabaseHeaders(cfg);
-    var suffix =
-      encodeURIComponent(slug) +
-      '&select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count&limit=1';
-    var liteSuffix =
-      encodeURIComponent(slug) +
-      '&select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at&limit=1';
-    return fetch(root + suffix, { headers: headers })
-      .then(function (res) {
-        if (res.ok) {
-          return res.json().then(function (rows) {
-            return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
-          });
-        }
-        return fetch(root + liteSuffix, { headers: headers }).then(function (
-          retry,
-        ) {
-          if (retry.ok) {
-            return retry.json().then(function (rows) {
-              return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
-            });
-          }
-          var legacySuffix =
-            encodeURIComponent(slug) +
-            '&select=id,slug,name,author_name,font_family,tokens,created_at&limit=1';
-          return fetch(root + legacySuffix, { headers: headers }).then(
-            function (last) {
-              if (!last.ok) throw new Error('theme ' + last.status);
-              return last.json().then(function (rows) {
-                return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
-              });
-            },
-          );
-        });
+    var urls = fetchThemeSelects('&limit=1').map(function (sel) {
+      return root + sel;
+    });
+    return fetchFirstOk(urls, headers)
+      .then(function (rows) {
+        return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
+      })
+      .catch(function () {
+        throw new Error('theme');
       })
       .then(function (row) {
         if (row) return row;

@@ -24,7 +24,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdn.buymeacoffee.com; script-src 'self' https://cdnjs.buymeacoffee.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io https://cdn.buymeacoffee.com https://www.buymeacoffee.com https://cdnjs.buymeacoffee.com; frame-src https://www.buymeacoffee.com; base-uri 'self'; form-action 'none'; frame-ancestors 'self'"
+          "value": "default-src 'self'; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com https://cdn.buymeacoffee.com; script-src 'self' https://cdnjs.buymeacoffee.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.github.com https://img.shields.io https://cdn.buymeacoffee.com https://www.buymeacoffee.com https://cdnjs.buymeacoffee.com; frame-src 'self' https://www.buymeacoffee.com; base-uri 'self'; form-action 'none'; frame-ancestors 'self'"
         }
       ]
     },

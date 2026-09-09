@@ -19,8 +19,10 @@ export function Favicon({ src, className }: FaviconProps) {
     return (
       <Icon
         name="globe"
+        width={16}
+        height={16}
         className={cn(
-          'h-4 w-4 shrink-0 text-[var(--color-muted-foreground)]',
+          'size-4 shrink-0 text-[var(--color-muted-foreground)]',
           className,
         )}
         aria-hidden

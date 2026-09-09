@@ -1751,8 +1751,6 @@ body.doc {
   margin: 0 0 0.45rem;
   font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .theme-kicker a {
@@ -1773,6 +1771,10 @@ body.doc {
   grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
   gap: clamp(1.25rem, 3vw, 2rem);
   align-items: start;
+}
+
+.theme-preview-col {
+  min-width: 0;
 }
 
 @media (max-width: 800px) {
@@ -2208,6 +2210,7 @@ body.doc {
 }
 
 .ec-preview-frame {
+  container-type: size;
   width: 100%;
   max-width: 22rem;
   height: 36rem;
@@ -2218,12 +2221,24 @@ body.doc {
   box-shadow: 0 10px 28px color-mix(in srgb, var(--ink) 8%, transparent);
 }
 
+/* Lay out the live sidepanel at ~380px, then scale it into the card. */
 .ec-preview-iframe {
+  --ec-preview-design-width: 380px;
   display: block;
-  width: 100%;
-  height: 100%;
+  width: var(--ec-preview-design-width);
+  height: calc(100cqh * var(--ec-preview-design-width) / 100cqw);
   border: 0;
   background: #fafafa;
+  transform: scale(calc(100cqw / var(--ec-preview-design-width)));
+  transform-origin: top left;
+}
+
+@supports not (width: 1cqw) {
+  .ec-preview-iframe {
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
 }
 
 .ec-preview-head {

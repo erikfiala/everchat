@@ -61,6 +61,8 @@
   var SLUG = /^[a-z0-9][a-z0-9-]{1,46}[a-z0-9]$/;
   var FORBIDDEN = /url\s*\(|@import|<\/?script|javascript:|data:|expression\s*\(/i;
   var FONT_LINK_ID = 'ec-skin-font';
+  var DEFAULT_THEME_SLUG = 'everchat';
+  var DEFAULT_THEME_ID = 'e0e0e0e0-0000-4000-8000-000000000001';
 
   var DEFAULT_TOKENS = {
     '--color-background': '#fafafa',
@@ -256,14 +258,77 @@
     return doc;
   }
 
+  function isDefaultThemeSlug(value) {
+    return value === DEFAULT_THEME_SLUG;
+  }
+
   function defaultTheme() {
     return {
       schemaVersion: SCHEMA_VERSION,
-      name: 'Zinc',
+      name: 'Default',
       author: 'Everchat',
       fontFamily: '',
       tokens: Object.assign({}, DEFAULT_TOKENS),
     };
+  }
+
+  function defaultThemeRow() {
+    var theme = defaultTheme();
+    return {
+      id: DEFAULT_THEME_ID,
+      slug: DEFAULT_THEME_SLUG,
+      name: theme.name,
+      author_name: theme.author,
+      font_family: theme.fontFamily,
+      tokens: theme.tokens,
+      created_at: '2020-01-01T00:00:00.000Z',
+      like_count: 0,
+    };
+  }
+
+  function withDefaultTheme(rows) {
+    var found = null;
+    var others = [];
+    (rows || []).forEach(function (row) {
+      if (!row) return;
+      if (row.slug === DEFAULT_THEME_SLUG) found = row;
+      else others.push(row);
+    });
+    var def = defaultThemeRow();
+    if (found) {
+      def.id = found.id || def.id;
+      def.like_count =
+        typeof found.like_count === 'number' ? found.like_count : 0;
+      if (found.created_at) def.created_at = found.created_at;
+    }
+    return [def].concat(others);
+  }
+
+  function sortThemes(rows, mode) {
+    var list = (rows || []).slice();
+    if (mode === 'best') {
+      list.sort(function (a, b) {
+        var la = typeof a.like_count === 'number' ? a.like_count : 0;
+        var lb = typeof b.like_count === 'number' ? b.like_count : 0;
+        if (lb !== la) return lb - la;
+        var ta = Date.parse(a.created_at || '') || 0;
+        var tb = Date.parse(b.created_at || '') || 0;
+        return tb - ta;
+      });
+      return list;
+    }
+    var def = [];
+    var rest = [];
+    list.forEach(function (row) {
+      if (row && row.slug === DEFAULT_THEME_SLUG) def.push(row);
+      else rest.push(row);
+    });
+    rest.sort(function (a, b) {
+      var ta = Date.parse(a.created_at || '') || 0;
+      var tb = Date.parse(b.created_at || '') || 0;
+      return tb - ta;
+    });
+    return def.concat(rest);
   }
 
   function exportTheme(theme) {
@@ -343,27 +408,102 @@
     };
   }
 
+  function normalizeThemeRow(row) {
+    if (!row) return row;
+    if (typeof row.like_count !== 'number') row.like_count = 0;
+    return row;
+  }
+
   function fetchThemes(cfg) {
-    var url =
-      cfg.url.replace(/\/$/, '') +
-      '/rest/v1/themes?select=id,slug,name,author_name,font_family,tokens,created_at&order=created_at.desc';
-    return fetch(url, { headers: supabaseHeaders(cfg) }).then(function (res) {
-      if (!res.ok) throw new Error('themes ' + res.status);
-      return res.json();
+    var root = cfg.url.replace(/\/$/, '') + '/rest/v1/themes?';
+    var headers = supabaseHeaders(cfg);
+    var full =
+      root +
+      'select=id,slug,name,author_name,font_family,tokens,created_at,like_count&order=created_at.desc';
+    var lite =
+      root +
+      'select=id,slug,name,author_name,font_family,tokens,created_at&order=created_at.desc';
+    return fetch(full, { headers: headers }).then(function (res) {
+      if (res.ok) {
+        return res.json().then(function (rows) {
+          return (rows || []).map(normalizeThemeRow);
+        });
+      }
+      return fetch(lite, { headers: headers }).then(function (retry) {
+        if (!retry.ok) throw new Error('themes ' + retry.status);
+        return retry.json().then(function (rows) {
+          return (rows || []).map(normalizeThemeRow);
+        });
+      });
     });
   }
 
   function fetchTheme(cfg, slug) {
     if (!isValidSlug(slug)) return Promise.reject(new Error('slug'));
-    var url =
-      cfg.url.replace(/\/$/, '') +
-      '/rest/v1/themes?slug=eq.' +
+    if (isDefaultThemeSlug(slug) && (!cfg || !cfg.url)) {
+      return Promise.resolve(defaultThemeRow());
+    }
+    var root = cfg.url.replace(/\/$/, '') + '/rest/v1/themes?slug=eq.';
+    var headers = supabaseHeaders(cfg);
+    var suffix =
+      encodeURIComponent(slug) +
+      '&select=id,slug,name,author_name,font_family,tokens,created_at,like_count&limit=1';
+    var liteSuffix =
       encodeURIComponent(slug) +
       '&select=id,slug,name,author_name,font_family,tokens,created_at&limit=1';
-    return fetch(url, { headers: supabaseHeaders(cfg) }).then(function (res) {
-      if (!res.ok) throw new Error('theme ' + res.status);
-      return res.json().then(function (rows) {
-        return rows && rows[0] ? rows[0] : null;
+    return fetch(root + suffix, { headers: headers })
+      .then(function (res) {
+        if (res.ok) {
+          return res.json().then(function (rows) {
+            return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
+          });
+        }
+        return fetch(root + liteSuffix, { headers: headers }).then(function (
+          retry,
+        ) {
+          if (!retry.ok) throw new Error('theme ' + retry.status);
+          return retry.json().then(function (rows) {
+            return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
+          });
+        });
+      })
+      .then(function (row) {
+        if (row) return row;
+        if (isDefaultThemeSlug(slug)) return defaultThemeRow();
+        return null;
+      });
+  }
+
+  function likeThemeUrl(cfg) {
+    return cfg.url.replace(/\/$/, '') + '/functions/v1/like-theme';
+  }
+
+  function fetchMyThemeLikes(cfg) {
+    if (!cfg || !cfg.url || !cfg.anonKey) return Promise.resolve([]);
+    return fetch(likeThemeUrl(cfg), {
+      headers: supabaseHeaders(cfg),
+    }).then(function (res) {
+      if (!res.ok) return [];
+      return res.json().then(function (data) {
+        return data && Array.isArray(data.liked) ? data.liked : [];
+      });
+    });
+  }
+
+  function toggleThemeLike(cfg, slug) {
+    if (!isValidSlug(slug)) return Promise.reject(new Error('slug'));
+    return fetch(likeThemeUrl(cfg), {
+      method: 'POST',
+      headers: supabaseHeaders(cfg),
+      body: JSON.stringify({ slug: slug }),
+    }).then(function (res) {
+      return res.json().then(function (data) {
+        if (!res.ok) {
+          var err = new Error((data && data.error) || 'like');
+          err.code = data && data.code;
+          throw err;
+        }
+        return data;
       });
     });
   }
@@ -513,6 +653,8 @@
     SIZE_TOKENS: SIZE_TOKENS,
     TOKEN_NAMES: TOKEN_NAMES,
     DEFAULT_TOKENS: DEFAULT_TOKENS,
+    DEFAULT_THEME_SLUG: DEFAULT_THEME_SLUG,
+    DEFAULT_THEME_ID: DEFAULT_THEME_ID,
     FONT_SUGGESTIONS: FONT_SUGGESTIONS,
     isValidHex: isValidHex,
     isValidFontFamily: isValidFontFamily,
@@ -522,9 +664,13 @@
     loadGoogleFontPreviews: loadGoogleFontPreviews,
     validateLabel: validateLabel,
     isValidSlug: isValidSlug,
+    isDefaultThemeSlug: isDefaultThemeSlug,
     validateTokens: validateTokens,
     validateTheme: validateTheme,
     defaultTheme: defaultTheme,
+    defaultThemeRow: defaultThemeRow,
+    withDefaultTheme: withDefaultTheme,
+    sortThemes: sortThemes,
     exportTheme: exportTheme,
     applyTheme: applyTheme,
     applyThemeVars: applyThemeVars,
@@ -532,6 +678,8 @@
     swatchColors: swatchColors,
     fetchThemes: fetchThemes,
     fetchTheme: fetchTheme,
+    fetchMyThemeLikes: fetchMyThemeLikes,
+    toggleThemeLike: toggleThemeLike,
     rowToTheme: rowToTheme,
     publishTheme: publishTheme,
     importToExtension: importToExtension,

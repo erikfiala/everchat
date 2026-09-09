@@ -3,6 +3,8 @@
 export const THEME_SCHEMA_VERSION = 1;
 export const SKIN_STORAGE_KEY = 'ec-skin';
 export const THEME_JSON_MAX_BYTES = 8192;
+export const DEFAULT_THEME_SLUG = 'everchat';
+export const DEFAULT_THEME_ID = 'e0e0e0e0-0000-4000-8000-000000000001';
 
 export const COLOR_TOKENS = [
   '--color-background',
@@ -249,10 +251,14 @@ export function validateTheme(raw: unknown): ThemeDocument | null {
   return doc;
 }
 
+export function isDefaultThemeSlug(value: unknown): boolean {
+  return value === DEFAULT_THEME_SLUG;
+}
+
 export function defaultTheme(): ThemeDocument {
   return {
     schemaVersion: THEME_SCHEMA_VERSION,
-    name: 'Zinc',
+    name: 'Default',
     author: 'Everchat',
     fontFamily: '',
     tokens: { ...DEFAULT_TOKENS },

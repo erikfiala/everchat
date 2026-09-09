@@ -14,7 +14,12 @@ import {
   setPanelAttention,
 } from '@/lib/os-notifications';
 import type { Notification, PanelTab } from '@/lib/database.types';
-import { isValidSlug, parseStoredSkin, SKIN_STORAGE_KEY } from '@/lib/theme';
+import {
+  isDefaultThemeSlug,
+  isValidSlug,
+  parseStoredSkin,
+  SKIN_STORAGE_KEY,
+} from '@/lib/theme';
 import { getPageForMessage } from '@/lib/pages';
 import {
   clearPagePresence,
@@ -361,7 +366,19 @@ export default defineBackground(() => {
     slug: string,
     tabId?: number,
   ): Promise<{ ok: boolean }> {
-    if (!isValidSlug(slug) || !isSupabaseConfigured) return { ok: false };
+    if (!isValidSlug(slug)) return { ok: false };
+    if (isDefaultThemeSlug(slug)) {
+      await browser.storage.local.remove(SKIN_STORAGE_KEY);
+      if (tabId != null) {
+        try {
+          await browser.sidePanel.open({ tabId });
+        } catch {
+          /* older chrome */
+        }
+      }
+      return { ok: true };
+    }
+    if (!isSupabaseConfigured) return { ok: false };
     try {
       const sb = getSupabase();
       const { data, error } = await sb

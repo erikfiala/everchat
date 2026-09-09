@@ -150,7 +150,29 @@
         >
           Themes
         </h1>
-        <a class="browse-all-link themes-new-link" href="/themes/new" data-i18n="www.themesNew">New theme</a>
+        <div class="themes-toolbar">
+          <div class="themes-sort" role="group" aria-label="Sort themes" data-i18n="www.themesSort" data-i18n-attr="aria-label">
+            <button
+              type="button"
+              class="theme-sort-btn is-active"
+              data-ec-themes-sort="best"
+              aria-pressed="true"
+              data-i18n="chat.sortBest"
+            >
+              Best
+            </button>
+            <button
+              type="button"
+              class="theme-sort-btn"
+              data-ec-themes-sort="new"
+              aria-pressed="false"
+              data-i18n="chat.sortNew"
+            >
+              New
+            </button>
+          </div>
+          <a class="browse-all-link themes-new-link" href="/themes/new" data-i18n="www.themesNew">New theme</a>
+        </div>
       </div>
 
       <p class="trending-status browse-status m-0 text-mute" data-ec-themes-status hidden></p>

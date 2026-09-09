@@ -420,6 +420,7 @@ export type Database = {
           font_family: string;
           tokens: Json;
           created_at: string;
+          like_count: number;
         };
         Insert: {
           id?: string;
@@ -429,6 +430,7 @@ export type Database = {
           font_family?: string;
           tokens: Json;
           created_at?: string;
+          like_count?: number;
         };
         Update: {
           id?: string;
@@ -437,6 +439,28 @@ export type Database = {
           author_name?: string;
           font_family?: string;
           tokens?: Json;
+          created_at?: string;
+          like_count?: number;
+        };
+        Relationships: [];
+      };
+      theme_likes: {
+        Row: {
+          theme_id: string;
+          user_id: string | null;
+          client_hash: string | null;
+          created_at: string;
+        };
+        Insert: {
+          theme_id: string;
+          user_id?: string | null;
+          client_hash?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          theme_id?: string;
+          user_id?: string | null;
+          client_hash?: string | null;
           created_at?: string;
         };
         Relationships: [];

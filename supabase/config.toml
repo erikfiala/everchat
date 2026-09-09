@@ -12,3 +12,6 @@ verify_jwt = false
 
 [functions.publish-theme]
 verify_jwt = false
+
+[functions.like-theme]
+verify_jwt = false

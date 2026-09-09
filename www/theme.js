@@ -3,7 +3,9 @@
  */
 (function () {
   var current = null;
+  var currentRow = null;
   var slug = null;
+  var liked = false;
 
   function $(sel, root) {
     return (root || document).querySelector(sel);
@@ -68,6 +70,54 @@
     if (el) el.hidden = !show;
   }
 
+  function paintLike() {
+    var btn = $('[data-ec-theme-like]');
+    if (!btn || !currentRow) return;
+    var count =
+      typeof currentRow.like_count === 'number' ? currentRow.like_count : 0;
+    btn.hidden = false;
+    btn.classList.toggle('is-liked', liked);
+    btn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+    btn.setAttribute(
+      'aria-label',
+      liked ? t('www.themeUnlike') : t('www.themeLike'),
+    );
+    var icon = btn.querySelector('svg');
+    if (icon) icon.setAttribute('fill', liked ? 'currentColor' : 'none');
+    var n = btn.querySelector('[data-ec-theme-like-count]');
+    if (n) n.textContent = String(count);
+  }
+
+  function onLike() {
+    var cfg = window.EC_SUPABASE;
+    var btn = $('[data-ec-theme-like]');
+    if (!slug || !currentRow) return;
+    if (btn) btn.disabled = true;
+    var prev = liked;
+    var prevCount =
+      typeof currentRow.like_count === 'number' ? currentRow.like_count : 0;
+    liked = !prev;
+    currentRow.like_count = Math.max(0, prevCount + (prev ? -1 : 1));
+    paintLike();
+    window.ECTheme.toggleThemeLike(cfg, slug).then(
+      function (data) {
+        if (btn) btn.disabled = false;
+        liked = !!data.liked;
+        if (typeof data.like_count === 'number') {
+          currentRow.like_count = data.like_count;
+        }
+        paintLike();
+      },
+      function () {
+        if (btn) btn.disabled = false;
+        liked = prev;
+        currentRow.like_count = prevCount;
+        paintLike();
+        setStatus(t('www.themeLikeFail'), 'error');
+      },
+    );
+  }
+
   function importTheme() {
     if (!slug) return;
     var btn = $('[data-ec-theme-import]');
@@ -87,12 +137,17 @@
 
   function showReady(row, theme) {
     current = theme;
+    currentRow = row;
     var title = $('[data-ec-theme-title]');
     var by = $('[data-ec-theme-by]');
     var ready = $('[data-ec-theme-ready]');
     var preview = $('[data-ec-preview]');
+    var importBtn = $('[data-ec-theme-import]');
     if (title) title.textContent = theme.name;
     if (by) by.textContent = t('www.themeBy', { name: theme.author });
+    if (importBtn && window.ECTheme.isDefaultThemeSlug(row.slug)) {
+      importBtn.textContent = t('www.themeResetImport');
+    }
     document.title = theme.name + ' - Everchat';
     var canonical = document.querySelector('link[rel="canonical"]');
     if (!canonical) {
@@ -109,6 +164,7 @@
       window.ECTheme.postPreviewTheme(frame, theme);
     }
     if (ready) ready.hidden = false;
+    paintLike();
   }
 
   function showError() {
@@ -124,9 +180,11 @@
     var exportBtn = $('[data-ec-theme-export]');
     var copyBtn = $('[data-ec-theme-copy]');
     var importBtn = $('[data-ec-theme-import]');
+    var likeBtn = $('[data-ec-theme-like]');
     if (exportBtn) exportBtn.addEventListener('click', downloadJson);
     if (copyBtn) copyBtn.addEventListener('click', copyJson);
     if (importBtn) importBtn.addEventListener('click', importTheme);
+    if (likeBtn) likeBtn.addEventListener('click', onLike);
 
     if (!slug || !window.ECTheme.isValidSlug(slug)) {
       if (root) root.setAttribute('aria-busy', 'false');
@@ -135,26 +193,40 @@
     }
 
     var cfg = window.EC_SUPABASE;
-    if (!cfg || !cfg.url) {
+    if ((!cfg || !cfg.url) && !window.ECTheme.isDefaultThemeSlug(slug)) {
       if (root) root.setAttribute('aria-busy', 'false');
       showError();
       return;
     }
 
-    window.ECTheme.fetchTheme(cfg, slug)
-      .then(function (row) {
+    var likesP =
+      cfg && cfg.url
+        ? window.ECTheme.fetchMyThemeLikes(cfg)
+        : Promise.resolve([]);
+    Promise.all([window.ECTheme.fetchTheme(cfg || {}, slug), likesP])
+      .then(function (parts) {
         if (root) root.setAttribute('aria-busy', 'false');
+        var row = parts[0];
         var theme = window.ECTheme.rowToTheme(row);
         if (!row || !theme) {
           showError();
           return;
         }
+        liked = (parts[1] || []).indexOf(row.slug) !== -1;
         showReady(row, theme);
         var params = new URLSearchParams(location.search);
         if (params.get('import') === '1') importTheme();
       })
       .catch(function () {
         if (root) root.setAttribute('aria-busy', 'false');
+        if (window.ECTheme.isDefaultThemeSlug(slug)) {
+          var row = window.ECTheme.defaultThemeRow();
+          var theme = window.ECTheme.rowToTheme(row);
+          if (theme) {
+            showReady(row, theme);
+            return;
+          }
+        }
         showError();
       });
   }

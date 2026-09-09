@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_THEME_SLUG,
   DEFAULT_TOKENS,
   defaultTheme,
   exportTheme,
   googleFontsHref,
   googleFontsPreviewHref,
+  isDefaultThemeSlug,
   isValidFontFamily,
   sanitizeFontFamily,
   validateTheme,
@@ -12,18 +14,22 @@ import {
 } from './theme';
 
 describe('theme schema', () => {
-  it('accepts the default zinc skin', () => {
+  it('accepts the default Everchat skin', () => {
     const theme = validateTheme(defaultTheme());
     expect(theme).not.toBeNull();
+    expect(theme?.name).toBe('Default');
+    expect(theme?.author).toBe('Everchat');
     expect(theme?.tokens['--color-background']).toBe('#fafafa');
     expect(theme?.tokens['--radius-md']).toBe(8);
+    expect(isDefaultThemeSlug(DEFAULT_THEME_SLUG)).toBe(true);
+    expect(isDefaultThemeSlug('midnight')).toBe(false);
   });
 
   it('exports tokens only — no css or url fields', () => {
     const json = exportTheme(defaultTheme());
     expect(json).toEqual({
       schemaVersion: 1,
-      name: 'Zinc',
+      name: 'Default',
       author: 'Everchat',
       fontFamily: '',
       tokens: DEFAULT_TOKENS,

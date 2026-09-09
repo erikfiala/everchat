@@ -121,8 +121,8 @@ export function installPreviewChrome(): void {
     permissions: { contains: async () => false },
   };
 
-  (globalThis as { browser: typeof api }).browser = api;
-  (globalThis as { chrome: typeof api }).chrome = api;
+  (globalThis as unknown as { browser: typeof api }).browser = api;
+  (globalThis as unknown as { chrome: typeof api }).chrome = api;
 
   window.addEventListener('message', (event) => {
     if (event.source !== window.parent) return;

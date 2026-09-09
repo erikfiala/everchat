@@ -15,7 +15,7 @@
   "settings.mode": "Läge",
   "settings.language": "Språk",
   "settings.languageSystem": "System",
-  "settings.skin": "Utseende",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Standard",
   "settings.skinUsing": "Använder {{name}}",
   "settings.skinReset": "Återställ till standard",

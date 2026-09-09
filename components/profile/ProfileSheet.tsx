@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HatGlasses } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import {
   Dialog,
   DialogContent,
@@ -58,7 +58,7 @@ export function ProfileSheet({
             <div className="flex items-start gap-4">
               <Avatar className="ec-anonymous-avatar h-12 w-12">
                 <AvatarFallback className="bg-transparent text-[var(--color-foreground)]">
-                  <HatGlasses className="h-5 w-5" aria-hidden />
+                  <Icon name="anonymous" className="h-5 w-5" aria-hidden />
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">

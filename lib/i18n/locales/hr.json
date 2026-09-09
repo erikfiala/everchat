@@ -15,7 +15,7 @@
   "settings.mode": "Način",
   "settings.language": "Jezik",
   "settings.languageSystem": "Sustav",
-  "settings.skin": "Izgled",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Zadano",
   "settings.skinUsing": "Koristi se {{name}}",
   "settings.skinReset": "Vrati na zadano",

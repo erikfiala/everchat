@@ -39,14 +39,26 @@
   var FONT = /^[A-Za-z0-9][A-Za-z0-9 ]{0,59}$/;
   var BAD = /url\s*\(|@import|<\/?script|javascript:/i;
 
-  function applySkin(raw) {
+  function isObject(value) {
+    return !!value && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  function paletteFor(tokens, appearance) {
+    if (!isObject(tokens)) return tokens;
+    if (isObject(tokens[appearance])) return tokens[appearance];
+    if (isObject(tokens.light)) return tokens.light;
+    return tokens;
+  }
+
+  function applySkin(raw, appearance) {
     var root = document.documentElement;
     if (!raw || typeof raw !== 'object' || !raw.tokens) return;
     var tokens = raw.tokens;
+    var colors = paletteFor(tokens, appearance);
     var name;
     for (name in COLOR) {
-      if (!Object.prototype.hasOwnProperty.call(tokens, name)) continue;
-      var hex = tokens[name];
+      if (!Object.prototype.hasOwnProperty.call(colors, name)) continue;
+      var hex = colors[name];
       if (typeof hex === 'string' && HEX.test(hex) && !BAD.test(hex)) {
         root.style.setProperty(name, hex.toLowerCase());
       }
@@ -79,13 +91,17 @@
       link.href = href;
     }
     root.setAttribute('data-ec-skin', '1');
+    if (typeof raw.iconPack === 'string' && raw.iconPack.length <= 8) {
+      root.setAttribute('data-ec-icon-pack', raw.iconPack);
+    }
   }
 
+  var resolved = 'light';
   try {
     var raw = localStorage.getItem('ec-theme');
     var pref =
       raw === 'light' || raw === 'dark' || raw === 'system' ? raw : 'system';
-    var resolved =
+    resolved =
       pref === 'system'
         ? window.matchMedia('(prefers-color-scheme: dark)').matches
           ? 'dark'
@@ -96,13 +112,13 @@
 
   try {
     var skinRaw = localStorage.getItem('ec-skin');
-    if (skinRaw) applySkin(JSON.parse(skinRaw));
+    if (skinRaw) applySkin(JSON.parse(skinRaw), resolved);
   } catch (_) {}
 
   try {
     if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
       chrome.storage.local.get('ec-skin', function (res) {
-        if (res && res['ec-skin']) applySkin(res['ec-skin']);
+        if (res && res['ec-skin']) applySkin(res['ec-skin'], resolved);
       });
     }
   } catch (_) {}

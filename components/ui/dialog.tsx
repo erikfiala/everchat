@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { PAGE_TITLE_CLASS } from '@/components/ui/typography';
 
@@ -24,7 +24,7 @@ export const DialogContent = React.forwardRef<
     >
       {children}
       <DialogPrimitive.Close className="absolute end-5 top-5 rounded-sm opacity-70 hover:opacity-100">
-        <X className="h-4 w-4" />
+        <Icon name="close" className="h-4 w-4" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>

@@ -15,7 +15,7 @@
   "settings.mode": "Tila",
   "settings.language": "Kieli",
   "settings.languageSystem": "Järjestelmä",
-  "settings.skin": "Ulkoasu",
+  "settings.skin": "Teema",
   "settings.skinDefault": "Oletus",
   "settings.skinUsing": "Käytössä {{name}}",
   "settings.skinReset": "Palauta oletus",

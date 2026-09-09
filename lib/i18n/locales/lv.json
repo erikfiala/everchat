@@ -15,7 +15,7 @@
   "settings.mode": "Režīms",
   "settings.language": "Valoda",
   "settings.languageSystem": "Sistēma",
-  "settings.skin": "Izskats",
+  "settings.skin": "Tēma",
   "settings.skinDefault": "Noklusējums",
   "settings.skinUsing": "Tiek lietots {{name}}",
   "settings.skinReset": "Atiestatīt uz noklusējumu",

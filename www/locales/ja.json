@@ -15,7 +15,7 @@
   "settings.mode": "モード",
   "settings.language": "言語",
   "settings.languageSystem": "システム",
-  "settings.skin": "スキン",
+  "settings.skin": "テーマ",
   "settings.skinDefault": "デフォルト",
   "settings.skinUsing": "{{name}} を使用中",
   "settings.skinReset": "デフォルトに戻す",

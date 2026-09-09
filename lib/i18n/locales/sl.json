@@ -15,7 +15,7 @@
   "settings.mode": "Način",
   "settings.language": "Jezik",
   "settings.languageSystem": "Sistem",
-  "settings.skin": "Videz",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Privzeto",
   "settings.skinUsing": "V uporabi je {{name}}",
   "settings.skinReset": "Ponastavi na privzeto",

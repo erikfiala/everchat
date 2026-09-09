@@ -15,7 +15,7 @@
   "settings.mode": "模式",
   "settings.language": "语言",
   "settings.languageSystem": "跟随系统",
-  "settings.skin": "皮肤",
+  "settings.skin": "主题",
   "settings.skinDefault": "默认",
   "settings.skinUsing": "正在使用 {{name}}",
   "settings.skinReset": "恢复默认",

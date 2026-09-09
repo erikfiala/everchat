@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Camera, LogOut, PenSquare, Plus, Trash2 } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
 import { PageTitleBar } from '@/components/PageTitleBar';
@@ -228,7 +228,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
                 onClick={() => setConfirmSignOutOpen(true)}
                 aria-label={t('profile.signOut')}
               >
-                <LogOut className="h-3.5 w-3.5" />
+                <Icon name="logout" className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>{t('profile.signOut')}</TooltipContent>
@@ -255,7 +255,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
               </AvatarFallback>
             </Avatar>
             <span className="absolute bottom-0 end-0 rounded-full bg-[var(--color-card)] p-1 shadow">
-              <Camera className="h-3 w-3" />
+              <Icon name="camera" className="h-3 w-3" />
             </span>
           </button>
           <input
@@ -464,7 +464,7 @@ function AddCurrentDeviceRow({
       onClick={disabled ? undefined : onAdd}
       className="h-auto min-h-7 w-full justify-center py-1.5 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
     >
-      <Plus className="h-3.5 w-3.5" />
+      <Icon name="plus" className="h-3.5 w-3.5" />
       {t('profile.addCurrentDevice')}
     </Button>
   );
@@ -594,7 +594,7 @@ function DeviceRow({
                 onClick={startEdit}
                 aria-label={t('profile.rename')}
               >
-                <PenSquare className="h-3.5 w-3.5" />
+                <Icon name="edit" className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>{t('profile.rename')}</TooltipContent>
@@ -613,7 +613,7 @@ function DeviceRow({
               }}
               aria-label={t('profile.delete')}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Icon name="trash" className="h-3.5 w-3.5" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>{t('profile.delete')}</TooltipContent>

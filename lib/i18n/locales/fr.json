@@ -15,7 +15,7 @@
   "settings.mode": "Mode",
   "settings.language": "Langue",
   "settings.languageSystem": "Système",
-  "settings.skin": "Apparence",
+  "settings.skin": "Thème",
   "settings.skinDefault": "Par défaut",
   "settings.skinUsing": "Utilise {{name}}",
   "settings.skinReset": "Réinitialiser",

@@ -15,7 +15,7 @@
   "settings.mode": "Режим",
   "settings.language": "Мова",
   "settings.languageSystem": "Системна",
-  "settings.skin": "Оформлення",
+  "settings.skin": "Тема",
   "settings.skinDefault": "Типове",
   "settings.skinUsing": "Використовується {{name}}",
   "settings.skinReset": "Скинути",

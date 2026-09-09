@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { dateFnsLocaleFor } from '@/lib/dateFnsLocale';
-import { Check, ChevronDown } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { Favicon } from '@/components/Favicon';
 import { ListSentinel } from '@/components/ListSentinel';
 import { PageTitleBar } from '@/components/PageTitleBar';
@@ -62,7 +62,7 @@ async function withOnlineCounts(
   }
 }
 
-export function ExploreTab() {
+export function ExploreTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { t, tError, locale } = useLocale();
   const [mode, setMode] = useState<ExploreMode>('trending');
   const [rows, setRows] = useState<ExplorePageRow[]>([]);
@@ -158,6 +158,7 @@ export function ExploreTab() {
 
   const open = async (row: ExplorePageRow) => {
     const url = hrefFromPage(row);
+    onOpenChat?.();
     const tab = await browser.tabs.create({ url });
     if (tab.id != null) {
       await browser.runtime.sendMessage({
@@ -183,7 +184,7 @@ export function ExploreTab() {
                   className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
                 >
                   {modeLabel}
-                  <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                  <Icon name="chevronDown" className="size-3.5 shrink-0 opacity-60" aria-hidden />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -193,7 +194,7 @@ export function ExploreTab() {
                 >
                   <span className="flex size-3.5 items-center justify-center">
                     {mode === 'trending' ? (
-                      <Check className="size-3.5" aria-hidden />
+                      <Icon name="check" className="size-3.5" aria-hidden />
                     ) : null}
                   </span>
                   {t('explore.trending')}
@@ -204,7 +205,7 @@ export function ExploreTab() {
                 >
                   <span className="flex size-3.5 items-center justify-center">
                     {mode === 'new' ? (
-                      <Check className="size-3.5" aria-hidden />
+                      <Icon name="check" className="size-3.5" aria-hidden />
                     ) : null}
                   </span>
                   {t('explore.new')}
@@ -270,12 +271,12 @@ export function ExploreTab() {
               posts === 1 ? 'auth.trendingPost' : 'auth.trendingPosts',
               { count: posts },
             );
-            const activity = showOnline
-              ? `${t('auth.trendingTalking', { count: row.online_count ?? 0 })} · ${postsLabel}`
-              : `${formatDistanceToNow(new Date(row.last_active_at!), {
+            const statusLabel = showOnline
+              ? t('auth.trendingTalking', { count: row.online_count ?? 0 })
+              : formatDistanceToNow(new Date(row.last_active_at!), {
                   addSuffix: true,
                   locale: dateFnsLocaleFor(locale),
-                })} · ${postsLabel}`;
+                });
 
             return (
               <button
@@ -296,24 +297,32 @@ export function ExploreTab() {
                         DESCRIPTION_TRUNCATE,
                       )}
                   </div>
-                  <div
-                    className={
-                      live
-                        ? 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-success)]'
-                        : 'mt-0.5 flex items-center gap-1 text-[11px] text-[var(--color-muted-foreground)]'
-                    }
-                  >
+                  <div className="mt-0.5 flex items-center text-[11px] text-[var(--color-muted-foreground)]">
                     {showOnline ? (
                       <span
                         className={
                           live
-                            ? 'size-1.5 shrink-0 rounded-full bg-[var(--color-success)]'
-                            : 'size-1.5 shrink-0 rounded-full bg-[var(--color-muted-foreground)] opacity-40'
+                            ? 'inline-flex items-center gap-1 text-[var(--color-success)]'
+                            : 'inline-flex items-center gap-1'
                         }
-                        aria-hidden
-                      />
-                    ) : null}
-                    {activity}
+                      >
+                        <span
+                          className={
+                            live
+                              ? 'size-1.5 shrink-0 rounded-full bg-[var(--color-success)]'
+                              : 'size-1.5 shrink-0 rounded-full bg-[var(--color-muted-foreground)] opacity-40'
+                          }
+                          aria-hidden
+                        />
+                        {statusLabel}
+                      </span>
+                    ) : (
+                      <span>{statusLabel}</span>
+                    )}
+                    <span>
+                      {' · '}
+                      {postsLabel}
+                    </span>
                   </div>
                 </div>
               </button>

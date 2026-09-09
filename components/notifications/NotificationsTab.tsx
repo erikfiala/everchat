@@ -14,7 +14,7 @@ import { bindRelativeTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { displayUrl } from '@/lib/canonicalize';
 
-export function NotificationsTab() {
+export function NotificationsTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { t, locale } = useLocale();
   const formatTime = bindRelativeTime(locale, t('time.lessThanMinute'));
   const { user, loading: authLoading } = useAuth();
@@ -62,7 +62,10 @@ export function NotificationsTab() {
           <button
             key={n.id}
             type="button"
-            onClick={() => openNotification(n)}
+            onClick={() => {
+              onOpenChat?.();
+              void openNotification(n);
+            }}
             className={cn(
               'flex w-full items-start gap-2 border-b border-[var(--color-border)] px-3 py-3 text-start hover:bg-[var(--color-accent)]',
               !n.read_at && 'bg-[var(--color-muted)]/60',

@@ -1,7 +1,19 @@
 /** Official Everchat skin schema: JSON tokens only. No user CSS. */
 
+import {
+  DEFAULT_ICON_PACK,
+  isValidIconPack,
+  sanitizeIconPack,
+  type IconPackId,
+} from '@/lib/icons';
+
+export { DEFAULT_ICON_PACK, isValidIconPack, sanitizeIconPack };
+export type { IconPackId };
+
 export const THEME_SCHEMA_VERSION = 1;
 export const SKIN_STORAGE_KEY = 'ec-skin';
+export const SKIN_LIBRARY_KEY = 'ec-skins';
+export const SKIN_LIBRARY_MAX = 40;
 export const THEME_JSON_MAX_BYTES = 8192;
 export const DEFAULT_THEME_SLUG = 'everchat';
 export const DEFAULT_THEME_ID = 'e0e0e0e0-0000-4000-8000-000000000001';
@@ -51,17 +63,28 @@ export const TOKEN_NAMES = [
 
 export type TokenName = (typeof TOKEN_NAMES)[number];
 
-export type ThemeTokens = {
+export type ThemeAppearance = 'light' | 'dark';
+
+export type ColorPalette = {
   [K in ColorToken]: string;
-} & {
+};
+
+export type SizeValues = {
   [K in SizeToken]: number;
 };
+
+/** Dual palettes + shared size/radius tokens. */
+export type ThemeTokens = {
+  light: ColorPalette;
+  dark: ColorPalette;
+} & SizeValues;
 
 export type ThemeDocument = {
   schemaVersion: typeof THEME_SCHEMA_VERSION;
   name: string;
   author: string;
   fontFamily: string;
+  iconPack: IconPackId;
   tokens: ThemeTokens;
 };
 
@@ -80,7 +103,7 @@ const AUTHOR = /^[\p{L}\p{N}][\p{L}\p{N} .'_-]{0,39}$/u;
 const SLUG = /^[a-z0-9][a-z0-9-]{1,46}[a-z0-9]$/;
 const FORBIDDEN = /url\s*\(|@import|<\/?script|javascript:|data:|expression\s*\(/i;
 
-export const DEFAULT_TOKENS: ThemeTokens = {
+export const DEFAULT_LIGHT_COLORS: ColorPalette = {
   '--color-background': '#fafafa',
   '--color-foreground': '#18181b',
   '--color-muted': '#f4f4f5',
@@ -99,6 +122,30 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   '--color-hover-background': '#f4f4f5',
   '--color-hover-border': '#d4d4d8',
   '--color-hover-foreground': '#18181b',
+};
+
+export const DEFAULT_DARK_COLORS: ColorPalette = {
+  '--color-background': '#18181b',
+  '--color-foreground': '#fafafa',
+  '--color-muted': '#27272a',
+  '--color-muted-foreground': '#a1a1aa',
+  '--color-border': '#3f3f46',
+  '--color-card': '#27272a',
+  '--color-primary': '#f4f4f5',
+  '--color-primary-foreground': '#18181b',
+  '--color-accent': '#3f3f46',
+  '--color-anonymous-avatar': '#71717a',
+  '--color-destructive': '#f87171',
+  '--color-success': '#2dd4bf',
+  '--color-score-pos': '#2dd4bf',
+  '--color-score-neg': '#f87171',
+  '--color-ring': '#71717a',
+  '--color-hover-background': '#3f3f46',
+  '--color-hover-border': '#52525b',
+  '--color-hover-foreground': '#fafafa',
+};
+
+export const DEFAULT_SIZE_VALUES: SizeValues = {
   '--radius-sm': 6,
   '--radius-md': 8,
   '--radius-lg': 12,
@@ -109,6 +156,12 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   '--space-pad': 12,
   '--space-margin': 8,
   '--space-composer-pad': 12,
+};
+
+export const DEFAULT_TOKENS: ThemeTokens = {
+  light: { ...DEFAULT_LIGHT_COLORS },
+  dark: { ...DEFAULT_DARK_COLORS },
+  ...DEFAULT_SIZE_VALUES,
 };
 
 export const FONT_SUGGESTIONS = [
@@ -197,52 +250,114 @@ export function isValidSlug(value: unknown): value is string {
   return typeof value === 'string' && SLUG.test(value);
 }
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isDualTokenShape(raw: Record<string, unknown>): boolean {
+  return isPlainObject(raw.light) || isPlainObject(raw.dark);
+}
+
+function validateColorPalette(
+  raw: unknown,
+  fallback: ColorPalette,
+): ColorPalette | null {
+  if (!isPlainObject(raw)) return null;
+  const keys = Object.keys(raw);
+  if (keys.length > COLOR_TOKENS.length) return null;
+  const palette = { ...fallback };
+  for (const key of keys) {
+    if (!COLOR_SET.has(key)) return null;
+    if (hasForbidden(raw[key])) return null;
+    const value = raw[key];
+    if (value == null) continue;
+    if (!isValidHex(value)) return null;
+    palette[key as ColorToken] = value.toLowerCase();
+  }
+  return palette;
+}
+
+function validateSizeValues(raw: Record<string, unknown>): SizeValues | null {
+  const sizes = { ...DEFAULT_SIZE_VALUES };
+  for (const spec of SIZE_TOKENS) {
+    const value = raw[spec.name];
+    if (value == null) continue;
+    if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+    if (value < spec.min || value > spec.max) return null;
+    sizes[spec.name] = Math.round(value);
+  }
+  return sizes;
+}
+
+function cloneTokens(tokens: ThemeTokens): ThemeTokens {
+  return {
+    light: { ...tokens.light },
+    dark: { ...tokens.dark },
+    ...SIZE_TOKENS.reduce((acc, spec) => {
+      acc[spec.name] = tokens[spec.name];
+      return acc;
+    }, {} as SizeValues),
+  };
+}
+
 export function validateTokens(raw: unknown): ThemeTokens | null {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const input = raw as Record<string, unknown>;
-  const keys = Object.keys(input);
+  if (!isPlainObject(raw)) return null;
+  const keys = Object.keys(raw);
+
+  if (isDualTokenShape(raw)) {
+    const allowed = 2 + SIZE_TOKENS.length;
+    if (keys.length > allowed) return null;
+    for (const key of keys) {
+      if (key === 'light' || key === 'dark') continue;
+      if (!SIZE_BY_NAME.has(key as SizeToken)) return null;
+      if (hasForbidden(raw[key])) return null;
+    }
+    if (!isPlainObject(raw.light) || !isPlainObject(raw.dark)) return null;
+    const light = validateColorPalette(raw.light, DEFAULT_LIGHT_COLORS);
+    const dark = validateColorPalette(raw.dark, DEFAULT_DARK_COLORS);
+    const sizes = validateSizeValues(raw);
+    if (!light || !dark || !sizes) return null;
+    return { light, dark, ...sizes };
+  }
+
   if (keys.length > TOKEN_NAMES.length) return null;
   for (const key of keys) {
     if (!COLOR_SET.has(key) && !SIZE_BY_NAME.has(key as SizeToken)) {
       return null;
     }
-    if (hasForbidden(input[key])) return null;
+    if (hasForbidden(raw[key])) return null;
   }
 
-  const tokens = { ...DEFAULT_TOKENS };
+  const palette = { ...DEFAULT_LIGHT_COLORS };
   for (const name of COLOR_TOKENS) {
-    const value = input[name];
+    const value = raw[name];
     if (value == null) continue;
     if (!isValidHex(value)) return null;
-    tokens[name] = value.toLowerCase();
+    palette[name] = value.toLowerCase();
   }
-  for (const spec of SIZE_TOKENS) {
-    const value = input[spec.name];
-    if (value == null) continue;
-    if (typeof value !== 'number' || !Number.isFinite(value)) return null;
-    if (value < spec.min || value > spec.max) return null;
-    tokens[spec.name] = Math.round(value);
-  }
-  return tokens;
+  const sizes = validateSizeValues(raw);
+  if (!sizes) return null;
+  return { light: { ...palette }, dark: { ...palette }, ...sizes };
 }
 
 export function validateTheme(raw: unknown): ThemeDocument | null {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const input = raw as Record<string, unknown>;
-  if (hasForbidden(JSON.stringify(input))) return null;
-  if (input.schemaVersion !== THEME_SCHEMA_VERSION) return null;
-  if ('css' in input || 'style' in input || 'url' in input) return null;
-  const name = validateLabel(input.name, 'name');
-  const author = validateLabel(input.author, 'author');
+  if (!isPlainObject(raw)) return null;
+  if (hasForbidden(JSON.stringify(raw))) return null;
+  if (raw.schemaVersion !== THEME_SCHEMA_VERSION) return null;
+  if ('css' in raw || 'style' in raw || 'url' in raw) return null;
+  const name = validateLabel(raw.name, 'name');
+  const author = validateLabel(raw.author, 'author');
   if (!name || !author) return null;
-  if (!isValidFontFamily(input.fontFamily)) return null;
-  const tokens = validateTokens(input.tokens);
+  if (!isValidFontFamily(raw.fontFamily)) return null;
+  if (raw.iconPack != null && !isValidIconPack(raw.iconPack)) return null;
+  const tokens = validateTokens(raw.tokens);
   if (!tokens) return null;
   const doc: ThemeDocument = {
     schemaVersion: THEME_SCHEMA_VERSION,
     name,
     author,
-    fontFamily: sanitizeFontFamily(input.fontFamily),
+    fontFamily: sanitizeFontFamily(raw.fontFamily),
+    iconPack: sanitizeIconPack(raw.iconPack),
     tokens,
   };
   if (new TextEncoder().encode(JSON.stringify(doc)).length > THEME_JSON_MAX_BYTES) {
@@ -261,7 +376,8 @@ export function defaultTheme(): ThemeDocument {
     name: 'Default',
     author: 'Everchat',
     fontFamily: '',
-    tokens: { ...DEFAULT_TOKENS },
+    iconPack: DEFAULT_ICON_PACK,
+    tokens: cloneTokens(DEFAULT_TOKENS),
   };
 }
 
@@ -271,7 +387,8 @@ export function exportTheme(theme: ThemeDocument): ThemeDocument {
     name: theme.name,
     author: theme.author,
     fontFamily: theme.fontFamily,
-    tokens: { ...theme.tokens },
+    iconPack: sanitizeIconPack(theme.iconPack),
+    tokens: cloneTokens(theme.tokens),
   };
 }
 
@@ -294,20 +411,34 @@ export function loadGoogleFont(doc: Document, family: string): void {
   doc.head.appendChild(link);
 }
 
+export function resolveThemeAppearance(
+  doc: Document = document,
+): ThemeAppearance {
+  return doc.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+}
+
 export function applyThemeVars(
   el: HTMLElement,
   theme: ThemeDocument | null,
+  appearance?: ThemeAppearance,
 ): void {
   for (const name of TOKEN_NAMES) {
     el.style.removeProperty(name);
   }
   el.style.removeProperty('--font-sans');
   el.removeAttribute('data-ec-skin');
+  el.removeAttribute('data-ec-icon-pack');
   if (!theme) return;
 
+  const mode =
+    appearance ??
+    resolveThemeAppearance(el.ownerDocument ?? document);
+  const colors = theme.tokens[mode] ?? theme.tokens.light;
+
   el.setAttribute('data-ec-skin', theme.name);
+  el.setAttribute('data-ec-icon-pack', sanitizeIconPack(theme.iconPack));
   for (const name of COLOR_TOKENS) {
-    el.style.setProperty(name, theme.tokens[name]);
+    el.style.setProperty(name, colors[name]);
   }
   for (const spec of SIZE_TOKENS) {
     el.style.setProperty(spec.name, `${theme.tokens[spec.name]}px`);
@@ -324,8 +455,9 @@ export function applyThemeVars(
 export function applyThemeToDocument(
   theme: ThemeDocument | null,
   doc: Document = document,
+  appearance?: ThemeAppearance,
 ): void {
-  applyThemeVars(doc.documentElement, theme);
+  applyThemeVars(doc.documentElement, theme, appearance);
   loadGoogleFont(doc, theme?.fontFamily ?? '');
 }
 
@@ -339,4 +471,38 @@ export function parseStoredSkin(raw: unknown): StoredSkin | null {
   }
   if (isValidSlug(input.slug)) stored.slug = input.slug;
   return stored;
+}
+
+export function storedSkinKey(skin: StoredSkin): string {
+  if (skin.slug) return `slug:${skin.slug}`;
+  if (skin.id) return `id:${skin.id}`;
+  return `name:${skin.name}`;
+}
+
+export function parseStoredSkinLibrary(raw: unknown): StoredSkin[] {
+  if (!Array.isArray(raw)) return [];
+  const out: StoredSkin[] = [];
+  const seen = new Set<string>();
+  for (const item of raw) {
+    const skin = parseStoredSkin(item);
+    if (!skin || isDefaultThemeSlug(skin.slug)) continue;
+    const key = storedSkinKey(skin);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(skin);
+    if (out.length >= SKIN_LIBRARY_MAX) break;
+  }
+  return out;
+}
+
+export function upsertStoredSkinLibrary(
+  library: StoredSkin[],
+  skin: StoredSkin,
+): StoredSkin[] {
+  if (isDefaultThemeSlug(skin.slug)) return library;
+  const key = storedSkinKey(skin);
+  return [skin, ...library.filter((item) => storedSkinKey(item) !== key)].slice(
+    0,
+    SKIN_LIBRARY_MAX,
+  );
 }

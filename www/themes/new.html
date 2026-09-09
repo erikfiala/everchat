@@ -244,10 +244,37 @@
               </div>
             </div>
             <p class="theme-hint theme-font-status" data-ec-font-status hidden></p>
+            <div class="theme-field">
+              <span data-i18n="www.themeIconPack">Icon pack</span>
+              <div class="theme-icon-packs" data-ec-icon-packs></div>
+              <p class="theme-hint" data-i18n="www.themeIconPackHint">
+                Remaps the app’s icon set. Not a full icon explorer.
+              </p>
+            </div>
           </fieldset>
 
           <fieldset class="theme-fieldset">
             <legend data-i18n="www.themeColors">Colors</legend>
+            <div class="theme-mode-tabs" role="group" aria-label="Appearance">
+              <button
+                type="button"
+                class="theme-mode-tab is-active"
+                data-ec-appearance="light"
+                aria-pressed="true"
+                data-i18n="www.themeLight"
+              >
+                Light
+              </button>
+              <button
+                type="button"
+                class="theme-mode-tab"
+                data-ec-appearance="dark"
+                aria-pressed="false"
+                data-i18n="www.themeDark"
+              >
+                Dark
+              </button>
+            </div>
             <div class="theme-color-grid" data-ec-color-fields></div>
           </fieldset>
 
@@ -289,7 +316,10 @@
         </form>
 
         <section class="theme-preview-col" aria-label="Preview">
-          <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+          <h2 class="theme-preview-label">
+            <span data-i18n="www.themePreview">Preview</span>
+            <span class="theme-preview-mode" data-ec-preview-mode>Light</span>
+          </h2>
           <div class="ec-preview-frame">
             <iframe
               class="ec-preview-iframe"
@@ -329,6 +359,7 @@
     <script src="/supabase-public.js"></script>
     <script src="/i18n.js"></script>
     <script src="/theme-schema.js"></script>
+    <script src="/icon-packs.js"></script>
     <script src="/themes-new.js"></script>
   </body>
 </html>

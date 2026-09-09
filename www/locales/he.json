@@ -15,7 +15,7 @@
   "settings.mode": "מצב",
   "settings.language": "שפה",
   "settings.languageSystem": "מערכת",
-  "settings.skin": "מראה",
+  "settings.skin": "ערכת נושא",
   "settings.skinDefault": "ברירת מחדל",
   "settings.skinUsing": "משתמש ב־{{name}}",
   "settings.skinReset": "איפוס לברירת מחדל",

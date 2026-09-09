@@ -52,6 +52,7 @@
   var state = window.ECTheme.defaultTheme();
   state.name = '';
   state.author = '';
+  var appearance = 'light';
 
   function $(sel, root) {
     return (root || document).querySelector(sel);
@@ -75,6 +76,7 @@
         name: typeof parsed.name === 'string' ? parsed.name : '',
         author: typeof parsed.author === 'string' ? parsed.author : '',
         fontFamily: window.ECTheme.sanitizeFontFamily(parsed.fontFamily),
+        iconPack: window.ECTheme.sanitizeIconPack(parsed.iconPack),
         tokens: tokens,
       };
     } catch (e) {
@@ -107,13 +109,17 @@
 
   function previewTheme() {
     return {
-      schemaVersion: 1,
-      name: state.name || 'draft',
-      author: state.author || 'draft',
-      fontFamily: window.ECTheme.isValidFontFamily(state.fontFamily)
-        ? window.ECTheme.sanitizeFontFamily(state.fontFamily)
-        : '',
-      tokens: state.tokens,
+      theme: {
+        schemaVersion: 1,
+        name: state.name || 'draft',
+        author: state.author || 'draft',
+        fontFamily: window.ECTheme.isValidFontFamily(state.fontFamily)
+          ? window.ECTheme.sanitizeFontFamily(state.fontFamily)
+          : '',
+        iconPack: window.ECTheme.sanitizeIconPack(state.iconPack),
+        tokens: state.tokens,
+      },
+      appearance: appearance,
     };
   }
 
@@ -123,7 +129,10 @@
       return;
     }
     var frame = $('[data-ec-preview-frame]');
-    if (frame) window.ECTheme.postPreviewTheme(frame, previewTheme());
+    var payload = previewTheme();
+    if (frame) {
+      window.ECTheme.postPreviewTheme(frame, payload.theme, payload.appearance);
+    }
   }
 
   function syncFontStatus() {
@@ -155,12 +164,15 @@
     state.fontFamily = window.ECTheme.isValidFontFamily(typed)
       ? window.ECTheme.sanitizeFontFamily(typed)
       : '';
+    if (!state.iconPack) state.iconPack = window.ECTheme.DEFAULT_ICON_PACK;
     document.querySelectorAll('[data-ec-token]').forEach(function (el) {
       var name = el.getAttribute('data-ec-token');
       if (!name) return;
       if (el.getAttribute('data-kind') === 'color') {
         var hex = el.value;
-        if (window.ECTheme.isValidHex(hex)) state.tokens[name] = hex.toLowerCase();
+        if (window.ECTheme.isValidHex(hex)) {
+          state.tokens[appearance][name] = hex.toLowerCase();
+        }
       } else {
         var n = Number(el.value);
         var spec = window.ECTheme.SIZE_TOKENS.find(function (s) {
@@ -184,13 +196,20 @@
     syncFontPicker();
     document.querySelectorAll('[data-ec-token]').forEach(function (el) {
       var name = el.getAttribute('data-ec-token');
-      if (!name || state.tokens[name] == null) return;
-      el.value = state.tokens[name];
+      if (!name) return;
+      var value =
+        el.getAttribute('data-kind') === 'color'
+          ? state.tokens[appearance][name]
+          : state.tokens[name];
+      if (value == null) return;
+      el.value = value;
       var paired = document.querySelector(
         '[data-ec-token-text="' + name + '"]',
       );
-      if (paired) paired.value = state.tokens[name];
+      if (paired) paired.value = value;
     });
+    syncAppearanceTabs();
+    syncIconPack();
   }
 
   function onChange() {
@@ -222,14 +241,14 @@
     color.type = 'color';
     color.setAttribute('data-ec-token', name);
     color.setAttribute('data-kind', 'color');
-    color.value = state.tokens[name];
+    color.value = state.tokens[appearance][name];
     var hex = document.createElement('input');
     hex.type = 'text';
     hex.spellcheck = false;
     hex.maxLength = 7;
     hex.className = 'theme-hex';
     hex.setAttribute('data-ec-token-text', name);
-    hex.value = state.tokens[name];
+    hex.value = state.tokens[appearance][name];
     hex.addEventListener('input', function () {
       var v = hex.value.trim();
       if (!window.ECTheme.isValidHex(v)) return;
@@ -338,6 +357,7 @@
     state = window.ECTheme.defaultTheme();
     state.name = '';
     state.author = '';
+    appearance = 'light';
     applyStateToInputs();
     syncFontStatus();
     paintPreview();
@@ -717,6 +737,89 @@
       });
   }
 
+  function syncAppearanceTabs() {
+    document.querySelectorAll('[data-ec-appearance]').forEach(function (btn) {
+      var mode = btn.getAttribute('data-ec-appearance');
+      var on = mode === appearance;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var label = $('[data-ec-preview-mode]');
+    if (label) {
+      label.textContent =
+        appearance === 'dark' ? t('www.themeDark') : t('www.themeLight');
+    }
+  }
+
+  function setAppearance(mode) {
+    if (mode !== 'light' && mode !== 'dark') return;
+    collectState();
+    appearance = mode;
+    applyStateToInputs();
+    paintPreview();
+    writeDraft();
+  }
+
+  function bindAppearanceTabs() {
+    document.querySelectorAll('[data-ec-appearance]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setAppearance(btn.getAttribute('data-ec-appearance'));
+      });
+    });
+    syncAppearanceTabs();
+  }
+
+  function syncIconPack() {
+    var pack = window.ECTheme.sanitizeIconPack(state.iconPack);
+    document.querySelectorAll('[data-ec-icon-pack]').forEach(function (btn) {
+      var id = btn.getAttribute('data-ec-icon-pack');
+      var on = id === pack;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function setIconPack(id) {
+    if (!window.ECTheme.isValidIconPack(id)) return;
+    state.iconPack = id;
+    syncIconPack();
+    paintPreview();
+    writeDraft();
+  }
+
+  function bindIconPacks() {
+    var root = $('[data-ec-icon-packs]');
+    var icons = window.ECIcons;
+    if (!root || !icons) return;
+    root.replaceChildren();
+    icons.ICON_PACKS.forEach(function (pack) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'theme-icon-pack';
+      btn.setAttribute('data-ec-icon-pack', pack.id);
+      btn.setAttribute('aria-pressed', 'false');
+      var name = document.createElement('span');
+      name.className = 'theme-icon-pack-name';
+      name.textContent = pack.label;
+      var row = document.createElement('span');
+      row.className = 'theme-icon-pack-glyphs';
+      row.setAttribute('aria-hidden', 'true');
+      icons.PREVIEW_ICONS.forEach(function (icon) {
+        var wrap = document.createElement('span');
+        wrap.className = 'theme-icon-pack-glyph';
+        wrap.innerHTML = icons.iconSvg(pack.id, icon, 16);
+        row.appendChild(wrap);
+      });
+      btn.appendChild(name);
+      btn.appendChild(row);
+      btn.addEventListener('click', function () {
+        setIconPack(pack.id);
+      });
+      root.appendChild(btn);
+    });
+    syncIconPack();
+  }
+
   function boot() {
     var draft = readDraft();
     if (draft) {
@@ -728,6 +831,8 @@
     }
 
     bindFontPicker();
+    bindAppearanceTabs();
+    bindIconPacks();
 
     fillColors(
       $('[data-ec-color-fields]'),

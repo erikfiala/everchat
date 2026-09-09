@@ -1,8 +1,11 @@
 import { PREVIEW_TAB } from '@/lib/preview/fixtures';
 import {
   applyThemeToDocument,
+  parseStoredSkin,
+  parseStoredSkinLibrary,
+  SKIN_LIBRARY_KEY,
   SKIN_STORAGE_KEY,
-  validateTheme,
+  upsertStoredSkinLibrary,
 } from '@/lib/theme';
 
 type ChangeFn = (
@@ -127,11 +130,24 @@ export function installPreviewChrome(): void {
   window.addEventListener('message', (event) => {
     if (event.source !== window.parent) return;
     if (!isAllowedParentOrigin(event.origin)) return;
-    const data = event.data as { type?: string; theme?: unknown };
+    const data = event.data as {
+      type?: string;
+      theme?: unknown;
+      appearance?: unknown;
+    };
     if (data?.type !== 'EC_PREVIEW_THEME') return;
-    const theme = validateTheme(data.theme);
+    const theme = parseStoredSkin(data.theme);
     if (!theme) return;
-    applyThemeToDocument(theme);
-    void storage.local.set({ [SKIN_STORAGE_KEY]: theme });
+    const appearance = data.appearance === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = appearance;
+    applyThemeToDocument(theme, document, appearance);
+    const library = upsertStoredSkinLibrary(
+      parseStoredSkinLibrary(local[SKIN_LIBRARY_KEY]),
+      theme,
+    );
+    void storage.local.set({
+      [SKIN_STORAGE_KEY]: theme,
+      [SKIN_LIBRARY_KEY]: library,
+    });
   });
 }

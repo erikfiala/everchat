@@ -15,7 +15,7 @@
   "settings.mode": "Mode",
   "settings.language": "Idioma",
   "settings.languageSystem": "Sistema",
-  "settings.skin": "Aparença",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Per defecte",
   "settings.skinUsing": "S’usa {{name}}",
   "settings.skinReset": "Torna al valor per defecte",

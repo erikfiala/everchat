@@ -15,7 +15,7 @@
   "settings.mode": "Mod",
   "settings.language": "Limbă",
   "settings.languageSystem": "Sistem",
-  "settings.skin": "Aspect",
+  "settings.skin": "Temă",
   "settings.skinDefault": "Implicit",
   "settings.skinUsing": "Se folosește {{name}}",
   "settings.skinReset": "Revino la implicit",

@@ -35,6 +35,7 @@ async function ensureDefaultTheme(
     name: 'Default',
     author_name: 'Everchat',
     font_family: '',
+    icon_pack: 'lu',
     tokens: DEFAULT_TOKENS,
     created_at: '2020-01-01T00:00:00Z',
   });

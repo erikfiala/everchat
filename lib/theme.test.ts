@@ -1,42 +1,169 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_DARK_COLORS,
+  DEFAULT_ICON_PACK,
+  DEFAULT_LIGHT_COLORS,
   DEFAULT_THEME_SLUG,
   DEFAULT_TOKENS,
+  applyThemeVars,
   defaultTheme,
   exportTheme,
   googleFontsHref,
   googleFontsPreviewHref,
   isDefaultThemeSlug,
   isValidFontFamily,
+  parseStoredSkinLibrary,
   sanitizeFontFamily,
+  sanitizeIconPack,
+  storedSkinKey,
+  upsertStoredSkinLibrary,
   validateTheme,
   validateTokens,
+  type StoredSkin,
 } from './theme';
 
+function flatLegacyTokens() {
+  return {
+    ...DEFAULT_LIGHT_COLORS,
+    '--radius-sm': 6,
+    '--radius-md': 8,
+    '--radius-lg': 12,
+    '--font-size': 14,
+    '--font-size-sm': 12,
+    '--font-size-lg': 16,
+    '--border-width': 1,
+    '--space-pad': 12,
+    '--space-margin': 8,
+    '--space-composer-pad': 12,
+  };
+}
+
 describe('theme schema', () => {
-  it('accepts the default Everchat skin', () => {
+  it('accepts the default Everchat skin with dual palettes and Lucide icons', () => {
     const theme = validateTheme(defaultTheme());
     expect(theme).not.toBeNull();
     expect(theme?.name).toBe('Default');
     expect(theme?.author).toBe('Everchat');
-    expect(theme?.tokens['--color-background']).toBe('#fafafa');
+    expect(theme?.iconPack).toBe('lu');
+    expect(theme?.tokens.light['--color-background']).toBe('#fafafa');
+    expect(theme?.tokens.dark['--color-background']).toBe('#18181b');
     expect(theme?.tokens['--radius-md']).toBe(8);
     expect(isDefaultThemeSlug(DEFAULT_THEME_SLUG)).toBe(true);
     expect(isDefaultThemeSlug('midnight')).toBe(false);
   });
 
-  it('exports tokens only — no css or url fields', () => {
+  it('exports dual tokens, iconPack, and no css or url fields', () => {
     const json = exportTheme(defaultTheme());
     expect(json).toEqual({
       schemaVersion: 1,
       name: 'Default',
       author: 'Everchat',
       fontFamily: '',
+      iconPack: DEFAULT_ICON_PACK,
       tokens: DEFAULT_TOKENS,
     });
+    expect(json.tokens.light).toEqual(DEFAULT_LIGHT_COLORS);
+    expect(json.tokens.dark).toEqual(DEFAULT_DARK_COLORS);
     expect(JSON.stringify(json)).not.toMatch(/url\(/i);
     expect(JSON.stringify(json)).not.toMatch(/@import/i);
     expect('css' in json).toBe(false);
+  });
+
+  it('normalizes legacy flat tokens onto both palettes', () => {
+    const tokens = validateTokens({
+      ...flatLegacyTokens(),
+      '--color-background': '#112233',
+      '--radius-md': 10,
+    });
+    expect(tokens).not.toBeNull();
+    expect(tokens?.light['--color-background']).toBe('#112233');
+    expect(tokens?.dark['--color-background']).toBe('#112233');
+    expect(tokens?.['--radius-md']).toBe(10);
+    expect(
+      validateTheme({
+        schemaVersion: 1,
+        name: 'Legacy',
+        author: 'Everchat',
+        fontFamily: '',
+        tokens: flatLegacyTokens(),
+      })?.iconPack,
+    ).toBe('lu');
+  });
+
+  it('requires both light and dark color palettes in the dual shape', () => {
+    expect(
+      validateTokens({
+        light: { '--color-background': '#112233' },
+        '--radius-md': 8,
+      }),
+    ).toBeNull();
+    expect(
+      validateTokens({
+        dark: { '--color-background': '#112233' },
+        '--radius-md': 8,
+      }),
+    ).toBeNull();
+    const dual = validateTokens({
+      light: { '--color-background': '#111111' },
+      dark: { '--color-background': '#eeeeee' },
+      '--radius-md': 4,
+    });
+    expect(dual?.light['--color-background']).toBe('#111111');
+    expect(dual?.dark['--color-background']).toBe('#eeeeee');
+    expect(dual?.light['--color-foreground']).toBe(
+      DEFAULT_LIGHT_COLORS['--color-foreground'],
+    );
+    expect(dual?.dark['--color-foreground']).toBe(
+      DEFAULT_DARK_COLORS['--color-foreground'],
+    );
+    expect(dual?.['--radius-md']).toBe(4);
+  });
+
+  it('accepts allowlisted icon packs and rejects unknown packs', () => {
+    expect(
+      validateTheme({
+        ...defaultTheme(),
+        iconPack: 'tb',
+      })?.iconPack,
+    ).toBe('tb');
+    expect(
+      validateTheme({
+        ...defaultTheme(),
+        iconPack: 'evil',
+      }),
+    ).toBeNull();
+    expect(sanitizeIconPack(undefined)).toBe('lu');
+    expect(sanitizeIconPack('pi')).toBe('pi');
+  });
+
+  it('applies the palette that matches appearance', () => {
+    const props: Record<string, string> = {};
+    const attrs: Record<string, string> = {};
+    const el = {
+      style: {
+        setProperty(name: string, value: string) {
+          props[name] = value;
+        },
+        removeProperty(name: string) {
+          delete props[name];
+        },
+      },
+      setAttribute(name: string, value: string) {
+        attrs[name] = value;
+      },
+      removeAttribute(name: string) {
+        delete attrs[name];
+      },
+      getAttribute(name: string) {
+        return attrs[name] ?? null;
+      },
+    } as unknown as HTMLElement;
+    const theme = defaultTheme();
+    applyThemeVars(el, theme, 'light');
+    expect(props['--color-background']).toBe('#fafafa');
+    applyThemeVars(el, theme, 'dark');
+    expect(props['--color-background']).toBe('#18181b');
+    expect(el.getAttribute('data-ec-icon-pack')).toBe('lu');
   });
 
   it('rejects url(), @import, and extra keys', () => {
@@ -68,7 +195,13 @@ describe('theme schema', () => {
 
   it('rejects invalid hex and out-of-range sizes', () => {
     expect(
-      validateTokens({ ...DEFAULT_TOKENS, '--color-background': 'red' }),
+      validateTokens({
+        light: { '--color-background': 'red' },
+        dark: DEFAULT_DARK_COLORS,
+      }),
+    ).toBeNull();
+    expect(
+      validateTokens({ ...flatLegacyTokens(), '--color-background': 'red' }),
     ).toBeNull();
     expect(
       validateTokens({ ...DEFAULT_TOKENS, '--radius-md': 99 }),
@@ -89,6 +222,35 @@ describe('theme schema', () => {
       'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap',
     );
     expect(googleFontsHref('bad/name')).toBeNull();
+  });
+
+  it('upserts imported skins and skips the default slug', () => {
+    const midnight: StoredSkin = {
+      ...defaultTheme(),
+      name: 'Midnight',
+      slug: 'midnight',
+    };
+    const forest: StoredSkin = {
+      ...defaultTheme(),
+      name: 'Forest',
+      slug: 'forest',
+    };
+    const official = {
+      ...defaultTheme(),
+      slug: DEFAULT_THEME_SLUG,
+    };
+    const library = upsertStoredSkinLibrary(
+      upsertStoredSkinLibrary([], midnight),
+      forest,
+    );
+    expect(library.map((item) => item.slug)).toEqual(['forest', 'midnight']);
+    expect(upsertStoredSkinLibrary(library, official)).toEqual(library);
+    expect(storedSkinKey(midnight)).toBe('slug:midnight');
+    expect(parseStoredSkinLibrary([forest, { bad: true }, midnight])).toEqual([
+      forest,
+      midnight,
+    ]);
+    expect(parseStoredSkinLibrary(official)).toEqual([]);
   });
 
   it('builds a 400-only preview href for visible families', () => {

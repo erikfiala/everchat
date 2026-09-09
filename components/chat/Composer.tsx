@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ImagePlay, Smile, X } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { EmojiPicker } from '@/components/chat/EmojiPicker';
 import { MentionList } from '@/components/chat/MentionList';
 import { Button } from '@/components/ui/button';
@@ -291,7 +291,7 @@ export function Composer({
             aria-label={t('common.cancel')}
             onClick={onCancelReply}
           >
-            <X className="h-4 w-4" />
+            <Icon name="close" className="h-4 w-4" />
           </Button>
         </div>
       )}
@@ -381,7 +381,7 @@ export function Composer({
             className="absolute end-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-white"
             onClick={() => setGifUrl(null)}
           >
-            <X className="h-4 w-4" />
+            <Icon name="close" className="h-4 w-4" />
           </button>
         </div>
       )}
@@ -401,7 +401,7 @@ export function Composer({
                     setShowGiphy(false);
                   }}
                 >
-                  <Smile className="h-4 w-4" />
+                  <Icon name="smile" className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t('composer.emoji')}</TooltipContent>
@@ -419,7 +419,7 @@ export function Composer({
                     setShowEmoji(false);
                   }}
                 >
-                  <ImagePlay className="h-4 w-4" />
+                  <Icon name="gif" className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{t('composer.gif')}</TooltipContent>

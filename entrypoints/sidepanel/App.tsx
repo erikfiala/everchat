@@ -106,11 +106,11 @@ function Shell() {
               onOpenProfile={(u) => setProfileUser(u)}
             />
           ) : tab === 'explore' ? (
-            <ExploreTab />
+            <ExploreTab onOpenChat={() => setTab('chat')} />
           ) : tab === 'leaderboard' ? (
             <LeaderboardTab onOpenProfile={(u) => setProfileUser(u)} />
           ) : tab === 'notifications' ? (
-            <NotificationsTab />
+            <NotificationsTab onOpenChat={() => setTab('chat')} />
           ) : tab === 'settings' ? (
             <SettingsTab />
           ) : (

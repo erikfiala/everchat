@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpDown, Check, ChevronDown } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContextHeader } from '@/components/PageContextHeader';
 import { ListSentinel } from '@/components/ListSentinel';
@@ -223,7 +223,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               onClick={backToMainThread}
               aria-label={t('message.backToMainThread')}
             >
-              <ArrowLeft className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden />
+              <Icon name="arrowLeft" className="size-3.5 shrink-0 rtl:rotate-180" aria-hidden />
               <span className="truncate">{t('message.backToMainThread')}</span>
             </Button>
           </div>
@@ -245,7 +245,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                       )}
                       aria-label={t('chat.goBack')}
                     >
-                      <ArrowLeft className="size-4" />
+                      <Icon name="arrowLeft" className="size-4" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>{t('chat.goBack')}</TooltipContent>
@@ -264,7 +264,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                       )}
                       aria-label={t('chat.goForward')}
                     >
-                      <ArrowRight className="size-4" />
+                      <Icon name="arrowRight" className="size-4" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>{t('chat.goForward')}</TooltipContent>
@@ -272,44 +272,26 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
               </div>
             </TooltipProvider>
 
-            <div className="ms-auto min-w-0">
+            <div className="ms-auto flex min-w-0 items-center gap-1.5">
+              <span className="text-xs text-[var(--color-muted-foreground)]">
+                {t('chat.sort')}
+              </span>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     size="xs"
                     variant="outline"
-                    className="h-7 shrink-0 gap-1 py-0 ps-2 pe-2 font-normal"
-                    aria-label={`${t('chat.sort')} ${sortLabel(thread.sort)}`}
+                    className="h-7 shrink-0 gap-1 py-0 ps-2.5 pe-2 font-normal"
                   >
-                    <ArrowUpDown
-                      className="size-3.5 shrink-0 opacity-60"
-                      aria-hidden
-                    />
                     {sortLabel(thread.sort)}
-                    <ChevronDown className="size-3.5 shrink-0 opacity-60" aria-hidden />
+                    <Icon name="chevronDown" className="size-3.5 shrink-0 opacity-60" aria-hidden />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onSelect={() => thread.setSort('best')}
-                    className="gap-2 pe-2"
-                  >
-                    <span className="flex size-3.5 items-center justify-center">
-                      {thread.sort === 'best' ? (
-                        <Check className="size-3.5" aria-hidden />
-                      ) : null}
-                    </span>
+                  <DropdownMenuItem onSelect={() => thread.setSort('best')}>
                     {t('chat.sortBest')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={() => thread.setSort('new')}
-                    className="gap-2 pe-2"
-                  >
-                    <span className="flex size-3.5 items-center justify-center">
-                      {thread.sort === 'new' ? (
-                        <Check className="size-3.5" aria-hidden />
-                      ) : null}
-                    </span>
+                  <DropdownMenuItem onSelect={() => thread.setSort('new')}>
                     {t('chat.sortNew')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>

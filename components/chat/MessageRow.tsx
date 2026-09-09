@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  CircleAlert,
-  HatGlasses,
-  Link,
-  MoreHorizontal,
-  Trash2,
-} from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { ANONYMOUS_HANDLE } from '@/lib/constants';
@@ -161,7 +153,7 @@ function VoteControls({
           onVote(node.id, 1);
         }}
       >
-        <ChevronUp className="h-4 w-4" />
+        <Icon name="chevronUp" className="h-4 w-4" />
       </Button>
       <span
         className={cn(
@@ -185,7 +177,7 @@ function VoteControls({
           onVote(node.id, -1);
         }}
       >
-        <ChevronDown className="h-4 w-4" />
+        <Icon name="chevronDown" className="h-4 w-4" />
       </Button>
     </div>
   );
@@ -340,7 +332,7 @@ export function MessageRow({
           >
             <Avatar className={cn(avatarClass, 'ec-anonymous-avatar')}>
               <AvatarFallback className="bg-transparent text-[var(--color-foreground)]">
-                <HatGlasses className={avatarIconClass} aria-hidden />
+                <Icon name="anonymous" className={avatarIconClass} aria-hidden />
               </AvatarFallback>
             </Avatar>
           </button>
@@ -552,7 +544,7 @@ export function MessageRow({
                     className="h-7 w-7 opacity-0 group-hover/row:opacity-100"
                     onClick={() => setMenuOpen((v) => !v)}
                   >
-                    <MoreHorizontal className="h-4 w-4" />
+                    <Icon name="more" className="h-4 w-4" />
                   </Button>
                   {menuOpen && (
                     <div className="absolute end-0 z-20 mt-1 w-40 rounded-md border border-[var(--color-border)] bg-[var(--color-card)] py-1 shadow-md">
@@ -561,7 +553,7 @@ export function MessageRow({
                         className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm hover:bg-[var(--color-accent)]"
                         onClick={shareLink}
                       >
-                        <Link className="h-3.5 w-3.5" />
+                        <Icon name="link" className="h-3.5 w-3.5" />
                         {t('message.shareLink')}
                       </button>
                       {currentUserId === node.author_id ? (
@@ -573,7 +565,7 @@ export function MessageRow({
                             setConfirmDeleteOpen(true);
                           }}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Icon name="trash" className="h-3.5 w-3.5" />
                           {t('message.delete')}
                         </button>
                       ) : (
@@ -586,7 +578,7 @@ export function MessageRow({
                             setMenuOpen(false);
                           }}
                         >
-                          <CircleAlert className="h-3.5 w-3.5" />
+                          <Icon name="alert" className="h-3.5 w-3.5" />
                           {t('message.report')}
                         </button>
                       )}

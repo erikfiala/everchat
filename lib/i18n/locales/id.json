@@ -15,7 +15,7 @@
   "settings.mode": "Mode",
   "settings.language": "Bahasa",
   "settings.languageSystem": "Sistem",
-  "settings.skin": "Tampilan",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Default",
   "settings.skinUsing": "Memakai {{name}}",
   "settings.skinReset": "Kembali ke default",

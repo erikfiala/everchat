@@ -63,8 +63,14 @@
   var FONT_LINK_ID = 'ec-skin-font';
   var DEFAULT_THEME_SLUG = 'everchat';
   var DEFAULT_THEME_ID = 'e0e0e0e0-0000-4000-8000-000000000001';
+  var DEFAULT_ICON_PACK = 'lu';
+  var ICON_PACK_IDS = ['lu', 'fi', 'hi2', 'tb', 'pi'];
+  var ICON_PACK_SET = {};
+  ICON_PACK_IDS.forEach(function (id) {
+    ICON_PACK_SET[id] = true;
+  });
 
-  var DEFAULT_TOKENS = {
+  var DEFAULT_LIGHT_COLORS = {
     '--color-background': '#fafafa',
     '--color-foreground': '#18181b',
     '--color-muted': '#f4f4f5',
@@ -83,6 +89,30 @@
     '--color-hover-background': '#f4f4f5',
     '--color-hover-border': '#d4d4d8',
     '--color-hover-foreground': '#18181b',
+  };
+
+  var DEFAULT_DARK_COLORS = {
+    '--color-background': '#18181b',
+    '--color-foreground': '#fafafa',
+    '--color-muted': '#27272a',
+    '--color-muted-foreground': '#a1a1aa',
+    '--color-border': '#3f3f46',
+    '--color-card': '#27272a',
+    '--color-primary': '#f4f4f5',
+    '--color-primary-foreground': '#18181b',
+    '--color-accent': '#3f3f46',
+    '--color-anonymous-avatar': '#71717a',
+    '--color-destructive': '#f87171',
+    '--color-success': '#2dd4bf',
+    '--color-score-pos': '#2dd4bf',
+    '--color-score-neg': '#f87171',
+    '--color-ring': '#71717a',
+    '--color-hover-background': '#3f3f46',
+    '--color-hover-border': '#52525b',
+    '--color-hover-foreground': '#fafafa',
+  };
+
+  var DEFAULT_SIZE_VALUES = {
     '--radius-sm': 6,
     '--radius-md': 8,
     '--radius-lg': 12,
@@ -94,6 +124,14 @@
     '--space-margin': 8,
     '--space-composer-pad': 12,
   };
+
+  var DEFAULT_TOKENS = {
+    light: Object.assign({}, DEFAULT_LIGHT_COLORS),
+    dark: Object.assign({}, DEFAULT_DARK_COLORS),
+  };
+  Object.keys(DEFAULT_SIZE_VALUES).forEach(function (name) {
+    DEFAULT_TOKENS[name] = DEFAULT_SIZE_VALUES[name];
+  });
 
   var FONT_SUGGESTIONS = [
     'Inter',
@@ -198,38 +236,108 @@
     return typeof value === 'string' && SLUG.test(value);
   }
 
-  function validateTokens(raw) {
-    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  function isValidIconPack(value) {
+    return typeof value === 'string' && ICON_PACK_SET[value];
+  }
+
+  function sanitizeIconPack(value) {
+    return isValidIconPack(value) ? value : DEFAULT_ICON_PACK;
+  }
+
+  function isPlainObject(value) {
+    return !!value && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  function clonePalette(palette) {
+    var out = {};
+    COLOR_TOKENS.forEach(function (name) {
+      out[name] = palette[name];
+    });
+    return out;
+  }
+
+  function cloneTokens(tokens) {
+    var out = {
+      light: clonePalette(tokens.light),
+      dark: clonePalette(tokens.dark),
+    };
+    SIZE_TOKENS.forEach(function (spec) {
+      out[spec.name] = tokens[spec.name];
+    });
+    return out;
+  }
+
+  function validateColorPalette(raw, fallback) {
+    if (!isPlainObject(raw)) return null;
     var keys = Object.keys(raw);
-    if (keys.length > TOKEN_NAMES.length) return null;
+    if (keys.length > COLOR_TOKENS.length) return null;
+    var palette = clonePalette(fallback);
     var i;
     for (i = 0; i < keys.length; i++) {
-      if (!COLOR_SET[keys[i]] && !SIZE_BY_NAME[keys[i]]) return null;
+      if (!COLOR_SET[keys[i]]) return null;
       if (hasForbidden(raw[keys[i]])) return null;
+      var value = raw[keys[i]];
+      if (value == null) continue;
+      if (!isValidHex(value)) return null;
+      palette[keys[i]] = value.toLowerCase();
     }
-    var tokens = {};
-    COLOR_TOKENS.forEach(function (name) {
-      tokens[name] = DEFAULT_TOKENS[name];
-    });
+    return palette;
+  }
+
+  function validateSizeValues(raw) {
+    var sizes = {};
     SIZE_TOKENS.forEach(function (spec) {
-      tokens[spec.name] = DEFAULT_TOKENS[spec.name];
+      sizes[spec.name] = DEFAULT_SIZE_VALUES[spec.name];
     });
-    for (i = 0; i < COLOR_TOKENS.length; i++) {
-      var cname = COLOR_TOKENS[i];
-      var cval = raw[cname];
-      if (cval == null) continue;
-      if (!isValidHex(cval)) return null;
-      tokens[cname] = cval.toLowerCase();
-    }
+    var i;
     for (i = 0; i < SIZE_TOKENS.length; i++) {
       var spec = SIZE_TOKENS[i];
       var sval = raw[spec.name];
       if (sval == null) continue;
       if (typeof sval !== 'number' || !isFinite(sval)) return null;
       if (sval < spec.min || sval > spec.max) return null;
-      tokens[spec.name] = Math.round(sval);
+      sizes[spec.name] = Math.round(sval);
     }
-    return tokens;
+    return sizes;
+  }
+
+  function validateTokens(raw) {
+    if (!isPlainObject(raw)) return null;
+    var keys = Object.keys(raw);
+    var i;
+    if (isPlainObject(raw.light) || isPlainObject(raw.dark)) {
+      if (keys.length > 2 + SIZE_TOKENS.length) return null;
+      for (i = 0; i < keys.length; i++) {
+        if (keys[i] === 'light' || keys[i] === 'dark') continue;
+        if (!SIZE_BY_NAME[keys[i]]) return null;
+        if (hasForbidden(raw[keys[i]])) return null;
+      }
+      if (!isPlainObject(raw.light) || !isPlainObject(raw.dark)) return null;
+      var light = validateColorPalette(raw.light, DEFAULT_LIGHT_COLORS);
+      var dark = validateColorPalette(raw.dark, DEFAULT_DARK_COLORS);
+      var dualSizes = validateSizeValues(raw);
+      if (!light || !dark || !dualSizes) return null;
+      return Object.assign({ light: light, dark: dark }, dualSizes);
+    }
+    if (keys.length > TOKEN_NAMES.length) return null;
+    for (i = 0; i < keys.length; i++) {
+      if (!COLOR_SET[keys[i]] && !SIZE_BY_NAME[keys[i]]) return null;
+      if (hasForbidden(raw[keys[i]])) return null;
+    }
+    var palette = clonePalette(DEFAULT_LIGHT_COLORS);
+    for (i = 0; i < COLOR_TOKENS.length; i++) {
+      var cname = COLOR_TOKENS[i];
+      var cval = raw[cname];
+      if (cval == null) continue;
+      if (!isValidHex(cval)) return null;
+      palette[cname] = cval.toLowerCase();
+    }
+    var sizes = validateSizeValues(raw);
+    if (!sizes) return null;
+    return Object.assign(
+      { light: clonePalette(palette), dark: clonePalette(palette) },
+      sizes,
+    );
   }
 
   function byteLength(str) {
@@ -245,6 +353,7 @@
     var author = validateLabel(raw.author, 'author');
     if (!name || !author) return null;
     if (!isValidFontFamily(raw.fontFamily)) return null;
+    if (raw.iconPack != null && !isValidIconPack(raw.iconPack)) return null;
     var tokens = validateTokens(raw.tokens);
     if (!tokens) return null;
     var doc = {
@@ -252,6 +361,7 @@
       name: name,
       author: author,
       fontFamily: sanitizeFontFamily(raw.fontFamily),
+      iconPack: sanitizeIconPack(raw.iconPack),
       tokens: tokens,
     };
     if (byteLength(JSON.stringify(doc)) > JSON_MAX_BYTES) return null;
@@ -268,7 +378,8 @@
       name: 'Default',
       author: 'Everchat',
       fontFamily: '',
-      tokens: Object.assign({}, DEFAULT_TOKENS),
+      iconPack: DEFAULT_ICON_PACK,
+      tokens: cloneTokens(DEFAULT_TOKENS),
     };
   }
 
@@ -280,6 +391,7 @@
       name: theme.name,
       author_name: theme.author,
       font_family: theme.fontFamily,
+      icon_pack: theme.iconPack,
       tokens: theme.tokens,
       created_at: '2020-01-01T00:00:00.000Z',
       like_count: 0,
@@ -337,7 +449,8 @@
       name: theme.name,
       author: theme.author,
       fontFamily: theme.fontFamily,
-      tokens: Object.assign({}, theme.tokens),
+      iconPack: sanitizeIconPack(theme.iconPack),
+      tokens: cloneTokens(theme.tokens),
     };
   }
 
@@ -360,16 +473,26 @@
     doc.head.appendChild(link);
   }
 
-  function applyThemeVars(el, theme) {
+  function resolveThemeAppearance(doc) {
+    var root = (doc || document).documentElement;
+    return root && root.dataset && root.dataset.theme === 'dark' ? 'dark' : 'light';
+  }
+
+  function applyThemeVars(el, theme, appearance) {
     TOKEN_NAMES.forEach(function (name) {
       el.style.removeProperty(name);
     });
     el.style.removeProperty('--font-sans');
     el.removeAttribute('data-ec-skin');
+    el.removeAttribute('data-ec-icon-pack');
     if (!theme) return;
+    var mode = appearance || resolveThemeAppearance(el.ownerDocument || document);
+    var colors =
+      theme.tokens[mode] || theme.tokens.light || theme.tokens;
     el.setAttribute('data-ec-skin', theme.name);
+    el.setAttribute('data-ec-icon-pack', sanitizeIconPack(theme.iconPack));
     COLOR_TOKENS.forEach(function (name) {
-      el.style.setProperty(name, theme.tokens[name]);
+      if (colors[name]) el.style.setProperty(name, colors[name]);
     });
     SIZE_TOKENS.forEach(function (spec) {
       el.style.setProperty(spec.name, theme.tokens[spec.name] + 'px');
@@ -383,19 +506,20 @@
     }
   }
 
-  function applyTheme(el, theme, doc) {
-    applyThemeVars(el, theme);
+  function applyTheme(el, theme, doc, appearance) {
+    applyThemeVars(el, theme, appearance);
     loadGoogleFont(doc || document, theme ? theme.fontFamily : '');
   }
 
   function swatchColors(tokens) {
     if (!tokens) return [];
+    var palette = tokens.light || tokens;
     return [
-      tokens['--color-background'],
-      tokens['--color-foreground'],
-      tokens['--color-primary'],
-      tokens['--color-accent'],
-      tokens['--color-border'],
+      palette['--color-background'],
+      palette['--color-foreground'],
+      palette['--color-primary'],
+      palette['--color-accent'],
+      palette['--color-border'],
     ].filter(isValidHex);
   }
 
@@ -419,10 +543,10 @@
     var headers = supabaseHeaders(cfg);
     var full =
       root +
-      'select=id,slug,name,author_name,font_family,tokens,created_at,like_count&order=created_at.desc';
+      'select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count&order=created_at.desc';
     var lite =
       root +
-      'select=id,slug,name,author_name,font_family,tokens,created_at&order=created_at.desc';
+      'select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at&order=created_at.desc';
     return fetch(full, { headers: headers }).then(function (res) {
       if (res.ok) {
         return res.json().then(function (rows) {
@@ -430,9 +554,19 @@
         });
       }
       return fetch(lite, { headers: headers }).then(function (retry) {
-        if (!retry.ok) throw new Error('themes ' + retry.status);
-        return retry.json().then(function (rows) {
-          return (rows || []).map(normalizeThemeRow);
+        if (retry.ok) {
+          return retry.json().then(function (rows) {
+            return (rows || []).map(normalizeThemeRow);
+          });
+        }
+        var legacy =
+          root +
+          'select=id,slug,name,author_name,font_family,tokens,created_at&order=created_at.desc';
+        return fetch(legacy, { headers: headers }).then(function (last) {
+          if (!last.ok) throw new Error('themes ' + last.status);
+          return last.json().then(function (rows) {
+            return (rows || []).map(normalizeThemeRow);
+          });
         });
       });
     });
@@ -447,10 +581,10 @@
     var headers = supabaseHeaders(cfg);
     var suffix =
       encodeURIComponent(slug) +
-      '&select=id,slug,name,author_name,font_family,tokens,created_at,like_count&limit=1';
+      '&select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count&limit=1';
     var liteSuffix =
       encodeURIComponent(slug) +
-      '&select=id,slug,name,author_name,font_family,tokens,created_at&limit=1';
+      '&select=id,slug,name,author_name,font_family,icon_pack,tokens,created_at&limit=1';
     return fetch(root + suffix, { headers: headers })
       .then(function (res) {
         if (res.ok) {
@@ -461,10 +595,22 @@
         return fetch(root + liteSuffix, { headers: headers }).then(function (
           retry,
         ) {
-          if (!retry.ok) throw new Error('theme ' + retry.status);
-          return retry.json().then(function (rows) {
-            return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
-          });
+          if (retry.ok) {
+            return retry.json().then(function (rows) {
+              return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
+            });
+          }
+          var legacySuffix =
+            encodeURIComponent(slug) +
+            '&select=id,slug,name,author_name,font_family,tokens,created_at&limit=1';
+          return fetch(root + legacySuffix, { headers: headers }).then(
+            function (last) {
+              if (!last.ok) throw new Error('theme ' + last.status);
+              return last.json().then(function (rows) {
+                return rows && rows[0] ? normalizeThemeRow(rows[0]) : null;
+              });
+            },
+          );
         });
       })
       .then(function (row) {
@@ -515,6 +661,7 @@
       name: row.name,
       author: row.author_name,
       fontFamily: row.font_family || '',
+      iconPack: row.icon_pack || DEFAULT_ICON_PACK,
       tokens: row.tokens,
     });
   }
@@ -605,13 +752,18 @@
     });
   }
 
-  function postPreviewTheme(frame, theme) {
+  function postPreviewTheme(frame, theme, appearance) {
     if (!frame || !frame.contentWindow || !theme) return;
     var valid = validateTheme(theme);
     if (!valid) return;
+    var mode = appearance === 'dark' ? 'dark' : 'light';
     try {
       frame.contentWindow.postMessage(
-        { type: 'EC_PREVIEW_THEME', theme: exportTheme(valid) },
+        {
+          type: 'EC_PREVIEW_THEME',
+          theme: exportTheme(valid),
+          appearance: mode,
+        },
         window.location.origin,
       );
     } catch (e) {
@@ -622,7 +774,12 @@
   function bindPreviewFrame(frame, getTheme) {
     if (!frame || typeof getTheme !== 'function') return;
     function send() {
-      postPreviewTheme(frame, getTheme());
+      var payload = getTheme();
+      if (payload && payload.theme) {
+        postPreviewTheme(frame, payload.theme, payload.appearance);
+        return;
+      }
+      postPreviewTheme(frame, payload);
     }
     frame.addEventListener('load', send);
     window.addEventListener('message', function (event) {
@@ -653,10 +810,17 @@
     SIZE_TOKENS: SIZE_TOKENS,
     TOKEN_NAMES: TOKEN_NAMES,
     DEFAULT_TOKENS: DEFAULT_TOKENS,
+    DEFAULT_LIGHT_COLORS: DEFAULT_LIGHT_COLORS,
+    DEFAULT_DARK_COLORS: DEFAULT_DARK_COLORS,
+    DEFAULT_SIZE_VALUES: DEFAULT_SIZE_VALUES,
+    DEFAULT_ICON_PACK: DEFAULT_ICON_PACK,
+    ICON_PACK_IDS: ICON_PACK_IDS,
     DEFAULT_THEME_SLUG: DEFAULT_THEME_SLUG,
     DEFAULT_THEME_ID: DEFAULT_THEME_ID,
     FONT_SUGGESTIONS: FONT_SUGGESTIONS,
     isValidHex: isValidHex,
+    isValidIconPack: isValidIconPack,
+    sanitizeIconPack: sanitizeIconPack,
     isValidFontFamily: isValidFontFamily,
     sanitizeFontFamily: sanitizeFontFamily,
     googleFontsHref: googleFontsHref,
@@ -674,6 +838,7 @@
     exportTheme: exportTheme,
     applyTheme: applyTheme,
     applyThemeVars: applyThemeVars,
+    resolveThemeAppearance: resolveThemeAppearance,
     loadGoogleFont: loadGoogleFont,
     swatchColors: swatchColors,
     fetchThemes: fetchThemes,

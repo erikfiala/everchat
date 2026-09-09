@@ -72,6 +72,7 @@ Deno.serve(async (req) => {
           name: theme.name,
           author_name: theme.author,
           font_family: theme.fontFamily,
+          icon_pack: theme.iconPack,
           tokens: theme.tokens,
         })
         .select('id, slug')

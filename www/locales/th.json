@@ -15,7 +15,7 @@
   "settings.mode": "โหมด",
   "settings.language": "ภาษา",
   "settings.languageSystem": "ระบบ",
-  "settings.skin": "สกิน",
+  "settings.skin": "ธีม",
   "settings.skinDefault": "ค่าเริ่มต้น",
   "settings.skinUsing": "กำลังใช้ {{name}}",
   "settings.skinReset": "กลับเป็นค่าเริ่มต้น",

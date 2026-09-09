@@ -15,7 +15,7 @@
   "settings.mode": "Режим",
   "settings.language": "Язык",
   "settings.languageSystem": "Системный",
-  "settings.skin": "Оформление",
+  "settings.skin": "Тема",
   "settings.skinDefault": "По умолчанию",
   "settings.skinUsing": "Используется {{name}}",
   "settings.skinReset": "Сбросить",

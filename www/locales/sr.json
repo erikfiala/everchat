@@ -15,7 +15,7 @@
   "settings.mode": "Режим",
   "settings.language": "Језик",
   "settings.languageSystem": "Систем",
-  "settings.skin": "Изглед",
+  "settings.skin": "Тема",
   "settings.skinDefault": "Подразумевано",
   "settings.skinUsing": "Користи се {{name}}",
   "settings.skinReset": "Врати на подразумевано",

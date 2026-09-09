@@ -15,7 +15,7 @@
   "settings.mode": "Tilstand",
   "settings.language": "Sprog",
   "settings.languageSystem": "System",
-  "settings.skin": "Udseende",
+  "settings.skin": "Tema",
   "settings.skinDefault": "Standard",
   "settings.skinUsing": "Bruger {{name}}",
   "settings.skinReset": "Nulstil til standard",

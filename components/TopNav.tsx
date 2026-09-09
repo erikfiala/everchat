@@ -1,4 +1,4 @@
-import { Bell, Compass, MessageCircle, Settings, Trophy, User } from 'lucide-react';
+import { Icon, type IconName } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import type { PanelTab } from '@/lib/database.types';
 import { useLocale } from '@/hooks/useLocale';
@@ -20,13 +20,13 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
   const { resolved } = useTheme();
   const { t } = useLocale();
 
-  const tabs: { id: PanelTab; label: string; icon: typeof MessageCircle }[] = [
-    { id: 'chat', label: t('nav.chat'), icon: MessageCircle },
-    { id: 'explore', label: t('nav.explore'), icon: Compass },
-    { id: 'leaderboard', label: t('nav.leaderboard'), icon: Trophy },
-    { id: 'notifications', label: t('nav.notifications'), icon: Bell },
-    { id: 'profile', label: t('nav.profile'), icon: User },
-    { id: 'settings', label: t('nav.settings'), icon: Settings },
+  const tabs: { id: PanelTab; label: string; icon: IconName }[] = [
+    { id: 'chat', label: t('nav.chat'), icon: 'chat' },
+    { id: 'explore', label: t('nav.explore'), icon: 'explore' },
+    { id: 'leaderboard', label: t('nav.leaderboard'), icon: 'trophy' },
+    { id: 'notifications', label: t('nav.notifications'), icon: 'bell' },
+    { id: 'profile', label: t('nav.profile'), icon: 'user' },
+    { id: 'settings', label: t('nav.settings'), icon: 'settings' },
   ];
 
   return (
@@ -52,7 +52,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
         </button>
 
         <div className="flex items-center gap-0.5">
-          {tabs.map(({ id, label, icon: Icon }) => {
+          {tabs.map(({ id, label, icon }) => {
             const isActive = active === id;
             return (
               <Tooltip key={id}>
@@ -69,7 +69,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
                     aria-label={label}
                     aria-current={isActive ? 'page' : undefined}
                   >
-                    <Icon className="size-4" />
+                    <Icon name={icon} className="size-4" />
                     {id === 'notifications' && unread > 0 && (
                       <span className="absolute -end-0.5 -top-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--color-destructive)] px-0.5 text-[9px] font-semibold text-white">
                         {unread > 99 ? t('nav.unreadOverflow') : unread}

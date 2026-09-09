@@ -2,6 +2,8 @@
 
 export const THEME_SCHEMA_VERSION = 1;
 export const THEME_JSON_MAX_BYTES = 8192;
+export const DEFAULT_ICON_PACK = 'lu';
+export const ICON_PACK_IDS = ['lu', 'fi', 'hi2', 'tb', 'pi'] as const;
 
 export const COLOR_TOKENS = [
   '--color-background',
@@ -39,7 +41,7 @@ export const SIZE_TOKENS = [
 
 const COLOR_SET = new Set<string>(COLOR_TOKENS);
 const SIZE_BY_NAME = new Map(SIZE_TOKENS.map((t) => [t.name, t]));
-const TOKEN_COUNT = COLOR_TOKENS.length + SIZE_TOKENS.length;
+const ICON_PACK_SET = new Set<string>(ICON_PACK_IDS);
 
 const HEX = /^#([0-9a-fA-F]{6})$/;
 const FONT_FAMILY = /^[A-Za-z0-9][A-Za-z0-9 ]{0,59}$/;
@@ -47,7 +49,7 @@ const NAME = /^[\p{L}\p{N}][\p{L}\p{N} .'_-]{0,79}$/u;
 const AUTHOR = /^[\p{L}\p{N}][\p{L}\p{N} .'_-]{0,39}$/u;
 const FORBIDDEN = /url\s*\(|@import|<\/?script|javascript:|data:|expression\s*\(/i;
 
-export const DEFAULT_TOKENS: Record<string, string | number> = {
+export const DEFAULT_LIGHT_COLORS: Record<string, string> = {
   '--color-background': '#fafafa',
   '--color-foreground': '#18181b',
   '--color-muted': '#f4f4f5',
@@ -66,6 +68,30 @@ export const DEFAULT_TOKENS: Record<string, string | number> = {
   '--color-hover-background': '#f4f4f5',
   '--color-hover-border': '#d4d4d8',
   '--color-hover-foreground': '#18181b',
+};
+
+export const DEFAULT_DARK_COLORS: Record<string, string> = {
+  '--color-background': '#18181b',
+  '--color-foreground': '#fafafa',
+  '--color-muted': '#27272a',
+  '--color-muted-foreground': '#a1a1aa',
+  '--color-border': '#3f3f46',
+  '--color-card': '#27272a',
+  '--color-primary': '#f4f4f5',
+  '--color-primary-foreground': '#18181b',
+  '--color-accent': '#3f3f46',
+  '--color-anonymous-avatar': '#71717a',
+  '--color-destructive': '#f87171',
+  '--color-success': '#2dd4bf',
+  '--color-score-pos': '#2dd4bf',
+  '--color-score-neg': '#f87171',
+  '--color-ring': '#71717a',
+  '--color-hover-background': '#3f3f46',
+  '--color-hover-border': '#52525b',
+  '--color-hover-foreground': '#fafafa',
+};
+
+export const DEFAULT_SIZE_VALUES: Record<string, number> = {
   '--radius-sm': 6,
   '--radius-md': 8,
   '--radius-lg': 12,
@@ -78,12 +104,30 @@ export const DEFAULT_TOKENS: Record<string, string | number> = {
   '--space-composer-pad': 12,
 };
 
+export const DEFAULT_TOKENS: Record<string, unknown> = {
+  light: { ...DEFAULT_LIGHT_COLORS },
+  dark: { ...DEFAULT_DARK_COLORS },
+  ...DEFAULT_SIZE_VALUES,
+};
+
 function hasForbidden(value: unknown): boolean {
   return typeof value === 'string' && FORBIDDEN.test(value);
 }
 
 function isValidHex(value: unknown): value is string {
   return typeof value === 'string' && HEX.test(value);
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isValidIconPack(value: unknown): value is string {
+  return typeof value === 'string' && ICON_PACK_SET.has(value);
+}
+
+function sanitizeIconPack(value: unknown): string {
+  return isValidIconPack(value) ? value : DEFAULT_ICON_PACK;
 }
 
 export function sanitizeFontFamily(value: unknown): string {
@@ -103,32 +147,75 @@ function validateLabel(value: unknown, kind: 'name' | 'author'): string | null {
   return null;
 }
 
-export function validateTokens(
+function validateColorPalette(
   raw: unknown,
-): Record<string, string | number> | null {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const input = raw as Record<string, unknown>;
-  const keys = Object.keys(input);
-  if (keys.length > TOKEN_COUNT) return null;
+  fallback: Record<string, string>,
+): Record<string, string> | null {
+  if (!isPlainObject(raw)) return null;
+  const keys = Object.keys(raw);
+  if (keys.length > COLOR_TOKENS.length) return null;
+  const palette = { ...fallback };
   for (const key of keys) {
-    if (!COLOR_SET.has(key) && !SIZE_BY_NAME.has(key)) return null;
-    if (hasForbidden(input[key])) return null;
-  }
-  const tokens = { ...DEFAULT_TOKENS };
-  for (const name of COLOR_TOKENS) {
-    const value = input[name];
+    if (!COLOR_SET.has(key)) return null;
+    if (hasForbidden(raw[key])) return null;
+    const value = raw[key];
     if (value == null) continue;
     if (!isValidHex(value)) return null;
-    tokens[name] = value.toLowerCase();
+    palette[key] = value.toLowerCase();
   }
+  return palette;
+}
+
+function validateSizeValues(
+  raw: Record<string, unknown>,
+): Record<string, number> | null {
+  const sizes = { ...DEFAULT_SIZE_VALUES };
   for (const spec of SIZE_TOKENS) {
-    const value = input[spec.name];
+    const value = raw[spec.name];
     if (value == null) continue;
     if (typeof value !== 'number' || !Number.isFinite(value)) return null;
     if (value < spec.min || value > spec.max) return null;
-    tokens[spec.name] = Math.round(value);
+    sizes[spec.name] = Math.round(value);
   }
-  return tokens;
+  return sizes;
+}
+
+export function validateTokens(
+  raw: unknown,
+): Record<string, unknown> | null {
+  if (!isPlainObject(raw)) return null;
+  const keys = Object.keys(raw);
+
+  if (isPlainObject(raw.light) || isPlainObject(raw.dark)) {
+    if (keys.length > 2 + SIZE_TOKENS.length) return null;
+    for (const key of keys) {
+      if (key === 'light' || key === 'dark') continue;
+      if (!SIZE_BY_NAME.has(key)) return null;
+      if (hasForbidden(raw[key])) return null;
+    }
+    if (!isPlainObject(raw.light) || !isPlainObject(raw.dark)) return null;
+    const light = validateColorPalette(raw.light, DEFAULT_LIGHT_COLORS);
+    const dark = validateColorPalette(raw.dark, DEFAULT_DARK_COLORS);
+    const sizes = validateSizeValues(raw);
+    if (!light || !dark || !sizes) return null;
+    return { light, dark, ...sizes };
+  }
+
+  if (keys.length > COLOR_TOKENS.length + SIZE_TOKENS.length) return null;
+  for (const key of keys) {
+    if (!COLOR_SET.has(key) && !SIZE_BY_NAME.has(key)) return null;
+    if (hasForbidden(raw[key])) return null;
+  }
+  const palette = { ...DEFAULT_LIGHT_COLORS };
+  for (const name of COLOR_TOKENS) {
+    const value = raw[name];
+    if (value == null) continue;
+    if (!isValidHex(value)) return null;
+    palette[name] = value.toLowerCase();
+  }
+  const sizes = validateSizeValues(raw);
+  if (!sizes) return null;
+  return { light: { ...palette }, dark: { ...palette }, ...sizes };
 }
 
 export type PublishedTheme = {
@@ -136,29 +223,31 @@ export type PublishedTheme = {
   name: string;
   author: string;
   fontFamily: string;
-  tokens: Record<string, string | number>;
+  iconPack: string;
+  tokens: Record<string, unknown>;
 };
 
 export function validateTheme(raw: unknown): PublishedTheme | null {
-  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-  const input = raw as Record<string, unknown>;
-  if (hasForbidden(JSON.stringify(input))) return null;
-  if (input.schemaVersion !== THEME_SCHEMA_VERSION) return null;
-  if ('css' in input || 'style' in input || 'url' in input) return null;
-  const name = validateLabel(input.name, 'name');
-  const author = validateLabel(input.author, 'author');
+  if (!isPlainObject(raw)) return null;
+  if (hasForbidden(JSON.stringify(raw))) return null;
+  if (raw.schemaVersion !== THEME_SCHEMA_VERSION) return null;
+  if ('css' in raw || 'style' in raw || 'url' in raw) return null;
+  const name = validateLabel(raw.name, 'name');
+  const author = validateLabel(raw.author, 'author');
   if (!name || !author) return null;
-  const fontFamily = sanitizeFontFamily(input.fontFamily ?? '');
-  if (typeof input.fontFamily === 'string' && input.fontFamily.trim() && !fontFamily) {
+  const fontFamily = sanitizeFontFamily(raw.fontFamily ?? '');
+  if (typeof raw.fontFamily === 'string' && raw.fontFamily.trim() && !fontFamily) {
     return null;
   }
-  const tokens = validateTokens(input.tokens);
+  if (raw.iconPack != null && !isValidIconPack(raw.iconPack)) return null;
+  const tokens = validateTokens(raw.tokens);
   if (!tokens) return null;
   const doc: PublishedTheme = {
     schemaVersion: THEME_SCHEMA_VERSION,
     name,
     author,
     fontFamily,
+    iconPack: sanitizeIconPack(raw.iconPack),
     tokens,
   };
   if (new TextEncoder().encode(JSON.stringify(doc)).length > THEME_JSON_MAX_BYTES) {

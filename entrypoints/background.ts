@@ -18,7 +18,10 @@ import {
   isDefaultThemeSlug,
   isValidSlug,
   parseStoredSkin,
+  parseStoredSkinLibrary,
+  SKIN_LIBRARY_KEY,
   SKIN_STORAGE_KEY,
+  upsertStoredSkinLibrary,
 } from '@/lib/theme';
 import { getPageForMessage } from '@/lib/pages';
 import {
@@ -368,7 +371,7 @@ export default defineBackground(() => {
   ): Promise<{ ok: boolean }> {
     if (!isValidSlug(slug)) return { ok: false };
     if (isDefaultThemeSlug(slug)) {
-      await browser.storage.local.remove(SKIN_STORAGE_KEY);
+      await browser.storage.local.remove([SKIN_STORAGE_KEY, SKIN_LIBRARY_KEY]);
       if (tabId != null) {
         try {
           await browser.sidePanel.open({ tabId });
@@ -397,7 +400,15 @@ export default defineBackground(() => {
         slug: data.slug,
       });
       if (!skin) return { ok: false };
-      await browser.storage.local.set({ [SKIN_STORAGE_KEY]: skin });
+      const stored = await browser.storage.local.get(SKIN_LIBRARY_KEY);
+      const library = upsertStoredSkinLibrary(
+        parseStoredSkinLibrary(stored[SKIN_LIBRARY_KEY]),
+        skin,
+      );
+      await browser.storage.local.set({
+        [SKIN_STORAGE_KEY]: skin,
+        [SKIN_LIBRARY_KEY]: library,
+      });
       if (tabId != null) {
         try {
           await browser.sidePanel.open({ tabId });

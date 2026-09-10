@@ -1,7 +1,8 @@
 {
   "origins": [
+    "chrome-extension://igfakbmcceaekceoahmecaecfeoidpdc",
+    "chrome-extension://hnafijpegchmgpmkefjihhfpegonnjdb",
     "chrome-extension://apoahddgobmmgdbjcphhelolagklgkil",
-    "chrome-extension://mnncloenhbfhdiaffjmmgljfjcagigaj",
-    "chrome-extension://hnafijpegchmgpmkefjihhfpegonnjdb"
+    "chrome-extension://mnncloenhbfhdiaffjmmgljfjcagigaj"
   ]
 }

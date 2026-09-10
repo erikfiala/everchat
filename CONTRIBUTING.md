@@ -22,7 +22,9 @@ testing a contribution against a non-production backend.
 
 ## Use an official build
 
-If you just want Everchat installed, download a zip from
+If you just want Everchat installed, use the
+[Chrome Web Store listing](https://chromewebstore.google.com/detail/everchat/igfakbmcceaekceoahmecaecfeoidpdc)
+or download a zip from
 [GitHub Releases](https://github.com/erikfiala/everchat/releases/latest)
 and follow the README. You do not need this repo for that.
 

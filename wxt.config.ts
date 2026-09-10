@@ -28,6 +28,8 @@ export default defineConfig({
   },
   manifest: {
     // Stable unpacked ID for WebAuthn (hnafijpegchmgpmkefjihhfpegonnjdb).
+    // Chrome Web Store listing ID is igfakbmcceaekceoahmecaecfeoidpdc
+    // (must be in www/.well-known/webauthn and WEBAUTHN_ORIGIN).
     // Chrome Web Store rejects `key` on upload — omit it with `pnpm zip:cws`.
     // Chrome/Firefox only allow claiming RP ID everch.at when that host is in
     // host_permissions (not via related-origins alone). See MDN WebAuthn extensions.

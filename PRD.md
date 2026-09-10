@@ -65,7 +65,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 - **Email / password / magic link / OTP / Google (or any social) OAuth** — privacy by design
 - Email / push notifications outside the extension (Chrome extension notifications + in-panel inbox only)
 - Account recovery via email (recovery = add a second passkey only)
-- Chrome Web Store listing as the sole install path (CWS badge on www currently anchors to GitHub Releases / local-install instructions; store listing may come later)
+- Chrome Web Store as the only install path — official GitHub Release zips remain available
 
 ### Funding / support
 
@@ -376,10 +376,10 @@ Static site under `www/` (Vercel). Not a comment client.
 | Surface | Behavior |
 |---|---|
 | Nav | Logo → home; language select |
-| Hero | “Every URL deserves a conversation”; Chrome Web Store badge (**currently** `#get-extension` stub) + Support (Buy Me a Coffee) |
+| Hero | “Every URL deserves a conversation”; Chrome Web Store badge (live listing) + Support (Buy Me a Coffee) |
 | `#trending` | Anon REST → `trending_pages` (limit 8); empty: “Nothing trending yet.” |
 | `#how` | Four benefit beats (any page, no mods, privacy, free forever) |
-| `#get-extension` | “Install from a local build” — `pnpm install && pnpm build`, load unpacked `dist/everchat` |
+| `#get-extension` | Chrome Web Store listing first; official GitHub Release zip as the unpacked alternative |
 | Footer | Support · Privacy · Terms |
 | `/privacy`, `/terms` | Legal pages (English is official legal text); contact `legal@everch.at` |
 | `/.well-known/webauthn` | Related Origins for Chrome extension IDs |
@@ -504,10 +504,10 @@ Side Panel
     └── Claim @handle → WebAuthn
 
 www (everch.at)
-├── Hero + CWS badge (stub) + Support
+├── Hero + CWS badge (live listing) + Support
 ├── Trending chats
 ├── How it works
-├── Install (local build)
+├── Install (Chrome Web Store, GitHub zip alternative)
 ├── Privacy / Terms
 └── /.well-known/webauthn
 ```
@@ -553,7 +553,6 @@ www (everch.at)
 
 Candidates — **not** shipped as live product surface:
 
-- Official Chrome Web Store listing (www badge currently stubs to local install)
 - Firefox / Safari
 - SEO’d public comment pages per URL
 - Username change; other users’ activity feeds
@@ -573,7 +572,7 @@ Candidates — **not** shipped as live product surface:
 3. After deep-link open, clear `#ec-msg-…` from the address bar so host SPAs are undisturbed?
 4. Prompt users to add a second passkey after first successful post?
 5. Should Best sort evolve to a Reddit-like confidence/hot score?
-6. When CWS listing ships, retire or demote local-install copy on www?
+6. Should GitHub Release zips stay on www once CWS is the primary install path? **Yes — demoted, still documented.**
 
 ---
 

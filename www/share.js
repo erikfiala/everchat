@@ -5,8 +5,9 @@
  */
 (function () {
   var PING_MS = 1000;
-  // Same IDs as www/.well-known/webauthn (prod key + historical).
+  // Same IDs as www/.well-known/webauthn (CWS + unpacked key + historical).
   var EXTENSION_IDS = [
+    'igfakbmcceaekceoahmecaecfeoidpdc',
     'hnafijpegchmgpmkefjihhfpegonnjdb',
     'apoahddgobmmgdbjcphhelolagklgkil',
     'mnncloenhbfhdiaffjmmgljfjcagigaj',

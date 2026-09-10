@@ -6,6 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Chrome Web Store listing is live; the site, README, and install copy point to it as the primary install path
+
+### Fixed
+
+- Allow the Chrome Web Store extension origin for passkeys (store ID differs from unpacked builds)
+
 ## [1.0.0] - 2026-09-09
 
 First public release of Everchat: a Chrome side panel for anonymous public

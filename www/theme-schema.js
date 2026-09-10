@@ -785,6 +785,7 @@
   }
 
   var EXTENSION_IDS = [
+    'igfakbmcceaekceoahmecaecfeoidpdc',
     'hnafijpegchmgpmkefjihhfpegonnjdb',
     'apoahddgobmmgdbjcphhelolagklgkil',
     'mnncloenhbfhdiaffjmmgljfjcagigaj',

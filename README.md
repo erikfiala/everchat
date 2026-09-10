@@ -7,10 +7,12 @@ Everchat is a Chrome side-panel extension for anonymous public comments on any p
 No email. No ads. No trackers. Free forever.
 
 [![License: source-available](https://img.shields.io/badge/license-source--available-slate.svg)](./LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/igfakbmcceaekceoahmecaecfeoidpdc)](https://chromewebstore.google.com/detail/everchat/igfakbmcceaekceoahmecaecfeoidpdc)
 [![GitHub release](https://img.shields.io/github/v/release/erikfiala/everchat?include_prereleases&sort=semver)](https://github.com/erikfiala/everchat/releases/latest)
 [![GitHub stars](https://img.shields.io/github/stars/erikfiala/everchat)](https://github.com/erikfiala/everchat/stargazers)
 
 **Site:** [everch.at](https://everch.at)  
+**Chrome Web Store:** [chromewebstore.google.com/detail/everchat](https://chromewebstore.google.com/detail/everchat/igfakbmcceaekceoahmecaecfeoidpdc)  
 **Themes:** [everch.at/themes](https://everch.at/themes)  
 **Support:** [buymeacoffee.com/everchat](https://buymeacoffee.com/everchat)  
 **Releases:** [github.com/erikfiala/everchat/releases](https://github.com/erikfiala/everchat/releases)
@@ -34,9 +36,11 @@ Browse, import, build, and publish themes at [https://everch.at/themes](https://
 
 ## Install
 
-**Chrome Web Store** — coming soon. Check [everch.at](https://everch.at) for the official listing when it is live.
+**Chrome Web Store:** [Install Everchat](https://chromewebstore.google.com/detail/everchat/igfakbmcceaekceoahmecaecfeoidpdc)
 
-Until then, install an **official GitHub Release** zip. That is the build we publish.
+Official GitHub Release zips are also available if you prefer to load unpacked, or if you want a copy if the store ever rejects or removes Everchat.
+
+### From GitHub
 
 1. Download `everchat-<version>-chrome.zip` from the [latest release](https://github.com/erikfiala/everchat/releases/latest)
 2. Unzip it. The folder must contain `manifest.json`
@@ -44,7 +48,7 @@ Until then, install an **official GitHub Release** zip. That is the build we pub
 4. **Load unpacked** → select that folder
 5. Pin Everchat and open the side panel on any page
 
-Chrome will warn that the extension is unpacked. That is expected until the Web Store listing is live.
+Chrome will warn that the extension is unpacked. That is expected for GitHub installs.
 
 Do not load a copy you built or modified yourself except to review the source or test a contribution. See [LICENSE](./LICENSE).
 

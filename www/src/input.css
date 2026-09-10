@@ -2216,36 +2216,28 @@ body.doc {
 
 .theme-detail-actions {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  align-items: flex-end;
-  text-align: right;
-  flex: 0 0 auto;
-}
-
-.theme-detail-secondary {
-  display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
   align-items: stretch;
   justify-content: flex-end;
+  text-align: right;
+  flex: 0 0 auto;
+}
+
+.theme-detail-actions .theme-status,
+.theme-detail-actions [data-ec-theme-install] {
+  flex: 1 0 100%;
 }
 
 .theme-detail-actions .theme-status {
-  width: 100%;
   text-align: right;
 }
 
 @media (max-width: 800px) {
   .theme-detail-actions {
-    align-items: flex-start;
+    justify-content: flex-start;
     text-align: left;
     width: 100%;
-  }
-
-  .theme-detail-secondary {
-    justify-content: flex-start;
   }
 
   .theme-detail-actions .theme-status {

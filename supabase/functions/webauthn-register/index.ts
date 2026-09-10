@@ -88,6 +88,7 @@ Deno.serve(async (req) => {
         userID: new TextEncoder().encode(userId),
         userDisplayName: `@${username}`,
         attestationType: 'none',
+        timeout: 120_000,
         authenticatorSelection: {
           residentKey: 'preferred',
           userVerification: 'preferred',

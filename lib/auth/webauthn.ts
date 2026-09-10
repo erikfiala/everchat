@@ -27,10 +27,16 @@ const RP_ID =
  * forever when no discoverable passkey exists for the RP (OS sheet never
  * appears). Silent/auto probes use a short window; explicit "I already have
  * an account" needs long enough for Touch ID / OS UI.
+ *
+ * create() (signup / add-device) must stay open longer than a platform
+ * Touch ID tap: hybrid / phone QR (caBLE) routinely takes 30–90s. A 20s
+ * abort was racing the OS sheet and surfacing auth.toastPasskeyTimedOut.
+ * 120s matches the login edge-function WebAuthn timeout hint and stays
+ * well under the 5-minute challenge + username-reservation TTL.
  */
 export const LOGIN_PROBE_TIMEOUT_MS = 7_000;
 export const LOGIN_INTERACTIVE_TIMEOUT_MS = 55_000;
-const CEREMONY_TIMEOUT_MS = 20_000;
+export const REGISTER_TIMEOUT_MS = 120_000;
 
 export type LoginPasskeyIntent = 'probe' | 'interactive';
 
@@ -105,9 +111,11 @@ export interface AuthSuccessResponse {
 /** Force RP ID to the configured domain (extension origin is not a valid RP ID). */
 function withRegistrationRpId(
   options: PublicKeyCredentialCreationOptionsJSON,
+  timeoutMs: number,
 ): PublicKeyCredentialCreationOptionsJSON {
   return {
     ...options,
+    timeout: timeoutMs,
     rp: {
       ...options.rp,
       id: RP_ID,
@@ -259,9 +267,9 @@ export async function registerPasskey(
     attestation = await runCeremonyWithTimeout(
       () =>
         startRegistration({
-          optionsJSON: withRegistrationRpId(options),
+          optionsJSON: withRegistrationRpId(options, REGISTER_TIMEOUT_MS),
         }),
-      CEREMONY_TIMEOUT_MS,
+      REGISTER_TIMEOUT_MS,
     );
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
@@ -421,9 +429,9 @@ export async function addPasskeyDevice(
     attestation = await runCeremonyWithTimeout(
       () =>
         startRegistration({
-          optionsJSON: withRegistrationRpId(options),
+          optionsJSON: withRegistrationRpId(options, REGISTER_TIMEOUT_MS),
         }),
-      CEREMONY_TIMEOUT_MS,
+      REGISTER_TIMEOUT_MS,
     );
   } catch (e) {
     throw mapCeremonyError(e);

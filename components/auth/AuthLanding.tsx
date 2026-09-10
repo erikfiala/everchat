@@ -16,6 +16,7 @@ import {
 import {
   checkUsernameAvailable,
   LOGIN_INTERACTIVE_TIMEOUT_MS,
+  REGISTER_TIMEOUT_MS,
 } from '@/lib/auth/webauthn';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
@@ -23,7 +24,8 @@ import { cn } from '@/lib/utils';
 type Step = 'landing' | 'claim' | 'returning';
 
 /** Absolute ceiling so CTA never stays on Working… if a promise hangs. */
-const BUSY_FAILSAFE_MS = LOGIN_INTERACTIVE_TIMEOUT_MS + 10_000;
+const BUSY_FAILSAFE_MS =
+  Math.max(LOGIN_INTERACTIVE_TIMEOUT_MS, REGISTER_TIMEOUT_MS) + 10_000;
 
 export function AuthLanding() {
   const { register, tryLogin, configured } = useAuth();

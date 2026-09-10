@@ -45,6 +45,7 @@ Deno.serve(async (req) => {
         userID: new TextEncoder().encode(userId),
         userDisplayName: `@${profile.username}`,
         attestationType: 'none',
+        timeout: 120_000,
         excludeCredentials: (existing || []).map((c) => ({
           id: c.credential_id,
         })),

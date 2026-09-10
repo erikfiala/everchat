@@ -132,7 +132,11 @@
       link.href = href;
     }
     root.removeAttribute('style');
-    applySkinCss(decls.length ? ':root{' + decls.join(';') + '}' : '');
+    applySkinCss(
+      decls.length
+        ? ':root,:root[data-theme]{' + decls.join(';') + '}'
+        : '',
+    );
     root.setAttribute('data-ec-skin', '1');
     if (typeof raw.iconPack === 'string' && raw.iconPack.length <= 8) {
       root.setAttribute('data-ec-icon-pack', raw.iconPack);

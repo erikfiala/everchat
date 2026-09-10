@@ -395,6 +395,8 @@
       tokens: theme.tokens,
       created_at: '2020-01-01T00:00:00.000Z',
       like_count: 0,
+      remix_of_slug: null,
+      remix_of_name: null,
     };
   }
 
@@ -564,6 +566,79 @@
     return '@' + raw;
   }
 
+  function remixSourceFrom(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    var nested = raw.remixOf;
+    var slug =
+      nested && typeof nested === 'object'
+        ? nested.slug
+        : raw.remix_of_slug;
+    var name =
+      nested && typeof nested === 'object' ? nested.name : raw.remix_of_name;
+    if (typeof slug !== 'string' || typeof name !== 'string') return null;
+    slug = slug.trim();
+    name = name.trim();
+    if (!isValidSlug(slug) || !validateLabel(name, 'name')) return null;
+    return { slug: slug, name: name };
+  }
+
+  function themeHref(slug) {
+    return '/themes/' + encodeURIComponent(slug);
+  }
+
+  function remixBuilderHref(slug) {
+    return '/themes/new?remix=' + encodeURIComponent(slug);
+  }
+
+  function appendRemixOf(el, source, tFn) {
+    var template = tFn('www.themeRemixOf');
+    if (!template || template === 'www.themeRemixOf') {
+      template = 'remix of {{name}}';
+    }
+    var parts = String(template).split('{{name}}');
+    if (parts[0]) el.appendChild(document.createTextNode(parts[0]));
+    var a = document.createElement('a');
+    a.href = themeHref(source.slug);
+    a.textContent = source.name;
+    el.appendChild(a);
+    if (parts[1]) el.appendChild(document.createTextNode(parts[1]));
+  }
+
+  function paintThemeByline(el, row, tFn) {
+    if (!el) return;
+    el.textContent = '';
+    if (!row) return;
+    var author = formatThemeAuthor(row.author_name);
+    var by = tFn('www.themeBy', { name: author });
+    if (!by || by === 'www.themeBy') by = 'by ' + author;
+    el.appendChild(document.createTextNode(by));
+    var remix = remixSourceFrom(row);
+    if (!remix) return;
+    el.appendChild(document.createTextNode(' \u00b7 '));
+    appendRemixOf(el, remix, tFn);
+  }
+
+  function paintThemeRemixSource(el, source, tFn) {
+    if (!el) return;
+    el.textContent = '';
+    if (!source) {
+      el.hidden = true;
+      return;
+    }
+    el.hidden = false;
+    var template = tFn('www.themeRemixSource');
+    if (!template || template === 'www.themeRemixSource') {
+      template = 'Remix of {{name}}';
+    }
+    var parts = String(template).split('{{name}}');
+    if (parts[0]) el.appendChild(document.createTextNode(parts[0]));
+    var a = document.createElement('a');
+    a.href = themeHref(source.slug);
+    a.textContent = source.name;
+    el.appendChild(a);
+    if (parts[1]) el.appendChild(document.createTextNode(parts[1]));
+  }
+
   function normalizeThemeRow(row) {
     if (!row) return row;
     if (typeof row.like_count !== 'number') row.like_count = 0;
@@ -572,6 +647,8 @@
 
   function fetchThemeSelects(orderSuffix) {
     return [
+      'id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count,remix_of_slug,remix_of_name' +
+        orderSuffix,
       'id,slug,name,author_name,font_family,icon_pack,tokens,created_at,like_count' +
         orderSuffix,
       'id,slug,name,author_name,font_family,tokens,created_at,like_count' +
@@ -678,7 +755,7 @@
     });
   }
 
-  function publishTheme(cfg, theme, token) {
+  function publishTheme(cfg, theme, token, remixOf) {
     var valid = validateTheme(theme);
     if (!valid) return Promise.reject(new Error('invalid'));
     if (!token) {
@@ -686,11 +763,15 @@
       authErr.code = 'auth';
       return Promise.reject(authErr);
     }
+    var payload = valid;
+    if (remixOf && isValidSlug(remixOf)) {
+      payload = Object.assign({}, valid, { remixOf: remixOf });
+    }
     var url = cfg.url.replace(/\/$/, '') + '/functions/v1/publish-theme';
     return fetch(url, {
       method: 'POST',
       headers: supabaseHeaders(cfg, token),
-      body: JSON.stringify(valid),
+      body: JSON.stringify(payload),
     }).then(function (res) {
       return res.json().then(function (data) {
         if (!res.ok) {
@@ -884,6 +965,10 @@
     rowToTheme: rowToTheme,
     publishTheme: publishTheme,
     formatThemeAuthor: formatThemeAuthor,
+    remixSourceFrom: remixSourceFrom,
+    remixBuilderHref: remixBuilderHref,
+    paintThemeByline: paintThemeByline,
+    paintThemeRemixSource: paintThemeRemixSource,
     requestSession: requestSession,
     importToExtension: importToExtension,
     t: t,

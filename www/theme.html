@@ -137,15 +137,70 @@
       data-ec-theme-detail
       aria-busy="true"
     >
-      <p class="theme-kicker">
-        <a href="/themes" data-i18n="www.themesTitle">Themes</a>
-      </p>
-      <h1 data-ec-theme-title></h1>
-      <p class="theme-lede m-0 text-mute" data-ec-theme-by></p>
+      <div class="theme-detail-top">
+        <div class="theme-detail-intro">
+          <p class="theme-kicker">
+            <a href="/themes" data-i18n="www.themesTitle">Themes</a>
+          </p>
+          <h1 data-ec-theme-title></h1>
+          <p class="theme-lede m-0 text-mute" data-ec-theme-by></p>
+        </div>
+        <div class="theme-detail-actions" hidden data-ec-theme-actions>
+          <button type="button" class="theme-btn theme-btn-primary" data-ec-theme-import data-i18n="www.themeImport">
+            Import this theme
+          </button>
+          <div class="theme-detail-secondary">
+            <button
+              type="button"
+              class="theme-like theme-like-detail"
+              data-ec-theme-like
+              hidden
+              aria-pressed="false"
+              aria-label="Like"
+              data-i18n="www.themeLike"
+              data-i18n-attr="aria-label"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+              <span class="theme-like-count" data-ec-theme-like-count>0</span>
+            </button>
+            <a class="theme-btn" data-ec-theme-remix href="/themes/new" data-i18n="www.themeRemix">
+              Remix
+            </a>
+          </div>
+          <a class="theme-btn theme-btn-link" href="/#get-extension" data-ec-theme-install hidden data-i18n="www.themeInstall">
+            Install Everchat
+          </a>
+          <p class="theme-status" data-ec-theme-status hidden></p>
+        </div>
+      </div>
 
       <div class="theme-detail" hidden data-ec-theme-ready>
         <section class="theme-preview-col">
-          <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+          <div class="theme-preview-head">
+            <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+            <div class="theme-mode-tabs" role="group" aria-label="Appearance">
+              <button
+                type="button"
+                class="theme-mode-tab is-active"
+                data-ec-appearance="light"
+                aria-pressed="true"
+                data-i18n="www.themeLight"
+              >
+                Light
+              </button>
+              <button
+                type="button"
+                class="theme-mode-tab"
+                data-ec-appearance="dark"
+                aria-pressed="false"
+                data-i18n="www.themeDark"
+              >
+                Dark
+              </button>
+            </div>
+          </div>
           <div class="ec-preview-frame">
             <iframe
               class="ec-preview-iframe"
@@ -156,30 +211,6 @@
             ></iframe>
           </div>
         </section>
-        <div class="theme-detail-actions">
-          <button
-            type="button"
-            class="theme-like theme-like-detail"
-            data-ec-theme-like
-            hidden
-            aria-pressed="false"
-            aria-label="Like"
-            data-i18n="www.themeLike"
-            data-i18n-attr="aria-label"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-            </svg>
-            <span class="theme-like-count" data-ec-theme-like-count>0</span>
-          </button>
-          <button type="button" class="theme-btn theme-btn-primary" data-ec-theme-import data-i18n="www.themeImport">
-            Import this theme
-          </button>
-          <a class="theme-btn theme-btn-link" href="/#get-extension" data-ec-theme-install hidden data-i18n="www.themeInstall">
-            Install Everchat
-          </a>
-          <p class="theme-status" data-ec-theme-status hidden></p>
-        </div>
       </div>
 
       <div class="browse-error" data-ec-theme-error hidden>

@@ -418,9 +418,12 @@ export type Database = {
           name: string;
           author_name: string;
           font_family: string;
+          icon_pack: string;
           tokens: Json;
           created_at: string;
           like_count: number;
+          remix_of_slug: string | null;
+          remix_of_name: string | null;
         };
         Insert: {
           id?: string;
@@ -428,9 +431,12 @@ export type Database = {
           name: string;
           author_name: string;
           font_family?: string;
+          icon_pack?: string;
           tokens: Json;
           created_at?: string;
           like_count?: number;
+          remix_of_slug?: string | null;
+          remix_of_name?: string | null;
         };
         Update: {
           id?: string;
@@ -438,9 +444,12 @@ export type Database = {
           name?: string;
           author_name?: string;
           font_family?: string;
+          icon_pack?: string;
           tokens?: Json;
           created_at?: string;
           like_count?: number;
+          remix_of_slug?: string | null;
+          remix_of_name?: string | null;
         };
         Relationships: [];
       };

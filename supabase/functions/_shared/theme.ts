@@ -47,7 +47,15 @@ const HEX = /^#([0-9a-fA-F]{6})$/;
 const FONT_FAMILY = /^[A-Za-z0-9][A-Za-z0-9 ]{0,59}$/;
 const NAME = /^[\p{L}\p{N}][\p{L}\p{N} .'_-]{0,79}$/u;
 const AUTHOR = /^[\p{L}\p{N}][\p{L}\p{N} .'_-]{0,39}$/u;
+const SLUG = /^[a-z0-9][a-z0-9-]{1,46}[a-z0-9]$/;
 const FORBIDDEN = /url\s*\(|@import|<\/?script|javascript:|data:|expression\s*\(/i;
+
+export const DEFAULT_THEME_SLUG = 'everchat';
+export const DEFAULT_THEME_NAME = 'Default';
+
+export function isValidSlug(value: unknown): value is string {
+  return typeof value === 'string' && SLUG.test(value);
+}
 
 export const DEFAULT_LIGHT_COLORS: Record<string, string> = {
   '--color-background': '#fafafa',

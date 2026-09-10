@@ -149,6 +149,7 @@
         <p class="theme-lede m-0 text-mute" data-i18n="www.themeBuilderLede">
           Build your own theme and let others rate it and import it.
         </p>
+        <p class="theme-lede theme-remix-source m-0 text-mute" data-ec-theme-remix-of hidden></p>
       </div>
 
       <div class="theme-builder" data-ec-theme-builder>
@@ -357,7 +358,29 @@
         </div>
 
         <section class="theme-preview-col" aria-label="Preview">
-          <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+          <div class="theme-preview-head">
+            <h2 class="theme-preview-label" data-i18n="www.themePreview">Preview</h2>
+            <div class="theme-mode-tabs" role="group" aria-label="Appearance">
+              <button
+                type="button"
+                class="theme-mode-tab is-active"
+                data-ec-appearance="light"
+                aria-pressed="true"
+                data-i18n="www.themeLight"
+              >
+                Light
+              </button>
+              <button
+                type="button"
+                class="theme-mode-tab"
+                data-ec-appearance="dark"
+                aria-pressed="false"
+                data-i18n="www.themeDark"
+              >
+                Dark
+              </button>
+            </div>
+          </div>
           <div class="ec-preview-frame">
             <iframe
               class="ec-preview-iframe"

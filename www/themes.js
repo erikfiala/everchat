@@ -277,15 +277,13 @@
     var name = document.createElement('p');
     name.className = 'theme-card-name';
     name.textContent = row.name || '';
-    var by = document.createElement('p');
-    by.className = 'theme-card-by';
-    by.textContent = t('www.themeBy', {
-      name: window.ECTheme.formatThemeAuthor(row.author_name),
-    });
     a.appendChild(swatches(theme ? theme.tokens : row.tokens));
     a.appendChild(name);
-    a.appendChild(by);
     article.appendChild(a);
+    var by = document.createElement('p');
+    by.className = 'theme-card-by';
+    window.ECTheme.paintThemeByline(by, row, t);
+    article.appendChild(by);
     if (!window.ECTheme.isDefaultThemeSlug(row.slug)) {
       article.appendChild(likeButton(row));
     }

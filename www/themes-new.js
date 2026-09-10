@@ -52,6 +52,7 @@
   var state = window.ECTheme.defaultTheme();
   state.name = '';
   state.author = 'draft';
+  var remixOf = null;
   var publishSession = null;
   var appearance = 'light';
 
@@ -237,16 +238,21 @@
       if (!raw) return null;
       var parsed = JSON.parse(raw);
       var valid = window.ECTheme.validateTheme(parsed);
-      if (valid) return valid;
-      var tokens = window.ECTheme.validateTokens(parsed && parsed.tokens);
-      if (!tokens) return null;
+      if (!valid) {
+        var tokens = window.ECTheme.validateTokens(parsed && parsed.tokens);
+        if (!tokens) return null;
+        valid = {
+          schemaVersion: 1,
+          name: typeof parsed.name === 'string' ? parsed.name : '',
+          author: typeof parsed.author === 'string' ? parsed.author : '',
+          fontFamily: window.ECTheme.sanitizeFontFamily(parsed.fontFamily),
+          iconPack: window.ECTheme.sanitizeIconPack(parsed.iconPack),
+          tokens: tokens,
+        };
+      }
       return {
-        schemaVersion: 1,
-        name: typeof parsed.name === 'string' ? parsed.name : '',
-        author: typeof parsed.author === 'string' ? parsed.author : '',
-        fontFamily: window.ECTheme.sanitizeFontFamily(parsed.fontFamily),
-        iconPack: window.ECTheme.sanitizeIconPack(parsed.iconPack),
-        tokens: tokens,
+        theme: valid,
+        remixOf: window.ECTheme.remixSourceFrom(parsed),
       };
     } catch (e) {
       return null;
@@ -255,10 +261,22 @@
 
   function writeDraft() {
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(window.ECTheme.exportTheme(state)));
+      var doc = window.ECTheme.exportTheme(state);
+      if (remixOf) {
+        doc.remixOf = { slug: remixOf.slug, name: remixOf.name };
+      }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(doc));
     } catch (e) {
       /* ignore quota */
     }
+  }
+
+  function paintRemixSource() {
+    window.ECTheme.paintThemeRemixSource(
+      $('[data-ec-theme-remix-of]'),
+      remixOf,
+      t,
+    );
   }
 
   function setStatus(text, kind) {
@@ -525,10 +543,12 @@
     state = window.ECTheme.defaultTheme();
     state.name = '';
     state.author = 'draft';
+    remixOf = null;
     appearance = 'light';
     applyStateToInputs();
     syncFontStatus();
     paintPreview();
+    paintRemixSource();
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch (e) {
@@ -560,7 +580,12 @@
     if (btn) btn.disabled = true;
     showInstall(false);
     setStatus(t('www.themePublishing'), '');
-    window.ECTheme.publishTheme(cfg, valid, session.token)
+    window.ECTheme.publishTheme(
+      cfg,
+      valid,
+      session.token,
+      remixOf && remixOf.slug,
+    )
       .then(function (data) {
         try {
           localStorage.removeItem(DRAFT_KEY);
@@ -1001,16 +1026,64 @@
     syncIconPack();
   }
 
-  function boot() {
-    var draft = readDraft();
-    if (draft) {
-      state = draft;
+  function applyLoadedTheme(theme, source) {
+    state = window.ECTheme.exportTheme(theme);
+    state.author = 'draft';
+    remixOf = source || null;
+    if (isDefaultFont(state.fontFamily)) state.fontFamily = '';
+    applyStateToInputs();
+    syncFontStatus();
+    paintPreview();
+    paintRemixSource();
+    writeDraft();
+  }
+
+  function applyDraftOrEmpty(draft) {
+    if (draft && draft.theme) {
+      state = draft.theme;
+      remixOf = draft.remixOf;
       if (isDefaultFont(state.fontFamily)) state.fontFamily = '';
     } else {
       state.name = '';
       state.author = 'draft';
       state.fontFamily = '';
+      remixOf = null;
     }
+    applyStateToInputs();
+    syncFontStatus();
+    paintPreview();
+    paintRemixSource();
+  }
+
+  function remixSlugFromUrl() {
+    var params = new URLSearchParams(location.search);
+    var q = params.get('remix');
+    return q && window.ECTheme.isValidSlug(q) ? q : '';
+  }
+
+  function clearRemixQuery() {
+    if (!window.history || !history.replaceState) return;
+    history.replaceState({}, '', '/themes/new');
+  }
+
+  function loadRemix(slug) {
+    var cfg = window.EC_SUPABASE;
+    var fetchRow = window.ECTheme.isDefaultThemeSlug(slug)
+      ? Promise.resolve(window.ECTheme.defaultThemeRow())
+      : cfg && cfg.url
+        ? window.ECTheme.fetchTheme(cfg, slug)
+        : Promise.reject(new Error('remix'));
+    return fetchRow.then(function (row) {
+      var theme = window.ECTheme.rowToTheme(row);
+      if (!theme || !row || !row.slug) throw new Error('remix');
+      applyLoadedTheme(theme, { slug: row.slug, name: theme.name });
+      clearRemixQuery();
+    });
+  }
+
+  function boot() {
+    var remixSlug = remixSlugFromUrl();
+    var draft = remixSlug ? null : readDraft();
 
     bindFontPicker();
     bindAppearanceTabs();
@@ -1029,13 +1102,22 @@
     fillSizes($('[data-ec-radius-fields]'), RADIUS);
     fillSizes($('[data-ec-space-fields]'), SPACE);
 
-    applyStateToInputs();
-    syncFontStatus();
+    applyDraftOrEmpty(draft);
     pushPreview = window.ECTheme.bindPreviewFrame(
       $('[data-ec-preview-frame]'),
       previewTheme,
     );
     paintPreview();
+
+    if (remixSlug) {
+      loadRemix(remixSlug).catch(function () {
+        applyDraftOrEmpty(readDraft());
+        setStatus(
+          tOr('www.themeRemixFail', "Couldn't load that theme to remix."),
+          'error',
+        );
+      });
+    }
 
     var nameEl = $('[data-ec-theme-name]');
     if (nameEl) nameEl.addEventListener('input', onChange);

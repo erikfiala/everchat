@@ -5,9 +5,9 @@ import {
   DEFAULT_LIGHT_COLORS,
   DEFAULT_THEME_SLUG,
   DEFAULT_TOKENS,
+  THEME_VARS_SELECTOR,
   applyThemeVars,
   defaultTheme,
-  themeVarsCss,
   exportTheme,
   googleFontsHref,
   googleFontsPreviewHref,
@@ -17,6 +17,7 @@ import {
   sanitizeFontFamily,
   sanitizeIconPack,
   storedSkinKey,
+  themeVarsCss,
   upsertStoredSkinLibrary,
   validateTheme,
   validateTokens,
@@ -170,6 +171,9 @@ describe('theme schema', () => {
     expect(themeVarsCss(theme, 'light')).toContain('--border-width:1px');
     expect(themeVarsCss(theme, 'light')).toContain('--text-sm:14px');
     expect(themeVarsCss(theme, 'light')).toContain('--text-xs:12px');
+    expect(themeVarsCss(theme, 'dark').startsWith(`${THEME_VARS_SELECTOR}{`)).toBe(
+      true,
+    );
     applyThemeVars(el, theme, 'light');
     applyThemeVars(el, theme, 'dark');
     expect(el.getAttribute('data-ec-icon-pack')).toBe('lu');

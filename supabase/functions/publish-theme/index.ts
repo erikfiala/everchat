@@ -4,7 +4,13 @@ import {
   json,
   verifySessionToken,
 } from '../_shared/auth.ts';
-import { slugify, validateTheme } from '../_shared/theme.ts';
+import {
+  DEFAULT_THEME_NAME,
+  DEFAULT_THEME_SLUG,
+  isValidSlug,
+  slugify,
+  validateTheme,
+} from '../_shared/theme.ts';
 
 const HOURLY_LIMIT = 5;
 
@@ -19,6 +25,34 @@ function suffix(): string {
   const bytes = new Uint8Array(3);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => (b % 36).toString(36)).join('');
+}
+
+function remixSlugOf(raw: unknown): string | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const value = (raw as { remixOf?: unknown }).remixOf;
+  if (typeof value !== 'string') return null;
+  const slug = value.trim();
+  return isValidSlug(slug) ? slug : null;
+}
+
+async function resolveRemixSource(
+  sb: ReturnType<typeof adminClient>,
+  slug: string | null,
+): Promise<{ slug: string; name: string } | null> {
+  if (!slug) return null;
+  const { data } = await sb
+    .from('themes')
+    .select('slug, name')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (data && typeof data.slug === 'string' && typeof data.name === 'string') {
+    const name = data.name.trim();
+    if (name) return { slug: data.slug, name };
+  }
+  if (slug === DEFAULT_THEME_SLUG) {
+    return { slug: DEFAULT_THEME_SLUG, name: DEFAULT_THEME_NAME };
+  }
+  return null;
 }
 
 Deno.serve(async (req) => {
@@ -36,6 +70,7 @@ Deno.serve(async (req) => {
     }
 
     const raw = await req.json();
+    const remixSlug = remixSlugOf(raw);
     const incoming =
       raw && typeof raw === 'object' && !Array.isArray(raw)
         ? { ...raw, author: 'pending' }
@@ -46,6 +81,7 @@ Deno.serve(async (req) => {
     }
 
     const sb = adminClient();
+    const remix = await resolveRemixSource(sb, remixSlug);
     const { data: profile } = await sb
       .from('profiles')
       .select('username')
@@ -99,6 +135,8 @@ Deno.serve(async (req) => {
           font_family: theme.fontFamily,
           icon_pack: theme.iconPack,
           tokens: theme.tokens,
+          remix_of_slug: remix?.slug ?? null,
+          remix_of_name: remix?.name ?? null,
         })
         .select('id, slug')
         .single();

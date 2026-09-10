@@ -6,6 +6,7 @@
   var currentRow = null;
   var slug = null;
   var liked = false;
+  var appearance = 'light';
 
   function $(sel, root) {
     return (root || document).querySelector(sel);
@@ -123,13 +124,17 @@
     var importBtn = $('[data-ec-theme-import]');
     if (title) title.textContent = theme.name;
     if (by) {
-      by.textContent = t('www.themeBy', {
-        name: window.ECTheme.formatThemeAuthor(theme.author),
-      });
+      window.ECTheme.paintThemeByline(by, row, t);
     }
     if (importBtn) {
       importBtn.hidden = false;
       importBtn.textContent = t('www.themeImport');
+    }
+    var remixLink = $('[data-ec-theme-remix]');
+    if (remixLink) {
+      remixLink.hidden = false;
+      remixLink.href = window.ECTheme.remixBuilderHref(row.slug);
+      remixLink.textContent = t('www.themeRemix');
     }
     document.title = theme.name + ' - Everchat';
     var canonical = document.querySelector('link[rel="canonical"]');
@@ -142,11 +147,13 @@
     var frame = $('[data-ec-preview-frame]');
     if (frame) {
       window.ECTheme.bindPreviewFrame(frame, function () {
-        return current;
+        return { theme: current, appearance: appearance };
       });
-      window.ECTheme.postPreviewTheme(frame, theme);
+      window.ECTheme.postPreviewTheme(frame, theme, appearance);
     }
     if (ready) ready.hidden = false;
+    var actions = $('[data-ec-theme-actions]');
+    if (actions) actions.hidden = false;
     paintLike();
   }
 
@@ -157,6 +164,29 @@
     if (error) error.hidden = false;
   }
 
+  function syncAppearanceTabs() {
+    document.querySelectorAll('[data-ec-appearance]').forEach(function (btn) {
+      var on = btn.getAttribute('data-ec-appearance') === appearance;
+      btn.classList.toggle('is-active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function bindAppearanceTabs() {
+    document.querySelectorAll('[data-ec-appearance]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var mode = btn.getAttribute('data-ec-appearance');
+        if (mode !== 'light' && mode !== 'dark') return;
+        appearance = mode;
+        syncAppearanceTabs();
+        if (!current) return;
+        var frame = $('[data-ec-preview-frame]');
+        if (frame) window.ECTheme.postPreviewTheme(frame, current, appearance);
+      });
+    });
+    syncAppearanceTabs();
+  }
+
   function boot() {
     slug = parseSlug();
     var root = $('[data-ec-theme-detail]');
@@ -164,6 +194,7 @@
     var likeBtn = $('[data-ec-theme-like]');
     if (importBtn) importBtn.addEventListener('click', importTheme);
     if (likeBtn) likeBtn.addEventListener('click', onLike);
+    bindAppearanceTabs();
 
     if (!slug || !window.ECTheme.isValidSlug(slug)) {
       if (root) root.setAttribute('aria-busy', 'false');

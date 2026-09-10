@@ -430,7 +430,13 @@ function sizeTokenDecls(tokens: ThemeTokens): string[] {
   return decls.concat(sizeAliasDecls(tokens));
 }
 
-/** `:root{…}` rule for a skin. Used instead of `element.style` (CSP style-src). */
+/**
+ * Skin vars must beat `html[data-theme='dark']` in sidepanel CSS ((0,1,1)).
+ * `:root` is (0,1,0); `:root[data-theme]` is (0,2,0).
+ */
+export const THEME_VARS_SELECTOR = ':root,:root[data-theme]';
+
+/** Adopted-sheet rule for a skin. Used instead of `element.style` (CSP style-src). */
 export function themeVarsCss(
   theme: ThemeDocument,
   appearance: ThemeAppearance,
@@ -445,7 +451,7 @@ export function themeVarsCss(
   if (family) {
     decls.push(`--font-sans:"${family}", ui-sans-serif, system-ui, sans-serif`);
   }
-  return `:root{${decls.join(';')}}`;
+  return `${THEME_VARS_SELECTOR}{${decls.join(';')}}`;
 }
 
 function applyThemeSheet(doc: Document | null, css: string): void {

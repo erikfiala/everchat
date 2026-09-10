@@ -31,6 +31,12 @@
 }
 
 html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* Default dark palette only when no skin is applied. Skin vars live on
+   `:root` / `:root[data-theme]` and must win over these when present. */
+html[data-theme='dark']:not([data-ec-skin]) {
   --color-background: #18181b; /* zinc-900 */
   --color-foreground: #fafafa; /* zinc-50 */
   --color-muted: #27272a; /* zinc-800 */
@@ -46,7 +52,6 @@ html[data-theme='dark'] {
   --color-score-pos: #2dd4bf;
   --color-score-neg: #f87171;
   --color-ring: #71717a; /* zinc-500 */
-  color-scheme: dark;
 }
 
 * {
@@ -134,6 +139,10 @@ html[data-ec-skin] [data-slot='button']:hover:not(:disabled) {
 
 html[data-theme='dark'] .ec-anonymous-avatar {
   background-color: #71717a; /* zinc-500 */
+}
+
+html[data-ec-skin] .ec-anonymous-avatar {
+  background-color: var(--color-anonymous-avatar);
 }
 
 /* Soft keyboard focus ring (hugs control radius; match sort selector) */

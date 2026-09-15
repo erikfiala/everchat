@@ -30,9 +30,8 @@ export function getSupabase(): SupabaseClient<Database> {
     if (isPreviewMode()) {
       throw new Error('errors.previewNoBackend');
     }
-    throw new Error(
-      'Supabase is not configured. Official builds use .env.production; for a private backend copy .env.example to .env.local.',
-    );
+    // Official builds use .env.production; private backends: copy .env.example → .env.local.
+    throw new Error('errors.supabaseNotConfigured');
   }
   if (!client) {
     client = createClient<Database>(supabaseUrl!, supabaseAnonKey!, {
@@ -75,7 +74,7 @@ export async function callEdgeFunction<T>(
   }
   const base = getFunctionsBaseUrl();
   if (!base || !supabaseAnonKey) {
-    throw new Error('Supabase functions URL not configured');
+    throw new Error('errors.supabaseNotConfigured');
   }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), EDGE_FETCH_TIMEOUT_MS);
@@ -96,7 +95,7 @@ export async function callEdgeFunction<T>(
       (e as { name?: string })?.name === 'AbortError' ||
       controller.signal.aborted
     ) {
-      throw new Error('Network request timed out');
+      throw new Error('errors.networkTimeout');
     }
     throw e;
   } finally {
@@ -104,9 +103,13 @@ export async function callEdgeFunction<T>(
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(
-      (data as { error?: string }).error || `Edge function ${name} failed`,
-    );
+    const serverError = (data as { error?: string }).error?.trim();
+    // Prefer i18n-style keys from the edge function; otherwise a generic key.
+    const key =
+      serverError && /^[\w.-]+$/.test(serverError) && serverError.includes('.')
+        ? serverError
+        : 'errors.edgeFunctionFailed';
+    throw new Error(key);
   }
   return data as T;
 }

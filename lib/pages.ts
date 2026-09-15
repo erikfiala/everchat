@@ -107,7 +107,7 @@ export async function upsertPage(input: PageMetaInput): Promise<Page> {
     }
   }
 
-  throw insertError ?? new Error('Could not create page room');
+  throw insertError ?? new Error('errors.pageCreateFailed');
 }
 
 async function insertPageRow(row: {

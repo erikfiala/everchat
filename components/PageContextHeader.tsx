@@ -141,18 +141,7 @@ export function PageContextHeader({
                   }
                 }}
               />
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                className="shrink-0 text-xs"
-                aria-label={t('page.go')}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => void submitUrl()}
-              >
-                {t('page.go')}
-              </Button>
-              {canCancelEdit && (
+              <div className="flex shrink-0 items-center gap-0.5">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -160,16 +149,34 @@ export function PageContextHeader({
                       variant="ghost"
                       size="icon"
                       className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
-                      aria-label={t('common.cancel')}
+                      aria-label={t('page.openChat')}
                       onMouseDown={(e) => e.preventDefault()}
-                      onClick={cancelEdit}
+                      onClick={() => void submitUrl()}
                     >
-                      <Icon name="close" className="size-4" />
+                      <Icon name="arrowRight" className="size-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>{t('common.cancel')}</TooltipContent>
+                  <TooltipContent>{t('page.openChat')}</TooltipContent>
                 </Tooltip>
-              )}
+                {canCancelEdit && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
+                        aria-label={t('common.cancel')}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={cancelEdit}
+                      >
+                        <Icon name="close" className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t('common.cancel')}</TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
             </>
           ) : (
             <>
@@ -184,7 +191,26 @@ export function PageContextHeader({
                   </div>
                 )}
               </div>
-              {openHref && (
+              <div className="flex shrink-0 items-center gap-0.5">
+                {openHref && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
+                        aria-label={t('page.openPage')}
+                        onClick={() => {
+                          window.open(openHref, '_blank', 'noopener,noreferrer');
+                        }}
+                      >
+                        <Icon name="externalLink" className="size-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t('page.openPage')}</TooltipContent>
+                  </Tooltip>
+                )}
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -192,32 +218,15 @@ export function PageContextHeader({
                       variant="ghost"
                       size="icon"
                       className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
-                      aria-label={t('page.openPage')}
-                      onClick={() => {
-                        window.open(openHref, '_blank', 'noopener,noreferrer');
-                      }}
+                      aria-label={t('page.editUrl')}
+                      onClick={enterEdit}
                     >
-                      <Icon name="externalLink" className="size-4" />
+                      <Icon name="penSquare" className="size-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>{t('page.openPage')}</TooltipContent>
+                  <TooltipContent>{t('page.editUrl')}</TooltipContent>
                 </Tooltip>
-              )}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
-                    aria-label={t('page.editUrl')}
-                    onClick={enterEdit}
-                  >
-                    <Icon name="penSquare" className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{t('page.editUrl')}</TooltipContent>
-              </Tooltip>
+              </div>
             </>
           )}
         </div>

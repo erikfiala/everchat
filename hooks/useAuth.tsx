@@ -62,6 +62,7 @@ function isExpectedPasskeyMiss(e: unknown): boolean {
     msg === 'auth.toastpasskeytimedout' ||
     msg === 'auth.toastpasskeynotfound' ||
     msg.includes('network request timed out') ||
+    msg === 'errors.networktimeout' ||
     msg.includes('passkeytimedout') ||
     msg.includes('passkeynotfound')
   ) {

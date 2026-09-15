@@ -157,6 +157,7 @@ function VoteControls({
   onVote: (id: string, value: 1 | -1) => void;
   requireAuth: () => boolean;
 }) {
+  const { t } = useLocale();
   const vote = (value: 1 | -1) => {
     if (disabled) return;
     if (!requireAuth()) return;
@@ -179,6 +180,7 @@ function VoteControls({
           disabled && voteDisabledClassName,
           !disabled && node.myVote === 1 && 'text-[var(--color-success)]',
         )}
+        aria-label={t('message.upvote')}
         onClick={() => vote(1)}
       >
         <Icon name="chevronUp" className="h-4 w-4" />
@@ -200,6 +202,7 @@ function VoteControls({
           disabled && voteDisabledClassName,
           !disabled && node.myVote === -1 && 'text-[var(--color-destructive)]',
         )}
+        aria-label={t('message.downvote')}
         onClick={() => vote(-1)}
       >
         <Icon name="chevronDown" className="h-4 w-4" />
@@ -321,6 +324,7 @@ export function MessageRow({
       setShowTranslation(false);
       return;
     }
+    if (!requireAuth()) return;
     if (translated) {
       setShowTranslation(true);
       setTranslateError(false);
@@ -581,6 +585,7 @@ export function MessageRow({
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7 opacity-0 group-hover/row:opacity-100"
+                    aria-label={t('message.more')}
                     onClick={() => setMenuOpen((v) => !v)}
                   >
                     <Icon name="more" className="h-4 w-4" />
@@ -612,9 +617,9 @@ export function MessageRow({
                           type="button"
                           className="flex w-full items-center gap-2 px-3 py-1.5 text-start text-sm text-[var(--color-destructive)] hover:bg-[var(--color-accent)]"
                           onClick={() => {
+                            setMenuOpen(false);
                             if (!requireAuth()) return;
                             onReport(node.id);
-                            setMenuOpen(false);
                           }}
                         >
                           <Icon name="alert" className="h-3.5 w-3.5" />

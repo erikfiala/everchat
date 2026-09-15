@@ -168,7 +168,7 @@ export function PageContextHeader({
             </>
           ) : (
             <>
-              <Favicon src={resolvedFavicon} className="mt-0.5 shrink-0 self-start" />
+              <Favicon src={resolvedFavicon} className="shrink-0" />
               <div className="min-w-0 flex-1 overflow-hidden">
                 <div className="truncate text-sm font-medium">
                   {title || hostLabel || displayValue || t('page.thisPage')}
@@ -204,13 +204,13 @@ export function PageContextHeader({
   return (
     <div
       className={cn(
-        'flex min-h-14 w-full min-w-0 items-start gap-2 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
+        'flex min-h-14 w-full min-w-0 items-center gap-2 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
         className,
       )}
       data-ec-pad-x
       data-ec-gap
     >
-      <Favicon src={resolvedFavicon} className="mt-0.5" />
+      <Favicon src={resolvedFavicon} className="shrink-0" />
       <div className="min-w-0 flex-1 overflow-hidden">
         <div className="truncate text-sm font-medium">
           {title || hostLabel || t('page.thisPage')}

@@ -1,5 +1,6 @@
 /**
  * Load public trending rooms from Supabase (anon-readable trending_pages view).
+ * If nothing is trending, fall back to latest active_pages ("Latest chats").
  * Live "N online" via Realtime postgres_changes on page_online_counts;
  * REST poll is the fallback. Config: window.EC_SUPABASE from supabase-public.js
  */
@@ -14,9 +15,68 @@
     el.textContent = text || '';
   }
 
+  function setSectionMode(root, mode) {
+    var R = window.ECRooms;
+    var titleEl = root.querySelector('h2');
+    var title;
+    var aria;
+    if (mode === 'latest') {
+      title = R.t('www.latestTitle') || 'Latest chats';
+      aria = R.t('www.latestAria') || title;
+    } else {
+      title = R.t('www.trendingTitle') || 'Trending chats';
+      aria = R.t('www.trendingAria') || title;
+    }
+    if (titleEl) titleEl.textContent = title;
+    root.setAttribute('aria-label', aria);
+  }
+
   function paintRows(list, rows) {
     lastRows = rows;
     window.ECRooms.renderRows(list, rows);
+  }
+
+  function showEmpty(list) {
+    var R = window.ECRooms;
+    lastRows = null;
+    if (presence) presence.stop();
+    R.renderEmpty(
+      list,
+      R.t('www.browseEmpty') ||
+        R.t('www.trendingEmpty') ||
+        'No chats yet.',
+    );
+  }
+
+  function paintWithPresence(list, rows) {
+    paintRows(list, rows);
+    if (!presence) {
+      presence = window.ECRooms.createPresence(
+        function () {
+          return lastRows;
+        },
+        function (next) {
+          paintRows(list, next);
+        },
+      );
+    }
+    presence.start();
+  }
+
+  function loadLatestFallback(root, list, status, cfg) {
+    var R = window.ECRooms;
+    setSectionMode(root, 'latest');
+    return R.fetchPages(cfg, { limit: LIMIT }).then(function (rows) {
+      if (!rows || !rows.length) {
+        setStatus(status, '');
+        showEmpty(list);
+        return;
+      }
+      return R.withOnlineCounts(cfg, rows).then(function (merged) {
+        setStatus(status, '');
+        paintWithPresence(list, merged);
+      });
+    });
   }
 
   function loadTrending() {
@@ -27,45 +87,34 @@
     var list = root.querySelector('[data-ec-trending-list]');
     var status = root.querySelector('[data-ec-trending-status]');
     var cfg = window.EC_SUPABASE;
-    if (!list || !cfg || !cfg.url || !cfg.anonKey) {
+    if (!list) return;
+    if (!cfg || !cfg.url || !cfg.anonKey) {
       setStatus(status, '');
-      lastRows = null;
-      R.renderEmpty(list);
+      setSectionMode(root, 'trending');
+      showEmpty(list);
       return;
     }
 
+    setSectionMode(root, 'trending');
     setStatus(status, R.t('common.loading') || 'Loading…');
 
     R.fetchTrending(cfg, LIMIT)
       .then(function (rows) {
-        if (!rows || !rows.length) {
-          setStatus(status, '');
-          lastRows = null;
-          if (presence) presence.stop();
-          R.renderEmpty(list);
-          return;
+        if (rows && rows.length) {
+          return R.withOnlineCounts(cfg, rows).then(function (merged) {
+            setStatus(status, '');
+            setSectionMode(root, 'trending');
+            paintWithPresence(list, merged);
+          });
         }
-        return R.withOnlineCounts(cfg, rows).then(function (merged) {
-          setStatus(status, '');
-          paintRows(list, merged);
-          if (!presence) {
-            presence = R.createPresence(
-              function () {
-                return lastRows;
-              },
-              function (next) {
-                paintRows(list, next);
-              },
-            );
-          }
-          presence.start();
-        });
+        return loadLatestFallback(root, list, status, cfg);
       })
       .catch(function () {
-        setStatus(status, '');
-        lastRows = null;
-        if (presence) presence.stop();
-        R.renderEmpty(list);
+        return loadLatestFallback(root, list, status, cfg).catch(function () {
+          setStatus(status, '');
+          setSectionMode(root, 'trending');
+          showEmpty(list);
+        });
       });
   }
 

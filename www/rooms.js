@@ -247,7 +247,8 @@
     list.innerHTML = '';
     var box = document.createElement('div');
     box.className = 'trending-empty';
-    box.textContent = message || t('www.trendingEmpty') || 'Nothing trending yet.';
+    box.textContent =
+      message || t('www.trendingEmpty') || 'Nothing trending right now.';
     list.appendChild(box);
   }
 

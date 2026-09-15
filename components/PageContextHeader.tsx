@@ -113,7 +113,6 @@ export function PageContextHeader({
             'flex min-h-14 w-full min-w-0 items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
             className,
           )}
-          style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
           data-ec-pad-x
           data-ec-gap
         >

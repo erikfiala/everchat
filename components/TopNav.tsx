@@ -52,6 +52,7 @@ export function TopNav({ active, onChange, unread = 0 }: TopNavProps) {
   return (
     <TooltipProvider delayDuration={200}>
       <nav
+        data-ec-topnav
         data-ec-pad-x
         data-ec-gap
         className="flex min-h-14 items-center justify-between gap-2 border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2"

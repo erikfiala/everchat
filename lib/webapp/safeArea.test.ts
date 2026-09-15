@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   IOS_HOME_INDICATOR_FALLBACK_PX,
+  IOS_STATUS_BAR_FALLBACK_PX,
   isAppleTouchDevice,
   resolveSafeBottomPx,
+  resolveSafeTopPx,
 } from './safeArea';
 
 describe('resolveSafeBottomPx', () => {
@@ -24,6 +26,26 @@ describe('resolveSafeBottomPx', () => {
     ).toBe(0);
     expect(
       resolveSafeBottomPx(0, { standalone: true, appleTouch: false }),
+    ).toBe(0);
+  });
+});
+
+describe('resolveSafeTopPx', () => {
+  it('keeps a real measured inset', () => {
+    expect(
+      resolveSafeTopPx(47, { standalone: true, appleTouch: true }),
+    ).toBe(47);
+  });
+
+  it('falls back on standalone iPhone when WebKit reports 0', () => {
+    expect(
+      resolveSafeTopPx(0, { standalone: true, appleTouch: true }),
+    ).toBe(IOS_STATUS_BAR_FALLBACK_PX);
+  });
+
+  it('stays 0 in the browser / extension', () => {
+    expect(
+      resolveSafeTopPx(0, { standalone: false, appleTouch: true }),
     ).toBe(0);
   });
 });

@@ -42,13 +42,25 @@ Deno.serve(async (req) => {
           fixed_height_small: { url: string };
           downsized: { url: string };
         };
-      }) => ({
-        id: g.id,
-        title: g.title,
-        url: g.images.original?.url || g.images.downsized?.url,
-        preview:
-          g.images.fixed_height_small?.url || g.images.downsized?.url,
-      }),
+      }) => {
+        // Persist/display i.giphy.com embeds — API original.url is a
+        // cid-bound media*.giphy.com/v1.Y2lk… path that often 403s in <img>.
+        const id = String(g.id || '').trim();
+        const fallback =
+          g.images.original?.url || g.images.downsized?.url || '';
+        const previewFallback =
+          g.images.fixed_height_small?.url ||
+          g.images.downsized?.url ||
+          fallback;
+        return {
+          id,
+          title: g.title,
+          url: id ? `https://i.giphy.com/${id}.gif` : fallback,
+          preview: id
+            ? `https://i.giphy.com/media/${id}/200w.gif`
+            : previewFallback,
+        };
+      },
     );
 
     return json({ results });

@@ -6,6 +6,7 @@ import type {
   Vote,
 } from './database.types';
 import { LIST_PAGE_SIZE, MAX_BODY_LENGTH } from './constants';
+import { normalizeGifUrl } from './giphy';
 import { chunkIds, pageHasMore } from './listPage';
 
 const MESSAGE_WITH_AUTHOR = `
@@ -251,7 +252,8 @@ export async function createMessage(input: {
   body: string;
   gifUrl?: string | null;
 }): Promise<MessageWithAuthor> {
-  if (!input.body.trim() && !input.gifUrl) {
+  const gifUrl = normalizeGifUrl(input.gifUrl);
+  if (!input.body.trim() && !gifUrl) {
     throw new Error('errors.messageNeedsContent');
   }
   if (input.body.length > MAX_BODY_LENGTH) {
@@ -279,7 +281,7 @@ export async function createMessage(input: {
       author_id: input.authorId,
       parent_id: input.parentId ?? null,
       body: input.body,
-      gif_url: input.gifUrl ?? null,
+      gif_url: gifUrl,
     })
     .select(
       `

@@ -1,4 +1,5 @@
 import { displayUrl } from './canonicalize';
+import { normalizeGifPreviewUrl, normalizeGifUrl } from './giphy';
 import { callEdgeFunction } from './supabase';
 import {
   ANONYMOUS_HANDLE,
@@ -276,5 +277,9 @@ export async function searchGiphy(
   const data = await callEdgeFunction<{
     results: { id: string; url: string; preview: string; title: string }[];
   }>('giphy-proxy', { q: query }, token);
-  return data.results || [];
+  return (data.results || []).map((g) => ({
+    ...g,
+    url: normalizeGifUrl(g.url) ?? g.url,
+    preview: normalizeGifPreviewUrl(g.preview || g.url) ?? g.preview,
+  }));
 }

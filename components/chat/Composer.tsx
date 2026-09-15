@@ -18,6 +18,7 @@ import {
   insertMention,
   type MentionParticipant,
 } from '@/lib/mentions';
+import { normalizeGifPreviewUrl, normalizeGifUrl } from '@/lib/giphy';
 import { searchGiphy } from '@/lib/profile';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
@@ -379,8 +380,10 @@ export function Composer({
       {gifUrl && (
         <div className="relative mt-2 inline-block overflow-hidden rounded">
           <img
-            src={gifUrl}
+            src={normalizeGifUrl(gifUrl) ?? gifUrl}
             alt={t('composer.selectedGifAlt')}
+            referrerPolicy="no-referrer"
+            decoding="async"
             className="max-h-24"
           />
           <button
@@ -495,13 +498,18 @@ export function Composer({
                       gifUrl === g.url && 'ring-2 ring-[var(--color-primary)]',
                     )}
                     onClick={() => {
-                      setGifUrl(g.url);
+                      setGifUrl(normalizeGifUrl(g.url) ?? g.url);
                       setShowGiphy(false);
                     }}
                   >
                     <img
-                      src={g.preview || g.url}
+                      src={
+                        normalizeGifPreviewUrl(g.preview || g.url) ??
+                        (g.preview || g.url)
+                      }
                       alt={g.title}
+                      referrerPolicy="no-referrer"
+                      decoding="async"
                       className="h-full w-full object-cover"
                     />
                   </button>

@@ -9,6 +9,7 @@ import {
   buildWebAppPageLink,
   buildWebAppThreadLink,
 } from '@/lib/canonicalize';
+import { normalizeGifUrl } from '@/lib/giphy';
 import { isOwnMessage } from '@/lib/messages';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
@@ -111,9 +112,11 @@ function MessageChrome({
 function ShowRepliesControl({
   node,
   onShowReplies,
+  requireAuth,
 }: {
   node: MessageNode;
   onShowReplies?: (node: MessageNode) => void;
+  requireAuth: () => boolean;
 }) {
   const { t } = useLocale();
   const count = node.children.length;
@@ -125,7 +128,10 @@ function ShowRepliesControl({
       variant="ghost"
       size="sm"
       className="mt-0.5 h-7 px-2 text-xs"
-      onClick={() => onShowReplies(node)}
+      onClick={() => {
+        if (!requireAuth()) return;
+        onShowReplies(node);
+      }}
     >
       {count === 1
         ? t('message.showReply')
@@ -408,7 +414,11 @@ export function MessageRow({
             requireAuth={requireAuth}
           />
         </div>
-        <ShowRepliesControl node={node} onShowReplies={feedReplies} />
+        <ShowRepliesControl
+          node={node}
+          onShowReplies={feedReplies}
+          requireAuth={requireAuth}
+        />
       </MessageChrome>
     );
   }
@@ -526,8 +536,10 @@ export function MessageRow({
               )}
               {node.gif_url && (
                 <img
-                  src={node.gif_url}
+                  src={normalizeGifUrl(node.gif_url) ?? node.gif_url}
                   alt={t('message.gifAlt')}
+                  referrerPolicy="no-referrer"
+                  decoding="async"
                   className="mt-2 max-h-48 rounded-md"
                 />
               )}
@@ -630,7 +642,11 @@ export function MessageRow({
                   )}
                 </div>
               </div>
-              <ShowRepliesControl node={node} onShowReplies={feedReplies} />
+              <ShowRepliesControl
+                node={node}
+                onShowReplies={feedReplies}
+                requireAuth={requireAuth}
+              />
             </>
           )}
     </MessageChrome>

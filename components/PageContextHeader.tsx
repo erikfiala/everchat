@@ -96,6 +96,8 @@ export function PageContextHeader({
   };
 
   if (web) {
+    const canCancelEdit = Boolean(displayValue);
+
     return (
       <TooltipProvider delayDuration={200}>
         <div
@@ -107,68 +109,89 @@ export function PageContextHeader({
           data-ec-pad-x
           data-ec-gap
         >
-          <Favicon src={resolvedFavicon} className="shrink-0" />
           {editing ? (
-            <Input
-              ref={urlInputRef}
-              type="url"
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-              spellCheck={false}
-              className="h-9 min-w-0 flex-1 px-2 text-xs focus:outline-2 focus:outline-solid focus:outline-[var(--color-ring)] focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[var(--color-ring)] focus-visible:outline-offset-2"
-              placeholder={t('page.pasteUrl')}
-              value={draft}
-              aria-label={t('page.urlLabel')}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  void submitUrl();
-                } else if (e.key === 'Escape') {
-                  e.preventDefault();
-                  cancelEdit();
-                }
-              }}
-            />
+            <>
+              <Input
+                ref={urlInputRef}
+                type="url"
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                className="h-9 min-w-0 flex-1 px-2 text-xs focus:outline-2 focus:outline-solid focus:outline-[var(--color-ring)] focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[var(--color-ring)] focus-visible:outline-offset-2"
+                placeholder={t('page.pasteUrl')}
+                value={draft}
+                aria-label={t('page.urlLabel')}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    void submitUrl();
+                  } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelEdit();
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="shrink-0 text-xs"
+                aria-label={t('page.go')}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => void submitUrl()}
+              >
+                {t('page.go')}
+              </Button>
+              {canCancelEdit && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 shrink-0"
+                      aria-label={t('common.cancel')}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={cancelEdit}
+                    >
+                      <Icon name="close" className="h-3.5 w-3.5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t('common.cancel')}</TooltipContent>
+                </Tooltip>
+              )}
+            </>
           ) : (
-            <button
-              type="button"
-              className="flex h-9 min-w-0 flex-1 items-center rounded-md px-2 text-left text-xs text-[var(--color-foreground)] hover:bg-[var(--color-accent)]"
-              aria-label={t('page.editUrl')}
-              onClick={enterEdit}
-            >
-              <span className="min-w-0 truncate">{displayValue}</span>
-            </button>
-          )}
-          {editing ? (
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="shrink-0 text-xs"
-              aria-label={t('page.go')}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => void submitUrl()}
-            >
-              {t('page.go')}
-            </Button>
-          ) : (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 shrink-0"
-                  aria-label={t('page.editUrl')}
-                  onClick={enterEdit}
-                >
-                  <Icon name="penSquare" className="h-3.5 w-3.5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{t('page.editUrl')}</TooltipContent>
-            </Tooltip>
+            <>
+              <Favicon src={resolvedFavicon} className="mt-0.5 shrink-0 self-start" />
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <div className="truncate text-sm font-medium">
+                  {title || hostLabel || displayValue || t('page.thisPage')}
+                </div>
+                {displayValue && (
+                  <div className="truncate text-xs text-[var(--color-muted-foreground)]">
+                    {displayValue}
+                  </div>
+                )}
+              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    aria-label={t('page.editUrl')}
+                    onClick={enterEdit}
+                  >
+                    <Icon name="penSquare" className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('page.editUrl')}</TooltipContent>
+              </Tooltip>
+            </>
           )}
         </div>
       </TooltipProvider>

@@ -116,7 +116,7 @@ export function PageContextHeader({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              className="h-8 min-w-0 flex-1 px-2 text-xs focus:outline-2 focus:outline-solid focus:outline-[var(--color-ring)] focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[var(--color-ring)] focus-visible:outline-offset-2"
+              className="h-9 min-w-0 flex-1 px-2 text-xs focus:outline-2 focus:outline-solid focus:outline-[var(--color-ring)] focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[var(--color-ring)] focus-visible:outline-offset-2"
               placeholder={t('page.pasteUrl')}
               value={draft}
               aria-label={t('page.urlLabel')}
@@ -134,7 +134,7 @@ export function PageContextHeader({
           ) : (
             <button
               type="button"
-              className="flex h-8 min-w-0 flex-1 items-center rounded-md px-2 text-left text-xs text-[var(--color-foreground)] hover:bg-[var(--color-accent)]"
+              className="flex h-9 min-w-0 flex-1 items-center rounded-md px-2 text-left text-xs text-[var(--color-foreground)] hover:bg-[var(--color-accent)]"
               aria-label={t('page.editUrl')}
               onClick={enterEdit}
             >
@@ -145,8 +145,8 @@ export function PageContextHeader({
             <Button
               type="button"
               variant="secondary"
-              size="xs"
-              className="shrink-0"
+              size="sm"
+              className="shrink-0 text-xs"
               aria-label={t('page.go')}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => void submitUrl()}

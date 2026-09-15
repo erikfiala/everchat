@@ -6,6 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-09-15
+
+### Changed
+
+- Marketing room cards route into `/app` instead of the extension-oriented path
+- Web header “open” action opens the page URL in a new tab
+- Chrome action icons (logout, edit, close, open, back/forward) use a quieter muted style
+
+### Fixed
+
+- Favicon/globe vertically centered in the page context header (extension + `/app`)
+
 ## [1.0.4] - 2026-09-15
 
 ### Changed

@@ -2,7 +2,7 @@
   "name": "everchat",
   "description": "Public comments on any URL. Chrome side panel. Browse, import, build, and publish themes at https://everch.at/themes.",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://everch.at",
   "funding": {

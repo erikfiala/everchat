@@ -21,6 +21,8 @@ import {
   useNotifications,
 } from '@/hooks/useNotifications';
 import type { PanelTab } from '@/lib/database.types';
+import { isWebApp } from '@/lib/webapp/mode';
+import { cn } from '@/lib/utils';
 
 function reportPanelAttention(visible: boolean, tab: PanelTab) {
   try {
@@ -90,7 +92,14 @@ function Shell() {
     ((tab === 'notifications' || tab === 'profile') && !user);
 
   return (
-    <div className="flex h-full flex-col bg-[var(--color-background)]">
+    <div
+      className={cn(
+        'flex min-h-0 flex-col bg-[var(--color-background)]',
+        // /app #root is a padded flex column — flex-1 respects safe-area padding.
+        // Extension #root is only height:100%, so the shell still needs h-full.
+        isWebApp() ? 'flex-1' : 'h-full',
+      )}
+    >
       <TopNav active={tab} onChange={onNav} unread={unread} />
       <main className="min-h-0 flex-1">
         <ErrorBoundary label="main" key={user?.id ?? 'anon'}>
@@ -127,7 +136,11 @@ function Shell() {
       <Toaster
         theme={theme}
         position="top-center"
-        offset={68}
+        offset={
+          isWebApp()
+            ? 'calc(4.25rem + env(safe-area-inset-top, 0px))'
+            : 68
+        }
         closeButton
         toastOptions={{
           classNames: {

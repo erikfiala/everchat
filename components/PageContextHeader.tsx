@@ -3,6 +3,12 @@ import { Favicon } from '@/components/Favicon';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useLocale } from '@/hooks/useLocale';
 import { coercePasteUrl, displayUrl } from '@/lib/canonicalize';
 import { googleS2FaviconForHost } from '@/lib/favicon';
@@ -61,20 +67,17 @@ export function PageContextHeader({
 
   if (web) {
     return (
-      <div
-        className={cn(
-          'flex min-h-14 w-full min-w-0 items-start gap-2 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
-          className,
-        )}
-        style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
-        data-ec-pad-x
-        data-ec-gap
-      >
-        <Favicon src={resolvedFavicon} className="mt-0.5" />
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <div className="truncate text-sm font-medium">
-            {title || hostLabel || t('page.untitled')}
-          </div>
+      <TooltipProvider delayDuration={200}>
+        <div
+          className={cn(
+            'flex min-h-14 w-full min-w-0 items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
+            className,
+          )}
+          style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
+          data-ec-pad-x
+          data-ec-gap
+        >
+          <Favicon src={resolvedFavicon} className="shrink-0" />
           <Input
             ref={urlInputRef}
             type="url"
@@ -82,7 +85,7 @@ export function PageContextHeader({
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            className="mt-1 h-8 px-2 text-xs"
+            className="h-8 min-w-0 flex-1 px-2 text-xs focus:outline-2 focus:outline-solid focus:outline-[var(--color-ring)] focus:outline-offset-2 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[var(--color-ring)] focus-visible:outline-offset-2"
             placeholder={t('page.pasteUrl')}
             value={draft}
             aria-label={t('page.urlLabel')}
@@ -95,21 +98,26 @@ export function PageContextHeader({
               }
             }}
           />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0"
+                aria-label={t('page.editUrl')}
+                onClick={() => {
+                  urlInputRef.current?.focus();
+                  urlInputRef.current?.select();
+                }}
+              >
+                <Icon name="penSquare" className="h-3.5 w-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('page.editUrl')}</TooltipContent>
+          </Tooltip>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="mt-0.5 size-8 shrink-0"
-          aria-label={t('page.editUrl')}
-          onClick={() => {
-            urlInputRef.current?.focus();
-            urlInputRef.current?.select();
-          }}
-        >
-          <Icon name="penSquare" className="size-4" />
-        </Button>
-      </div>
+      </TooltipProvider>
     );
   }
 

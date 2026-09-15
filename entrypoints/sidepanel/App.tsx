@@ -101,7 +101,7 @@ function Shell() {
       )}
     >
       <TopNav active={tab} onChange={onNav} unread={unread} />
-      <main className="min-h-0 flex-1">
+      <main className="flex min-h-0 flex-1 flex-col">
         <ErrorBoundary label="main" key={user?.id ?? 'anon'}>
           {loading || !ready ? (
             <div className="flex h-full items-center justify-center text-sm text-[var(--color-muted-foreground)]">

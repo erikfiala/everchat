@@ -346,3 +346,31 @@ html[data-theme='dark'] [data-sonner-toaster] [data-sonner-toast].ec-toast {
   background: var(--color-muted) !important;
   color: var(--color-foreground) !important;
 }
+
+/* /app PWA: lock pinch-zoom side effects + clear the home indicator. */
+html.ec-webapp {
+  touch-action: manipulation;
+  height: 100%;
+}
+
+html.ec-webapp,
+html.ec-webapp body {
+  overscroll-behavior: none;
+}
+
+html.ec-webapp body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+}
+
+html.ec-webapp #root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+

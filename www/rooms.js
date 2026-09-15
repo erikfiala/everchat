@@ -70,10 +70,35 @@
     return svg;
   }
 
+  function googleS2FaviconUrl(url) {
+    try {
+      var parsed = new URL(url);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+      if (!parsed.hostname) return '';
+      return (
+        'https://www.google.com/s2/favicons?sz=32&domain_url=' +
+        encodeURIComponent(url)
+      );
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function faviconSrcCandidates(url) {
+    if (!url) return [];
+    var stored = String(url).trim();
+    if (!stored) return [];
+    var google = googleS2FaviconUrl(stored);
+    if (google && google !== stored) return [google, stored];
+    return [stored];
+  }
+
   function setFavicon(fav, url) {
     fav.replaceChildren();
     fav.appendChild(globeIcon());
-    if (!url) return;
+    var candidates = faviconSrcCandidates(url);
+    if (!candidates.length) return;
+    var index = 0;
     var img = document.createElement('img');
     img.alt = '';
     img.width = 16;
@@ -84,9 +109,14 @@
       fav.replaceChildren(img);
     };
     img.onerror = function () {
+      index += 1;
+      if (index < candidates.length) {
+        img.src = candidates[index];
+        return;
+      }
       img.removeAttribute('src');
     };
-    img.src = url;
+    img.src = candidates[0];
   }
 
   function renderRow(row) {

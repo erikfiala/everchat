@@ -12,6 +12,8 @@ import {
   displayUrl,
   formatDisplayUrl,
   hostFromCanonical,
+  coercePasteUrl,
+  looksLikeHttpHost,
 } from './canonicalize';
 
 describe('canonicalize', () => {
@@ -259,5 +261,42 @@ describe('sameCanonicalRoom', () => {
     expect(sameCanonicalRoom(live, live)).toBe(true);
     expect(sameCanonicalRoom(previous, live)).toBe(false);
     expect(sameCanonicalRoom(live, live)).toBe(true);
+  });
+});
+
+describe('coercePasteUrl', () => {
+  it('accepts bare hosts and paths without a scheme', () => {
+    expect(coercePasteUrl('example.com/story')).toBe(
+      'https://example.com/story',
+    );
+    expect(coercePasteUrl('www.nytimes.com/2026/01/01/world/foo.html')).toBe(
+      'https://www.nytimes.com/2026/01/01/world/foo.html',
+    );
+  });
+
+  it('keeps http(s) URLs and rejects non-http schemes', () => {
+    expect(coercePasteUrl('https://example.com/a')).toBe(
+      'https://example.com/a',
+    );
+    expect(coercePasteUrl('http://localhost:3000/x')).toBe(
+      'http://localhost:3000/x',
+    );
+    expect(coercePasteUrl('chrome://extensions')).toBeNull();
+    expect(coercePasteUrl('javascript:alert(1)')).toBeNull();
+  });
+
+  it('rejects empty and hostless values', () => {
+    expect(coercePasteUrl('')).toBeNull();
+    expect(coercePasteUrl('   ')).toBeNull();
+    expect(coercePasteUrl('not a host')).toBeNull();
+  });
+});
+
+describe('looksLikeHttpHost', () => {
+  it('requires a dotted host or localhost', () => {
+    expect(looksLikeHttpHost('example.com')).toBe(true);
+    expect(looksLikeHttpHost('localhost')).toBe(true);
+    expect(looksLikeHttpHost('localhost:5173')).toBe(true);
+    expect(looksLikeHttpHost('extensions')).toBe(false);
   });
 });

@@ -3,7 +3,9 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-if (!existsSync(resolve(root, 'vite.preview.config.ts'))) process.exit(0);
+const hasPreview = existsSync(resolve(root, 'vite.preview.config.ts'));
+const hasWebapp = existsSync(resolve(root, 'vite.webapp.config.ts'));
+if (!hasPreview && !hasWebapp) process.exit(0);
 
 function run(args) {
   const result = spawnSync('pnpm', args, { cwd: root, stdio: 'inherit' });
@@ -15,9 +17,10 @@ function run(args) {
 }
 
 // Vercel Root Directory is www/, so the extension package is not installed.
-// --ignore-scripts skips postinstall (`wxt prepare`); preview:build runs it.
+// --ignore-scripts skips postinstall (`wxt prepare`); preview/webapp builds run it.
 if (!existsSync(resolve(root, 'node_modules/vite'))) {
   run(['install', '--frozen-lockfile', '--ignore-scripts', '--prod=false']);
 }
 
-run(['preview:build']);
+if (hasPreview) run(['preview:build']);
+if (hasWebapp) run(['webapp:build']);

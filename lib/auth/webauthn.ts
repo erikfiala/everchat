@@ -16,6 +16,12 @@ import { allowCredentialsForLogin } from './allowCredentials';
 import { guessDeviceLabel } from '../deviceLabel';
 import { DEVICE_LABEL_MAX_LEN } from '../profile';
 import { isPreviewMode } from '@/lib/preview/mode';
+import { isWebApp } from '@/lib/webapp/mode';
+import {
+  canOpenExtensionWindow,
+  runRegistrationInWindow,
+  shouldRunCreateInWindow,
+} from './ceremonyWindow';
 
 /** Brand RP ID — never use chrome-extension:// host (invalid WebAuthn domain). */
 const RP_ID =
@@ -33,6 +39,10 @@ const RP_ID =
  * abort was racing the OS sheet and surfacing auth.toastPasskeyTimedOut.
  * 120s matches the login edge-function WebAuthn timeout hint and stays
  * well under the 5-minute challenge + username-reservation TTL.
+ *
+ * The side panel often never shows the OS create() sheet (same hang as
+ * usernameless get()). Signup / add-device open a focused extension
+ * window so Chrome can attach the prompt. everch.at/app stays in-page.
  */
 export const LOGIN_PROBE_TIMEOUT_MS = 7_000;
 export const LOGIN_INTERACTIVE_TIMEOUT_MS = 55_000;
@@ -143,6 +153,46 @@ function withAuthenticationRpId(
 }
 
 export { allowCredentialsForLogin } from './allowCredentials';
+
+async function startRegistrationCeremony(
+  options: PublicKeyCredentialCreationOptionsJSON,
+  timeoutMs: number,
+) {
+  const optionsJSON = withRegistrationRpId(options, timeoutMs);
+  const useWindow = shouldRunCreateInWindow({
+    isWebApp: isWebApp(),
+    isPreview: isPreviewMode(),
+    canOpenExtensionWindow: canOpenExtensionWindow(),
+  });
+  // #region agent log
+  fetch('http://127.0.0.1:7787/ingest/a0037f5f-f79a-4c62-a2cb-b7f3fe1ac169', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Debug-Session-Id': 'a48dc4',
+    },
+    body: JSON.stringify({
+      sessionId: 'a48dc4',
+      hypothesisId: 'H4',
+      location: 'lib/auth/webauthn.ts:startRegistrationCeremony',
+      message: 'create() path',
+      data: { useWindow, timeoutMs },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  if (useWindow) {
+    return runRegistrationInWindow(optionsJSON, timeoutMs);
+  }
+  return runCeremonyWithTimeout(
+    () =>
+      startRegistration({
+        optionsJSON,
+        useAutoRegister: false,
+      }),
+    timeoutMs,
+  );
+}
 
 /** Map raw WebAuthn / browser noise to an i18n key for toasts. */
 function mapCeremonyError(
@@ -264,13 +314,7 @@ export async function registerPasskey(
 
   let attestation;
   try {
-    attestation = await runCeremonyWithTimeout(
-      () =>
-        startRegistration({
-          optionsJSON: withRegistrationRpId(options, REGISTER_TIMEOUT_MS),
-        }),
-      REGISTER_TIMEOUT_MS,
-    );
+    attestation = await startRegistrationCeremony(options, REGISTER_TIMEOUT_MS);
   } catch (e) {
     await releaseRegisterReservation(normalized, sessionToken);
     throw mapCeremonyError(e);
@@ -426,13 +470,7 @@ export async function addPasskeyDevice(
 
   let attestation;
   try {
-    attestation = await runCeremonyWithTimeout(
-      () =>
-        startRegistration({
-          optionsJSON: withRegistrationRpId(options, REGISTER_TIMEOUT_MS),
-        }),
-      REGISTER_TIMEOUT_MS,
-    );
+    attestation = await startRegistrationCeremony(options, REGISTER_TIMEOUT_MS);
   } catch (e) {
     throw mapCeremonyError(e);
   }

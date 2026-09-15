@@ -57,7 +57,7 @@ Web pages have no native, portable conversation layer. Discourse lives on Twitte
 ### Non-goals (current)
 
 - Firefox / Safari
-- Public web app for reading/posting comments (everch.at is marketing + trending discovery only — not SEO’d per-URL comment pages)
+- `/app` is a PWA client for reading/posting on phones (same shell as the extension); still **no** SEO’d per-URL public comment pages
 - DMs, follows, awards, emoji reactions, paid features
 - Full moderation dashboard / admin UI / staff takedowns of speech
 - Automod / keyword bans / shadowbans as default moderation (community votes only)

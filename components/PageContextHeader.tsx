@@ -1,7 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Favicon } from '@/components/Favicon';
 import { useLocale } from '@/hooks/useLocale';
-import { displayUrl } from '@/lib/canonicalize';
+import { coercePasteUrl, displayUrl } from '@/lib/canonicalize';
+import { googleS2FaviconForHost } from '@/lib/favicon';
 import { cn } from '@/lib/utils';
+import { isWebApp } from '@/lib/webapp/mode';
 
 interface PageContextHeaderProps {
   title?: string | null;
@@ -9,6 +12,8 @@ interface PageContextHeaderProps {
   faviconUrl?: string | null;
   isCurrentPage?: boolean;
   className?: string;
+  /** Current navigable URL for the editable webapp address bar. */
+  url?: string | null;
 }
 
 export function PageContextHeader({
@@ -17,9 +22,79 @@ export function PageContextHeader({
   faviconUrl,
   isCurrentPage = false,
   className,
+  url,
 }: PageContextHeaderProps) {
   const { t } = useLocale();
+  const web = isWebApp();
   const hostLabel = displayUrl(host);
+  const resolvedFavicon =
+    faviconUrl ||
+    (hostLabel ? googleS2FaviconForHost(hostLabel.split('/')[0] ?? '') : null);
+
+  const [draft, setDraft] = useState(() => displayUrl(url || host) || '');
+
+  useEffect(() => {
+    setDraft(displayUrl(url || host) || '');
+  }, [url, host]);
+
+  const submitUrl = async () => {
+    const next = coercePasteUrl(draft);
+    if (!next) {
+      setDraft(displayUrl(url || host) || '');
+      return;
+    }
+    const current = url?.trim() || '';
+    if (current && coercePasteUrl(current) === next) return;
+    try {
+      await browser.runtime.sendMessage({
+        type: 'SET_ACTIVE_TAB_URL',
+        url: next,
+      });
+    } catch {
+      /* ignore */
+    }
+  };
+
+  if (web) {
+    return (
+      <div
+        className={cn(
+          'flex min-h-14 w-full min-w-0 items-start gap-2 overflow-hidden border-b border-[var(--color-border)] bg-[var(--color-card)] px-3 py-2',
+          className,
+        )}
+        style={{ paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
+        data-ec-pad-x
+        data-ec-gap
+      >
+        <Favicon src={resolvedFavicon} className="mt-0.5" />
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <div className="truncate text-sm font-medium">
+            {title || hostLabel || t('page.untitled')}
+          </div>
+          <input
+            type="url"
+            inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            className="mt-0.5 w-full min-w-0 truncate border-0 bg-transparent p-0 text-xs text-[var(--color-muted-foreground)] outline-none placeholder:text-[var(--color-muted-foreground)] focus:text-[var(--color-foreground)]"
+            placeholder={t('page.pasteUrl')}
+            value={draft}
+            aria-label={t('page.urlLabel')}
+            onChange={(e) => setDraft(e.target.value)}
+            onBlur={() => void submitUrl()}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                (e.target as HTMLInputElement).blur();
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(

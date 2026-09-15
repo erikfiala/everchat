@@ -133,6 +133,7 @@ export function Composer({
 
   useEffect(() => {
     if (!showGiphy) {
+      setGiphyQ('');
       setGifs([]);
       setSearching(false);
       setGiphyError(false);

@@ -124,11 +124,31 @@ export function parseShareMessageId(
   return isShareMessageId(id) ? id : null;
 }
 
-function looksLikeHttpHost(host: string): boolean {
+const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+
+export function looksLikeHttpHost(host: string): boolean {
   const hostname = host.replace(/:\d+$/, '').toLowerCase();
   if (!hostname) return false;
   if (hostname === 'localhost') return true;
   return hostname.includes('.');
+}
+
+/**
+ * Coerce a pasted address-bar value into an http(s) URL.
+ * Accepts `example.com/story` (no scheme) and rejects non-http schemes.
+ */
+export function coercePasteUrl(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const candidate = HAS_SCHEME.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+    if (!looksLikeHttpHost(url.host)) return null;
+    return url.href;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -146,8 +166,6 @@ export function httpsUrlFromCanonical(canonicalUrl: string): string {
   const scheme = looksLikeHttpHost(host) ? 'https' : 'chrome';
   return `${scheme}://${trimmed}`;
 }
-
-const HAS_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
 /**
  * Human-facing URL text only. Never use this for hrefs, identity, or storage.

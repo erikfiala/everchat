@@ -10,6 +10,7 @@ import { SettingsTab } from '@/components/settings/SettingsTab';
 import { ExploreTab } from '@/components/explore/ExploreTab';
 import { LeaderboardTab } from '@/components/leaderboard/LeaderboardTab';
 import { AuthLanding } from '@/components/auth/AuthLanding';
+import { AddToHomeScreenModal } from '@/components/webapp/AddToHomeScreenModal';
 import { AuthProvider, useAuth } from '@/hooks/useAuth';
 import { LocaleProvider, useLocale } from '@/hooks/useLocale';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
@@ -140,6 +141,7 @@ function Shell() {
           },
         }}
       />
+      <AddToHomeScreenModal />
     </div>
   );
 }

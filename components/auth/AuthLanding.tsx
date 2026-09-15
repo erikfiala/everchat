@@ -10,9 +10,10 @@ import {
   RESERVED_HANDLES,
 } from '@/lib/constants';
 import {
-  getStoredCredentialIds,
-  hasPasskeyHint,
-} from '@/lib/auth/passkeyHint';
+  resolveExistingAccountAction,
+  resolveSignupAction,
+} from '@/lib/auth/landingAction';
+import { getStoredCredentialIds } from '@/lib/auth/passkeyHint';
 import {
   checkUsernameAvailable,
   LOGIN_INTERACTIVE_TIMEOUT_MS,
@@ -118,29 +119,18 @@ export function AuthLanding() {
     }
   };
 
-  const onPrimary = async () => {
-    // Discoverable get() in the side panel hangs when no passkey exists.
-    // Skip the probe for first-time installs and go straight to claim.
-    const likelyHasPasskey = await hasPasskeyHint();
-    if (!likelyHasPasskey) {
-      setStep('claim');
-      return;
-    }
-    const ids = await getStoredCredentialIds();
-    if (ids.length) {
-      await runExistingPasskeyLogin();
-      return;
-    }
-    setStep('returning');
+  const onPrimary = () => {
+    setStep(resolveSignupAction());
   };
 
   const onExistingAccount = async () => {
     const ids = await getStoredCredentialIds();
-    if (ids.length) {
+    const action = resolveExistingAccountAction(ids.length);
+    if (action === 'login') {
       await runExistingPasskeyLogin();
       return;
     }
-    setStep('returning');
+    setStep(action);
   };
 
   const onReturningContinue = async () => {

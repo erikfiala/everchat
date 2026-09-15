@@ -2,7 +2,7 @@
   "name": "everchat",
   "description": "Public comments on any URL. Chrome side panel. Browse, import, build, and publish themes at https://everch.at/themes.",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://everch.at",
   "funding": {
@@ -26,6 +26,7 @@
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
     "preview:build": "wxt prepare && vite build --config vite.preview.config.ts",
+    "webapp:build": "wxt prepare && vite build --config vite.webapp.config.ts",
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:cws": "CWS_UPLOAD=1 wxt zip",

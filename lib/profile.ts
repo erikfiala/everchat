@@ -9,6 +9,7 @@ import { getSupabase } from './supabase';
 import type { ActivityItem, Profile, WebAuthnCredential } from './database.types';
 import { PREVIEW_DEVICES } from '@/lib/preview/fixtures';
 import { isPreviewMode } from '@/lib/preview/mode';
+import { isWebApp } from '@/lib/webapp/mode';
 
 export function isAnonymousHandle(
   username: string | null | undefined,
@@ -171,7 +172,7 @@ export function websiteDisplayLabel(website: string): string {
   return displayUrl(website);
 }
 
-/** Open a validated profile website in a new tab (extension `browser.tabs`). */
+/** Open a validated profile website (extension tab, or new window on /app). */
 export async function openExternalUrl(raw: string): Promise<void> {
   let href: string | null;
   try {
@@ -180,6 +181,10 @@ export async function openExternalUrl(raw: string): Promise<void> {
     return;
   }
   if (!href) return;
+  if (isWebApp()) {
+    window.open(href, '_blank', 'noopener,noreferrer');
+    return;
+  }
   await browser.tabs.create({ url: href });
 }
 

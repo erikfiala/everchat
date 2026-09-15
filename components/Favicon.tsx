@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '@/components/ui/icon';
+import { faviconSrcCandidates } from '@/lib/favicon';
 import { cn } from '@/lib/utils';
 
 interface FaviconProps {
@@ -9,11 +10,16 @@ interface FaviconProps {
 
 /** Page/room favicon with a themed globe fallback when missing or broken. */
 export function Favicon({ src, className }: FaviconProps) {
+  const candidates = useMemo(() => faviconSrcCandidates(src), [src]);
+  const [index, setIndex] = useState(0);
   const [status, setStatus] = useState<'pending' | 'ok' | 'err'>('pending');
 
   useEffect(() => {
+    setIndex(0);
     setStatus('pending');
   }, [src]);
+
+  const current = candidates[index];
 
   const fallback = (
     <Icon
@@ -28,7 +34,7 @@ export function Favicon({ src, className }: FaviconProps) {
     />
   );
 
-  if (!src || status === 'err') {
+  if (!current || status === 'err') {
     return fallback;
   }
 
@@ -36,7 +42,7 @@ export function Favicon({ src, className }: FaviconProps) {
     <>
       {status !== 'ok' && fallback}
       <img
-        src={src}
+        src={current}
         alt=""
         referrerPolicy="no-referrer"
         decoding="async"
@@ -46,7 +52,14 @@ export function Favicon({ src, className }: FaviconProps) {
           status !== 'ok' && 'hidden',
         )}
         onLoad={() => setStatus('ok')}
-        onError={() => setStatus('err')}
+        onError={() => {
+          if (index + 1 < candidates.length) {
+            setIndex(index + 1);
+            setStatus('pending');
+            return;
+          }
+          setStatus('err');
+        }}
       />
     </>
   );

@@ -2,6 +2,8 @@ User-agent: *
 Allow: /
 
 Disallow: /panel
+Disallow: /app
+Disallow: /chat
 Disallow: /m
 Disallow: /share
 

@@ -44,6 +44,8 @@ export function usePageThread(
   username?: string | null,
 ) {
   const [pageId, setPageId] = useState<string | null>(null);
+  const [pageTitle, setPageTitle] = useState<string | null>(null);
+  const [pageFaviconUrl, setPageFaviconUrl] = useState<string | null>(null);
   const [roots, setRoots] = useState<MessageNode[]>([]);
   const [flat, setFlat] = useState<MessageWithAuthor[]>([]);
   const [sort, setSort] = useState<SortMode>('best');
@@ -79,6 +81,8 @@ export function usePageThread(
   const load = useCallback(async () => {
     if (isPreviewMode()) {
       setPageId('preview-page');
+      setPageTitle(null);
+      setPageFaviconUrl(null);
       setHasMore(false);
       setError(null);
       setLoading(false);
@@ -87,6 +91,8 @@ export function usePageThread(
     }
     if (!tab.canonicalUrl || !isSupabaseConfigured) {
       setPageId(null);
+      setPageTitle(null);
+      setPageFaviconUrl(null);
       setRoots([]);
       setFlat([]);
       flatRef.current = [];
@@ -119,6 +125,8 @@ export function usePageThread(
 
       if (!page) {
         setPageId(null);
+        setPageTitle(null);
+        setPageFaviconUrl(null);
         setRoots([]);
         setFlat([]);
         flatRef.current = [];
@@ -128,6 +136,8 @@ export function usePageThread(
       }
 
       setPageId(page.id);
+      setPageTitle(page.title ?? null);
+      setPageFaviconUrl(page.favicon_url ?? null);
       const { messages, votes, rootCount, hasMore: more } =
         await fetchMessagesForPage(page.id, userId, {
           sort,
@@ -374,6 +384,8 @@ export function usePageThread(
 
   return {
     pageId,
+    pageTitle,
+    pageFaviconUrl,
     roots,
     flat,
     sort,

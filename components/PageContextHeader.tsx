@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Favicon } from '@/components/Favicon';
+import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { Input } from '@/components/ui/input';
 import { useLocale } from '@/hooks/useLocale';
 import { coercePasteUrl, displayUrl } from '@/lib/canonicalize';
 import { googleS2FaviconForHost } from '@/lib/favicon';
@@ -32,6 +35,7 @@ export function PageContextHeader({
     (hostLabel ? googleS2FaviconForHost(hostLabel.split('/')[0] ?? '') : null);
 
   const [draft, setDraft] = useState(() => displayUrl(url || host) || '');
+  const urlInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setDraft(displayUrl(url || host) || '');
@@ -71,13 +75,14 @@ export function PageContextHeader({
           <div className="truncate text-sm font-medium">
             {title || hostLabel || t('page.untitled')}
           </div>
-          <input
+          <Input
+            ref={urlInputRef}
             type="url"
             inputMode="url"
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            className="mt-0.5 w-full min-w-0 truncate border-0 bg-transparent p-0 text-xs text-[var(--color-muted-foreground)] outline-none placeholder:text-[var(--color-muted-foreground)] focus:text-[var(--color-foreground)]"
+            className="mt-1 h-8 px-2 text-xs"
             placeholder={t('page.pasteUrl')}
             value={draft}
             aria-label={t('page.urlLabel')}
@@ -91,6 +96,19 @@ export function PageContextHeader({
             }}
           />
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="mt-0.5 size-8 shrink-0"
+          aria-label={t('page.editUrl')}
+          onClick={() => {
+            urlInputRef.current?.focus();
+            urlInputRef.current?.select();
+          }}
+        >
+          <Icon name="penSquare" className="size-4" />
+        </Button>
       </div>
     );
   }

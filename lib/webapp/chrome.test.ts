@@ -114,4 +114,92 @@ describe('installWebAppChrome', () => {
     expect(active.url).toBe('https://example.com/a');
     expect(active.canonicalUrl).toBe('example.com/a');
   });
+
+  it('boots from ?url=&msg= and keeps the address bar in sync', async () => {
+    const id = 'abc-def-ghi';
+    window.history.replaceState(
+      null,
+      '',
+      '/app?url=' +
+        encodeURIComponent('https://example.com/a') +
+        '&msg=' +
+        encodeURIComponent(id),
+    );
+    installWebAppChrome();
+    const active = await browser.runtime.sendMessage({ type: 'GET_ACTIVE_TAB' });
+    expect(active.url).toBe('https://example.com/a');
+    expect(active.focusMessageId).toBe(id);
+    expect(window.location.search).toContain('msg=' + encodeURIComponent(id));
+
+    await browser.runtime.sendMessage({ type: 'CLEAR_FOCUS_MESSAGE' });
+    expect(window.location.search).not.toContain('msg=');
+    expect(window.location.search).toContain(
+      'url=' + encodeURIComponent('https://example.com/a'),
+    );
+  });
+
+  it('SET_ACTIVE_TAB_URL updates ?url= via replaceState', async () => {
+    installWebAppChrome();
+    await browser.runtime.sendMessage({
+      type: 'SET_ACTIVE_TAB_URL',
+      url: 'https://news.example/story',
+    });
+    expect(window.location.search).toBe(
+      '?url=' + encodeURIComponent('https://news.example/story'),
+    );
+  });
+
+  it('SET_ACTIVE_PAGE_ID upgrades address bar to short /app/p path', async () => {
+    const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    installWebAppChrome();
+    await browser.runtime.sendMessage({
+      type: 'SET_ACTIVE_TAB_URL',
+      url: 'https://news.example/story',
+    });
+    await browser.runtime.sendMessage({
+      type: 'SET_ACTIVE_PAGE_ID',
+      pageId,
+    });
+    expect(window.location.pathname).toBe(`/app/p/${pageId}`);
+    expect(window.location.search).toBe('');
+  });
+
+  it('short path keeps /m/{msg} while focusing, drops it on clear', async () => {
+    const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    const msgId = 'm1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    installWebAppChrome();
+    await browser.runtime.sendMessage({
+      type: 'SET_ACTIVE_TAB_URL',
+      url: 'https://news.example/story',
+    });
+    await browser.runtime.sendMessage({
+      type: 'SET_ACTIVE_PAGE_ID',
+      pageId,
+    });
+    await browser.runtime.sendMessage({
+      type: 'OPEN_PANEL_FOR_TAB',
+      focusMessageId: msgId,
+    });
+    expect(window.location.pathname).toBe(`/app/p/${pageId}/m/${msgId}`);
+
+    await browser.runtime.sendMessage({ type: 'CLEAR_FOCUS_MESSAGE' });
+    expect(window.location.pathname).toBe(`/app/p/${pageId}`);
+  });
+
+  it('boots focus from /app/p/{id}/m/{msg} before page resolve', async () => {
+    const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    const msgId = 'm1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    window.history.replaceState(null, '', `/app/p/${pageId}/m/${msgId}`);
+    installWebAppChrome();
+    const active = await browser.runtime.sendMessage({ type: 'GET_ACTIVE_TAB' });
+    expect(active.focusMessageId).toBe(msgId);
+    expect(window.location.pathname).toBe(`/app/p/${pageId}/m/${msgId}`);
+  });
+
+  it('ignores invalid ?url= without crashing', async () => {
+    window.history.replaceState(null, '', '/app?url=javascript:alert(1)');
+    installWebAppChrome();
+    const active = await browser.runtime.sendMessage({ type: 'GET_ACTIVE_TAB' });
+    expect(active.url).toBeUndefined();
+  });
 });

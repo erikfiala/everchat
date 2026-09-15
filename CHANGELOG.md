@@ -6,6 +6,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Webapp deep links: short `everch.at/app/p/{pageId}` (+ `/m/{messageId}`); legacy `?url=` / `?msg=` still work before a page row exists; share on `/app` prefers the short form
+- `pages` rows are created on first post only (viewing a room no longer upserts)
+
+### Changed
+
+- Presence skips URLs with no `pages` row yet
 ## [1.0.2] - 2026-09-15
 
 ### Added

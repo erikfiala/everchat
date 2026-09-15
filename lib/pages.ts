@@ -1,7 +1,12 @@
 import { getSupabase } from './supabase';
 import type { Page } from './database.types';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from './constants';
-import { originalHref } from './canonicalize';
+import {
+  canonicalize,
+  hostFromCanonical,
+  originalHref,
+} from './canonicalize';
+import { googleS2FaviconForHost } from './favicon';
 
 function isUniqueViolation(error: { code?: string; message?: string } | null) {
   return (
@@ -20,18 +25,70 @@ function isUnknownUrlColumn(error: { code?: string; message?: string } | null) {
   );
 }
 
-export async function upsertPage(input: {
+/**
+ * Prefer the tab favicon; otherwise derive a host favicon so Explore cards
+ * never render without one after the first post.
+ */
+export function resolvePageFavicon(input: {
+  faviconUrl?: string | null;
+  url?: string | null;
+  canonicalUrl?: string | null;
+}): string | null {
+  const direct = input.faviconUrl?.trim();
+  if (direct) return direct;
+
+  const fromUrl = input.url?.trim();
+  if (fromUrl) {
+    const host = canonicalize(fromUrl).host;
+    if (host) return googleS2FaviconForHost(host);
+  }
+
+  const canon = input.canonicalUrl?.trim();
+  if (canon) {
+    const host = hostFromCanonical(canon);
+    if (host) return googleS2FaviconForHost(host);
+  }
+
+  return null;
+}
+
+export type PageMetaInput = {
   canonicalUrl: string;
   url?: string | null;
   title?: string | null;
   description?: string | null;
   faviconUrl?: string | null;
-}): Promise<Page> {
+};
+
+/**
+ * View-only page lookup. Never inserts — empty rooms stay without a `pages` row
+ * until the first message is posted.
+ */
+export async function resolvePageForView(
+  canonicalUrl: string,
+): Promise<Page | null> {
+  return getPageByCanonical(canonicalUrl);
+}
+
+/**
+ * Create or update the `pages` row when posting. Always persists a favicon when
+ * one can be resolved from the tab/context; fills a missing favicon on later upserts.
+ */
+export async function ensurePageForPost(input: PageMetaInput): Promise<Page> {
+  return upsertPage(input);
+}
+
+export async function upsertPage(input: PageMetaInput): Promise<Page> {
   const sb = getSupabase();
   const description = input.description
     ? input.description.slice(0, DESCRIPTION_TRUNCATE)
     : null;
   const url = input.url ? originalHref(input.url) : null;
+  const faviconUrl = resolvePageFavicon({
+    faviconUrl: input.faviconUrl,
+    url: input.url,
+    canonicalUrl: input.canonicalUrl,
+  });
 
   const { data: existing } = await sb
     .from('pages')
@@ -40,7 +97,11 @@ export async function upsertPage(input: {
     .maybeSingle();
 
   if (existing) {
-    return updatePageMeta(existing, { ...input, url }, description);
+    return updatePageMeta(
+      existing,
+      { ...input, url, faviconUrl },
+      description,
+    );
   }
 
   const { data: created, error: insertError } = await insertPageRow({
@@ -48,7 +109,7 @@ export async function upsertPage(input: {
     url,
     title: input.title ?? null,
     description,
-    favicon_url: input.faviconUrl ?? null,
+    favicon_url: faviconUrl,
   });
 
   if (!insertError && created) return created;
@@ -56,7 +117,13 @@ export async function upsertPage(input: {
   // Concurrent insert won the race: load + update instead of failing.
   if (isUniqueViolation(insertError)) {
     const raced = await getPageByCanonical(input.canonicalUrl);
-    if (raced) return updatePageMeta(raced, { ...input, url }, description);
+    if (raced) {
+      return updatePageMeta(
+        raced,
+        { ...input, url, faviconUrl },
+        description,
+      );
+    }
   }
 
   throw insertError ?? new Error('Could not create page room');
@@ -90,6 +157,8 @@ async function updatePageMeta(
 ): Promise<Page> {
   const sb = getSupabase();
   const nextUrl = existing.url || input.url || null;
+  // Fill missing favicon; never blank an existing one with null.
+  const nextFavicon = existing.favicon_url || input.faviconUrl || null;
   const patch: {
     title: string | null;
     description: string | null;
@@ -99,7 +168,7 @@ async function updatePageMeta(
   } = {
     title: input.title || existing.title,
     description: description || existing.description,
-    favicon_url: input.faviconUrl || existing.favicon_url,
+    favicon_url: nextFavicon,
     updated_at: new Date().toISOString(),
   };
   if (nextUrl && nextUrl !== existing.url) {
@@ -159,6 +228,17 @@ export async function getPageByCanonical(
     .from('pages')
     .select('*')
     .eq('canonical_url', canonicalUrl)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function getPageById(pageId: string): Promise<Page | null> {
+  const sb = getSupabase();
+  const { data, error } = await sb
+    .from('pages')
+    .select('*')
+    .eq('id', pageId)
     .maybeSingle();
   if (error) throw error;
   return data;

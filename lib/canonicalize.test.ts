@@ -4,6 +4,8 @@ import {
   parseFocusMessageId,
   buildDeepLink,
   buildShareLink,
+  buildWebAppPageLink,
+  buildWebAppThreadLink,
   httpsUrlFromCanonical,
   originalHref,
   hrefFromPage,
@@ -79,6 +81,65 @@ describe('buildShareLink', () => {
   it('uses the public everch.at /m/{id} path', () => {
     const id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     expect(buildShareLink(id)).toBe(`https://everch.at/m/${id}`);
+  });
+});
+
+describe('buildWebAppThreadLink', () => {
+  it('builds /app?url= for a room', () => {
+    expect(buildWebAppThreadLink({ url: 'example.com/a' })).toBe(
+      'https://everch.at/app?url=' + encodeURIComponent('https://example.com/a'),
+    );
+  });
+
+  it('includes msg when focusing a comment', () => {
+    const id = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    expect(
+      buildWebAppThreadLink({ url: 'https://example.com/a', messageId: id }),
+    ).toBe(
+      'https://everch.at/app?url=' +
+        encodeURIComponent('https://example.com/a') +
+        '&msg=' +
+        encodeURIComponent(id),
+    );
+  });
+
+  it('supports the /chat path alias', () => {
+    expect(buildWebAppThreadLink({ url: 'https://example.com/a', path: '/chat' })).toBe(
+      'https://everch.at/chat?url=' + encodeURIComponent('https://example.com/a'),
+    );
+  });
+
+  it('returns null for non-http input', () => {
+    expect(buildWebAppThreadLink({ url: 'javascript:alert(1)' })).toBeNull();
+    expect(buildWebAppThreadLink({ url: '' })).toBeNull();
+  });
+});
+
+describe('buildWebAppPageLink', () => {
+  const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+  const msgId = 'm1b2c3d4-e5f6-7890-abcd-ef1234567890';
+
+  it('builds /app/p/{pageId} for a room', () => {
+    expect(buildWebAppPageLink({ pageId })).toBe(
+      `https://everch.at/app/p/${pageId}`,
+    );
+  });
+
+  it('includes /m/{messageId} when focusing a comment', () => {
+    expect(buildWebAppPageLink({ pageId, messageId: msgId })).toBe(
+      `https://everch.at/app/p/${pageId}/m/${msgId}`,
+    );
+  });
+
+  it('supports the /chat path alias', () => {
+    expect(buildWebAppPageLink({ pageId, path: '/chat' })).toBe(
+      `https://everch.at/chat/p/${pageId}`,
+    );
+  });
+
+  it('returns null for invalid page ids', () => {
+    expect(buildWebAppPageLink({ pageId: 'short' })).toBeNull();
+    expect(buildWebAppPageLink({ pageId: '' })).toBeNull();
   });
 });
 

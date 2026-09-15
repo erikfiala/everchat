@@ -23,7 +23,7 @@ import {
   SKIN_STORAGE_KEY,
   upsertStoredSkinLibrary,
 } from '@/lib/theme';
-import { getPageForMessage } from '@/lib/pages';
+import { getPageByCanonical, getPageForMessage } from '@/lib/pages';
 import {
   clearPagePresence,
   presenceKeyFromTabUrl,
@@ -268,6 +268,16 @@ async function syncPagePresence() {
     const tab = await getActiveTabPayload();
     const canonical = presenceKeyFromTabUrl(tab?.url);
     if (!canonical) {
+      if (presenceTracked) {
+        await clearPagePresence();
+        presenceTracked = false;
+      }
+      return;
+    }
+
+    // Presence tracks rooms that exist; skip until first post creates a page row.
+    const page = await getPageByCanonical(canonical);
+    if (!page) {
       if (presenceTracked) {
         await clearPagePresence();
         presenceTracked = false;

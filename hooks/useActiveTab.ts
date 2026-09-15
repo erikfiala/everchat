@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { canonicalize } from '@/lib/canonicalize';
 import type { TabInfo } from '@/lib/database.types';
+import { isWebApp } from '@/lib/webapp/mode';
 
 const empty: TabInfo = {
   tabId: null,
@@ -93,8 +94,15 @@ export function useActiveTab() {
     };
   }, []);
 
-  const clearFocus = () =>
+  const clearFocus = () => {
     setTab((prev) => ({ ...prev, focusMessageId: null }));
+    // Drop focus from the shareable address bar after scroll-to-focus.
+    if (isWebApp()) {
+      void browser.runtime
+        .sendMessage({ type: 'CLEAR_FOCUS_MESSAGE' })
+        .catch(() => undefined);
+    }
+  };
 
   return { tab, ready, clearFocus };
 }

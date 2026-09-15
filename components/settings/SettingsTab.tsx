@@ -15,17 +15,18 @@ import {
 } from '@/hooks/useTheme';
 import { useSkin } from '@/hooks/useSkin';
 import type { LocalePreference } from '@/lib/i18n';
-import { storedSkinKey, type StoredSkin } from '@/lib/theme';
+import { storedSkinKey, isUnpublishedBuilderSkin, type StoredSkin } from '@/lib/theme';
 import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 
 const SELECT_TRIGGER_CLASS =
   'h-9 w-full justify-between gap-2 bg-[var(--color-card)] px-3 font-normal';
 
 function themesForMenu(imported: StoredSkin[], skin: StoredSkin | null) {
-  if (!skin) return imported;
+  const published = imported.filter((item) => !isUnpublishedBuilderSkin(item));
+  if (!skin || isUnpublishedBuilderSkin(skin)) return published;
   const key = storedSkinKey(skin);
-  if (imported.some((item) => storedSkinKey(item) === key)) return imported;
-  return [skin, ...imported];
+  if (published.some((item) => storedSkinKey(item) === key)) return published;
+  return [skin, ...published];
 }
 
 export function SettingsTab() {
@@ -45,10 +46,14 @@ export function SettingsTab() {
       ? t('settings.languageSystem')
       : languages.find((l) => l.code === preference)?.nativeLabel ?? preference;
 
-  const skinTriggerLabel = skin ? skin.name : t('settings.skinDefault');
+  const skinTriggerLabel =
+    skin && !isUnpublishedBuilderSkin(skin)
+      ? skin.name
+      : t('settings.skinDefault');
   const importedThemes = themesForMenu(imported, skin);
   const canSelectTheme = importedThemes.length > 0;
-  const selectedKey = skin ? storedSkinKey(skin) : null;
+  const selectedKey =
+    skin && !isUnpublishedBuilderSkin(skin) ? storedSkinKey(skin) : null;
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -177,7 +182,9 @@ export function SettingsTab() {
                   className="gap-2 pe-2"
                 >
                   <span className="flex size-3.5 items-center justify-center">
-                    {!skin ? <Icon name="check" className="size-3.5" aria-hidden /> : null}
+                    {!selectedKey ? (
+                      <Icon name="check" className="size-3.5" aria-hidden />
+                    ) : null}
                   </span>
                   <span className="truncate">{t('settings.skinDefault')}</span>
                 </DropdownMenuItem>

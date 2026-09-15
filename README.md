@@ -29,6 +29,7 @@ Web pages have no portable conversation layer. Discussion ends up on Twitter, Re
 - **Nested replies**, votes, and community collapse (no staff moderators)
 - **Explore** trending and new chats across the web
 - **Notifications** that deep-link back to the message on that page
+- **Mobile web** at [everch.at/app](https://everch.at/app): short `/app/p/{pageId}` after first post, legacy `?url=` before; `/chat` is the same SPA
 
 ## Themes
 

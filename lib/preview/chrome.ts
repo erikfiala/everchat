@@ -1,6 +1,7 @@
 import { PREVIEW_TAB } from '@/lib/preview/fixtures';
 import {
   applyThemeToDocument,
+  isUnpublishedBuilderSkin,
   parseStoredSkin,
   parseStoredSkinLibrary,
   SKIN_LIBRARY_KEY,
@@ -148,10 +149,13 @@ export function installPreviewChrome(): void {
     } catch {
       /* ignore */
     }
-    const library = upsertStoredSkinLibrary(
-      parseStoredSkinLibrary(local[SKIN_LIBRARY_KEY]),
-      theme,
-    );
+    // Keep drafts in preview memory only — never seed the shared skin library.
+    const library = isUnpublishedBuilderSkin(theme)
+      ? parseStoredSkinLibrary(local[SKIN_LIBRARY_KEY])
+      : upsertStoredSkinLibrary(
+          parseStoredSkinLibrary(local[SKIN_LIBRARY_KEY]),
+          theme,
+        );
     void storage.local.set({
       [SKIN_STORAGE_KEY]: theme,
       [SKIN_LIBRARY_KEY]: library,

@@ -10,6 +10,7 @@ import {
 import {
   applyThemeToDocument,
   isDefaultThemeSlug,
+  isUnpublishedBuilderSkin,
   resolveThemeAppearance,
   parseStoredSkin,
   parseStoredSkinLibrary,
@@ -22,17 +23,26 @@ import {
 import { isPreviewMode } from '@/lib/preview/mode';
 import { useTheme } from '@/hooks/useTheme';
 
+function sanitizeActiveSkin(skin: StoredSkin | null): StoredSkin | null {
+  if (!skin) return null;
+  // Live theme-builder preview may activate a draft; elsewhere discard it.
+  if (!isPreviewMode() && isUnpublishedBuilderSkin(skin)) return null;
+  return skin;
+}
+
 function readLocalSkin(): StoredSkin | null {
   try {
     const raw = localStorage.getItem(SKIN_STORAGE_KEY);
     if (!raw) return null;
-    return parseStoredSkin(JSON.parse(raw));
+    return sanitizeActiveSkin(parseStoredSkin(JSON.parse(raw)));
   } catch {
     return null;
   }
 }
 
 function writeLocalSkin(skin: StoredSkin | null) {
+  // Preview shares origin localStorage with /app — never mirror preview drafts.
+  if (isPreviewMode()) return;
   try {
     if (!skin) localStorage.removeItem(SKIN_STORAGE_KEY);
     else localStorage.setItem(SKIN_STORAGE_KEY, JSON.stringify(skin));
@@ -52,6 +62,7 @@ function readLocalLibrary(): StoredSkin[] {
 }
 
 function writeLocalLibrary(library: StoredSkin[]) {
+  if (isPreviewMode()) return;
   try {
     if (!library.length) localStorage.removeItem(SKIN_LIBRARY_KEY);
     else localStorage.setItem(SKIN_LIBRARY_KEY, JSON.stringify(library));
@@ -61,7 +72,9 @@ function writeLocalLibrary(library: StoredSkin[]) {
 }
 
 function seedLibrary(library: StoredSkin[], skin: StoredSkin | null): StoredSkin[] {
-  if (!skin || isDefaultThemeSlug(skin.slug)) return library;
+  if (!skin || isDefaultThemeSlug(skin.slug) || isUnpublishedBuilderSkin(skin)) {
+    return library;
+  }
   if (library.some((item) => storedSkinKey(item) === storedSkinKey(skin))) {
     return library;
   }
@@ -110,16 +123,28 @@ export function SkinProvider({ children }: { children: ReactNode }) {
           SKIN_STORAGE_KEY,
           SKIN_LIBRARY_KEY,
         ]);
-        const nextSkin = parseStoredSkin(stored[SKIN_STORAGE_KEY]);
+        const nextSkin = sanitizeActiveSkin(
+          parseStoredSkin(stored[SKIN_STORAGE_KEY]),
+        );
         const nextLib = seedLibrary(
           parseStoredSkinLibrary(stored[SKIN_LIBRARY_KEY]),
           nextSkin,
         );
+        const storedSkin = stored[SKIN_STORAGE_KEY];
+        const storedLib = stored[SKIN_LIBRARY_KEY];
+        const patch: Record<string, unknown> = {};
+        if (JSON.stringify(nextLib) !== JSON.stringify(storedLib ?? [])) {
+          patch[SKIN_LIBRARY_KEY] = nextLib;
+        }
         if (
-          nextLib.length &&
-          JSON.stringify(nextLib) !== JSON.stringify(stored[SKIN_LIBRARY_KEY])
+          nextSkin == null &&
+          storedSkin != null &&
+          !isPreviewMode()
         ) {
-          await browser.storage.local.set({ [SKIN_LIBRARY_KEY]: nextLib });
+          await browser.storage.local.remove(SKIN_STORAGE_KEY);
+        }
+        if (Object.keys(patch).length) {
+          await browser.storage.local.set(patch);
         }
         if (!cancelled) {
           setSkinState(nextSkin);
@@ -136,7 +161,11 @@ export function SkinProvider({ children }: { children: ReactNode }) {
     ) => {
       if (area !== 'local') return;
       if (changes[SKIN_STORAGE_KEY]) {
-        setSkinState(parseStoredSkin(changes[SKIN_STORAGE_KEY].newValue));
+        setSkinState(
+          sanitizeActiveSkin(
+            parseStoredSkin(changes[SKIN_STORAGE_KEY].newValue),
+          ),
+        );
       }
       if (changes[SKIN_LIBRARY_KEY]) {
         setImportedState(
@@ -152,14 +181,15 @@ export function SkinProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setSkin = useCallback((next: StoredSkin | null) => {
-    writeLocalSkin(next);
-    setSkinState(next);
-    if (next) {
+    const sanitized = sanitizeActiveSkin(next);
+    writeLocalSkin(sanitized);
+    setSkinState(sanitized);
+    if (sanitized) {
       setImportedState((prev) => {
-        const library = upsertStoredSkinLibrary(prev, next);
+        const library = upsertStoredSkinLibrary(prev, sanitized);
         writeLocalLibrary(library);
         void browser.storage.local
-          .set({ [SKIN_STORAGE_KEY]: next, [SKIN_LIBRARY_KEY]: library })
+          .set({ [SKIN_STORAGE_KEY]: sanitized, [SKIN_LIBRARY_KEY]: library })
           .catch(() => undefined);
         return library;
       });

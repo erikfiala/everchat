@@ -370,6 +370,15 @@ export function isDefaultThemeSlug(value: unknown): boolean {
   return value === DEFAULT_THEME_SLUG;
 }
 
+/**
+ * Theme-builder live preview skins (name/author "draft", no published id/slug).
+ * These must not appear in Settings or leak from /panel preview into /app storage.
+ */
+export function isUnpublishedBuilderSkin(skin: StoredSkin): boolean {
+  if (skin.slug || skin.id) return false;
+  return skin.name === 'draft' || skin.author === 'draft';
+}
+
 export function defaultTheme(): ThemeDocument {
   return {
     schemaVersion: THEME_SCHEMA_VERSION,
@@ -568,7 +577,9 @@ export function parseStoredSkinLibrary(raw: unknown): StoredSkin[] {
   const seen = new Set<string>();
   for (const item of raw) {
     const skin = parseStoredSkin(item);
-    if (!skin || isDefaultThemeSlug(skin.slug)) continue;
+    if (!skin || isDefaultThemeSlug(skin.slug) || isUnpublishedBuilderSkin(skin)) {
+      continue;
+    }
     const key = storedSkinKey(skin);
     if (seen.has(key)) continue;
     seen.add(key);
@@ -582,7 +593,9 @@ export function upsertStoredSkinLibrary(
   library: StoredSkin[],
   skin: StoredSkin,
 ): StoredSkin[] {
-  if (isDefaultThemeSlug(skin.slug)) return library;
+  if (isDefaultThemeSlug(skin.slug) || isUnpublishedBuilderSkin(skin)) {
+    return library;
+  }
   const key = storedSkinKey(skin);
   return [skin, ...library.filter((item) => storedSkinKey(item) !== key)].slice(
     0,

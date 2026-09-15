@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { subscribePostgresChanges } from '@/lib/realtime';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
-import { getPageByCanonical, upsertPage } from '@/lib/pages';
+import {
+  ensurePageForPost,
+  resolvePageForView,
+} from '@/lib/pages';
 import {
   buildMessageTree,
   createMessage,
@@ -114,14 +117,8 @@ export function usePageThread(
     if (showLoading) setLoading(true);
     setError(null);
     try {
-      const page = userId
-        ? await upsertPage({
-            canonicalUrl: tab.canonicalUrl,
-            url: tab.url,
-            title: tab.title,
-            faviconUrl: tab.favIconUrl,
-          })
-        : await getPageByCanonical(tab.canonicalUrl);
+      // View never inserts — page row appears on first post only.
+      const page = await resolvePageForView(tab.canonicalUrl);
 
       if (!page) {
         setPageId(null);
@@ -283,9 +280,38 @@ export function usePageThread(
 
   const post = useCallback(
     async (body: string, parentId?: string | null, gifUrl?: string | null) => {
-      if (!pageId || !userId) throw new Error('errors.notReady');
+      if (!userId) throw new Error('errors.notReady');
+      if (!tab.canonicalUrl) throw new Error('errors.notReady');
+
+      let id = pageId;
+      if (!id) {
+        const page = await ensurePageForPost({
+          canonicalUrl: tab.canonicalUrl,
+          url: tab.url,
+          title: tab.title,
+          faviconUrl: tab.favIconUrl,
+        });
+        id = page.id;
+        setPageId(page.id);
+        setPageTitle(page.title ?? null);
+        setPageFaviconUrl(page.favicon_url ?? null);
+      } else if (!pageFaviconUrl && (tab.favIconUrl || tab.url)) {
+        try {
+          const page = await ensurePageForPost({
+            canonicalUrl: tab.canonicalUrl,
+            url: tab.url,
+            title: tab.title,
+            faviconUrl: tab.favIconUrl,
+          });
+          setPageFaviconUrl(page.favicon_url ?? null);
+          if (page.title) setPageTitle(page.title);
+        } catch {
+          /* posting still proceeds with existing page_id */
+        }
+      }
+
       const msg = await createMessage({
-        pageId,
+        pageId: id,
         authorId: userId,
         parentId,
         body,
@@ -301,7 +327,17 @@ export function usePageThread(
       toast.success(t(parentId ? 'toast.replySent' : 'toast.posted'));
       return msg;
     },
-    [pageId, userId, sort, rebuild],
+    [
+      pageId,
+      pageFaviconUrl,
+      userId,
+      sort,
+      rebuild,
+      tab.canonicalUrl,
+      tab.url,
+      tab.title,
+      tab.favIconUrl,
+    ],
   );
 
   const vote = useCallback(

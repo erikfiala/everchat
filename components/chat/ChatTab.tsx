@@ -34,6 +34,7 @@ import {
   reportMessage,
 } from '@/lib/messages';
 import { collectMentionParticipants } from '@/lib/mentions';
+import { isWebApp } from '@/lib/webapp/mode';
 import { toast } from 'sonner';
 
 interface ChatTabProps {
@@ -108,6 +109,16 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
     });
   }, [viewing.focusMessageId, thread.loading, thread.roots, clearFocus]);
 
+  useEffect(() => {
+    if (!isWebApp()) return;
+    void browser.runtime
+      .sendMessage({
+        type: 'SET_ACTIVE_PAGE_ID',
+        pageId: thread.pageId,
+      })
+      .catch(() => undefined);
+  }, [thread.pageId]);
+
   const conversationNode = conversationId
     ? findMessageNode(thread.roots, conversationId)
     : null;
@@ -160,6 +171,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
   const rowHandlers: MessageRowHandlers = useMemo(
     () => ({
       pageUrl: viewing.url,
+      pageId: thread.pageId,
       currentUserId: user?.id,
       expandedIds,
       onToggleExpand: (id) =>
@@ -192,6 +204,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
     }),
     [
       viewing.url,
+      thread.pageId,
       user,
       expandedIds,
       thread.vote,

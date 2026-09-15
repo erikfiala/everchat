@@ -13,8 +13,28 @@
     { "source": "/panel/", "destination": "/panel/index.html" },
     { "source": "/app", "destination": "/app/index.html" },
     { "source": "/app/", "destination": "/app/index.html" },
+    { "source": "/app/p/:pageId", "destination": "/app/index.html" },
+    { "source": "/app/p/:pageId/", "destination": "/app/index.html" },
+    {
+      "source": "/app/p/:pageId/m/:messageId",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/app/p/:pageId/m/:messageId/",
+      "destination": "/app/index.html"
+    },
     { "source": "/chat", "destination": "/app/index.html" },
     { "source": "/chat/", "destination": "/app/index.html" },
+    { "source": "/chat/p/:pageId", "destination": "/app/index.html" },
+    { "source": "/chat/p/:pageId/", "destination": "/app/index.html" },
+    {
+      "source": "/chat/p/:pageId/m/:messageId",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/chat/p/:pageId/m/:messageId/",
+      "destination": "/app/index.html"
+    },
     { "source": "/sitemap.xml", "destination": "/sitemap-index.xml" }
   ],
   "headers": [
@@ -106,6 +126,16 @@
     },
     {
       "source": "/chat/",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; script-src 'self'; worker-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://fonts.googleapis.com https://fonts.gstatic.com https://www.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/chat/(.*)",
       "headers": [
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         {

@@ -92,6 +92,10 @@ export function applyOnlineCountChange<T extends { canonical_url: string }>(
   );
 }
 
+/**
+ * Upsert the caller's presence for a canonical URL.
+ * Callers should only invoke when a `pages` row already exists (after first post).
+ */
 export async function touchPagePresence(canonicalUrl: string): Promise<void> {
   const url = canonicalUrl.trim();
   if (!url || url.length > PRESENCE_CANONICAL_MAX_LEN) return;

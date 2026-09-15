@@ -102,6 +102,47 @@ export function buildShareLink(messageId: string): string {
   return `${WWW_ORIGIN}/m/${encodeURIComponent(messageId)}`;
 }
 
+/**
+ * Webapp deep link: `https://everch.at/app?url=<page>&msg=<messageId?>`.
+ * Prefer `msg` over a page-URL `#ec-msg-` hash so host SPA hashes stay untouched.
+ * Returns null when `url` cannot be coerced to http(s).
+ * Prefer {@link buildWebAppPageLink} when a `pages.id` is available.
+ */
+export function buildWebAppThreadLink(opts: {
+  url: string;
+  messageId?: string | null;
+  /** Path alias; `/chat` rewrites to the same SPA as `/app`. */
+  path?: '/app' | '/chat';
+}): string | null {
+  const page = coercePasteUrl(opts.url);
+  if (!page) return null;
+  const link = new URL(`${WWW_ORIGIN}${opts.path ?? '/app'}`);
+  link.searchParams.set('url', page);
+  if (opts.messageId && isShareMessageId(opts.messageId)) {
+    link.searchParams.set('msg', opts.messageId);
+  }
+  return link.toString();
+}
+
+/**
+ * Short webapp room link: `https://everch.at/app/p/{pageId}` (+ `/m/{messageId}`).
+ * Opaque page id — article URL is not in the link string.
+ */
+export function buildWebAppPageLink(opts: {
+  pageId: string;
+  messageId?: string | null;
+  /** Path alias; `/chat` rewrites to the same SPA as `/app`. */
+  path?: '/app' | '/chat';
+}): string | null {
+  if (!isShareMessageId(opts.pageId)) return null;
+  const base = opts.path ?? '/app';
+  let path = `${WWW_ORIGIN}${base}/p/${encodeURIComponent(opts.pageId)}`;
+  if (opts.messageId && isShareMessageId(opts.messageId)) {
+    path += `/m/${encodeURIComponent(opts.messageId)}`;
+  }
+  return path;
+}
+
 export function isShareMessageId(id: string | null | undefined): id is string {
   return Boolean(id && SHARE_MESSAGE_ID.test(id));
 }

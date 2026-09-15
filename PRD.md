@@ -157,7 +157,7 @@ A **page** (room) in Everchat is identified by a canonical string. All users who
 - **Room history:** Chat tab keeps an in-panel back/forward stack of prior canonical rooms visited *within this panel session* on the same browser tab (does not navigate the host tab).
 - Display in chrome: page title (from tab / `pages.title`) + host; favicon when available.
 
-**Lurkers:** can read an existing room. Creating/updating the `pages` row (first post / metadata upsert) requires an authenticated session.
+**Lurkers:** can read an existing room. A `pages` row is created only on the **first post** to that canonical URL (not on view). Metadata upsert on later posts fills a missing favicon when available; creating/updating requires an authenticated session.
 
 ---
 
@@ -285,6 +285,19 @@ https://{original-page-url}#ec-msg-{messageId}
 
 Canonical page key ignores the hash. Flow: open tab → Chat → expand ancestors if needed → `scrollIntoView` → brief highlight pulse → mark notification read.
 
+### Webapp (`/app`, `/chat`) deep links
+
+Mobile PWA at [everch.at/app](https://everch.at/app) (alias `/chat`) opens a room from a short path (preferred) or query string — not a page-URL hash — so host SPA fragments stay untouched:
+
+```
+https://everch.at/app/p/{pageId}
+https://everch.at/app/p/{pageId}/m/{messageId}
+https://everch.at/app?url=<encoded page URL>
+https://everch.at/app?url=<encoded page URL>&msg=<messageId>
+```
+
+`pageId` is `pages.id` (exists only after the first post). Path links resolve the room via Supabase, then set the virtual tab from the page’s URL / title / favicon. Legacy `?url=` accepts absolute http(s) or bare hosts (`example.com/story`); invalid values are ignored. In-app navigation prefers `/app/p/{pageId}` once a page row exists, else `?url=`. Extension deep links (`#ec-msg-` / `/m/{id}`) are unchanged.
+
 ---
 
 ## 11. Page metadata (context for lists)
@@ -294,10 +307,10 @@ Notifications, Profile activity, and Explore rows join **page chrome** from `pag
 | Field | Capture |
 |---|---|
 | `canonical_url` | From URL canon algorithm |
-| `title` | `document.title` / tab title when panel opens or on first post |
+| `title` | `document.title` / tab title on first post (refreshed on later metadata upserts) |
 | `description` | `meta[name=description]` or `og:description`, truncated (~120 chars); nullable |
-| `favicon_url` | Tab `favIconUrl`, else host favicon |
-| `updated_at` | Refresh opportunistically when an authed user opens Chat on that page |
+| `favicon_url` | Tab `favIconUrl`, else host favicon — always saved on first post; filled in if still missing on later upserts |
+| `updated_at` | Refresh when posting creates/updates the page row |
 
 Fallbacks: title → host; description → path; favicon → Globe icon. Client/extension captures metadata — no full HTML scrape server-side.
 
@@ -451,8 +464,9 @@ Out of scope: bans, shadowban UI, keyword automod, staff opinion takedowns.
 ```
 Chrome tab URL
     → panel: canonicalize
-    → lookup or upsert pages row (upsert requires auth)
-    → fetch messages tree for page_id
+    → lookup pages row (no insert on view)
+    → fetch messages tree for page_id (empty UI if no row yet)
+    → first post: upsert pages row (favicon/title/url) then insert message
     → Realtime: messages (page_id) + typing presence
     → UI: Reddit-style tree + composer
 ```

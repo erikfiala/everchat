@@ -1,5 +1,17 @@
-import { canonicalize, coercePasteUrl } from '@/lib/canonicalize';
+import {
+  canonicalize,
+  coercePasteUrl,
+  hrefFromPage,
+  isShareMessageId,
+} from '@/lib/canonicalize';
 import { googleS2FaviconForHost } from '@/lib/favicon';
+import { getPageById } from '@/lib/pages';
+import {
+  parseWebAppDeepLinkSearch,
+  parseWebAppPagePath,
+  webAppPagePathname,
+  type WebAppBasePath,
+} from '@/lib/webapp/deeplink';
 
 const THEME_STORAGE_KEY = 'ec-theme';
 const LAST_URL_KEY = 'ec-webapp-last-url';
@@ -59,16 +71,6 @@ function faviconForUrl(url: string): string | null {
   return host ? googleS2FaviconForHost(host) : null;
 }
 
-function readQueryUrl(): string | null {
-  try {
-    const raw = new URLSearchParams(window.location.search).get('url');
-    if (!raw) return null;
-    return coercePasteUrl(raw);
-  } catch {
-    return null;
-  }
-}
-
 function readLastUrl(): string | null {
   try {
     const raw = localStorage.getItem(LAST_URL_KEY);
@@ -91,11 +93,44 @@ function persistLastUrl(url: string | null): void {
   }
 }
 
-function syncAddressBar(url: string | null): void {
+function webAppBasePath(): WebAppBasePath {
+  try {
+    return window.location.pathname.startsWith('/chat') ? '/chat' : '/app';
+  } catch {
+    return '/app';
+  }
+}
+
+/**
+ * Prefer short `/app/p/{pageId}` (+ `/m/{msg}`) when we have a page id.
+ * Fall back to `?url=` / `?msg=` before a page row exists.
+ */
+function syncAddressBar(
+  url: string | null,
+  messageId: string | null = null,
+  pageId: string | null = null,
+): void {
   try {
     const next = new URL(window.location.href);
-    if (url) next.searchParams.set('url', url);
-    else next.searchParams.delete('url');
+    const base = webAppBasePath();
+    const short =
+      pageId && isShareMessageId(pageId)
+        ? webAppPagePathname(pageId, messageId, base)
+        : null;
+
+    if (short) {
+      next.pathname = short;
+      next.searchParams.delete('url');
+      next.searchParams.delete('msg');
+    } else {
+      if (parseWebAppPagePath(next.pathname)) {
+        next.pathname = base;
+      }
+      if (url) next.searchParams.set('url', url);
+      else next.searchParams.delete('url');
+      if (messageId) next.searchParams.set('msg', messageId);
+      else next.searchParams.delete('msg');
+    }
     const href = `${next.pathname}${next.search}${next.hash}`;
     if (
       href !==
@@ -126,20 +161,36 @@ export function installWebAppChrome(): void {
   const runtimeListeners = new Set<MessageFn>();
 
   let pendingFocus: { focusMessageId: string } | null = null;
+  let activePageId: string | null = null;
 
-  const initialUrl = readQueryUrl() ?? readLastUrl();
+  const pathDeep = parseWebAppPagePath(window.location.pathname);
+  const queryDeep = parseWebAppDeepLinkSearch(window.location.search);
+
+  let initialUrl: string | null = null;
+  let initialFocus: string | null = null;
+
+  if (pathDeep) {
+    activePageId = pathDeep.pageId;
+    initialFocus = pathDeep.messageId;
+  } else {
+    initialUrl = queryDeep.url ?? readLastUrl();
+    initialFocus =
+      queryDeep.messageId ??
+      (initialUrl ? canonicalize(initialUrl).focusMessageId : null);
+  }
+
   let activeTab: VirtualTab = {
     tabId: VIRTUAL_TAB_ID,
     url: initialUrl,
     title: initialUrl ? hostTitle(initialUrl) : null,
     favIconUrl: initialUrl ? faviconForUrl(initialUrl) : null,
-    focusMessageId: initialUrl
-      ? canonicalize(initialUrl).focusMessageId
-      : null,
+    focusMessageId: initialFocus,
   };
   if (initialUrl) {
     persistLastUrl(initialUrl);
-    syncAddressBar(initialUrl);
+  }
+  if (initialUrl || activePageId) {
+    syncAddressBar(initialUrl, initialFocus, activePageId);
   }
 
   const emit = (message: unknown) => {
@@ -148,27 +199,72 @@ export function installWebAppChrome(): void {
 
   const setActiveUrl = (
     rawUrl: string,
-    opts?: { focusMessageId?: string | null; title?: string | null },
+    opts?: {
+      focusMessageId?: string | null;
+      title?: string | null;
+      favIconUrl?: string | null;
+      pageId?: string | null;
+      /** When true, clear any known page id (fresh paste / navigation). */
+      clearPageId?: boolean;
+    },
   ) => {
     const url = coercePasteUrl(rawUrl) ?? rawUrl;
     const canon = canonicalize(url);
+    if (opts?.clearPageId) {
+      activePageId = null;
+    } else if (opts?.pageId !== undefined) {
+      activePageId =
+        opts.pageId && isShareMessageId(opts.pageId) ? opts.pageId : null;
+    }
     activeTab = {
       tabId: VIRTUAL_TAB_ID,
       url,
       title: opts?.title?.trim() || hostTitle(url),
-      favIconUrl: faviconForUrl(url),
+      favIconUrl:
+        opts?.favIconUrl !== undefined
+          ? opts.favIconUrl
+          : faviconForUrl(url),
       focusMessageId:
         opts?.focusMessageId !== undefined
           ? opts.focusMessageId
           : canon.focusMessageId,
     };
     persistLastUrl(url);
-    syncAddressBar(url);
+    syncAddressBar(url, activeTab.focusMessageId, activePageId);
     emit({
       type: 'TAB_UPDATED',
       ...tabPayload(activeTab),
     });
   };
+
+  const setFocusMessage = (focusMessageId: string | null) => {
+    activeTab = { ...activeTab, focusMessageId };
+    syncAddressBar(activeTab.url, focusMessageId, activePageId);
+  };
+
+  const setActivePageId = (pageId: string | null) => {
+    activePageId =
+      pageId && isShareMessageId(pageId) ? pageId : null;
+    syncAddressBar(activeTab.url, activeTab.focusMessageId, activePageId);
+  };
+
+  if (pathDeep) {
+    void (async () => {
+      try {
+        const page = await getPageById(pathDeep.pageId);
+        if (!page) return;
+        const url = hrefFromPage(page);
+        setActiveUrl(url, {
+          focusMessageId: pathDeep.messageId,
+          title: page.title,
+          favIconUrl: page.favicon_url || faviconForUrl(url),
+          pageId: page.id,
+        });
+      } catch {
+        /* leave focus + short path; room stays empty until user pastes */
+      }
+    })();
+  }
 
   const storage = {
     local: {
@@ -247,6 +343,7 @@ export function installWebAppChrome(): void {
       tabId?: number;
       focusMessageId?: string | null;
       title?: string | null;
+      pageId?: string | null;
     }) => {
       if (message?.type === 'GET_ACTIVE_TAB') {
         return tabPayload(activeTab);
@@ -260,16 +357,22 @@ export function installWebAppChrome(): void {
         setActiveUrl(message.url, {
           focusMessageId: message.focusMessageId ?? null,
           title: message.title,
+          clearPageId: true,
         });
         return tabPayload(activeTab);
+      }
+      if (message?.type === 'SET_ACTIVE_PAGE_ID') {
+        setActivePageId(message.pageId ?? null);
+        return { ok: true, pageId: activePageId };
+      }
+      if (message?.type === 'CLEAR_FOCUS_MESSAGE') {
+        setFocusMessage(null);
+        return { ok: true };
       }
       if (message?.type === 'OPEN_PANEL_FOR_TAB') {
         if (message.focusMessageId) {
           pendingFocus = { focusMessageId: message.focusMessageId };
-          activeTab = {
-            ...activeTab,
-            focusMessageId: message.focusMessageId,
-          };
+          setFocusMessage(message.focusMessageId);
           emit({
             type: 'FOCUS_MESSAGE',
             focusMessageId: message.focusMessageId,
@@ -286,7 +389,11 @@ export function installWebAppChrome(): void {
       addListener: (fn: MessageFn) => runtimeListeners.add(fn),
       removeListener: (fn: MessageFn) => runtimeListeners.delete(fn),
     },
-    getURL: (path: string) => path,
+    getURL: (path: string) => {
+      const base = import.meta.env.BASE_URL || '/';
+      const cleaned = path.replace(/^\//, '');
+      return `${base}${cleaned}`;
+    },
     getPlatformInfo: async () => ({ os: 'mac', arch: 'arm' }),
   };
 
@@ -296,7 +403,7 @@ export function installWebAppChrome(): void {
     tabs: {
       create: async (createProps?: { url?: string }) => {
         if (createProps?.url) {
-          setActiveUrl(createProps.url);
+          setActiveUrl(createProps.url, { clearPageId: true });
         }
         return { id: VIRTUAL_TAB_ID };
       },
@@ -304,7 +411,9 @@ export function installWebAppChrome(): void {
         _tabId: number,
         updateProps?: { url?: string; active?: boolean },
       ) => {
-        if (updateProps?.url) setActiveUrl(updateProps.url);
+        if (updateProps?.url) {
+          setActiveUrl(updateProps.url, { clearPageId: true });
+        }
         return {};
       },
       query: async () =>

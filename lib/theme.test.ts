@@ -12,6 +12,7 @@ import {
   googleFontsHref,
   googleFontsPreviewHref,
   isDefaultThemeSlug,
+  isUnpublishedBuilderSkin,
   isValidFontFamily,
   parseStoredSkinLibrary,
   sanitizeFontFamily,
@@ -285,6 +286,25 @@ describe('theme schema', () => {
       midnight,
     ]);
     expect(parseStoredSkinLibrary(official)).toEqual([]);
+  });
+
+  it('filters unpublished theme-builder drafts from the skin library', () => {
+    const draft: StoredSkin = {
+      ...defaultTheme(),
+      name: 'draft',
+      author: 'draft',
+    };
+    const published: StoredSkin = {
+      ...defaultTheme(),
+      name: 'Ocean',
+      author: 'alice',
+      slug: 'ocean',
+      id: '11111111-1111-4111-8111-111111111111',
+    };
+    expect(isUnpublishedBuilderSkin(draft)).toBe(true);
+    expect(isUnpublishedBuilderSkin(published)).toBe(false);
+    expect(upsertStoredSkinLibrary([], draft)).toEqual([]);
+    expect(parseStoredSkinLibrary([draft, published])).toEqual([published]);
   });
 
   it('builds a 400-only preview href for visible families', () => {

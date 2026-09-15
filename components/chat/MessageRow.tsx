@@ -4,10 +4,15 @@ import type { MessageNode } from '@/lib/database.types';
 import { isCommunityCollapsed, formatScore, safeRelativeTime } from '@/lib/collapse';
 import { ANONYMOUS_HANDLE } from '@/lib/constants';
 import { bindRelativeTime } from '@/lib/time';
-import { buildShareLink } from '@/lib/canonicalize';
+import {
+  buildShareLink,
+  buildWebAppPageLink,
+  buildWebAppThreadLink,
+} from '@/lib/canonicalize';
 import { isOwnMessage } from '@/lib/messages';
 import { translateMessageBody } from '@/lib/translate';
 import { cn } from '@/lib/utils';
+import { isWebApp } from '@/lib/webapp/mode';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +28,8 @@ import { toast } from 'sonner';
 
 export interface MessageRowHandlers {
   pageUrl: string | null;
+  /** When set on webapp, share uses `/app/p/{pageId}/m/{id}`. */
+  pageId?: string | null;
   currentUserId?: string | null;
   expandedIds: Set<string>;
   onToggleExpand: (id: string) => void;
@@ -207,6 +214,7 @@ export function MessageRow({
   isLast = true,
   nestChildren = false,
   pageUrl,
+  pageId,
   currentUserId,
   expandedIds,
   onToggleExpand,
@@ -280,6 +288,7 @@ export function MessageRow({
             isLast={index === visibleChildren.length - 1}
             nestChildren
             pageUrl={pageUrl}
+            pageId={pageId}
             currentUserId={currentUserId}
             expandedIds={expandedIds}
             onToggleExpand={onToggleExpand}
@@ -294,7 +303,14 @@ export function MessageRow({
       : null;
 
   const shareLink = async () => {
-    const link = buildShareLink(node.id);
+    const webLink = isWebApp()
+      ? (pageId
+          ? buildWebAppPageLink({ pageId, messageId: node.id })
+          : pageUrl
+            ? buildWebAppThreadLink({ url: pageUrl, messageId: node.id })
+            : null)
+      : null;
+    const link = webLink ?? buildShareLink(node.id);
     await navigator.clipboard.writeText(link);
     toast.success(t('toast.linkCopied'));
     setMenuOpen(false);

@@ -54,6 +54,8 @@ pnpm zip            # dist/everchat-<version>-chrome.zip
 
 The Vercel project `everchat-www` must use **Root Directory `www`**.
 
+Shareable mobile rooms prefer `/app/p/{pageId}` (optional `/m/{messageId}`) after the first post creates a page row; legacy `/app?url=` still works for empty rooms. `/chat` rewrites to the same SPA.
+
 ```bash
 pnpm --dir www install
 pnpm --dir www build    # compiles www/src/input.css → www/styles.css

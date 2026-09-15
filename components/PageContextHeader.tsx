@@ -151,12 +151,12 @@ export function PageContextHeader({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 shrink-0"
+                      className="size-8 shrink-0 p-0"
                       aria-label={t('common.cancel')}
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={cancelEdit}
                     >
-                      <Icon name="close" className="h-3.5 w-3.5" />
+                      <Icon name="close" className="size-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>{t('common.cancel')}</TooltipContent>
@@ -182,11 +182,11 @@ export function PageContextHeader({
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 shrink-0"
+                    className="size-8 shrink-0 p-0"
                     aria-label={t('page.editUrl')}
                     onClick={enterEdit}
                   >
-                    <Icon name="penSquare" className="h-3.5 w-3.5" />
+                    <Icon name="penSquare" className="size-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{t('page.editUrl')}</TooltipContent>

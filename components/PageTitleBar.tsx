@@ -13,7 +13,11 @@ export function PageTitleBar({
   ...props
 }: HTMLAttributes<HTMLElement> & { action?: ReactNode }) {
   return (
-    <header className={cn(PAGE_NAV_BAR_CLASS, className)} {...props}>
+    <header
+      {...props}
+      className={cn(PAGE_NAV_BAR_CLASS, className)}
+      data-ec-pad-x
+    >
       <PageTitle className="-translate-y-px min-w-0 truncate">{children}</PageTitle>
       {action ? (
         <div className="ms-auto flex shrink-0 items-center gap-2">{action}</div>

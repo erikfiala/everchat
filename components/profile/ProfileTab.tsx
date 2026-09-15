@@ -236,11 +236,11 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 shrink-0"
+                className="size-8 shrink-0 p-0"
                 onClick={() => setConfirmSignOutOpen(true)}
                 aria-label={t('profile.signOut')}
               >
-                <Icon name="logout" className="h-3.5 w-3.5" />
+                <Icon name="logout" className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>{t('profile.signOut')}</TooltipContent>

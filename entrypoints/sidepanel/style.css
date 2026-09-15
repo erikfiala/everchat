@@ -381,9 +381,18 @@ html.ec-webapp #root {
   padding-right: env(safe-area-inset-right, 0px);
 }
 
-/* Extra top pad when insets are non-zero (Safari / translucent edge cases). */
+/*
+  Clear the status bar, and paint that zone pure black so it blends with the
+  opaque system bar. Without the black fill, card-colored TopNav shows through
+  under the bar and reads as a muddy drop-shadow on the logo/icons.
+*/
 html.ec-webapp [data-ec-topnav] {
   padding-top: calc(0.5rem + var(--ec-safe-top, env(safe-area-inset-top, 0px)));
+  background-color: var(--color-card);
+  background-image: linear-gradient(#000, #000);
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: 100% var(--ec-safe-top, env(safe-area-inset-top, 0px));
 }
 
 /* Home indicator clears composer actions; card bg fills the unsafe bottom. */

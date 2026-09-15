@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-09-15
+
 ### Added
 
 - Webapp deep links: short `everch.at/app/p/{pageId}` (+ `/m/{messageId}`); legacy `?url=` / `?msg=` still work before a page row exists; share on `/app` prefers the short form
@@ -14,6 +16,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Presence skips URLs with no `pages` row yet
+- `/app` URL header aligns with the extension title+URL chrome (view/edit/Go/X modes, locale strings)
+- Marketing site: remove preview bar; quieter hero preview link (SVG arrow, text underline)
+
+### Fixed
+
+- Favicons on the extension and `/chats`: host fallback, no Google s2 double-wrap
+- Logout / edit / X icon hitboxes aligned with TopNav
+
 ## [1.0.2] - 2026-09-15
 
 ### Added

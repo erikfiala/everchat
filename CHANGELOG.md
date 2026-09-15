@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-09-15
+
+### Changed
+
+- Returning login always asks for @handle so multi-account users can target a specific account
+- Interactive passkey login timeout reduced from 55s to 30s
+
 ## [1.0.3] - 2026-09-15
 
 ### Added

@@ -19,6 +19,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `/app/p/...` and `/chat` deep links rewrite through middleware so the PWA loads on static Vercel output
 - Marketing room-card favicons top-aligned with the title row
 
+## [1.0.5] - 2026-09-15
 
 ### Changed
 

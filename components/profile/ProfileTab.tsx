@@ -46,6 +46,7 @@ import type { ActivityItem } from '@/lib/database.types';
 import { formatScore, scoreColorClass, safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
 import { displayUrl, hrefFromPage } from '@/lib/canonicalize';
+import { resolveFaviconUrl } from '@/lib/favicon';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
 import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import { cn } from '@/lib/utils';
@@ -374,7 +375,14 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
               onClick={() => openActivity(item)}
               className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
             >
-              <Favicon src={item.page?.favicon_url} className="mt-0.5" />
+              <Favicon
+                src={resolveFaviconUrl({
+                  faviconUrl: item.page?.favicon_url,
+                  url: item.page?.url,
+                  canonicalUrl: item.page?.canonical_url,
+                })}
+                className="mt-0.5"
+              />
               <div className="min-w-0 flex-1 overflow-hidden">
                 <div className="flex min-w-0 items-center gap-2">
                   <span className="min-w-0 truncate text-sm font-medium">

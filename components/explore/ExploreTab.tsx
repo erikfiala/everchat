@@ -18,6 +18,7 @@ import { useLocale } from '@/hooks/useLocale';
 import { useOnlineCounts } from '@/hooks/useOnlineCounts';
 import { displayUrl, hostFromCanonical, hrefFromPage } from '@/lib/canonicalize';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from '@/lib/constants';
+import { resolveFaviconUrl } from '@/lib/favicon';
 import { appendUniqueById, pageHasMore } from '@/lib/listPage';
 import {
   getRecentlyActivePages,
@@ -285,7 +286,14 @@ export function ExploreTab({ onOpenChat }: { onOpenChat?: () => void }) {
                 onClick={() => open(row)}
                 className="flex w-full items-start gap-2 rounded-md px-2 py-2 text-start hover:bg-[var(--color-accent)]"
               >
-                <Favicon src={row.favicon_url} className="mt-0.5" />
+                <Favicon
+                  src={resolveFaviconUrl({
+                    faviconUrl: row.favicon_url,
+                    url: row.url,
+                    canonicalUrl: row.canonical_url,
+                  })}
+                  className="mt-0.5"
+                />
                 <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="truncate text-sm font-medium">
                     {row.title || urlLabel || host}

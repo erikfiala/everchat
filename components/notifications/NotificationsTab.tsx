@@ -13,6 +13,7 @@ import { safeRelativeTime } from '@/lib/collapse';
 import { bindRelativeTime } from '@/lib/time';
 import { cn } from '@/lib/utils';
 import { displayUrl } from '@/lib/canonicalize';
+import { resolveFaviconUrl } from '@/lib/favicon';
 
 export function NotificationsTab({ onOpenChat }: { onOpenChat?: () => void }) {
   const { t, locale } = useLocale();
@@ -71,7 +72,14 @@ export function NotificationsTab({ onOpenChat }: { onOpenChat?: () => void }) {
               !n.read_at && 'bg-[var(--color-muted)]/60',
             )}
           >
-            <Favicon src={n.page?.favicon_url} className="mt-0.5" />
+            <Favicon
+              src={resolveFaviconUrl({
+                faviconUrl: n.page?.favicon_url,
+                url: n.page?.url,
+                canonicalUrl: n.page?.canonical_url,
+              })}
+              className="mt-0.5"
+            />
             <div className="min-w-0 flex-1 overflow-hidden">
               <div className="truncate text-sm font-medium">
                 {n.page?.title ||

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/tooltip';
 import { useLocale } from '@/hooks/useLocale';
 import { coercePasteUrl, displayUrl } from '@/lib/canonicalize';
-import { googleS2FaviconForHost } from '@/lib/favicon';
+import { resolveFaviconUrl } from '@/lib/favicon';
 import { cn } from '@/lib/utils';
 import { isWebApp } from '@/lib/webapp/mode';
 
@@ -36,9 +36,12 @@ export function PageContextHeader({
   const { t } = useLocale();
   const web = isWebApp();
   const hostLabel = displayUrl(host);
-  const resolvedFavicon =
-    faviconUrl ||
-    (hostLabel ? googleS2FaviconForHost(hostLabel.split('/')[0] ?? '') : null);
+  // Prefer real http(s) tab/DB favicon; Google s2 only when missing/non-http.
+  const resolvedFavicon = resolveFaviconUrl({
+    faviconUrl,
+    url,
+    canonicalUrl: hostLabel || host,
+  });
 
   const displayValue = displayUrl(url || host) || '';
   const [draft, setDraft] = useState(displayValue);
@@ -207,7 +210,7 @@ export function PageContextHeader({
       data-ec-pad-x
       data-ec-gap
     >
-      <Favicon src={faviconUrl} className="mt-0.5" />
+      <Favicon src={resolvedFavicon} className="mt-0.5" />
       <div className="min-w-0 flex-1 overflow-hidden">
         <div className="truncate text-sm font-medium">
           {title || hostLabel || t('page.thisPage')}

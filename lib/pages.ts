@@ -1,12 +1,8 @@
 import { getSupabase } from './supabase';
 import type { Page } from './database.types';
 import { DESCRIPTION_TRUNCATE, LIST_PAGE_SIZE } from './constants';
-import {
-  canonicalize,
-  hostFromCanonical,
-  originalHref,
-} from './canonicalize';
-import { googleS2FaviconForHost } from './favicon';
+import { originalHref } from './canonicalize';
+import { resolveFaviconUrl } from './favicon';
 
 function isUniqueViolation(error: { code?: string; message?: string } | null) {
   return (
@@ -26,30 +22,15 @@ function isUnknownUrlColumn(error: { code?: string; message?: string } | null) {
 }
 
 /**
- * Prefer the tab favicon; otherwise derive a host favicon so Explore cards
- * never render without one after the first post.
+ * Prefer the tab favicon; otherwise derive a host favicon so Explore / marketing
+ * cards never render without one after the first post.
  */
 export function resolvePageFavicon(input: {
   faviconUrl?: string | null;
   url?: string | null;
   canonicalUrl?: string | null;
 }): string | null {
-  const direct = input.faviconUrl?.trim();
-  if (direct) return direct;
-
-  const fromUrl = input.url?.trim();
-  if (fromUrl) {
-    const host = canonicalize(fromUrl).host;
-    if (host) return googleS2FaviconForHost(host);
-  }
-
-  const canon = input.canonicalUrl?.trim();
-  if (canon) {
-    const host = hostFromCanonical(canon);
-    if (host) return googleS2FaviconForHost(host);
-  }
-
-  return null;
+  return resolveFaviconUrl(input);
 }
 
 export type PageMetaInput = {

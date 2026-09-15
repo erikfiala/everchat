@@ -62,6 +62,16 @@ describe('resolvePageFavicon', () => {
       'https://www.google.com/s2/favicons?sz=32&domain=news.example',
     );
   });
+
+  it('ignores non-http tab favicons so a host icon is stored instead', () => {
+    expect(
+      resolvePageFavicon({
+        faviconUrl: 'chrome-extension://id/fav.png',
+        url: 'https://example.com/a',
+        canonicalUrl: 'example.com/a',
+      }),
+    ).toBe('https://www.google.com/s2/favicons?sz=32&domain=example.com');
+  });
 });
 
 describe('resolvePageForView vs ensurePageForPost', () => {

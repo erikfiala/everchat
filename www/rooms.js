@@ -70,11 +70,29 @@
     return svg;
   }
 
+  /**
+   * Favicon helpers mirror `lib/favicon.ts` (`resolveFaviconUrl`,
+   * `faviconSrcCandidates`, `pageFaviconSrcCandidates`). Keep in sync.
+   */
+  function isGoogleS2FaviconUrl(url) {
+    try {
+      var parsed = new URL(url);
+      return (
+        (parsed.hostname === 'www.google.com' ||
+          parsed.hostname === 'google.com') &&
+        parsed.pathname === '/s2/favicons'
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
   function googleS2FaviconUrl(url) {
     try {
       var parsed = new URL(url);
       if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
       if (!parsed.hostname) return '';
+      if (isGoogleS2FaviconUrl(url)) return '';
       return (
         'https://www.google.com/s2/favicons?sz=32&domain_url=' +
         encodeURIComponent(url)
@@ -84,10 +102,57 @@
     }
   }
 
+  function googleS2FaviconForHost(host) {
+    var hostname = String(host || '')
+      .trim()
+      .toLowerCase()
+      .replace(/^www\./, '');
+    if (!hostname || hostname.indexOf('/') !== -1 || hostname.indexOf(' ') !== -1) {
+      return '';
+    }
+    return (
+      'https://www.google.com/s2/favicons?sz=32&domain=' +
+      encodeURIComponent(hostname)
+    );
+  }
+
+  /** Prefer DB favicon; else Google s2 from page URL / canonical host. */
+  function resolveRowFavicon(row) {
+    var stored = row && row.favicon_url ? String(row.favicon_url).trim() : '';
+    if (stored) {
+      try {
+        var parsed = new URL(stored);
+        if (
+          (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+          parsed.hostname
+        ) {
+          return stored;
+        }
+      } catch (e) {
+        /* fall through to host */
+      }
+    }
+    if (row && row.url) {
+      try {
+        var fromUrl = googleS2FaviconForHost(new URL(String(row.url)).hostname);
+        if (fromUrl) return fromUrl;
+      } catch (e) {
+        /* fall through */
+      }
+    }
+    if (row && row.canonical_url) {
+      var host = String(row.canonical_url).split('/')[0] || '';
+      return googleS2FaviconForHost(host) || '';
+    }
+    return '';
+  }
+
   function faviconSrcCandidates(url) {
     if (!url) return [];
     var stored = String(url).trim();
     if (!stored) return [];
+    // Re-wrapping an s2 URL with domain_url yields Google's default globe.
+    if (isGoogleS2FaviconUrl(stored)) return [stored];
     var google = googleS2FaviconUrl(stored);
     if (google && google !== stored) return [google, stored];
     return [stored];
@@ -129,7 +194,7 @@
     var fav = document.createElement('span');
     fav.className = 'trending-fav';
     fav.setAttribute('aria-hidden', 'true');
-    setFavicon(fav, row.favicon_url);
+    setFavicon(fav, resolveRowFavicon(row));
 
     var body = document.createElement('span');
     body.className = 'trending-body';

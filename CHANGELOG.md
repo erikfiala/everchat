@@ -6,7 +6,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [1.0.5] - 2026-09-15
+## [1.0.6] - 2026-09-15
+
+### Changed
+
+- Page context header clusters open/edit (and Go/cancel) into compact icon control groups
+- On-demand message translation requires sign-in for visitors
+- Localized upvote/downvote/more labels and clearer backend error messages
+
+### Fixed
+
+- `/app/p/...` and `/chat` deep links rewrite through middleware so the PWA loads on static Vercel output
+- Marketing room-card favicons top-aligned with the title row
+
 
 ### Changed
 

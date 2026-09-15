@@ -11,30 +11,12 @@
     { "source": "/themes/:id", "destination": "/theme.html" },
     { "source": "/panel", "destination": "/panel/index.html" },
     { "source": "/panel/", "destination": "/panel/index.html" },
-    { "source": "/app", "destination": "/app/index.html" },
-    { "source": "/app/", "destination": "/app/index.html" },
-    { "source": "/app/p/:pageId", "destination": "/app/index.html" },
-    { "source": "/app/p/:pageId/", "destination": "/app/index.html" },
-    {
-      "source": "/app/p/:pageId/m/:messageId",
-      "destination": "/app/index.html"
-    },
-    {
-      "source": "/app/p/:pageId/m/:messageId/",
-      "destination": "/app/index.html"
-    },
-    { "source": "/chat", "destination": "/app/index.html" },
-    { "source": "/chat/", "destination": "/app/index.html" },
-    { "source": "/chat/p/:pageId", "destination": "/app/index.html" },
-    { "source": "/chat/p/:pageId/", "destination": "/app/index.html" },
-    {
-      "source": "/chat/p/:pageId/m/:messageId",
-      "destination": "/app/index.html"
-    },
-    {
-      "source": "/chat/p/:pageId/m/:messageId/",
-      "destination": "/app/index.html"
-    },
+    { "source": "/app", "destination": "/app" },
+    { "source": "/app/", "destination": "/app" },
+    { "source": "/app/(.*)", "destination": "/app" },
+    { "source": "/chat", "destination": "/app" },
+    { "source": "/chat/", "destination": "/app" },
+    { "source": "/chat/(.*)", "destination": "/app" },
     { "source": "/sitemap.xml", "destination": "/sitemap-index.xml" }
   ],
   "headers": [

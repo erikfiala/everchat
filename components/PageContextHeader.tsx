@@ -44,6 +44,11 @@ export function PageContextHeader({
   });
 
   const displayValue = displayUrl(url || host) || '';
+  const openHref =
+    coercePasteUrl(url?.trim() || '') ||
+    coercePasteUrl(host?.trim() || '') ||
+    coercePasteUrl(displayValue) ||
+    null;
   const [draft, setDraft] = useState(displayValue);
   const [editing, setEditing] = useState(!displayValue);
   const urlInputRef = useRef<HTMLInputElement>(null);
@@ -154,7 +159,7 @@ export function PageContextHeader({
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="size-8 shrink-0 p-0"
+                      className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
                       aria-label={t('common.cancel')}
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={cancelEdit}
@@ -179,13 +184,32 @@ export function PageContextHeader({
                   </div>
                 )}
               </div>
+              {openHref && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
+                      aria-label={t('page.openPage')}
+                      onClick={() => {
+                        window.open(openHref, '_blank', 'noopener,noreferrer');
+                      }}
+                    >
+                      <Icon name="externalLink" className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t('page.openPage')}</TooltipContent>
+                </Tooltip>
+              )}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-8 shrink-0 p-0"
+                    className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
                     aria-label={t('page.editUrl')}
                     onClick={enterEdit}
                   >

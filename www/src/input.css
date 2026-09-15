@@ -822,7 +822,7 @@
 
 .trending-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   box-sizing: border-box;
   min-width: 0;
@@ -851,8 +851,7 @@
   display: grid;
   place-items: center;
   width: 1rem;
-  /* Match .trending-title line box so the icon centers on the title, not the stack */
-  height: 1.5rem;
+  height: 1rem;
   flex-shrink: 0;
   color: var(--mute);
   font-size: 0.75rem; /* text-xs */

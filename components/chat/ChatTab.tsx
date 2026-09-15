@@ -257,7 +257,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                       className={cn(
                         'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
                         canGoBack
-                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]'
                           : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
                       )}
                       aria-label={t('chat.goBack')}
@@ -276,7 +276,7 @@ export function ChatTab({ tab, onOpenProfile, clearFocus }: ChatTabProps) {
                       className={cn(
                         'box-border flex size-9 shrink-0 items-center justify-center rounded-md p-0 leading-none transition-colors',
                         canGoForward
-                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)]'
+                          ? 'text-[var(--color-muted-foreground)] hover:bg-[var(--color-accent)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]'
                           : 'cursor-not-allowed text-[var(--color-muted-foreground)] opacity-40',
                       )}
                       aria-label={t('chat.goForward')}

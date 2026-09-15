@@ -33,10 +33,20 @@
     return 'https://' + canonical;
   }
 
+  /**
+   * Marketing browse → Everchat web client (same tab).
+   * Prefer short `/app/p/{id}`; else `/app?url=` with the page URL.
+   * Extension Explore uses lib/canonicalize hrefFromPage (real page tab) — leave that alone.
+   */
   function hrefFromPage(row) {
     if (!row) return '';
-    if (row.url) return row.url;
-    return row.canonical_url ? httpsUrl(row.canonical_url) : '';
+    var id = row.id != null ? String(row.id).trim() : '';
+    if (id) return '/app/p/' + encodeURIComponent(id);
+    var pageUrl = '';
+    if (row.url) pageUrl = String(row.url).trim();
+    else if (row.canonical_url) pageUrl = httpsUrl(row.canonical_url);
+    if (!pageUrl) return '/app';
+    return '/app?url=' + encodeURIComponent(pageUrl);
   }
 
   /** Lucide `globe` paths — matches extension Favicon fallback. */
@@ -188,8 +198,6 @@
     var a = document.createElement('a');
     a.className = 'trending-row';
     a.href = hrefFromPage(row);
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
 
     var fav = document.createElement('span');
     fav.className = 'trending-fav';

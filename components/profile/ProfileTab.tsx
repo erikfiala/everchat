@@ -237,7 +237,7 @@ export function ProfileTab({ onOpenChat }: { onOpenChat?: () => void }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-8 shrink-0 p-0"
+                className="size-8 shrink-0 p-0 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] focus-visible:text-[var(--color-foreground)]"
                 onClick={() => setConfirmSignOutOpen(true)}
                 aria-label={t('profile.signOut')}
               >

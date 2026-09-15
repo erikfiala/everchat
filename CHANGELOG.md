@@ -6,13 +6,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-09-15
+
+### Added
+
+- Mobile web client at [everch.at/app](https://everch.at/app) (and `/chat`): paste a page URL, join that room, add to home screen
+- Marketing “Try Everchat on Mobile” sheet on small screens linking to `/app`
+- Theme remix, sitemap index for public pages and themes
+
 ### Changed
 
-- Chrome Web Store listing is live; the site, README, and install copy point to it as the primary install path
+- Chrome Web Store listing is the primary install path; site and README point there
+- Theme gallery cards: byline under the title; like / Remix / Import on one row
+- Omit the extension `key` from Chrome Web Store zips so store upload is accepted
 
 ### Fixed
 
 - Allow the Chrome Web Store extension origin for passkeys (store ID differs from unpacked builds)
+- Signup and add-device passkeys wait up to 120s so phone QR ceremonies are not aborted early
+- Dark theme previews use the skin palette instead of default zinc
 
 ## [1.0.0] - 2026-09-09
 

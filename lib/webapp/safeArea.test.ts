@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   IOS_HOME_INDICATOR_FALLBACK_PX,
-  IOS_STATUS_BAR_FALLBACK_PX,
   isAppleTouchDevice,
   resolveSafeBottomPx,
   resolveSafeTopPx,
@@ -32,21 +31,11 @@ describe('resolveSafeBottomPx', () => {
 
 describe('resolveSafeTopPx', () => {
   it('keeps a real measured inset', () => {
-    expect(
-      resolveSafeTopPx(47, { standalone: true, appleTouch: true }),
-    ).toBe(47);
+    expect(resolveSafeTopPx(47)).toBe(47);
   });
 
-  it('falls back on standalone iPhone when WebKit reports 0', () => {
-    expect(
-      resolveSafeTopPx(0, { standalone: true, appleTouch: true }),
-    ).toBe(IOS_STATUS_BAR_FALLBACK_PX);
-  });
-
-  it('stays 0 in the browser / extension', () => {
-    expect(
-      resolveSafeTopPx(0, { standalone: false, appleTouch: true }),
-    ).toBe(0);
+  it('stays 0 when WebKit reports 0 (opaque status bar already insets layout)', () => {
+    expect(resolveSafeTopPx(0)).toBe(0);
   });
 });
 

@@ -1,8 +1,11 @@
 /**
  * iOS PWAs sometimes report env(safe-area-inset-*) as 0 on cold start
- * (or with certain status-bar styles) even though the home indicator / status
- * bar still overlays the webview. Measure once the DOM is up and publish CSS
- * vars the chrome can consume.
+ * even though the home indicator still overlays the webview. Measure once
+ * the DOM is up and publish CSS vars the chrome can consume.
+ *
+ * Top inset: with opaque `black` status-bar style, WebKit already lays out
+ * below the status bar and reports 0 — do NOT invent a fallback there or you
+ * get a double-spaced empty black band under the system bar.
  */
 
 const TOP_VAR = '--ec-safe-top';
@@ -10,12 +13,6 @@ const BOTTOM_VAR = '--ec-safe-bottom';
 
 /** Home-indicator height on notched iPhones when WebKit reports 0. */
 export const IOS_HOME_INDICATOR_FALLBACK_PX = 34;
-
-/**
- * Status-bar + notch / Dynamic Island height when WebKit reports 0.
- * 59px covers Dynamic Island; older notches sit a bit looser, which is fine.
- */
-export const IOS_STATUS_BAR_FALLBACK_PX = 59;
 
 export function isStandaloneDisplay(
   nav: Navigator & { standalone?: boolean } = window.navigator,
@@ -46,14 +43,11 @@ export function resolveSafeBottomPx(
 }
 
 /**
- * Same as bottom: with `viewport-fit=cover` + opaque `black` status bar,
- * WebKit often reports inset-top as 0 while still painting the bar over y=0.
- * Without a fallback, TopNav logo/icons sit under that bar and look shadowed.
+ * Use the measured top inset only. Opaque `black` status bar already insets
+ * the layout; a fallback here stacks a second gap under the system bar.
  */
-export function resolveSafeTopPx(measured: number, opts: SafeOpts): number {
-  if (measured > 0) return measured;
-  if (opts.standalone && opts.appleTouch) return IOS_STATUS_BAR_FALLBACK_PX;
-  return 0;
+export function resolveSafeTopPx(measured: number): number {
+  return measured > 0 ? measured : 0;
 }
 
 function measureInset(side: 'top' | 'bottom'): number {
@@ -81,7 +75,7 @@ function publish(): void {
     standalone: isStandaloneDisplay(),
     appleTouch: isAppleTouchDevice(),
   };
-  root.style.setProperty(TOP_VAR, `${resolveSafeTopPx(top, opts)}px`);
+  root.style.setProperty(TOP_VAR, `${resolveSafeTopPx(top)}px`);
   root.style.setProperty(
     BOTTOM_VAR,
     `${resolveSafeBottomPx(bottom, opts)}px`,

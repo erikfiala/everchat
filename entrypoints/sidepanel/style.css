@@ -382,17 +382,13 @@ html.ec-webapp #root {
 }
 
 /*
-  Clear the status bar, and paint that zone pure black so it blends with the
-  opaque system bar. Without the black fill, card-colored TopNav shows through
-  under the bar and reads as a muddy drop-shadow on the logo/icons.
+  Opaque `black` status bar already lays out below the system bar, so top
+  inset is usually 0 — only add env()/var padding when WebKit reports one.
+  Do not paint a black filler band; that stacked with the system bar as an
+  empty gap under the clock.
 */
 html.ec-webapp [data-ec-topnav] {
   padding-top: calc(0.5rem + var(--ec-safe-top, env(safe-area-inset-top, 0px)));
-  background-color: var(--color-card);
-  background-image: linear-gradient(#000, #000);
-  background-repeat: no-repeat;
-  background-position: top;
-  background-size: 100% var(--ec-safe-top, env(safe-area-inset-top, 0px));
 }
 
 /* Home indicator clears composer actions; card bg fills the unsafe bottom. */

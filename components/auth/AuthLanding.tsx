@@ -13,7 +13,6 @@ import {
   resolveExistingAccountAction,
   resolveSignupAction,
 } from '@/lib/auth/landingAction';
-import { getStoredCredentialIds } from '@/lib/auth/passkeyHint';
 import {
   checkUsernameAvailable,
   LOGIN_INTERACTIVE_TIMEOUT_MS,
@@ -123,14 +122,8 @@ export function AuthLanding() {
     setStep(resolveSignupAction());
   };
 
-  const onExistingAccount = async () => {
-    const ids = await getStoredCredentialIds();
-    const action = resolveExistingAccountAction(ids.length);
-    if (action === 'login') {
-      await runExistingPasskeyLogin();
-      return;
-    }
-    setStep(action);
+  const onExistingAccount = () => {
+    setStep(resolveExistingAccountAction());
   };
 
   const onReturningContinue = async () => {

@@ -45,7 +45,7 @@ const RP_ID =
  * window so Chrome can attach the prompt. everch.at/app stays in-page.
  */
 export const LOGIN_PROBE_TIMEOUT_MS = 7_000;
-export const LOGIN_INTERACTIVE_TIMEOUT_MS = 55_000;
+export const LOGIN_INTERACTIVE_TIMEOUT_MS = 30_000;
 export const REGISTER_TIMEOUT_MS = 120_000;
 
 export type LoginPasskeyIntent = 'probe' | 'interactive';

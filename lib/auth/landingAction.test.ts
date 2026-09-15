@@ -17,12 +17,10 @@ describe('resolveSignupAction', () => {
 });
 
 describe('resolveExistingAccountAction', () => {
-  it('starts login when stored credential ids can skip the usernameless picker', () => {
-    expect(resolveExistingAccountAction(1)).toBe('login');
-    expect(resolveExistingAccountAction(3)).toBe('login');
-  });
-
-  it('asks for @handle when this install has no stored credential ids', () => {
+  it('always asks for @handle, even when this install has stored credential ids', () => {
     expect(resolveExistingAccountAction(0)).toBe('returning');
+    expect(resolveExistingAccountAction(1)).toBe('returning');
+    expect(resolveExistingAccountAction(3)).toBe('returning');
+    expect(resolveExistingAccountAction()).toBe('returning');
   });
 });

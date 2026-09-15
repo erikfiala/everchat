@@ -12,11 +12,14 @@ export function resolveSignupAction(_ctx?: {
 }
 
 /**
- * "I already have an account": stored ids skip the handle step (side-panel
- * usernameless get() hangs); otherwise ask for @handle first.
+ * "I already have an account": always ask for @handle first so multi-account
+ * users can target a specific account. Username-scoped login options return
+ * server allowCredentials (avoids side-panel usernameless hang). Locally
+ * stored credential ids must not skip this — they only cover passkeys from
+ * prior ceremonies on this install (often just the latest account).
  */
 export function resolveExistingAccountAction(
-  storedCredentialCount: number,
-): 'login' | 'returning' {
-  return storedCredentialCount > 0 ? 'login' : 'returning';
+  _storedCredentialCount?: number,
+): 'returning' {
+  return 'returning';
 }

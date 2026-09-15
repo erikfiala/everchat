@@ -102,8 +102,8 @@ function webAppBasePath(): WebAppBasePath {
 }
 
 /**
- * Prefer short `/app/p/{pageId}` (+ `/m/{msg}`) when we have a page id.
- * Fall back to `?url=` / `?msg=` before a page row exists.
+ * Prefer `?url=` / `?msg=` once the page URL is known (paste-and-submit chrome).
+ * `/app/p/{pageId}` (+ `/m/{msg}`) is only a share trampoline until resolve.
  */
 function syncAddressBar(
   url: string | null,
@@ -114,7 +114,7 @@ function syncAddressBar(
     const next = new URL(window.location.href);
     const base = webAppBasePath();
     const short =
-      pageId && isShareMessageId(pageId)
+      !url && pageId && isShareMessageId(pageId)
         ? webAppPagePathname(pageId, messageId, base)
         : null;
 

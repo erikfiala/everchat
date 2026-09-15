@@ -35,18 +35,20 @@
 
   /**
    * Marketing browse → Everchat web client (same tab).
-   * Prefer short `/app/p/{id}`; else `/app?url=` with the page URL.
-   * Extension Explore uses lib/canonicalize hrefFromPage (real page tab) — leave that alone.
+   * Prefer `/app?url=` so the PWA boots in the committed address-bar state
+   * (same as paste-and-submit). `/app/p/{id}` is only a fallback when the row
+   * has an id but no page URL. Extension Explore uses lib/canonicalize
+   * hrefFromPage (real page tab) — leave that alone.
    */
   function hrefFromPage(row) {
     if (!row) return '';
-    var id = row.id != null ? String(row.id).trim() : '';
-    if (id) return '/app/p/' + encodeURIComponent(id);
     var pageUrl = '';
     if (row.url) pageUrl = String(row.url).trim();
     else if (row.canonical_url) pageUrl = httpsUrl(row.canonical_url);
-    if (!pageUrl) return '/app';
-    return '/app?url=' + encodeURIComponent(pageUrl);
+    if (pageUrl) return '/app?url=' + encodeURIComponent(pageUrl);
+    var id = row.id != null ? String(row.id).trim() : '';
+    if (id) return '/app/p/' + encodeURIComponent(id);
+    return '/app';
   }
 
   /** Lucide `globe` paths — matches extension Favicon fallback. */

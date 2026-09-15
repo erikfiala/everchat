@@ -55,7 +55,7 @@ export function PageContextHeader({
 
   useEffect(() => {
     setDraft(displayValue);
-    if (!displayValue) setEditing(true);
+    setEditing(!displayValue);
   }, [displayValue]);
 
   useEffect(() => {

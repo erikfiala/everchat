@@ -1,4 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/lib/pages', () => ({
+  getPageById: vi.fn(),
+}));
+
+import { getPageById } from '@/lib/pages';
 import { installWebAppChrome } from '@/lib/webapp/chrome';
 
 function memoryStorage(): Storage {
@@ -21,6 +27,8 @@ function memoryStorage(): Storage {
 
 describe('installWebAppChrome', () => {
   beforeEach(() => {
+    vi.mocked(getPageById).mockReset();
+    vi.mocked(getPageById).mockResolvedValue(null);
     const store = memoryStorage();
     let href = 'https://everch.at/app';
     const location = {
@@ -149,7 +157,7 @@ describe('installWebAppChrome', () => {
     );
   });
 
-  it('SET_ACTIVE_PAGE_ID upgrades address bar to short /app/p path', async () => {
+  it('SET_ACTIVE_PAGE_ID keeps ?url= once a page URL is known', async () => {
     const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     installWebAppChrome();
     await browser.runtime.sendMessage({
@@ -160,11 +168,13 @@ describe('installWebAppChrome', () => {
       type: 'SET_ACTIVE_PAGE_ID',
       pageId,
     });
-    expect(window.location.pathname).toBe(`/app/p/${pageId}`);
-    expect(window.location.search).toBe('');
+    expect(window.location.pathname).toBe('/app');
+    expect(window.location.search).toBe(
+      '?url=' + encodeURIComponent('https://news.example/story'),
+    );
   });
 
-  it('short path keeps /m/{msg} while focusing, drops it on clear', async () => {
+  it('focus uses ?msg= while a page URL is known', async () => {
     const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
     const msgId = 'm1b2c3d4-e5f6-7890-abcd-ef1234567890';
     installWebAppChrome();
@@ -180,10 +190,45 @@ describe('installWebAppChrome', () => {
       type: 'OPEN_PANEL_FOR_TAB',
       focusMessageId: msgId,
     });
-    expect(window.location.pathname).toBe(`/app/p/${pageId}/m/${msgId}`);
+    expect(window.location.pathname).toBe('/app');
+    expect(window.location.search).toBe(
+      '?url=' +
+        encodeURIComponent('https://news.example/story') +
+        '&msg=' +
+        encodeURIComponent(msgId),
+    );
 
     await browser.runtime.sendMessage({ type: 'CLEAR_FOCUS_MESSAGE' });
+    expect(window.location.pathname).toBe('/app');
+    expect(window.location.search).toBe(
+      '?url=' + encodeURIComponent('https://news.example/story'),
+    );
+  });
+
+  it('resolves /app/p/{id} to ?url= after the page loads', async () => {
+    const pageId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
+    const pageUrl =
+      'https://store.steampowered.com/app/1762570/Space_Reign';
+    vi.mocked(getPageById).mockResolvedValue({
+      id: pageId,
+      url: pageUrl,
+      canonical_url: 'store.steampowered.com/app/1762570/Space_Reign',
+      title: 'Space Reign on Steam',
+      favicon_url: null,
+    } as Awaited<ReturnType<typeof getPageById>>);
+    window.history.replaceState(null, '', `/app/p/${pageId}`);
+    installWebAppChrome();
     expect(window.location.pathname).toBe(`/app/p/${pageId}`);
+
+    await vi.waitFor(() => {
+      expect(window.location.pathname).toBe('/app');
+      expect(window.location.search).toBe(
+        '?url=' + encodeURIComponent(pageUrl),
+      );
+    });
+    const active = await browser.runtime.sendMessage({ type: 'GET_ACTIVE_TAB' });
+    expect(active.url).toBe(pageUrl);
+    expect(active.title).toBe('Space Reign on Steam');
   });
 
   it('boots focus from /app/p/{id}/m/{msg} before page resolve', async () => {

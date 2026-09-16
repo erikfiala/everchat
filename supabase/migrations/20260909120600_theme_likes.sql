@@ -1,5 +1,5 @@
 -- Theme likes + system default. Counts are public; who liked stays private.
--- Filename is after 20260909090000_themes.sql: `supabase migration new`
+-- Filename is after 20260909013915_themes.sql: `supabase migration new`
 -- stamped UTC 05:08, which would run before `themes` exists.
 --
 -- themes_no_css_smuggle was stored with doubled backslashes, so the regex

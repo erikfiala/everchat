@@ -578,8 +578,11 @@ export function MessageRow({
                     size="sm"
                     className={cn(
                       'h-7 px-2 text-xs text-[var(--color-muted-foreground)]',
+                      // Extension/desktop: reveal on row hover. /app (mobile web):
+                      // always visible — there is no reliable hover on touch.
                       !showTranslation &&
                         !translating &&
+                        !isWebApp() &&
                         'opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100',
                     )}
                     disabled={translating}
@@ -596,7 +599,11 @@ export function MessageRow({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 opacity-0 group-hover/row:opacity-100"
+                    className={cn(
+                      'h-7 w-7',
+                      !isWebApp() &&
+                        'opacity-0 group-hover/row:opacity-100 focus-visible:opacity-100',
+                    )}
                     aria-label={t('message.more')}
                     onClick={() => setMenuOpen((v) => !v)}
                   >

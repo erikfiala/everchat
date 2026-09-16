@@ -90,13 +90,30 @@ export function faviconSrcCandidates(src?: string | null): string[] {
 }
 
 /**
- * Display candidates for a page/room row: stored favicon, else host-derived Google s2.
- * Keep in sync with `www/rooms.js` (`resolveRowFavicon` + `faviconSrcCandidates`).
+ * Display candidates for a page/room row: host Google s2 first, then stored URL.
+ * Keep in sync with `www/rooms.js` (`rowFaviconCandidates`).
  */
 export function pageFaviconSrcCandidates(input: {
   faviconUrl?: string | null;
   url?: string | null;
   canonicalUrl?: string | null;
 }): string[] {
-  return faviconSrcCandidates(resolveFaviconUrl(input));
+  const candidates = faviconSrcCandidates(resolveFaviconUrl(input));
+  let host = '';
+  const fromUrl = input.url?.trim();
+  if (fromUrl) {
+    try {
+      host = new URL(fromUrl).hostname;
+    } catch {
+      host = '';
+    }
+  }
+  if (!host) {
+    host = input.canonicalUrl?.trim().split('/')[0] ?? '';
+  }
+  const hostGoogle = host ? googleS2FaviconForHost(host) : null;
+  if (hostGoogle && !candidates.includes(hostGoogle)) {
+    return [hostGoogle, ...candidates];
+  }
+  return candidates;
 }

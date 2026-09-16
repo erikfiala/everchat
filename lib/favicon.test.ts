@@ -128,4 +128,20 @@ describe('resolveFaviconUrl / pageFaviconSrcCandidates', () => {
       'https://www.google.com/s2/favicons?sz=32&domain=destockd.com',
     ]);
   });
+
+  it('puts page-host Google s2 before a CDN-hosted stored favicon', () => {
+    const cdn =
+      'https://res.cloudinary.com/dso0ushec/image/upload/v1/ef-favicon.svg';
+    expect(
+      pageFaviconSrcCandidates({
+        faviconUrl: cdn,
+        url: 'https://erikfiala.com/',
+        canonicalUrl: 'erikfiala.com/',
+      }),
+    ).toEqual([
+      'https://www.google.com/s2/favicons?sz=32&domain=erikfiala.com',
+      `https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(cdn)}`,
+      cdn,
+    ]);
+  });
 });

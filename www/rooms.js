@@ -170,19 +170,46 @@
     return [stored];
   }
 
-  function setFavicon(fav, url) {
+  function hostGoogleFromRow(row) {
+    if (row && row.url) {
+      try {
+        var fromUrl = googleS2FaviconForHost(new URL(String(row.url)).hostname);
+        if (fromUrl) return fromUrl;
+      } catch (e) {
+        /* fall through */
+      }
+    }
+    if (row && row.canonical_url) {
+      return googleS2FaviconForHost(String(row.canonical_url).split('/')[0] || '');
+    }
+    return '';
+  }
+
+  /** Host Google s2 first, then stored URL (and its s2 wrap). Mirrors pageFaviconSrcCandidates. */
+  function rowFaviconCandidates(row) {
+    var candidates = faviconSrcCandidates(resolveRowFavicon(row));
+    var hostGoogle = hostGoogleFromRow(row);
+    if (hostGoogle && candidates.indexOf(hostGoogle) === -1) {
+      return [hostGoogle].concat(candidates);
+    }
+    return candidates;
+  }
+
+  function setFavicon(fav, row) {
     fav.replaceChildren();
     fav.appendChild(globeIcon());
-    var candidates = faviconSrcCandidates(url);
+    var candidates = rowFaviconCandidates(row);
     if (!candidates.length) return;
     var index = 0;
     var img = document.createElement('img');
     img.alt = '';
     img.width = 16;
     img.height = 16;
-    img.loading = 'lazy';
+    img.hidden = true;
+    img.decoding = 'async';
     img.referrerPolicy = 'no-referrer';
     img.onload = function () {
+      img.hidden = false;
       fav.replaceChildren(img);
     };
     img.onerror = function () {
@@ -191,8 +218,11 @@
         img.src = candidates[index];
         return;
       }
-      img.removeAttribute('src');
+      img.remove();
     };
+    // Keep the img in the document (hidden) like Favicon.tsx. Do not use
+    // loading=lazy — hidden/detached lazy images never fetch, so the globe stuck.
+    fav.appendChild(img);
     img.src = candidates[0];
   }
 
@@ -204,7 +234,7 @@
     var fav = document.createElement('span');
     fav.className = 'trending-fav';
     fav.setAttribute('aria-hidden', 'true');
-    setFavicon(fav, resolveRowFavicon(row));
+    setFavicon(fav, row);
 
     var body = document.createElement('span');
     body.className = 'trending-body';

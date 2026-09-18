@@ -199,7 +199,7 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageTitleBar>{t('leaderboard.title')}</PageTitleBar>
-      <div className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+      <div className="flex min-h-0 flex-1 flex-col px-3 pt-4">
         {showMe && me ? (
           <div className="shrink-0">
             <h2 className={FIELD_LABEL_CLASS}>{t('leaderboard.yourRank')}</h2>

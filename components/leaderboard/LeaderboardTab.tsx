@@ -4,11 +4,12 @@ import { PageTitleBar } from '@/components/PageTitleBar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FIELD_LABEL_CLASS } from '@/components/ui/typography';
 import { useAuth } from '@/hooks/useAuth';
 import { useListSentinel } from '@/hooks/useListSentinel';
 import { useLocale } from '@/hooks/useLocale';
 import { formatScore, scoreColorClass } from '@/lib/collapse';
-import { LIST_PAGE_SIZE } from '@/lib/constants';
+import { LEADERBOARD_LIMIT, LIST_PAGE_SIZE } from '@/lib/constants';
 import { appendUniqueById } from '@/lib/listPage';
 import {
   fetchLeaderboard,
@@ -193,58 +194,75 @@ export function LeaderboardTab({ onOpenProfile }: LeaderboardTabProps) {
     ...top.map((row) => row.rank),
   ]);
 
+  const showMe = Boolean(me && !error);
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       <PageTitleBar>{t('leaderboard.title')}</PageTitleBar>
-      <div className="flex min-h-0 flex-1 flex-col gap-0 px-3 pt-3">
-        {me && !error && (
-          <LeaderboardRow
-            row={me}
-            onOpenProfile={onOpenProfile}
-            rankCh={rankCh}
-          />
-        )}
-
-        <div
-          ref={scrollRef}
-          className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto"
-        >
-          {loading &&
-            top.length === 0 &&
-            Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-11 w-full" />
-            ))}
-          {error && top.length === 0 ? (
-            <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
-              {tError(error, 'leaderboard.error')}
-              <div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={loadFirst}
-                >
-                  {t('chat.retry')}
-                </Button>
-              </div>
-            </div>
-          ) : null}
-          {empty && (
-            <p className="px-4 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
-              {t('leaderboard.empty')}
-            </p>
-          )}
-          {top.map((row) => (
+      <div className="flex min-h-0 flex-1 flex-col px-3 pt-3">
+        {showMe && me ? (
+          <div className="shrink-0">
+            <h2 className={FIELD_LABEL_CLASS}>{t('leaderboard.yourRank')}</h2>
             <LeaderboardRow
-              key={`${row.rank}-${row.username}`}
-              row={row}
+              row={me}
               onOpenProfile={onOpenProfile}
               rankCh={rankCh}
             />
-          ))}
-          {hasMore ? (
-            <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+          </div>
+        ) : null}
+
+        <div
+          className={cn(
+            'flex min-h-0 flex-1 flex-col',
+            showMe && 'mt-4',
+          )}
+        >
+          {!error ? (
+            <h2 className={cn(FIELD_LABEL_CLASS, 'shrink-0')}>
+              {t('leaderboard.top', { n: LEADERBOARD_LIMIT })}
+            </h2>
           ) : null}
+          <div
+            ref={scrollRef}
+            className="flex min-h-0 flex-1 flex-col gap-0 overflow-y-auto"
+          >
+            {loading &&
+              top.length === 0 &&
+              Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-11 w-full" />
+              ))}
+            {error && top.length === 0 ? (
+              <div className="py-6 text-center text-sm text-[var(--color-destructive)]">
+                {tError(error, 'leaderboard.error')}
+                <div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                    onClick={loadFirst}
+                  >
+                    {t('chat.retry')}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+            {empty && (
+              <p className="px-4 py-10 text-center text-sm text-[var(--color-muted-foreground)]">
+                {t('leaderboard.empty')}
+              </p>
+            )}
+            {top.map((row) => (
+              <LeaderboardRow
+                key={`${row.rank}-${row.username}`}
+                row={row}
+                onOpenProfile={onOpenProfile}
+                rankCh={rankCh}
+              />
+            ))}
+            {hasMore ? (
+              <ListSentinel sentinelRef={sentinelRef} loading={loadingMore} />
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

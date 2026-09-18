@@ -85,6 +85,8 @@
   "explore.emptyTrending": "Nothing trending yet. Be the first to start a conversation.",
   "explore.emptyNew": "No recent conversations yet. Open a page and leave the first comment.",
   "leaderboard.title": "Leaderboard",
+  "leaderboard.yourRank": "Your rank",
+  "leaderboard.top": "Top {{n}}",
   "leaderboard.empty": "No one on the board yet.",
   "leaderboard.error": "Couldn't load the leaderboard.",
   "www.trendingTitle": "Trending chats",

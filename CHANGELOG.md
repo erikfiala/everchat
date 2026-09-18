@@ -6,6 +6,25 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-09-18
+
+### Added
+
+- Leaderboard sections labeled **Your rank** and **Top 100** so the pinned row is distinct from the list
+
+### Changed
+
+- Always show “See translation” and the comment ••• menu on mobile web
+- Homepage chats open at `/app?url=` so the address bar matches the submitted page
+- Expanding replies requires sign-in
+
+### Fixed
+
+- iPhone PWA layout under the status bar and home indicator (safe areas, top gap, status-bar blend)
+- Posted GIFs render again for users
+- URL field styling matches other inputs
+- Marketing trending cards show real favicons instead of globes
+
 ## [1.0.6] - 2026-09-15
 
 ### Changed
